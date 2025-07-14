@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DiagnosticItem extends BaseModel
@@ -50,11 +49,6 @@ class DiagnosticItem extends BaseModel
     public function bloom(): BelongsTo
     {
         return $this->belongsTo(Bloom::class, 'bloom_id');
-    }
-
-    public function concepts(): BelongsToMany
-    {
-        return $this->belongsToMany(Concept::class, 'concept_diagnostic_item');
     }
 
     public function difficulty(): BelongsTo

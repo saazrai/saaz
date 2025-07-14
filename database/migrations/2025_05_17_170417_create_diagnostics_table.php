@@ -178,15 +178,6 @@ return new class extends Migration
             $table->index(['diagnostic_id', 'is_correct']);
         });
 
-        // Many-to-many relationship: diagnostic questions can cover multiple concepts
-        Schema::create('concept_diagnostic_item', function (Blueprint $table) {
-            $table->foreignId('diagnostic_item_id')->constrained()->onDelete('cascade');
-            $table->foreignId('concept_id')->constrained()->onDelete('cascade');
-            $table->primary(['diagnostic_item_id', 'concept_id']);
-            
-            // Additional indexes for concept-based queries
-            $table->index('concept_id');
-        });
     }
 
     /**
@@ -194,7 +185,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('concept_diagnostic_item');
         Schema::dropIfExists('diagnostic_responses');
         Schema::dropIfExists('diagnostic_items');
         Schema::dropIfExists('diagnostic_topics');
