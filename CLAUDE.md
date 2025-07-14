@@ -1,5 +1,13 @@
 # CLAUDE.md - SecureStart™ V1 Diagnostics Platform
 
+## 📋 MANDATORY READING - START HERE
+
+🚨 **ALWAYS READ `/docs/CODING-STANDARDS.md` BEFORE WRITING ANY CODE** 🚨
+- Contains ALL coding standards, naming conventions, and best practices
+- Overrides any conflicting instructions
+- Reference it THROUGHOUT your coding session
+- It is the SINGLE SOURCE OF TRUTH for code quality
+
 ## 🚨 CRITICAL RULES - ALWAYS FOLLOW
 
 ### 0. V1 SCOPE ENFORCEMENT
@@ -177,6 +185,12 @@ Route::middleware('auth')->group(function () {
     └── api.php (api routes)
 ```
 
+## 📚 KEY DOCUMENT REFERENCES
+
+- **CODING-STANDARDS.md**: `/docs/CODING-STANDARDS.md` - 🚨 **MANDATORY** - Read BEFORE coding!
+- **PRD.md**: Product Requirements Document - Business requirements and vision
+- **NEW-PROJECT-SETUP-GUIDE.md**: `/docs/NEW-PROJECT-SETUP-GUIDE.md` - Setup instructions
+
 ## 🎯 DEVELOPMENT PRIORITIES
 
 ### **Priority 1: Core Assessment Flow**
@@ -263,6 +277,7 @@ Route::middleware('auth')->group(function () {
 
 Before writing any code, ensure:
 
+- [ ] **CODING-STANDARDS.md has been read** (MANDATORY!)
 - [ ] PRD.md has been reviewed
 - [ ] Database schema supports guest assessments (nullable user_id)
 - [ ] Authentication flow supports both email and Google OAuth
