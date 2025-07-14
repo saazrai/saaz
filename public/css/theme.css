@@ -1,0 +1,682 @@
+/* Theme CSS Variables and Utilities */
+
+/* Base theme colors */
+.theme-base {
+  background-color: rgb(var(--color-base)) !important;
+}
+
+.theme-surface {
+  background-color: rgb(var(--color-surface));
+}
+
+.theme-elevated {
+  background-color: rgb(var(--color-elevated));
+}
+
+/* Border colors */
+.theme-border {
+  border-color: rgba(var(--color-border), var(--color-border-opacity, 1));
+}
+
+.theme-border-subtle {
+  border-color: rgba(var(--color-border-subtle), var(--color-border-subtle-opacity));
+}
+
+/* Text colors */
+.theme-text-primary {
+  color: rgb(var(--color-text-primary)) !important;
+}
+
+.theme-text-secondary {
+  color: rgb(var(--color-text-secondary));
+}
+
+.theme-text-muted {
+  color: rgb(var(--color-text-muted));
+}
+
+/* Interactive colors */
+.theme-primary {
+  background-color: rgb(var(--color-primary));
+}
+
+.theme-primary-text {
+  color: rgb(var(--color-primary));
+}
+
+.theme-primary-hover:hover {
+  background-color: rgb(var(--color-primary-hover));
+}
+
+.theme-secondary {
+  background-color: rgb(var(--color-secondary));
+}
+
+.theme-secondary-hover:hover {
+  background-color: rgb(var(--color-secondary-hover));
+}
+
+/* Status colors */
+.theme-success {
+  color: rgb(var(--color-success));
+}
+
+.theme-success-bg {
+  background-color: rgba(var(--color-success-bg), var(--color-success-bg-opacity));
+}
+
+.theme-danger {
+  color: rgb(var(--color-danger));
+}
+
+.theme-danger-bg {
+  background-color: rgba(var(--color-danger-bg), var(--color-danger-bg-opacity));
+}
+
+.theme-warning {
+  color: rgb(var(--color-warning));
+}
+
+.theme-warning-bg {
+  background-color: rgba(var(--color-warning-bg), var(--color-warning-bg-opacity));
+}
+
+/* Component specific */
+.theme-card {
+  background-color: rgb(var(--color-card-bg)) !important;
+  border: 1px solid rgb(var(--color-card-border)) !important;
+}
+
+.theme-code-bg {
+  background-color: rgb(var(--color-code-bg));
+}
+
+.theme-hover-bg:hover {
+  background-color: rgba(var(--color-hover-bg), var(--color-hover-bg-opacity));
+}
+
+/* Button styles */
+.theme-btn-primary {
+  background-color: rgb(var(--color-primary)) !important;
+  color: white !important;
+}
+
+.theme-btn-primary:hover {
+  background-color: rgb(var(--color-primary-hover)) !important;
+}
+
+/* Info/Special backgrounds */
+.theme-info-bg {
+  background-color: rgba(var(--color-primary), 0.1);
+}
+
+.theme-secondary-bg {
+  background-color: rgb(var(--color-secondary));
+}
+
+.theme-primary-bg {
+  background-color: rgb(var(--color-primary));
+}
+
+/* Transitions for theme changes */
+.theme-base,
+.theme-surface,
+.theme-card,
+.theme-text-primary,
+.theme-text-secondary,
+.theme-text-muted {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
+}
+
+/* Professional gradients and effects */
+.theme-gradient-subtle {
+  background: linear-gradient(135deg, rgba(var(--color-surface), 0.5), rgba(var(--color-elevated), 0.3));
+}
+
+.theme-shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.theme-shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.theme-shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* ========================================
+   PROFESSIONAL LIGHT THEME ENHANCEMENTS
+   ======================================== */
+
+/* Light theme specific improvements */
+:root:not(.dark) {
+  /* Enhanced typography for light mode */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Professional spacing scale */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+}
+
+/* Professional sidebar for light theme - match production */
+:root:not(.dark) .notes-sidebar {
+  background-color: #f8fafc !important;
+  border-right: 1px solid #e2e8f0 !important;
+}
+
+/* Clean search input - production style */
+:root:not(.dark) input[type="text"] {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  color: #374151 !important;
+}
+
+:root:not(.dark) input[type="text"]:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  outline: none !important;
+}
+
+/* Professional domain/lesson items */
+:root:not(.dark) .notes-sidebar button {
+  color: #4b5563 !important;
+  font-weight: 500 !important;
+}
+
+:root:not(.dark) .notes-sidebar button:hover {
+  background-color: #f3f4f6 !important;
+  border-radius: 4px !important;
+}
+
+/* Active topic highlighting - match production subtle style */
+:root:not(.dark) .notes-sidebar button[class*="theme-elevated"] {
+  background-color: #f9fafb !important;
+  border-left: 2px solid #3b82f6 !important;
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+/* Domain headers - cleaner production style */
+:root:not(.dark) .notes-sidebar .w-9.h-9 {
+  background-color: #f3f4f6 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #6b7280 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+/* Lesson badges */
+:root:not(.dark) .notes-sidebar .w-7.h-7 {
+  background-color: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+}
+
+/* Completion indicators */
+:root:not(.dark) .text-green-500 {
+  color: #059669 !important;
+}
+
+/* Progress percentages */
+:root:not(.dark) .theme-text-muted {
+  color: #6b7280 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+/* Clean content area - production style */
+:root:not(.dark) .theme-card {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Specific header card override for light theme */
+:root:not(.dark) .bg-white {
+  background-color: #ffffff !important;
+}
+
+:root:not(.dark) .border-gray-200 {
+  border-color: #e5e7eb !important;
+}
+
+/* Professional breadcrumbs - match production */
+:root:not(.dark) nav.flex {
+  background-color: transparent !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 12px 24px !important;
+}
+
+:root:not(.dark) nav.flex a {
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+:root:not(.dark) nav.flex a:hover {
+  color: #374151 !important;
+}
+
+:root:not(.dark) nav.flex span:not(.theme-text-primary) {
+  color: #9ca3af !important;
+}
+
+/* Content typography improvements */
+:root:not(.dark) .theme-card h1 {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  font-size: 28px !important;
+  line-height: 1.2 !important;
+  margin-bottom: 8px !important;
+}
+
+:root:not(.dark) .theme-card h2 {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+  font-size: 24px !important;
+  line-height: 1.3 !important;
+  margin-top: 32px !important;
+  margin-bottom: 16px !important;
+}
+
+:root:not(.dark) .theme-card h3 {
+  color: #374151 !important;
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  line-height: 1.4 !important;
+  margin-top: 24px !important;
+  margin-bottom: 12px !important;
+}
+
+:root:not(.dark) .theme-card p {
+  color: #4b5563 !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 16px !important;
+}
+
+:root:not(.dark) .theme-card strong {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
+
+/* Professional code blocks */
+:root:not(.dark) .theme-code-bg,
+:root:not(.dark) pre,
+:root:not(.dark) code {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 6px !important;
+  color: #334155 !important;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace !important;
+}
+
+/* Block type labels */
+:root:not(.dark) .theme-elevated span {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+}
+
+/* Progress indicators */
+:root:not(.dark) .progress-bar {
+  background-color: #e5e7eb !important;
+  border-radius: 4px !important;
+}
+
+:root:not(.dark) .progress-fill {
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8) !important;
+  border-radius: 4px !important;
+}
+
+/* Professional buttons */
+:root:not(.dark) .theme-btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+:root:not(.dark) .theme-btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Dark theme button primary */
+.dark .theme-btn-primary {
+  background: rgb(var(--color-primary)) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  padding: 12px 24px !important;
+  transition: all 0.2s ease !important;
+}
+
+.dark .theme-btn-primary:hover {
+  background: rgb(var(--color-primary-hover)) !important;
+}
+
+/* Professional list styling */
+:root:not(.dark) .theme-card ul li {
+  color: #4b5563 !important;
+  margin-bottom: 8px !important;
+  padding-left: 4px !important;
+}
+
+:root:not(.dark) .theme-card ol li {
+  color: #4b5563 !important;
+  margin-bottom: 8px !important;
+  padding-left: 4px !important;
+}
+
+/* Enhanced hover states */
+:root:not(.dark) .theme-hover-bg:hover {
+  background-color: #f9fafb !important;
+  border-radius: 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+/* Clean focus states */
+:root:not(.dark) button:focus,
+:root:not(.dark) input:focus {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+/* Professional mobile styles */
+@media (max-width: 768px) {
+  :root:not(.dark) .notes-sidebar {
+    background-color: #ffffff !important;
+    border-right: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+}
+
+/* ========================================
+   PROFESSIONAL SPACING UTILITIES
+   ======================================== */
+
+/* Professional spacing classes for consistent layout */
+.space-professional {
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.space-comfortable {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.space-compact {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Typography system for professional content */
+.text-display {
+  font-size: 2.25rem; /* 36px */
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.text-heading-1 {
+  font-size: 1.875rem; /* 30px */
+  font-weight: var(--font-weight-bold);
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.text-heading-2 {
+  font-size: 1.5rem; /* 24px */
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.text-heading-3 {
+  font-size: 1.25rem; /* 20px */
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.5;
+}
+
+.text-body-large {
+  font-size: 1.125rem; /* 18px */
+  font-weight: var(--font-weight-normal);
+  line-height: 1.6;
+}
+
+.text-body {
+  font-size: 1rem; /* 16px */
+  font-weight: var(--font-weight-normal);
+  line-height: 1.6;
+}
+
+.text-body-small {
+  font-size: 0.875rem; /* 14px */
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 0.75rem; /* 12px */
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+}
+
+/* Professional layout utilities */
+.layout-sidebar {
+  width: 280px;
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.layout-content {
+  flex: 1;
+  min-width: 0; /* Allow content to shrink */
+}
+
+.layout-blocks {
+  width: 300px;
+  min-width: 260px;
+  max-width: 340px;
+}
+
+/* Enhanced card system */
+.card-elevated {
+  background-color: rgb(var(--color-card-bg));
+  border: 1px solid rgb(var(--color-card-border));
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.card-elevated:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.03);
+  transform: translateY(-1px);
+}
+
+.card-interactive {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-interactive:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+/* Professional form elements */
+.input-professional {
+  background-color: rgb(var(--color-surface));
+  border: 1px solid rgb(var(--color-border));
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+  color: rgb(var(--color-text-primary));
+  transition: all 0.2s ease;
+}
+
+.input-professional:focus {
+  border-color: rgb(var(--color-primary));
+  box-shadow: 0 0 0 3px rgba(var(--color-primary), 0.1);
+  outline: none;
+}
+
+/* Dark mode prose fixes - Global */
+.dark h2 {
+  color: rgb(226, 232, 240) !important;
+}
+
+.dark h3 {
+  color: rgb(203, 213, 225) !important;
+}
+
+.dark strong {
+  color: rgb(248, 250, 252) !important;
+}
+
+.dark ol li, .dark ul li {
+  color: rgb(203, 213, 225) !important;
+}
+
+/* Ensure dark theme applies to all elements */
+.dark .theme-base {
+  background-color: rgb(var(--color-base)) !important;
+}
+
+.dark .theme-surface {
+  background-color: rgb(var(--color-surface)) !important;
+}
+
+.dark .theme-elevated {
+  background-color: rgb(var(--color-elevated)) !important;
+}
+
+/* Dark theme card enhancements */
+.dark .theme-card {
+  background-color: rgb(var(--color-card-bg)) !important;
+  border: 1px solid rgba(var(--color-card-border), 0.2) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Specific header card override for dark theme */
+.dark .dark\:bg-slate-800 {
+  background-color: #1e293b !important;
+}
+
+.dark .dark\:border-slate-700 {
+  border-color: rgba(71, 85, 105, 0.3) !important;
+}
+
+/* Dark theme sidebar */
+.dark .notes-sidebar {
+  background-color: rgb(var(--color-surface)) !important;
+}
+
+/* Specific border colors for better consistency */
+.border-gray-200 {
+  border-color: #e5e7eb !important;
+}
+
+.dark .dark\:border-gray-700\/50 {
+  border-color: rgba(55, 65, 81, 0.5) !important;
+}
+
+.border-gray-100 {
+  border-color: #f3f4f6 !important;
+}
+
+.dark .dark\:border-gray-700\/30 {
+  border-color: rgba(55, 65, 81, 0.3) !important;
+}
+
+/* Additional theme utilities for purple elements */
+.bg-purple-100 {
+  background-color: #f3e8ff !important;
+}
+
+.dark .dark\:bg-purple-900\/30 {
+  background-color: rgba(88, 28, 135, 0.3) !important;
+}
+
+.text-purple-700 {
+  color: #6b21a8 !important;
+}
+
+.dark .dark\:text-purple-300 {
+  color: #d8b4fe !important;
+}
+
+/* Theme secondary background utility */
+.theme-secondary-bg {
+  background-color: rgb(var(--color-secondary)) !important;
+}
+
+.theme-secondary-bg\/50 {
+  background-color: rgba(var(--color-secondary), 0.5) !important;
+}
+
+/* Dark theme subtle borders */
+.dark .theme-border {
+  border-color: rgba(var(--color-border), 0.08) !important;
+}
+
+.dark .theme-border-subtle {
+  border-color: rgba(var(--color-border-subtle), 0.1) !important;
+}
+
+/* Dark theme hover states */
+.dark .theme-hover-bg:hover {
+  background-color: rgba(var(--color-hover-bg), 0.2) !important;
+}
+
+/* Dark theme input styling */
+.dark input[type="text"] {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(71, 85, 105, 0.3) !important;
+  color: rgb(226, 232, 240) !important;
+}
+
+.dark input[type="text"]:focus {
+  border-color: rgb(59, 130, 246) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Dark theme active topic */
+.dark .notes-sidebar button[class*="theme-elevated"] {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  border-left: 2px solid #3b82f6 !important;
+}
+
+/* Dark theme domain/lesson badges */
+.dark .notes-sidebar .w-9.h-9 {
+  background-color: rgba(51, 65, 85, 0.5) !important;
+  border: 1px solid rgba(71, 85, 105, 0.3) !important;
+}
+
+.dark .notes-sidebar .w-7.h-7 {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+}
