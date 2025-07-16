@@ -31,8 +31,8 @@ class AdaptiveDiagnosticService
     const BLOOM_ADVANCE_THRESHOLDS = [
         1 => 0.75,    // L1→L2: Need 75% (3/4)
         2 => 0.75,    // L2→L3: Need 75% (3/4)
-        3 => 0.6667,  // L3→L4: Need 66.67% (2/3)
-        4 => 0.6667,  // L4→L5: Need 66.67% (2/3)
+        3 => 2/3,     // L3→L4: Need 66.67% (2/3) - now using exact fraction
+        4 => 2/3,     // L4→L5: Need 66.67% (2/3)
         5 => 1.00,    // At L5: Need 100% to maintain
     ];
     
@@ -157,14 +157,9 @@ class AdaptiveDiagnosticService
         
         if ($questionsAtCurrentAttempt >= $minQuestionsAtLevel) {
             // Calculate performance across all questions answered during this adaptive level
-            // This includes questions at any bloom level that were answered while domain was at currentBloom
             $correctAtLevel = 0;
             $totalAtLevel = 0;
-            
-            // Get the starting index for this attempt
             $totalPreviousQuestions = count($state['domain_history'][$domainId]) - $questionsAtCurrentAttempt;
-            
-            // Count performance for questions during this attempt at current adaptive level
             for ($i = $totalPreviousQuestions; $i < count($state['domain_history'][$domainId]); $i++) {
                 if (isset($state['domain_history'][$domainId][$i])) {
                     $totalAtLevel++;
@@ -173,14 +168,55 @@ class AdaptiveDiagnosticService
                     }
                 }
             }
-            
-            // Calculate accuracy percentage
             $accuracy = $totalAtLevel > 0 ? $correctAtLevel / $totalAtLevel : 0;
-            
-            // Early advancement rule: 2/2 = 100% at L1-L4 triggers immediate advancement
-            // CRITICAL: Must be exactly 2 questions in current attempt, not total historical
-            $isEarlyAdvancement = ($questionsAtCurrentAttempt == 2 && $totalAtLevel == 2 && $accuracy == 1.0 && $currentBloom < 5);
-            
+            $isEarlyAdvancement = ($questionsAtCurrentAttempt == 2 && $accuracy == 1.0 && $currentBloom < 5);
+
+            // CRITICAL FIX: Immediate regression after 2 questions if accuracy is already below threshold
+            if ($currentBloom > 1 && $currentBloom !== 5 && $questionsAtCurrentAttempt == 2 && $accuracy < self::BLOOM_REGRESS_THRESHOLDS[$currentBloom]) {
+                // Check if previous level was already proven with high confidence
+                $previousLevel = $currentBloom - 1;
+                $previousLevelProven = false;
+                if (isset($state['domain_questions_at_level'][$domainId][$previousLevel])) {
+                    $correctAtPrevious = 0;
+                    $totalAtPrevious = 0;
+                    foreach ($state['domain_bloom_history'][$domainId] as $index => $level) {
+                        if ($level === $previousLevel && isset($state['domain_history'][$domainId][$index])) {
+                            $totalAtPrevious++;
+                            if ($state['domain_history'][$domainId][$index]) {
+                                $correctAtPrevious++;
+                            }
+                        }
+                    }
+                    if ($totalAtPrevious >= 2 && ($correctAtPrevious / $totalAtPrevious) >= 0.75) {
+                        $previousLevelProven = true;
+                    }
+                }
+                if (!$previousLevelProven || $accuracy <= 0.25) {
+                    // Normal regression or catastrophic override
+                    $state['domain_bloom_levels'][$domainId] = $currentBloom - 1;
+                    if (!isset($state['domain_questions_at_level'][$domainId][$currentBloom - 1])) {
+                        $state['domain_questions_at_level'][$domainId][$currentBloom - 1] = 0;
+                    }
+                    if (!isset($state['domain_attempt_questions'][$domainId])) {
+                        $state['domain_attempt_questions'][$domainId] = [];
+                    }
+                    $state['domain_attempt_questions'][$domainId][$currentBloom - 1] = 0;
+                    if (isset($state['domain_attempt_questions'][$domainId][$currentBloom])) {
+                        unset($state['domain_attempt_questions'][$domainId][$currentBloom]);
+                    }
+                    Log::info('Immediate bloom level decreased after 2 questions', [
+                        'domain_id' => $domainId,
+                        'old_level' => $currentBloom,
+                        'new_level' => $currentBloom - 1,
+                        'accuracy' => round($accuracy * 100, 2) . '%',
+                        'threshold' => round(self::BLOOM_REGRESS_THRESHOLDS[$currentBloom] * 100, 2) . '%',
+                        'attempt_reset' => true
+                    ]);
+                    // Return early to prevent further processing at this level
+                    return $state;
+                }
+            }
+
             // Check for advancement (must have correct threshold AND haven't reached max)
             // Statistical confidence requires 2+ questions minimum for ALL decisions
             if ($currentBloom < 5 && 
@@ -225,7 +261,9 @@ class AdaptiveDiagnosticService
             }
             // Check for regression (accuracy below threshold AND haven't reached min level)
             // Statistical confidence requires 2+ questions minimum for ALL decisions
+            // CRITICAL: Never regress from L5 - it's a ceiling test, not a progression level
             elseif ($currentBloom > 1 && 
+                    $currentBloom !== 5 &&
                     $questionsAtCurrentAttempt >= 2 &&
                     $accuracy < self::BLOOM_REGRESS_THRESHOLDS[$currentBloom]) {
                 Log::info('Regression check triggered', [
@@ -239,9 +277,9 @@ class AdaptiveDiagnosticService
                 $previousLevel = $currentBloom - 1;
                 $previousLevelProven = false;
                 
-                // Special case: Always allow regression from L5
-                // L5 requires consistent expert performance; failing means L4+ ceiling
-                if ($currentBloom !== 5 && isset($state['domain_questions_at_level'][$domainId][$previousLevel])) {
+                // Check if previous level was already proven with high confidence
+                // Apply no-regression rule: if L3 proven with 75%+, no regression from L4
+                if (isset($state['domain_questions_at_level'][$domainId][$previousLevel])) {
                     // Count performance at previous level
                     $correctAtPrevious = 0;
                     $totalAtPrevious = 0;
@@ -262,20 +300,60 @@ class AdaptiveDiagnosticService
                 }
                 
                 if ($previousLevelProven) {
-                    // Don't regress - previous level was already proven
-                    // Mark domain as complete at previous level
-                    Log::info('Regression prevented - previous level already proven', [
-                        'domain_id' => $domainId,
-                        'current_level' => $currentBloom,
-                        'proven_level' => $previousLevel,
-                        'current_accuracy' => round($accuracy * 100, 2) . '%'
-                    ]);
-                    
-                    // Set a flag to indicate this domain found its ceiling
-                    if (!isset($state['domain_ceiling_found'])) {
-                        $state['domain_ceiling_found'] = [];
+                    // CRITICAL FIX: Always allow regression for catastrophically poor performance
+                    // No-regression rule should not apply when performance is ≤ 25% (complete failure)
+                    if ($accuracy <= 0.25) {
+                        Log::info('Regression forced due to catastrophic performance - overriding no-regression rule', [
+                            'domain_id' => $domainId,
+                            'current_level' => $currentBloom,
+                            'catastrophic_accuracy' => round($accuracy * 100, 2) . '%',
+                            'proven_level' => $previousLevel,
+                            'reason' => 'CATASTROPHIC_FAILURE_OVERRIDE'
+                        ]);
+                        // Force regression despite no-regression rule
+                        $previousLevelProven = false;
+                    } else {
+                        // Don't regress - previous level was already proven and performance isn't catastrophic
+                        // Check if advancement is still possible with more questions
+                        Log::info('Regression prevented - previous level already proven', [
+                            'domain_id' => $domainId,
+                            'current_level' => $currentBloom,
+                            'proven_level' => $previousLevel,
+                            'current_accuracy' => round($accuracy * 100, 2) . '%',
+                            'questions_at_attempt' => $questionsAtCurrentAttempt
+                        ]);
+                        
+                        // Only mark ceiling found if advancement is truly impossible
+                        // Check if we could advance with one more correct answer
+                        $couldAdvance = $this->couldAdvanceWithMoreQuestions($domainId, $currentBloom, $state);
+                        
+                        // Only mark ceiling if we have statistical confidence at current level (2+ questions)
+                        $questionsAtCurrentAttempt = $state['domain_attempt_questions'][$domainId][$currentBloom] ?? 0;
+                        if (!$couldAdvance && $questionsAtCurrentAttempt >= 2) {
+                            // Truly at ceiling - no advancement possible with statistical confidence
+                            if (!isset($state['domain_ceiling_found'])) {
+                                $state['domain_ceiling_found'] = [];
+                            }
+                            $state['domain_ceiling_found'][$domainId] = $previousLevel;
+                            
+                            Log::info('Domain ceiling confirmed - advancement impossible with statistical confidence', [
+                                'domain_id' => $domainId,
+                                'ceiling_level' => $previousLevel,
+                                'current_level' => $currentBloom,
+                                'questions_at_current_level' => $questionsAtCurrentAttempt,
+                                'reason' => 'No advancement possible with additional questions and sufficient data'
+                            ]);
+                        } else {
+                            $reason = $questionsAtCurrentAttempt < 2 ? 'needs statistical confidence' : 'advancement still possible';
+                            Log::info('Domain assessment continuing - no ceiling marked', [
+                                'domain_id' => $domainId,
+                                'current_level' => $currentBloom,
+                                'questions_at_current_level' => $questionsAtCurrentAttempt,
+                                'reason' => $reason,
+                                'advancement_possible' => $couldAdvance
+                            ]);
+                        }
                     }
-                    $state['domain_ceiling_found'][$domainId] = $previousLevel;
                 } else {
                     // Normal regression
                     $state['domain_bloom_levels'][$domainId] = $currentBloom - 1;
@@ -403,18 +481,11 @@ class AdaptiveDiagnosticService
             }
         }
         
-        // Special case: If domain is at L5, ensure it gets at least 2 questions at L5
-        // This is required for statistical confidence in Expert level determination
+        // Special case: If domain is at L5, ensure proper ceiling test logic
+        // This will be handled by the detailed L5 ceiling test logic below
         if ($currentBloom === 5) {
-            $questionsAtL5 = $state['domain_attempt_questions'][$domainId][5] ?? 0;
-            if ($questionsAtL5 < 2) {
-                Log::info('Domain at L5 needs more questions for Expert determination', [
-                    'domain_id' => $domainId,
-                    'questions_at_L5' => $questionsAtL5,
-                    'total_questions' => $questionsInDomain
-                ]);
-                return true;
-            }
+            // Don't make early decisions here - let the L5 ceiling test logic handle it
+            // This ensures tiebreaker scenarios are properly handled
         }
         
         // Use attempt questions counter (resets when level changes)
@@ -432,27 +503,8 @@ class AdaptiveDiagnosticService
             return true;
         }
         
-        // Check if domain just advanced and needs testing at new level
-        $domainHistory = $state['domain_history'][$domainId] ?? [];
-        $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
-        
-        if (!empty($domainHistory)) {
-            $lastIndex = count($domainHistory) - 1;
-            $lastQuestionBloom = $bloomHistory[$lastIndex] ?? 0;
-            
-            // If current bloom level is higher than last question's bloom level,
-            // domain just advanced and needs testing at new level
-            if ($currentBloom > $lastQuestionBloom && $currentBloom <= 5) {
-                Log::info('Domain needs testing at newly advanced level', [
-                    'domain_id' => $domainId,
-                    'last_question_level' => $lastQuestionBloom,
-                    'current_level' => $currentBloom
-                ]);
-                return true;
-            }
-        }
-        
         // Special handling for L5 (highest level) - smart ceiling test
+        // This must come BEFORE couldAdvanceWithMoreQuestions check since L5 can't advance but needs tiebreaker
         if ($currentBloom === 5) {
             // Count questions asked since reaching L5 (including L4 fallbacks)
             $questionsWhileAtL5 = $state['domain_questions_at_l5_level'][$domainId] ?? 0;
@@ -474,38 +526,37 @@ class AdaptiveDiagnosticService
             }
             
             // L5 smart ceiling test: Stop early if clear decision, continue if uncertain
-            if ($questionsWhileAtL5 >= 2) {
+            // Use actual L5 questions count for all decisions (not fallback questions)
+            if ($totalAtL5 >= 2) {
                 // Calculate accuracy based on actual L5 questions only
-                $accuracy = $totalAtL5 > 0 ? $correctAtL5 / $totalAtL5 : 0;
+                $accuracy = $correctAtL5 / $totalAtL5;
                 
-                // Early stop conditions after 2 questions
+                // Early stop conditions based on actual L5 questions
                 $shouldStop = false;
                 $reason = '';
                 
-                if ($totalAtL5 >= 2) {
-                    if ($accuracy == 1.0) {
-                        // 2/2 correct = 100% → Confirmed L5 Expert
-                        $shouldStop = true;
-                        $finalLevel = 5.0;
-                        $reason = 'Perfect performance (2/2)';
-                    } else if ($accuracy == 0.0) {
-                        // 0/2 correct = 0% → Confirmed L4+ (not L5)
-                        $shouldStop = true;
-                        $finalLevel = 4.5;
-                        $reason = 'Failed both L5 questions';
-                    } else if ($questionsWhileAtL5 >= 3) {
-                        // Had the tiebreaker 3rd question
-                        $shouldStop = true;
-                        $finalLevel = $accuracy >= 0.6667 ? 5.0 : 4.5;
-                        $reason = '3 questions completed';
-                    }
-                    // If 1/2 (50%), continue to 3rd question
-                } else if ($questionsWhileAtL5 >= 3) {
-                    // Fallback: Stop after 3 questions regardless
+                if ($accuracy == 1.0 && $totalAtL5 >= 2) {
+                    // 2/2 or better correct = 100% → Confirmed L5 Expert
                     $shouldStop = true;
-                    $finalLevel = $totalAtL5 == 0 ? 4.5 : ($accuracy >= 0.6667 ? 5.0 : 4.5);
-                    $reason = 'Maximum L5 questions reached';
+                    $finalLevel = 5.0;
+                    $reason = 'Perfect performance (' . $correctAtL5 . '/' . $totalAtL5 . ')';
+                } else if ($accuracy == 0.0 && $totalAtL5 >= 2) {
+                    // 0/2 or worse correct = 0% → Confirmed L4+ (not L5)
+                    $shouldStop = true;
+                    $finalLevel = 4.5;
+                    $reason = 'Failed L5 questions (0/' . $totalAtL5 . ')';
+                } else if ($totalAtL5 >= 3) {
+                    // Had the tiebreaker 3rd question - make final decision
+                    $shouldStop = true;
+                    // Use exact fraction to avoid floating point precision issues
+                    $finalLevel = $accuracy >= (2/3) ? 5.0 : 4.5;
+                    $reason = '3 L5 questions completed (' . $correctAtL5 . '/' . $totalAtL5 . ')';
+                } else if ($totalAtL5 == 2 && $correctAtL5 == 1) {
+                    // Exactly 1/2 (50%) → Must continue to tiebreaker 3rd question
+                    $shouldStop = false;
+                    $reason = 'Tiebreaker needed (1/2 = 50%)';
                 }
+                // All other cases with 2+ questions: continue testing for more data
                 
                 if ($shouldStop) {
                     // Mark the domain as complete
@@ -536,6 +587,41 @@ class AdaptiveDiagnosticService
             ]);
             return true; // Need more questions
         }
+
+        // PERFECT OPTIMIZATION: Check if advancement is still possible with more questions
+        // This prevents premature stopping when advancement opportunities exist
+        if ($this->couldAdvanceWithMoreQuestions($domainId, $currentBloom, $state)) {
+            Log::info('🚀 PERFECT OPTIMIZATION: Domain advancement possible - continuing assessment', [
+                'domain_id' => $domainId,
+                'current_bloom' => $currentBloom,
+                'questions_at_attempt' => $questionsAtCurrentAttempt,
+                'advancement_possible' => true,
+                'priority' => 'MAXIMUM_OPTIMIZATION'
+            ]);
+            return true;
+        }
+        
+        // Check if domain just advanced and needs testing at new level
+        $domainHistory = $state['domain_history'][$domainId] ?? [];
+        $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
+        
+        if (!empty($domainHistory)) {
+            $lastIndex = count($domainHistory) - 1;
+            $lastQuestionBloom = $bloomHistory[$lastIndex] ?? 0;
+            
+            // If current bloom level is higher than last question's bloom level,
+            // domain just advanced and needs testing at new level
+            if ($currentBloom > $lastQuestionBloom && $currentBloom <= 5) {
+                Log::info('Domain needs testing at newly advanced level', [
+                    'domain_id' => $domainId,
+                    'last_question_level' => $lastQuestionBloom,
+                    'current_level' => $currentBloom
+                ]);
+                return true;
+            }
+        }
+        
+
         
         // Check if we've found the ceiling (3+ failures at current level)
         if ($this->hasFoundCeiling($domainId, $currentBloom, $state)) {
@@ -750,12 +836,41 @@ class AdaptiveDiagnosticService
                 }
             } elseif ($level === 5) {
                 // Check if L5 domain needs more questions for Expert determination
-                $questionsAtL5 = $state['domain_attempt_questions'][$domainId][5] ?? 0;
-                if ($questionsAtL5 < 2) {
+                
+                // CRITICAL FIX: Use consistent L5 question counting for tiebreaker detection
+                // Calculate actual L5 question performance (same logic as shouldContinueDomain)
+                $history = $state['domain_history'][$domainId] ?? [];
+                $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
+                $correctAtL5 = 0;
+                $totalAtL5 = 0;
+                
+                // Count only actual L5 questions for accuracy calculation
+                foreach ($bloomHistory as $index => $level) {
+                    if ($level === 5 && isset($history[$index])) {
+                        $totalAtL5++;
+                        if ($history[$index]) {
+                            $correctAtL5++;
+                        }
+                    }
+                }
+                
+                // Check minimum questions requirement
+                if ($totalAtL5 < 2) {
                     Log::info('Domain at L5 needs more questions', [
                         'domain_id' => $domainId,
-                        'questions_at_L5' => $questionsAtL5,
+                        'actual_l5_questions' => $totalAtL5,
                         'needs_minimum' => 2
+                    ]);
+                    $hasDomainsAtL5NeedingMoreQuestions = true;
+                    break;
+                }
+                // Check for 50% tiebreaker scenario (exactly 2 L5 questions with 1 correct)
+                elseif ($totalAtL5 == 2 && $correctAtL5 == 1) {
+                    Log::info('🎯 CRITICAL: Domain at L5 needs tiebreaker question', [
+                        'domain_id' => $domainId,
+                        'actual_l5_questions' => $totalAtL5,
+                        'l5_performance' => '50% (1/2)',
+                        'reason' => 'L5_TIEBREAKER_REQUIRED'
                     ]);
                     $hasDomainsAtL5NeedingMoreQuestions = true;
                     break;
@@ -763,11 +878,51 @@ class AdaptiveDiagnosticService
             }
         }
         
+        // Check if all domains have statistical confidence at their current bloom level
+        $allDomainsHaveStatisticalConfidence = true;
+        foreach ($state['domain_bloom_levels'] ?? [] as $domainId => $currentBloom) {
+            $questionsAtCurrentAttempt = $state['domain_attempt_questions'][$domainId][$currentBloom] ?? 0;
+            $minQuestionsAtLevel = self::BLOOM_MIN_QUESTIONS[$currentBloom] ?? 2;
+            
+            if ($questionsAtCurrentAttempt < $minQuestionsAtLevel) {
+                Log::info('Domain lacks statistical confidence at current level', [
+                    'domain_id' => $domainId,
+                    'current_bloom' => $currentBloom,
+                    'questions_at_attempt' => $questionsAtCurrentAttempt,
+                    'min_required' => $minQuestionsAtLevel
+                ]);
+                $allDomainsHaveStatisticalConfidence = false;
+                break;
+            }
+        }
+        
+        // PERFECT OPTIMIZATION: Check if ANY domain could still advance before stopping
+        $hasDomainsWithAdvancementPossibilities = false;
+        foreach ($state['domain_bloom_levels'] ?? [] as $domainId => $currentBloom) {
+            $domainQuestionCount = count($state['domain_history'][$domainId] ?? []);
+            if ($this->couldAdvanceWithMoreQuestions($domainId, $currentBloom, $state)) {
+                $hasDomainsWithAdvancementPossibilities = true;
+                Log::info('🚀 PERFECT OPTIMIZATION: Domain has advancement potential', [
+                    'domain_id' => $domainId,
+                    'current_bloom' => $currentBloom,
+                    'domain_questions' => $domainQuestionCount,
+                    'reason' => 'advancement_mathematically_possible'
+                ]);
+                break;
+            }
+        }
+
         if (($state['bloom_stability_counter'] ?? 0) >= 4 && 
             $totalQuestions >= 20 && 
             !$hasDomainsAtL4WaitingForL5 && 
-            !$hasDomainsAtL5NeedingMoreQuestions) {
-            Log::info('Test complete: bloom levels stable for 4+ questions');
+            !$hasDomainsAtL5NeedingMoreQuestions &&
+            !$hasDomainsWithAdvancementPossibilities &&  // NEW: Don't stop if advancement possible
+            $allDomainsHaveStatisticalConfidence) {
+            Log::info('🎯 PERFECT OPTIMIZATION: Test complete - no advancement possibilities remain', [
+                'total_questions' => $totalQuestions,
+                'bloom_stability' => $state['bloom_stability_counter'] ?? 0,
+                'advancement_check' => 'all_domains_optimized'
+            ]);
             return true;
         }
         
@@ -785,9 +940,28 @@ class AdaptiveDiagnosticService
             }
         }
         
-        // If we've tested 5 domains and all have minimum questions, consider completion
-        if (count($domainQuestionCounts) >= 5 && $allDomainsAdequate && $totalQuestions >= 25) {
-            Log::info('Test complete: all domains adequately tested');
+        // CRITICAL FIX: Check advancement possibilities before fallback completion
+        $hasAnyAdvancementPossibilities = false;
+        foreach ($state['domain_bloom_levels'] ?? [] as $domainId => $currentBloom) {
+            if ($this->couldAdvanceWithMoreQuestions($domainId, $currentBloom, $state)) {
+                $hasAnyAdvancementPossibilities = true;
+                Log::info('🚀 FALLBACK CHECK: Advancement opportunity found', [
+                    'domain_id' => $domainId,
+                    'current_bloom' => $currentBloom,
+                    'reason' => 'preventing_premature_completion'
+                ]);
+                break;
+            }
+        }
+        
+        // If we've tested 5 domains and all have minimum questions AND statistical confidence AND no advancement opportunities, consider completion
+        if (count($domainQuestionCounts) >= 5 && $allDomainsAdequate && $allDomainsHaveStatisticalConfidence && 
+            $totalQuestions >= 25 && !$hasAnyAdvancementPossibilities) {
+            Log::info('🎯 PERFECT OPTIMIZATION: Fallback completion - no advancement opportunities remain', [
+                'domains_tested' => count($domainQuestionCounts),
+                'total_questions' => $totalQuestions,
+                'advancement_check' => 'comprehensive_fallback'
+            ]);
             return true;
         }
         
@@ -827,7 +1001,9 @@ class AdaptiveDiagnosticService
         // Check L5 first - if achieved, return immediately
         if (isset($questionsByBloom[5]) && $questionsByBloom[5]['total'] >= 2) {
             $l5Accuracy = $questionsByBloom[5]['correct'] / $questionsByBloom[5]['total'];
-            if ($l5Accuracy >= 0.6667) {
+            // Use the exact fraction 2/3 for comparison to avoid floating point precision issues
+            $threshold = 2/3; // 0.666666...
+            if ($l5Accuracy >= $threshold) {
                 return 5.0; // Expert level achieved
             }
         }
@@ -971,133 +1147,276 @@ class AdaptiveDiagnosticService
         // Track last tested domain for round robin
         $lastTestedDomain = $state['last_tested_domain'] ?? null;
         
-        // Priority 0: L4 domains with perfect performance ready for L5
-        // This takes precedence over round-robin to ensure L5 testing
-        $l4DomainsReadyForL5 = [];
+        // PRIORITY -2: CRITICAL L5 TIEBREAKER - Must override ALL other priorities
+        // Check for domains with exactly 50% performance at L5 requiring mandatory 3rd question
+        $targetDomainId = null;
+        $targetBloomLevel = null;
+        
         foreach ($phaseDomainIds as $domainId) {
             $currentLevel = $state['domain_bloom_levels'][$domainId] ?? 3;
-            if ($currentLevel === 4) {
-                // Check recent L4 performance
+            if ($currentLevel === 5) {
+                // Calculate actual L5 question performance
                 $history = $state['domain_history'][$domainId] ?? [];
                 $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
-                $questionCount = count($history);
+                $correctAtL5 = 0;
+                $totalAtL5 = 0;
                 
-                // Count L4 questions regardless of total count
-                $l4Questions = 0;
-                $l4Correct = 0;
-                for ($i = 0; $i < count($history); $i++) {
-                    if (isset($bloomHistory[$i]) && $bloomHistory[$i] === 4) {
-                        $l4Questions++;
-                        if ($history[$i]) $l4Correct++;
+                foreach ($bloomHistory as $index => $level) {
+                    if ($level === 5 && isset($history[$index])) {
+                        $totalAtL5++;
+                        if ($history[$index]) {
+                            $correctAtL5++;
+                        }
                     }
                 }
                 
-                // If 2+ questions at L4 with good performance, prioritize for L5
-                if ($l4Questions >= 2 && ($l4Correct / $l4Questions) >= 0.6667) {
-                    $l4DomainsReadyForL5[] = $domainId;
+                // CRITICAL: L5 Tiebreaker scenario - exactly 50% (1/2) requires 3rd question
+                if ($totalAtL5 == 2 && $correctAtL5 == 1) {
+                    Log::info('🚨 PRIORITY -2: CRITICAL L5 TIEBREAKER DETECTED', [
+                        'domain_id' => $domainId,
+                        'actual_l5_questions' => $totalAtL5,
+                        'l5_performance' => '50% (1/2)',
+                        'reason' => 'L5_TIEBREAKER_MANDATORY',
+                        'priority_override' => 'ALL_OTHER_PRIORITIES'
+                    ]);
+                    
+                    // Force immediate L5 question selection for this domain
+                    $targetDomainId = $domainId;
+                    $targetBloomLevel = 5;
+                    break; // Found L5 tiebreaker, proceed immediately
                 }
             }
         }
         
-        // If we have L4 domains ready for L5, test them first
-        if (!empty($l4DomainsReadyForL5)) {
-            $targetDomainId = $l4DomainsReadyForL5[0]; // Take first one
-            $targetBloomLevel = 5; // Force L5 testing
-            
-            Log::info('📈 SELECTION REASON: L4→L5 Advancement Testing', [
-                'domain_id' => $targetDomainId,
-                'target_bloom' => $targetBloomLevel,
-                'l4_domains_ready' => $l4DomainsReadyForL5,
-                'selection_priority' => 'HIGH - L5 testing'
-            ]);
+        // If L5 tiebreaker found, skip all other priority logic
+        if ($targetDomainId && $targetBloomLevel) {
+            // Skip to question selection immediately
         } else {
-            // Priority 0.5: L5 domains that need more questions for Expert determination
-            $l5DomainsNeedingMoreQuestions = [];
-            foreach ($phaseDomainIds as $domainId) {
-                $currentLevel = $state['domain_bloom_levels'][$domainId] ?? 3;
-                if ($currentLevel === 5) {
-                    $questionsAtL5 = $state['domain_attempt_questions'][$domainId][5] ?? 0;
-                    if ($questionsAtL5 < 2) {
-                        $l5DomainsNeedingMoreQuestions[] = $domainId;
-                    }
-                }
-            }
+        
+        // PRIORITY -1: CRITICAL - Domains lacking statistical confidence at current level
+        $domainsLackingConfidence = [];
+        foreach ($phaseDomainIds as $domainId) {
+            $currentBloom = $state['domain_bloom_levels'][$domainId] ?? 3;
+            $questionsAtCurrentAttempt = $state['domain_attempt_questions'][$domainId][$currentBloom] ?? 0;
+            $minQuestionsAtLevel = self::BLOOM_MIN_QUESTIONS[$currentBloom] ?? 2;
             
-            if (!empty($l5DomainsNeedingMoreQuestions)) {
-                $targetDomainId = $l5DomainsNeedingMoreQuestions[0]; // Take first one
-                $targetBloomLevel = 5; // Continue L5 testing
-                
-                Log::info('🎓 SELECTION REASON: L5 Expert Confirmation', [
-                    'domain_id' => $targetDomainId,
-                    'target_bloom' => $targetBloomLevel,
-                    'questions_at_L5' => $state['domain_attempt_questions'][$targetDomainId][5] ?? 0,
-                    'selection_priority' => 'HIGH - L5 confirmation'
-                ]);
-            } else {
-                // No L4 or L5 priority domains, proceed with normal selection
-                
-                // Phase 1: Round Robin until all domains have minimum questions
-                $domainsNeedingMinimum = [];
-                foreach ($phaseDomainIds as $domainId) {
-                    $count = $domainQuestionCounts[$domainId] ?? 0;
-                    if ($count < self::MIN_QUESTIONS_PER_DOMAIN) {
-                        $domainsNeedingMinimum[] = $domainId;
-                    }
-                }
-                
-                if (!empty($domainsNeedingMinimum)) {
-                    // Round robin through domains needing minimum
-                    $targetDomainId = $this->getNextRoundRobinDomain($domainsNeedingMinimum, $lastTestedDomain);
-                    $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
-                    
-                    Log::info('🔄 SELECTION REASON: Round-Robin Minimum Coverage', [
-                        'domain_id' => $targetDomainId,
-                        'target_bloom' => $targetBloomLevel,
-                        'questions_so_far' => $domainQuestionCounts[$targetDomainId] ?? 0,
-                        'domains_needing_minimum' => $domainsNeedingMinimum,
-                        'selection_priority' => 'MEDIUM - minimum coverage'
-                    ]);
-                } else {
-                    // Phase 2: All domains have minimum, now use adaptive strategy
-                    $targetDomainId = null;
-                    
-                    // Priority 1: Domains with uncertain performance (40-70% at current level)
-                    $uncertainDomains = $this->getUncertainDomains($phaseDomainIds, $state);
-                    if (!empty($uncertainDomains)) {
-                        $targetDomainId = $uncertainDomains[0]; // Take first uncertain domain
-                    }
-                    
-                    // Priority 2: Domains showing excellence that haven't reached L5
-                    if (!$targetDomainId) {
-                        $excellentDomains = $this->getExcellentDomains($phaseDomainIds, $state);
-                        if (!empty($excellentDomains)) {
-                            // Prioritize L4 domains ready for L5 testing
-                            usort($excellentDomains, function($a, $b) use ($state) {
-                                $levelA = $state['domain_bloom_levels'][$a] ?? 3;
-                                $levelB = $state['domain_bloom_levels'][$b] ?? 3;
-                                return $levelB <=> $levelA; // Higher levels first
-                            });
-                            $targetDomainId = $excellentDomains[0];
-                        }
-                    }
-                    
-                    // Priority 3: Any domain that should continue testing
-                    if (!$targetDomainId) {
-                        foreach ($phaseDomainIds as $domainId) {
-                            $count = $domainQuestionCounts[$domainId] ?? 0;
-                            if ($this->shouldContinueDomain($domainId, $count, $state)) {
-                                $targetDomainId = $domainId;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    if ($targetDomainId) {
-                        $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
-                    }
+            // Scenario 1: Basic statistical confidence (< 2 questions)
+            if ($questionsAtCurrentAttempt < $minQuestionsAtLevel) {
+                $domainsLackingConfidence[] = $domainId;
+            }
+            // Scenario 2: Uncertain performance zone (needs resolution beyond minimum)
+            elseif ($questionsAtCurrentAttempt >= 2 && $questionsAtCurrentAttempt < 3) {
+                // Check if domain is in uncertain performance zone
+                if ($this->isInUncertainZone($domainId, $currentBloom, $state)) {
+                    $domainsLackingConfidence[] = $domainId;
                 }
             }
         }
+        
+        if (!empty($domainsLackingConfidence)) {
+            $targetDomainId = $domainsLackingConfidence[0]; // Take first one needing confidence
+            $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
+            
+            // Determine the reason for selection
+            $questionsAtCurrentAttempt = $state['domain_attempt_questions'][$targetDomainId][$targetBloomLevel] ?? 0;
+            $minQuestionsAtLevel = self::BLOOM_MIN_QUESTIONS[$targetBloomLevel] ?? 2;
+            
+            $reason = '';
+            if ($questionsAtCurrentAttempt < $minQuestionsAtLevel) {
+                $reason = 'basic statistical confidence';
+            } else {
+                $reason = 'uncertain performance zone resolution';
+            }
+            
+            Log::info('🚨 SELECTION REASON: Statistical Confidence Required', [
+                'domain_id' => $targetDomainId,
+                'target_bloom' => $targetBloomLevel,
+                'questions_at_current_level' => $questionsAtCurrentAttempt,
+                'minimum_required' => $minQuestionsAtLevel,
+                'reason' => $reason,
+                'selection_priority' => 'CRITICAL - statistical confidence'
+            ]);
+        } else {
+            // PERFECT OPTIMIZATION: PRIORITY 0.1 - Domains with advancement possibilities
+            $domainsWithAdvancementPossibilities = [];
+            foreach ($phaseDomainIds as $domainId) {
+                $currentBloom = $state['domain_bloom_levels'][$domainId] ?? 3;
+                if ($this->couldAdvanceWithMoreQuestions($domainId, $currentBloom, $state)) {
+                    $domainsWithAdvancementPossibilities[] = $domainId;
+                }
+            }
+            
+            if (!empty($domainsWithAdvancementPossibilities)) {
+                $targetDomainId = $domainsWithAdvancementPossibilities[0]; // Take first one with advancement potential
+                $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
+                
+                Log::info('🚀 PERFECT OPTIMIZATION: Advancement Opportunity Priority', [
+                    'domain_id' => $targetDomainId,
+                    'target_bloom' => $targetBloomLevel,
+                    'domains_with_potential' => $domainsWithAdvancementPossibilities,
+                    'selection_priority' => 'HIGHEST - advancement possible',
+                    'optimization_mode' => 'PERFECT'
+                ]);
+            } else {
+            // Priority 0: L4 domains with perfect performance ready for L5
+            // This takes precedence over round-robin to ensure L5 testing
+            $l4DomainsReadyForL5 = [];
+            foreach ($phaseDomainIds as $domainId) {
+                $currentLevel = $state['domain_bloom_levels'][$domainId] ?? 3;
+                if ($currentLevel === 4) {
+                    // Check recent L4 performance
+                    $history = $state['domain_history'][$domainId] ?? [];
+                    $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
+                    $questionCount = count($history);
+                    
+                    // Count L4 questions regardless of total count
+                    $l4Questions = 0;
+                    $l4Correct = 0;
+                    for ($i = 0; $i < count($history); $i++) {
+                        if (isset($bloomHistory[$i]) && $bloomHistory[$i] === 4) {
+                            $l4Questions++;
+                            if ($history[$i]) $l4Correct++;
+                        }
+                    }
+                    
+                    // If 2+ questions at L4 with good performance, prioritize for L5
+                    if ($l4Questions >= 2 && ($l4Correct / $l4Questions) >= 0.6667) {
+                        $l4DomainsReadyForL5[] = $domainId;
+                    }
+                }
+            }
+            
+            // If we have L4 domains ready for L5, test them first
+            if (!empty($l4DomainsReadyForL5)) {
+                $targetDomainId = $l4DomainsReadyForL5[0]; // Take first one
+                $targetBloomLevel = 5; // Force L5 testing
+                
+                Log::info('📈 SELECTION REASON: L4→L5 Advancement Testing', [
+                    'domain_id' => $targetDomainId,
+                    'target_bloom' => $targetBloomLevel,
+                    'l4_domains_ready' => $l4DomainsReadyForL5,
+                    'selection_priority' => 'HIGH - L5 testing'
+                ]);
+            } else {
+                // Priority 0.5: L5 domains that need more questions for Expert determination
+                $l5DomainsNeedingMoreQuestions = [];
+                foreach ($phaseDomainIds as $domainId) {
+                    $currentLevel = $state['domain_bloom_levels'][$domainId] ?? 3;
+                    if ($currentLevel === 5) {
+                        $questionsAtL5 = $state['domain_attempt_questions'][$domainId][5] ?? 0;
+                        
+                        // Check if needs minimum 2 questions
+                        if ($questionsAtL5 < 2) {
+                            $l5DomainsNeedingMoreQuestions[] = $domainId;
+                        }
+                        // Check for 50% tiebreaker scenario (exactly 2 questions with 1 correct)
+                        elseif ($questionsAtL5 == 2) {
+                            // Calculate L5 accuracy for tiebreaker check
+                            $history = $state['domain_history'][$domainId] ?? [];
+                            $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
+                            $correctAtL5 = 0;
+                            $totalAtL5 = 0;
+                            
+                            foreach ($bloomHistory as $index => $level) {
+                                if ($level === 5 && isset($history[$index])) {
+                                    $totalAtL5++;
+                                    if ($history[$index]) {
+                                        $correctAtL5++;
+                                    }
+                                }
+                            }
+                            
+                            // If exactly 50% (1/2), needs tiebreaker 3rd question
+                            if ($totalAtL5 == 2 && $correctAtL5 == 1) {
+                                $l5DomainsNeedingMoreQuestions[] = $domainId;
+                            }
+                        }
+                    }
+                }
+                
+                if (!empty($l5DomainsNeedingMoreQuestions)) {
+                    $targetDomainId = $l5DomainsNeedingMoreQuestions[0]; // Take first one
+                    $targetBloomLevel = 5; // Continue L5 testing
+                    
+                    // Determine if this is for minimum questions or tiebreaker
+                    $questionsAtL5 = $state['domain_attempt_questions'][$targetDomainId][5] ?? 0;
+                    $reason = $questionsAtL5 < 2 ? 'minimum questions' : '50% tiebreaker';
+                    
+                    Log::info('🎓 SELECTION REASON: L5 Expert Confirmation', [
+                        'domain_id' => $targetDomainId,
+                        'target_bloom' => $targetBloomLevel,
+                        'questions_at_L5' => $questionsAtL5,
+                        'reason' => $reason,
+                        'selection_priority' => 'HIGH - L5 confirmation'
+                    ]);
+                } else {
+                    // No L4 or L5 priority domains, proceed with normal selection
+                    
+                    // Phase 1: Round Robin until all domains have minimum questions
+                    $domainsNeedingMinimum = [];
+                    foreach ($phaseDomainIds as $domainId) {
+                        $count = $domainQuestionCounts[$domainId] ?? 0;
+                        if ($count < self::MIN_QUESTIONS_PER_DOMAIN) {
+                            $domainsNeedingMinimum[] = $domainId;
+                        }
+                    }
+                    
+                    if (!empty($domainsNeedingMinimum)) {
+                        // Round robin through domains needing minimum
+                        $targetDomainId = $this->getNextRoundRobinDomain($domainsNeedingMinimum, $lastTestedDomain);
+                        $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
+                        
+                        Log::info('🔄 SELECTION REASON: Round-Robin Minimum Coverage', [
+                            'domain_id' => $targetDomainId,
+                            'target_bloom' => $targetBloomLevel,
+                            'questions_so_far' => $domainQuestionCounts[$targetDomainId] ?? 0,
+                            'domains_needing_minimum' => $domainsNeedingMinimum,
+                            'selection_priority' => 'MEDIUM - minimum coverage'
+                        ]);
+                    } else {
+                        // Phase 2: All domains have minimum, now use adaptive strategy
+                        $targetDomainId = null;
+                        
+                        // Priority 1: Domains with uncertain performance (40-70% at current level)
+                        $uncertainDomains = $this->getUncertainDomains($phaseDomainIds, $state);
+                        if (!empty($uncertainDomains)) {
+                            $targetDomainId = $uncertainDomains[0]; // Take first uncertain domain
+                        }
+                        
+                        // Priority 2: Domains showing excellence that haven't reached L5
+                        if (!$targetDomainId) {
+                            $excellentDomains = $this->getExcellentDomains($phaseDomainIds, $state);
+                            if (!empty($excellentDomains)) {
+                                // Prioritize L4 domains ready for L5 testing
+                                usort($excellentDomains, function($a, $b) use ($state) {
+                                    $levelA = $state['domain_bloom_levels'][$a] ?? 3;
+                                    $levelB = $state['domain_bloom_levels'][$b] ?? 3;
+                                    return $levelB <=> $levelA; // Higher levels first
+                                });
+                                $targetDomainId = $excellentDomains[0];
+                            }
+                        }
+                        
+                        // Priority 3: Any domain that should continue testing
+                        if (!$targetDomainId) {
+                            foreach ($phaseDomainIds as $domainId) {
+                                $count = $domainQuestionCounts[$domainId] ?? 0;
+                                if ($this->shouldContinueDomain($domainId, $count, $state)) {
+                                    $targetDomainId = $domainId;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if ($targetDomainId) {
+                            $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
+                        }
+                    }
+                }
+                } // End of advancement possibilities check  
+            } // End of L4/L5 priority check
+        } // End of else block for statistical confidence priority
+        } // End of L5 tiebreaker conditional
         
         if (!$targetDomainId) {
             return null; // No more questions needed
@@ -1117,6 +1436,67 @@ class AdaptiveDiagnosticService
         );
         
         if (empty($availableQuestions)) {
+            // CRITICAL L5 TIEBREAKER CHECK: Before stopping domain, verify no L5 tiebreaker needed
+            $currentBloom = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
+            
+            if ($currentBloom === 5 && $targetBloomLevel === 5) {
+                // Check if this L5 domain needs tiebreaker
+                $history = $state['domain_history'][$targetDomainId] ?? [];
+                $bloomHistory = $state['domain_bloom_history'][$targetDomainId] ?? [];
+                $correctAtL5 = 0;
+                $totalAtL5 = 0;
+                
+                // Count actual L5 questions
+                foreach ($bloomHistory as $index => $level) {
+                    if ($level === 5 && isset($history[$index])) {
+                        $totalAtL5++;
+                        if ($history[$index]) {
+                            $correctAtL5++;
+                        }
+                    }
+                }
+                
+                // Check for 50% tiebreaker scenario
+                if ($totalAtL5 == 2 && $correctAtL5 == 1) {
+                    Log::error('🚨 CRITICAL L5 TIEBREAKER VIOLATION: Domain wants to stop but needs tiebreaker!', [
+                        'domain_id' => $targetDomainId,
+                        'actual_l5_questions' => $totalAtL5,
+                        'l5_performance' => '50% (1/2)',
+                        'reason' => 'L5_TIEBREAKER_REQUIRED_BUT_NO_QUESTIONS',
+                        'target_bloom' => $targetBloomLevel,
+                        'excluded_count' => count($existingQuestionIds)
+                    ]);
+                    
+                    // This is a critical algorithm failure - we need a tiebreaker but have no questions
+                    // For now, attempt fallback to find ANY L5 question even if previously used
+                    $emergencyQuestions = DiagnosticItem::where('status', 'published')
+                        ->where('bloom_level', 5)
+                        ->whereHas('topic.domain', function($query) use ($targetDomainId) {
+                            $query->where('id', $targetDomainId);
+                        })
+                        ->get();
+                    
+                    if ($emergencyQuestions->isNotEmpty()) {
+                        // Use the first available L5 question, even if repeated
+                        $emergencyQuestion = $emergencyQuestions->first();
+                        Log::warning('🔄 EMERGENCY L5 TIEBREAKER: Using fallback question (may be repeated)', [
+                            'domain_id' => $targetDomainId,
+                            'emergency_question_id' => $emergencyQuestion->id,
+                            'reason' => 'L5_tiebreaker_required'
+                        ]);
+                        
+                        return [
+                            'question_id' => $emergencyQuestion->id,
+                            'domain_id' => $targetDomainId,
+                            'bloom_level' => $emergencyQuestion->bloom_level,
+                            'target_bloom_level' => $targetBloomLevel,
+                            'last_tested_domain' => $targetDomainId,
+                            'emergency_tiebreaker' => true
+                        ];
+                    }
+                }
+            }
+            
             // No valid questions available - domain test should stop
             Log::warning('❌ No valid questions available', [
                 'domain_id' => $targetDomainId,
@@ -1422,6 +1802,96 @@ class AdaptiveDiagnosticService
     }
     
     /**
+     * Check if domain could advance with more correct answers
+     * Critical for preventing premature ceiling detection
+     */
+    private function couldAdvanceWithMoreQuestions(int $domainId, int $bloomLevel, array $state): bool
+    {
+        // Can't advance beyond L5
+        if ($bloomLevel >= 5) {
+            return false;
+        }
+        
+        $questionsAtCurrentAttempt = $state['domain_attempt_questions'][$domainId][$bloomLevel] ?? 0;
+        
+        // If we haven't reached minimum questions at level, advancement is possible
+        $minQuestionsAtLevel = self::BLOOM_MIN_QUESTIONS[$bloomLevel] ?? 2;
+        if ($questionsAtCurrentAttempt < $minQuestionsAtLevel) {
+            return true;
+        }
+        
+        // Check if we could reach advancement threshold with additional correct answers
+        if ($questionsAtCurrentAttempt >= 2) {
+            $performance = $this->calculateRecentPerformance($domainId, $bloomLevel, $state);
+            if ($performance === null) {
+                return true; // Not enough data, could advance
+            }
+            
+            $advanceThreshold = self::BLOOM_ADVANCE_THRESHOLDS[$bloomLevel] ?? 0.75;
+            
+            // Special case: With exactly 2 questions, check if advancement is mathematically possible
+            if ($questionsAtCurrentAttempt == 2 && $performance < $advanceThreshold) {
+                // Current correct answers
+                $currentCorrect = round($performance * 2);
+                
+                // Calculate minimum additional correct answers needed
+                // For 66.67% threshold, need 2/3, so need 2 total correct
+                $totalQuestionsNeeded = 3; // Minimum for statistical confidence
+                $correctNeeded = ceil($advanceThreshold * $totalQuestionsNeeded);
+                $additionalCorrectNeeded = max(0, $correctNeeded - $currentCorrect);
+                
+                // Check if it's possible to get enough correct answers
+                // We can ask more questions, so check if threshold is achievable
+                if ($additionalCorrectNeeded <= ($totalQuestionsNeeded - $questionsAtCurrentAttempt)) {
+                    Log::info('Advancement mathematically possible with additional questions', [
+                        'domain_id' => $domainId,
+                        'bloom_level' => $bloomLevel,
+                        'current_performance' => round($performance * 100, 2) . '%',
+                        'current_correct' => $currentCorrect,
+                        'questions_at_attempt' => $questionsAtCurrentAttempt,
+                        'correct_needed_total' => $correctNeeded,
+                        'additional_needed' => $additionalCorrectNeeded,
+                        'advance_threshold' => round($advanceThreshold * 100, 2) . '%'
+                    ]);
+                    return true;
+                }
+                
+                // Also check if we can achieve threshold with more than 3 questions
+                // E.g., 3/4 = 75% > 66.67% for levels where this applies
+                for ($futureTotal = 4; $futureTotal <= 6; $futureTotal++) {
+                    $futureCorrectNeeded = ceil($advanceThreshold * $futureTotal);
+                    $futureAdditionalNeeded = $futureCorrectNeeded - $currentCorrect;
+                    $futureAdditionalAvailable = $futureTotal - $questionsAtCurrentAttempt;
+                    
+                    if ($futureAdditionalNeeded <= $futureAdditionalAvailable && 
+                        $futureAdditionalNeeded > 0) {
+                        Log::info('Advancement possible with extended testing', [
+                            'domain_id' => $domainId,
+                            'bloom_level' => $bloomLevel,
+                            'future_total' => $futureTotal,
+                            'future_correct_needed' => $futureCorrectNeeded,
+                            'future_additional_needed' => $futureAdditionalNeeded
+                        ]);
+                        return true;
+                    }
+                }
+            }
+            
+            // With 3+ questions, check if we're close to threshold
+            if ($questionsAtCurrentAttempt >= 3) {
+                // If we're within striking distance of advancement threshold
+                $currentCorrect = round($performance * $questionsAtCurrentAttempt);
+                $simulatedCorrect = $currentCorrect + 1;
+                $simulatedAccuracy = $simulatedCorrect / ($questionsAtCurrentAttempt + 1);
+                
+                return $simulatedAccuracy >= $advanceThreshold;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Check if domain is in uncertain performance zone
      * (between regression and advancement thresholds)
      */
@@ -1445,30 +1915,36 @@ class AdaptiveDiagnosticService
     
     /**
      * Calculate recent performance at current bloom level
+     * Uses attempt-based calculation (questions answered while domain was at this adaptive level)
      */
     private function calculateRecentPerformance(int $domainId, int $bloomLevel, array $state): ?float
     {
+        $questionsAtCurrentAttempt = $state['domain_attempt_questions'][$domainId][$bloomLevel] ?? 0;
+        
+        // Need at least 2 questions for performance calculation
+        if ($questionsAtCurrentAttempt < 2) {
+            return null;
+        }
+        
         $history = $state['domain_history'][$domainId] ?? [];
-        $bloomHistory = $state['domain_bloom_history'][$domainId] ?? [];
         
-        // Count questions at current bloom level
-        $questionsAtLevel = 0;
+        // Calculate performance across all questions answered during this adaptive level attempt
         $correctAtLevel = 0;
+        $totalAtLevel = 0;
         
-        for ($i = 0; $i < count($history); $i++) {
-            if (isset($bloomHistory[$i]) && $bloomHistory[$i] === $bloomLevel) {
-                $questionsAtLevel++;
+        // Get the starting index for this attempt (same logic as processAnswer)
+        $totalPreviousQuestions = count($history) - $questionsAtCurrentAttempt;
+        
+        // Count performance for questions during this attempt at current adaptive level
+        for ($i = $totalPreviousQuestions; $i < count($history); $i++) {
+            if (isset($history[$i])) {
+                $totalAtLevel++;
                 if ($history[$i]) {
                     $correctAtLevel++;
                 }
             }
         }
         
-        // Need at least 2 questions for performance calculation
-        if ($questionsAtLevel < 2) {
-            return null;
-        }
-        
-        return $correctAtLevel / $questionsAtLevel;
+        return $totalAtLevel > 0 ? $correctAtLevel / $totalAtLevel : null;
     }
 }
