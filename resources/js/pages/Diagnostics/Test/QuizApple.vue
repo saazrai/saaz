@@ -169,7 +169,7 @@
         
         <!-- Modals - Clean, minimal design -->
         <TransitionRoot appear :show="showPauseModal" as="template">
-            <Dialog as="div" @close="showPauseModal = false" class="relative z-50">
+            <BaseDialog as="div" @close="showPauseModal = false" class="relative z-50">
                 <TransitionChild
                     as="template"
                     enter="duration-300 ease-out"
@@ -218,7 +218,7 @@
                         </TransitionChild>
                     </div>
                 </div>
-            </Dialog>
+            </BaseDialog>
         </TransitionRoot>
     </div>
 </template>
@@ -227,7 +227,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
 import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { Dialog as BaseDialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useTheme } from '@/composables/useTheme'
 import { router } from '@inertiajs/vue3'
 import Type1 from '@/components/QuizTypes/Type1.vue'
@@ -240,7 +240,7 @@ import Type7 from '@/components/QuizTypes/Type7.vue'
 
 export default {
     components: {
-        Dialog,
+        BaseDialog,
         DialogPanel,
         DialogTitle,
         TransitionChild,
