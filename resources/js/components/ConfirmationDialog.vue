@@ -101,7 +101,7 @@
     </TransitionRoot>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import {
     Dialog,

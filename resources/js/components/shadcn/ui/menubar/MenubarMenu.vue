@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { MenubarMenu } from 'radix-vue';
 
 const props = defineProps({

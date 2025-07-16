@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { ToggleGroupRoot, useForwardPropsEmits } from 'radix-vue';
 import { computed, provide } from 'vue';
@@ -26,7 +26,7 @@ provide('toggleGroup', {
 });
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
   return delegated;
 });
 

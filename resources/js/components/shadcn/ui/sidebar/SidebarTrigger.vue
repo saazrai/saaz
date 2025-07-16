@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Button from '@/Components/shadcn/ui/button/Button.vue'
 import { cn } from '@/lib/utils'
 import { PanelLeft } from 'lucide-vue-next'

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-vue-next';
 import {
@@ -35,7 +35,7 @@ const emits = defineEmits([
 ]);
 
 const delegatedProps = computed(() => {
-  const { class: _, side, ...delegated } = props;
+  const { side, ...delegated } = props;
 
   return delegated;
 });

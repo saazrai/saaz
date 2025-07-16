@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { useForwardPropsEmits } from 'radix-vue';
 import { DrawerContent, DrawerPortal } from 'vaul-vue';

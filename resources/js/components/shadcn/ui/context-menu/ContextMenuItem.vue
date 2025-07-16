@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { ContextMenuItem, useForwardPropsEmits } from 'radix-vue';
 import { computed } from 'vue';
@@ -14,7 +14,7 @@ const props = defineProps({
 const emits = defineEmits(['select']);
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
 
   return delegated;
 });

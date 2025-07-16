@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-vue-next';
 

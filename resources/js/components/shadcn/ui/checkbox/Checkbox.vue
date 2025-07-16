@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-vue-next';
 import {
@@ -23,7 +23,7 @@ const props = defineProps({
 const emits = defineEmits(['update:checked']);
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
 
   return delegated;
 });

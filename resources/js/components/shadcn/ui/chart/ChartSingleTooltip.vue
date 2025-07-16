@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { omit } from '@unovis/ts';
 import { VisTooltip } from '@unovis/vue';
 import { createApp } from 'vue';

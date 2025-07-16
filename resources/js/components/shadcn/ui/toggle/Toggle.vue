@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { Toggle, useForwardPropsEmits } from 'radix-vue';
 import { computed } from 'vue';
@@ -18,7 +18,7 @@ const props = defineProps({
 const emits = defineEmits(['update:pressed']);
 
 const delegatedProps = computed(() => {
-  const { class: _, size, variant, ...delegated } = props;
+  const { size, variant, ...delegated } = props;
 
   return delegated;
 });

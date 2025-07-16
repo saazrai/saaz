@@ -196,7 +196,7 @@
                             <DialogComponentPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl transition-all">
                                 <DialogComponentTitle as="h3" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                     Pause Assessment?
-                                </DialogTitle>
+                                </DialogComponentTitle>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
                                     You can resume this assessment later from where you left off.
                                 </p>
@@ -214,7 +214,7 @@
                                         Pause & Exit
                                     </button>
                                 </div>
-                            </DialogPanel>
+                            </DialogComponentPanel>
                         </TransitionChild>
                     </div>
                 </div>
@@ -225,7 +225,6 @@
 
 <script lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
 import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
 import { useTheme } from '@/composables/useTheme'
@@ -545,12 +544,12 @@ export default {
             return types[currentQuestionData.value?.type_id] || 'Single Choice'
         }
         
-        const getDomainStatusClasses = (domainId) => {
+        const getDomainStatusClasses = () => {
             // Implementation based on domain completion status
             return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
         }
         
-        const getDomainDotClasses = (domainId) => {
+        const getDomainDotClasses = () => {
             // Implementation based on domain completion status
             return 'bg-gray-400'
         }

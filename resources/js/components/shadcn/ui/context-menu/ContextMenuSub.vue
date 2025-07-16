@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ContextMenuSub, useForwardPropsEmits } from 'radix-vue';
 
 const props = defineProps({

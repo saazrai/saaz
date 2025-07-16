@@ -195,13 +195,12 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Link } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 import Type1Review from '@/components/QuizTypes/Type1Review.vue';
 import BarChartLevelIndicator from '@/components/LevelIndicators/BarChartLevelIndicator.vue';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn/ui/card';
-import Badge from '@/components/shadcn/ui/badge/Badge.vue';
 import Separator from '@/components/shadcn/ui/separator/Separator.vue';
 import { 
     XIcon, 

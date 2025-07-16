@@ -129,7 +129,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Badge from '@/Components/shadcn/ui/badge/Badge.vue';
 
 const props = defineProps({

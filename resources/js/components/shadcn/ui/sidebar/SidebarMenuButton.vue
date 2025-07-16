@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Tooltip from '@/Components/shadcn/ui/tooltip/Tooltip.vue'
 import TooltipContent from '@/Components/shadcn/ui/tooltip/TooltipContent.vue'
 import TooltipTrigger from '@/Components/shadcn/ui/tooltip/TooltipTrigger.vue'

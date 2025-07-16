@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { FormLabel } from '@/Components/shadcn/ui/form';
 
 defineProps({

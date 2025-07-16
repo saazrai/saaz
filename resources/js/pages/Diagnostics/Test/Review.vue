@@ -195,7 +195,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Link } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 import Type1Review from '@/Components/QuizTypes/Type1Review.vue';

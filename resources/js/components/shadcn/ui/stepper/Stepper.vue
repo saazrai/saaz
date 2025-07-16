@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { StepperRoot, useForwardPropsEmits } from 'radix-vue';
 
@@ -17,7 +17,7 @@ const props = defineProps({
 const emits = defineEmits(['update:modelValue']);
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
 
   return delegated;
 });

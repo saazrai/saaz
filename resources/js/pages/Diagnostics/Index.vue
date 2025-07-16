@@ -621,9 +621,9 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Link, router, usePage, Head } from '@inertiajs/vue3';
-import { computed, reactive, ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import moment from 'moment';
 import AppLayout from "@/layouts/AppLayout.vue";
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
@@ -655,7 +655,7 @@ const isAuthenticated = computed(() => props.isAuthenticated || !!page.props.aut
 
 // Interactive domain exploration state
 const selectedCategory = ref('all');
-const selectedDomain = ref(null);
+const _selectedDomain = ref(null);
 const showDomainModal = ref(false);
 const selectedDomainDetails = ref(null);
 const loadingDomains = ref(true);

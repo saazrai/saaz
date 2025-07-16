@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { isVNode } from 'vue'
 import {
   Toast,

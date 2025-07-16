@@ -244,7 +244,7 @@
                         mobileMode === 'tap' && selectedMobileDefinition !== null && 'opacity-50'
                     ]">
                         <div
-                            v-for="(element, index) in availableDefinitions"
+                            v-for="element in availableDefinitions"
                             :key="element.key"
                             :class="[
                                 'p-3 rounded-lg border cursor-pointer transition-all',

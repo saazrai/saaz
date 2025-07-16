@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Dot } from 'lucide-vue-next';
 import { Primitive, useForwardProps } from 'radix-vue';
 

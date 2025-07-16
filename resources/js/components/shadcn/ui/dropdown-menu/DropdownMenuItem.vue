@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { DropdownMenuItem, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';
@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
 
   return delegated;
 });

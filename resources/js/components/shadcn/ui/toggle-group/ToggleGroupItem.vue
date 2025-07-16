@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { toggleVariants } from '@/Components/shadcn/ui/toggle';
 import { cn } from '@/lib/utils';
 import { ToggleGroupItem, useForwardProps } from 'radix-vue';
@@ -19,7 +19,7 @@ const props = defineProps({
 const context = inject('toggleGroup');
 
 const delegatedProps = computed(() => {
-  const { class: _, variant, size, ...delegated } = props;
+  const { variant, size, ...delegated } = props;
   return delegated;
 });
 

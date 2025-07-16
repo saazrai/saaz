@@ -204,8 +204,7 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({

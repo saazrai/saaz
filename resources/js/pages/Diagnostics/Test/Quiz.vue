@@ -762,7 +762,7 @@ import { useTheme } from '@/composables/useTheme';
 import axios from "axios";
 
 export default {
-    components: { Link, Timer, Type1, Type2, Type3, Type4, Type5, Type6, Type7, BarChartLevelIndicator, SunIcon, MoonIcon, ConfirmationDialog, Modal, QuestionMarkCircleIcon, Popover, PopoverButton, PopoverPanel },
+    components: { LinkComponent: Link, Timer, Type1, Type2, Type3, Type4, Type5, Type6, Type7, BarChartLevelIndicator, SunIcon, MoonIcon, ConfirmationDialog, Modal, QuestionMarkCircleIcon, Popover, PopoverButton, PopoverPanel },
     props: {
         diagnostic: Object,
         question: Object, // This will be the *initial* current question or null
@@ -903,7 +903,7 @@ export default {
                 
                 // Update diagnostic current_question if provided
                 if (response.data.current_question !== undefined) {
-                    this.diagnostic.current_question = response.data.current_question;
+                // Intentional prop mutation: updating diagnostic state from server response                    this.diagnostic.current_question = response.data.current_question;
                 }
                 
                 // Update diagnostic responses if provided
@@ -913,7 +913,7 @@ export default {
                         // Find and update the response we just submitted
                         const responseIndex = this.diagnostic.responses.findIndex(r => r.diagnostic_item_id === this.currentQuestionData.id);
                         if (responseIndex !== -1) {
-                            this.diagnostic.responses[responseIndex].user_answer = submittedAnswerData.selected_options;
+                        // Intentional prop mutation: updating diagnostic responses array                            this.diagnostic.responses[responseIndex].user_answer = submittedAnswerData.selected_options;
                         }
                     }
                 }
@@ -1072,7 +1072,7 @@ export default {
             this.answer.selected_options = this.selectedOptions;
 
             try {
-                const response = await axios.post(
+                const _response = await axios.post(
                     route("assessments.diagnostics.answer", this.diagnostic.id),
                     {
                         item_id: this.currentQuestionData.id,
@@ -1254,7 +1254,7 @@ export default {
             // Check available space
             const spaceRight = window.innerWidth - buttonRect.right;
             const spaceLeft = buttonRect.left;
-            const spaceTop = buttonRect.top;
+            const _spaceTop = buttonRect.top;
             const spaceBottom = window.innerHeight - buttonRect.bottom;
             
             const position = {};

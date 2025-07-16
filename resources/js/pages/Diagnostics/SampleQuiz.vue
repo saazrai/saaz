@@ -1676,7 +1676,7 @@ export default {
         closeResults() {
             this.showResults = false;
         },
-        onQuestionTick(questionTime, totalTime) {
+        onQuestionTick() {
             // You can use this to track time spent per question if needed
             // For now, we'll just let the timer run
         },

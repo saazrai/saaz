@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Form } from '@/Components/shadcn/ui/form';
 import { toTypedSchema } from '@vee-validate/zod';
 import { computed, toRefs } from 'vue';

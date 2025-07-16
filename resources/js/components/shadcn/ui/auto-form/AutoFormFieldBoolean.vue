@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Checkbox } from '@/Components/shadcn/ui/checkbox';
 import {
   FormControl,

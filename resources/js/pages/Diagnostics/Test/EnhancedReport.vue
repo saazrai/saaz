@@ -257,7 +257,7 @@
     </AppLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import Badge from '@/components/shadcn/ui/badge/Badge.vue';
@@ -316,7 +316,7 @@ const levelBadgeVariant = computed(() => {
     return levelMap[props.currentCourseLevel?.name] || 'default';
 });
 
-const radarData = computed(() => {
+const _radarData = computed(() => {
     if (!props.domainPerformance) return [];
     return props.domainPerformance.map(domain => ({
         category: domain.name,

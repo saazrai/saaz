@@ -92,7 +92,7 @@
     </AppLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import AppLayout from "@/layouts/AppLayout.vue";
@@ -118,7 +118,7 @@ const formattedDate = computed(() => {
     const month = months[date.getMonth()];
     const day = date.getDate();
     const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
+    const _hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const period = date.getHours() >= 12 ? 'PM' : 'AM';
     const displayHours = date.getHours() % 12 || 12;

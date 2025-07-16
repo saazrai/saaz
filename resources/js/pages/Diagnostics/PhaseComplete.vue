@@ -142,7 +142,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { CheckIcon } from '@heroicons/vue/24/outline'
 import { router } from '@inertiajs/vue3'
 

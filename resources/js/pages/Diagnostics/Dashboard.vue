@@ -295,7 +295,7 @@
     </AppLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import AppLayout from "@/layouts/AppLayout.vue";
 import { Alert, AlertDescription, AlertTitle } from '@/components/shadcn/ui/alert/index.js';

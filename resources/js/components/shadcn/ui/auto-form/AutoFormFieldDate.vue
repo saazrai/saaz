@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Button } from '@/Components/shadcn/ui/button';
 import { Calendar } from '@/Components/shadcn/ui/calendar';
 import {

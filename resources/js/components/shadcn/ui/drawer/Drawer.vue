@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useForwardPropsEmits } from 'radix-vue';
 import { DrawerRoot } from 'vaul-vue';
 

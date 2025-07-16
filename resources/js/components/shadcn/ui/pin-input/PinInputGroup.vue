@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { Primitive, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';
@@ -9,7 +9,7 @@ const props = defineProps({
   class: { type: null, required: false },
 });
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
   return delegated;
 });
 const forwardedProps = useForwardProps(delegatedProps);

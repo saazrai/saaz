@@ -195,7 +195,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Card, CardContent, CardHeader, CardTitle } from '@/Components/shadcn/ui/card';
 import LevelVisualization from './LevelVisualization.vue';
 import CircularLevelIndicator from './CircularLevelIndicator.vue';

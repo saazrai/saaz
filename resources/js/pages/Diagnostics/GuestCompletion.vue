@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3'
 import Layout from '@/layouts/AppLayout.vue'
 import Button from '@/components/shadcn/ui/button/Button.vue'

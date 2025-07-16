@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Slot } from 'radix-vue';
 import { useFormField } from './useFormField';
 

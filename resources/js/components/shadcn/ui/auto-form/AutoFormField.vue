@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import { DEFAULT_ZOD_HANDLERS, INPUT_COMPONENTS } from './constant';
 import useDependencies from './dependencies';

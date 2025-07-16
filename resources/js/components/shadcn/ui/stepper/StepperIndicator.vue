@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import { StepperIndicator, useForwardProps } from 'radix-vue';
 
@@ -11,7 +11,7 @@ const props = defineProps({
 });
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
 
   return delegated;
 });

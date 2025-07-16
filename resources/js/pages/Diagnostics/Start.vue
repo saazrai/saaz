@@ -240,12 +240,12 @@
     </AppLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import moment from 'moment';
 import AppLayout from "@/layouts/AppLayout.vue";
 
-const props = defineProps({
+const _props = defineProps({
     totalQuestions: {
         type: Number,
         default: 100,

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { cn } from '@/lib/utils';
 import {
   SliderRange,
@@ -28,7 +28,7 @@ const props = defineProps({
 const emits = defineEmits(['update:modelValue', 'valueCommit']);
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { ...delegated } = props;
 
   return delegated;
 });

@@ -88,9 +88,8 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useForm, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
 const props = defineProps({
     topic: Object,

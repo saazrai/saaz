@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
 import { Button } from '@/components/shadcn/ui/button'
