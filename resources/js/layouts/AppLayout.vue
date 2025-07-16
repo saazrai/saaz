@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, watchEffect, provide } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import Dropdown from '@/components/Dropdown.vue'
@@ -15,14 +15,8 @@ const isMobile = ref(false)
 // Theme management
 const { isDark, toggleTheme } = useTheme()
 
-// V1 Enhanced doesn't use sidebar - diagnostics are simpler
-const shouldShowSidebar = computed(() => false)
-
 // Provide dark mode state to child components
 provide('isDark', isDark)
-
-// Notifications state
-const notifications = ref([])
 
 const toggleMobileMenu = () => {
     showMobileMenu.value = !showMobileMenu.value;

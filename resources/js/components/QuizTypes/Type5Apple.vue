@@ -269,7 +269,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { shuffle } from "lodash";
 
 export default {
@@ -392,7 +392,7 @@ export default {
             }
         },
         
-        handleDragEnd(event) {
+        handleDragEnd() {
             this.draggedItem = null;
             this.dragOverIndex = null;
             this.dragOverBottom = false;
