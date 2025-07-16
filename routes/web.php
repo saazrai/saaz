@@ -19,7 +19,6 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 
 // Static pages
 Route::get('/features', fn() => Inertia::render('Features'))->name('info.features');
-Route::get('/faq', fn() => Inertia::render('FAQ'))->name('info.faq');
 Route::get('/about', fn() => Inertia::render('About'))->name('info.about');
 Route::get('/help', fn() => Inertia::render('Help'))->name('info.help');
 

@@ -336,11 +336,8 @@
                             Knowledge Base
                         </h3>
                         <p :class="['mb-4', isDark ? 'text-gray-300' : 'text-gray-600']">
-                            Browse our extensive documentation.
+                            Browse our extensive documentation and resources to find answers to your questions.
                         </p>
-                        <Link :href="route('info.faq')" class="text-blue-600 hover:text-blue-700 font-medium">
-                            View FAQ →
-                        </Link>
                     </div>
                 </div>
             </section>

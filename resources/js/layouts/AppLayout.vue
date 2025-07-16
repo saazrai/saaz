@@ -360,11 +360,6 @@ watchEffect(() => {
                                     Help Center
                                 </Link>
                             </li>
-                            <li>
-                                <Link :href="route('info.faq')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
-                                    FAQ
-                                </Link>
-                            </li>
                         </ul>
                     </div>
 
