@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register AdaptiveDiagnosticService
+        $this->app->singleton(\App\Services\AdaptiveDiagnosticService::class, function ($app) {
+            return new \App\Services\AdaptiveDiagnosticService();
+        });
     }
 
     /**

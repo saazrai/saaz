@@ -134,7 +134,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { marked } from 'marked';
 
 export default {

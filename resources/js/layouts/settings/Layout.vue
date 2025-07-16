@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
+import { inject } from 'vue';
 
 const sidebarNavItems: NavItem[] = [
     {
@@ -22,6 +23,9 @@ const sidebarNavItems: NavItem[] = [
 
 const page = usePage();
 
+// Get dark mode state from AppLayout
+const isDark = inject('isDark', false);
+
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
 </script>
 
@@ -36,7 +40,12 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
                         v-for="item in sidebarNavItems"
                         :key="item.href"
                         variant="ghost"
-                        :class="['w-full justify-start', { 'bg-muted': currentPath === item.href }]"
+                        :class="[
+                            'w-full justify-start transition-colors duration-300',
+                            currentPath === item.href
+                                ? (isDark ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900')
+                                : (isDark ? 'text-gray-300 hover:bg-gray-700 hover:text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900')
+                        ]"
                         as-child
                     >
                         <Link :href="item.href">

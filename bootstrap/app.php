@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\CheckCookieConsent;
+use App\Http\Middleware\EnforceConsentForAnalyticsAndMarketing;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -15,12 +17,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+        $middleware->encryptCookies(except: ['appearance', 'sidebar_state', 'cookie_consent']);
 
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            CheckCookieConsent::class,
+        ]);
+
+        $middleware->alias([
+            'cookie.consent' => CheckCookieConsent::class,
+            'consent.analytics' => EnforceConsentForAnalyticsAndMarketing::class.':analytics',
+            'consent.marketing' => EnforceConsentForAnalyticsAndMarketing::class.':marketing',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

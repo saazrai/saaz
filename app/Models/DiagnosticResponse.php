@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class DiagnosticResponse extends BaseModel
+class DiagnosticResponse extends BaseModel implements Auditable
 {
-    use SoftDeletes;
+    use SoftDeletes, \OwenIt\Auditing\Auditable;
     protected $fillable = [
         'diagnostic_id',
         'diagnostic_item_id',
@@ -35,4 +36,17 @@ class DiagnosticResponse extends BaseModel
     {
         return $this->belongsTo(DiagnosticItem::class, 'diagnostic_item_id');
     }
+
+    /**
+     * Audit configuration
+     */
+    protected $auditInclude = [
+        'diagnostic_id',
+        'diagnostic_item_id',
+        'user_answer',
+        'is_correct',
+        'response_time_seconds',
+    ];
+
+    protected $auditStrict = true;
 }

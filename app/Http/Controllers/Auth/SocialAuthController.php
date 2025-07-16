@@ -25,7 +25,7 @@ class SocialAuthController extends Controller
         try {
             return Socialite::driver($provider)->redirect();
         } catch (Exception $e) {
-            return redirect()->route('auth.login')
+            return redirect()->route('login')
                 ->with('error', 'Unable to redirect to '.ucfirst($provider).'. Please try again.');
         }
     }
@@ -42,7 +42,7 @@ class SocialAuthController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (Exception $e) {
-            return redirect()->route('auth.login')
+            return redirect()->route('login')
                 ->with('error', 'Authentication failed. Please try again.');
         }
 
@@ -51,23 +51,29 @@ class SocialAuthController extends Controller
 
         if ($user) {
             // Update social provider info if not already set
-            if (! $user->provider_id || $user->provider !== $provider) {
+            if ($provider === 'google' && !$user->google_id) {
                 $user->update([
-                    'provider' => $provider,
-                    'provider_id' => $socialUser->getId(),
+                    'google_id' => $socialUser->getId(),
                     'email_verified_at' => $user->email_verified_at ?? now(),
+                    'avatar' => $socialUser->getAvatar(),
                 ]);
             }
         } else {
             // Create new user
-            $user = User::create([
+            $userData = [
                 'name' => $socialUser->getName() ?? $socialUser->getNickname() ?? 'User',
                 'email' => $socialUser->getEmail(),
                 'email_verified_at' => now(),
                 'password' => Hash::make(Str::random(32)),
-                'provider' => $provider,
-                'provider_id' => $socialUser->getId(),
-            ]);
+                'avatar' => $socialUser->getAvatar(),
+            ];
+
+            // Add provider-specific ID
+            if ($provider === 'google') {
+                $userData['google_id'] = $socialUser->getId();
+            }
+
+            $user = User::create($userData);
 
             // For new social auth users, we'll handle consent through the dashboard
             // The CheckCookieConsent middleware will handle consent requirements

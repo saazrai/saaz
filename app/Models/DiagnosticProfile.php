@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class DiagnosticProfile extends BaseModel
+class DiagnosticProfile extends BaseModel implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     protected $fillable = [
         'user_id',
         'domain_id',
@@ -56,4 +58,18 @@ class DiagnosticProfile extends BaseModel
         
         return $this->last_assessed_at->diffInDays(now());
     }
+
+    /**
+     * Audit configuration
+     */
+    protected $auditInclude = [
+        'proficiency',
+        'confidence',
+        'last_bloom_level',
+        'questions_answered',
+        'questions_correct',
+        'last_assessed_at',
+    ];
+
+    protected $auditStrict = true;
 }

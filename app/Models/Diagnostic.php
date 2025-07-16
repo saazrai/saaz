@@ -5,27 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Diagnostic extends BaseModel
+class Diagnostic extends BaseModel implements Auditable
 {
-    use SoftDeletes;
+    use SoftDeletes, \OwenIt\Auditing\Auditable;
     protected $fillable = [
         'user_id',
         'status',
-        'mode',
-        'total_questions',
-        'current_question',
         'total_duration_seconds',
         'score',
-        'current_phase',
-        'current_domain',
-        'current_phase_id',
-        'target_phases',
-        'phase_progress',
-        'phases_completed',
-        'domains_completed',
-        'phase_completion_times',
-        'domain_progress',
+        'phase_id',
+        'completed_at',
         'ability',
         'standard_error',
         'adaptive_state',
@@ -33,12 +24,7 @@ class Diagnostic extends BaseModel
 
     protected $casts = [
         'adaptive_state' => 'array',
-        'target_phases' => 'array',
-        'phase_progress' => 'array',
-        'phases_completed' => 'array',
-        'domains_completed' => 'array',
-        'phase_completion_times' => 'array',
-        'domain_progress' => 'array',
+        'completed_at' => 'datetime',
     ];
 
     /**
@@ -58,9 +44,9 @@ class Diagnostic extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function currentPhase(): BelongsTo
+    public function phase(): BelongsTo
     {
-        return $this->belongsTo(DiagnosticPhase::class, 'current_phase_id');
+        return $this->belongsTo(DiagnosticPhase::class, 'phase_id');
     }
 
     public function responses(): HasMany
@@ -87,10 +73,20 @@ class Diagnostic extends BaseModel
 
     /**
      * Check if a phase is completed
+     * Since progression is linear, any phase before current is completed
      */
     public function isPhaseCompleted(int $phaseId): bool
     {
-        return in_array($phaseId, $this->phases_completed ?? []);
+        if (!$this->phase) {
+            return false;
+        }
+        
+        $requestedPhase = DiagnosticPhase::find($phaseId);
+        if (!$requestedPhase) {
+            return false;
+        }
+        
+        return $requestedPhase->order_sequence < $this->phase->order_sequence;
     }
 
     /**
@@ -98,7 +94,7 @@ class Diagnostic extends BaseModel
      */
     public function getPhaseProgress(int $phaseId): array
     {
-        $progress = $this->phase_progress ?? [];
+        $progress = $this->domain_progress ?? [];
         return $progress[$phaseId] ?? [
             'domains_completed' => 0,
             'questions_answered' => 0,
@@ -106,4 +102,16 @@ class Diagnostic extends BaseModel
             'completed_at' => null,
         ];
     }
+
+    /**
+     * Audit configuration
+     */
+    protected $auditInclude = [
+        'status',
+        'score',
+        'phase_id',
+        'completed_at',
+    ];
+
+    protected $auditStrict = true;
 }

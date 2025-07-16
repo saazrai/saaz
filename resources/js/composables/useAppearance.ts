@@ -7,14 +7,18 @@ export function updateTheme(value: Appearance) {
         return;
     }
 
+    let effectiveTheme: 'light' | 'dark';
+    
     if (value === 'system') {
         const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-        const systemTheme = mediaQueryList.matches ? 'dark' : 'light';
-
-        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+        effectiveTheme = mediaQueryList.matches ? 'dark' : 'light';
     } else {
-        document.documentElement.classList.toggle('dark', value === 'dark');
+        effectiveTheme = value;
     }
+    
+    // Update both class and data-theme attribute for theme.css
+    document.documentElement.classList.toggle('dark', effectiveTheme === 'dark');
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
 }
 
 const setCookie = (name: string, value: string, days = 365) => {

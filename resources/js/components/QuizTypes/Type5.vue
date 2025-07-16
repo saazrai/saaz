@@ -269,7 +269,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import draggable from "vuedraggable";
 import { shuffle } from "lodash";
 

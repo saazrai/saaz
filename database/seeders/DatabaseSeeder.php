@@ -13,11 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Create test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        // Seed diagnostic system
+        $this->call([
+            QuestionTypesSeeder::class,         // Must come first - creates question types
+            DiagnosticsSeeder::class,           // Creates domains and topics
+            DiagnosticPhasesSeeder::class,      // Creates phases and links domains
+            DiagnosticItemsSeeder::class,       // Creates questions for all domains
         ]);
     }
 }

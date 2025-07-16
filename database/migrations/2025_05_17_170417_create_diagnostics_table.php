@@ -19,31 +19,43 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Diagnostic phases (4 phases for linear progression) - Create this first
+        Schema::create('diagnostic_phases', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->integer('order_sequence')->comment('Display order (1, 2, 3, 4)');
+            $table->integer('min_questions_per_domain')->default(5);
+            $table->integer('target_domains')->default(5)->comment('Number of domains in this phase');
+            $table->jsonb('completion_criteria')->nullable()->comment('Criteria for completing this phase');
+            $table->boolean('is_active')->default(true);
+            $table->string('color', 20)->nullable()->comment('UI color for phase display');
+            $table->string('icon', 50)->nullable()->comment('Icon for phase display');
+            $table->timestamps();
+            
+            $table->index('order_sequence');
+            $table->index('is_active');
+        });
+
         // Main diagnostic test sessions table
         Schema::create('diagnostics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             
             // Session management
             $table->enum('status', ['in_progress', 'paused', 'completed'])->default('in_progress');
-            $table->enum('mode', ['test', 'quick', 'standard', 'indepth'])->default('standard')
-                ->comment('Diagnostic test mode: test (20 questions), quick (40 questions), standard (60 questions), indepth (100 questions)');
             
             // Progress tracking
-            $table->integer('total_questions')->default(100)->comment('Total questions based on selected mode');
-            $table->integer('current_question')->default(0)->comment('Current question index for resuming');
+            // Removed 2025-07-14: total_questions column was redundant for adaptive testing
+            // $table->integer('total_questions')->default(1000)->comment('Total questions in full assessment (50 per domain x 20 domains)');
             $table->integer('total_duration_seconds')->nullable()
                 ->comment('Total duration of diagnostic session in seconds');
             $table->decimal('score', 5, 2)->nullable()
                 ->comment('Final score as percentage (0.00-100.00)');
             
-            // Phase tracking for 4-phase system
-            $table->integer('current_phase')->default(1)->comment('Current phase (1-4)');
-            $table->integer('current_domain')->default(1)->comment('Current domain (1-20)');
-            $table->jsonb('phases_completed')->nullable()->comment('Array of completed phases [1,2,3,4]');
-            $table->jsonb('domains_completed')->nullable()->comment('Array of completed domains [1,2,3...]');
-            $table->jsonb('phase_completion_times')->nullable()->comment('Timestamp for each phase completion');
-            $table->jsonb('domain_progress')->nullable()->comment('Progress data per domain');
+            // Phase tracking for 4-phase system - simplified
+            $table->foreignId('phase_id')->nullable()->constrained('diagnostic_phases')->comment('Current phase reference');
+            
 
             // CAT-IRT integration columns
             $table->decimal('ability', 8, 4)->nullable()
@@ -52,7 +64,8 @@ return new class extends Migration
                 ->comment('Standard error of ability estimate for CAT termination');
             $table->jsonb('adaptive_state')->nullable()
                 ->comment('Adaptive testing state for resuming sessions');
-
+            
+            $table->timestamp('completed_at')->nullable()->comment('When the diagnostic was completed');
             $table->timestamps();
             $table->softDeletes();
 
@@ -60,18 +73,17 @@ return new class extends Migration
             $table->index(['user_id', 'status']); // For finding user's active diagnostics
             $table->index('created_at'); // For chronological listing and pagination
             $table->index('status'); // Frequently queried
-            $table->index('mode'); // Filter by diagnostic mode
-            $table->index(['status', 'mode']); // Combined status and mode queries
             $table->index(['user_id', 'created_at']); // User diagnostic history
             $table->index('deleted_at'); // Soft delete queries
-            
-            // Added 2025-06-07: Additional composite indexes for performance
-            $table->index(['user_id', 'mode', 'created_at'], 'diagnostics_user_mode_created_index');
+            $table->index('phase_id'); // Phase-based navigation
+            $table->index(['user_id', 'phase_id']); // User's current phase progress
         });
 
         // High-level knowledge domains (e.g., "Security and Risk Management")
         Schema::create('diagnostic_domains', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('phase_id')->nullable()->constrained('diagnostic_phases')->onDelete('cascade');
+            $table->integer('phase_order')->nullable()->comment('Order within the phase (1-5)');
             $table->string('name');
             $table->text('description')->nullable();
             
@@ -104,6 +116,7 @@ return new class extends Migration
             $table->index('category');
             $table->index('code');
             $table->index('is_active');
+            $table->index(['phase_id', 'phase_order']);
         });
 
         // Specific topics within domains (e.g., "Access Control" within "Security")
@@ -190,5 +203,6 @@ return new class extends Migration
         Schema::dropIfExists('diagnostic_topics');
         Schema::dropIfExists('diagnostic_domains');
         Schema::dropIfExists('diagnostics');
+        Schema::dropIfExists('diagnostic_phases');
     }
 };

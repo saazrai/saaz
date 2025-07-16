@@ -18,8 +18,8 @@ class DiagnosticItem extends BaseModel
         'correct_options',
         'justifications',
         'settings',
-        'difficulty_id',
-        'bloom_id',
+        'difficulty_level',
+        'bloom_level',
         'irt_a',
         'irt_b',
         'irt_c',
@@ -46,13 +46,4 @@ class DiagnosticItem extends BaseModel
         return $this->belongsTo(QuestionType::class, 'type_id');
     }
 
-    public function bloom(): BelongsTo
-    {
-        return $this->belongsTo(Bloom::class, 'bloom_id');
-    }
-
-    public function difficulty(): BelongsTo
-    {
-        return $this->belongsTo(DifficultyLevel::class, 'difficulty_id');
-    }
 }

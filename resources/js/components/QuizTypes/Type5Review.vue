@@ -197,8 +197,7 @@
     </div>
 </template>
 
-<script>
-import { shuffle } from "lodash";
+<script lang="ts">
 
 export default {
     props: {
