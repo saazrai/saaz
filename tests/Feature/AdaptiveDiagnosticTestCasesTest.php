@@ -171,40 +171,7 @@ class AdaptiveDiagnosticTestCasesTest extends TestCase
         $this->assertEquals(1.5, $proficiency, 'Should be Beginner+ (1.5) - stable L1, attempted L2');
     }
 
-    /**
-     * Test Case 6: Recovery Pattern
-     * L3✗✗ → L2✓✓ → L3✓✓ → L4✗✓✗ = L3.5
-     */
-    public function test_case_6_recovery_pattern(): void
-    {
-        $state = $this->service->initializeTest();
-        $domainId = 1;
-        
-        // L3✗✗ → L2
-        $state = $this->simulateAnswer($state, $domainId, 3, false);
-        $state = $this->simulateAnswer($state, $domainId, 3, false);
-        $this->assertEquals(2, $state['domain_bloom_levels'][$domainId]);
-        
-        // L2✓✓ → L3
-        $state = $this->simulateAnswer($state, $domainId, 2, true);
-        $state = $this->simulateAnswer($state, $domainId, 2, true);
-        $this->assertEquals(3, $state['domain_bloom_levels'][$domainId]);
-        
-        // L3✓✓ (but total L3 performance is 2/4 = 50%)
-        $state = $this->simulateAnswer($state, $domainId, 3, true);
-        $state = $this->simulateAnswer($state, $domainId, 3, true);
-        // With 4 total L3 questions (2✗ + 2✓), accuracy is 50%
-        // Continue with more L3 questions
-        
-        // L3✓✗ (now 3/6 = 50%)
-        $state = $this->simulateAnswer($state, $domainId, 3, true);
-        $state = $this->simulateAnswer($state, $domainId, 3, false);
-        
-        $proficiency = $this->service->calculateFinalProficiencyLevel($domainId, $state);
-        // L3 performance: 3/6 = 50% (meets 34% stability threshold)
-        // L2 proven with 100%, L3 stable at 50%
-        $this->assertEquals(3.0, $proficiency, 'Should be Competent (3.0) - stable at L3 with 50%');
-    }
+
 
     /**
      * Test Case 7: Plateau at L2

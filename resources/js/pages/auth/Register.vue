@@ -6,6 +6,10 @@ import TextInput from '@/components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+defineOptions({
+    layout: Layout,
+});
+
 const step = ref(1); // 1: Email + Consent, 2: Email verification, 3: Name + Password
 const formStartTime = ref(Math.floor(Date.now() / 1000)); // Track when form was loaded
 
@@ -169,7 +173,7 @@ const goBackToStep = (targetStep) => {
                             <input type="checkbox" v-model="emailForm.consent" required />
                             <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">
                                 I agree to the
-                                <a href="/privacy-policy" target="_blank" class="text-blue-600 dark:text-blue-400 underline">Privacy Policy</a>
+                                <a href="/privacy" target="_blank" class="text-blue-600 dark:text-blue-400 underline">Privacy Policy</a>
                                 and
                                 <a href="/terms" target="_blank" class="text-blue-600 dark:text-blue-400 underline">Terms of Service</a>
                             </span>
@@ -307,15 +311,7 @@ const goBackToStep = (targetStep) => {
                                 </li>
                                 <li class="ml-4 flex items-start">
                                     <span class="text-gray-400 dark:text-gray-500 mr-2">◦</span>
-                                    <span>Special character (@#$%^&*-_! etc.)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-gray-400 dark:text-gray-500 mr-2">•</span>
-                                    <span>Cannot contain your name or email</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="text-gray-400 dark:text-gray-500 mr-2">•</span>
-                                    <span>Cannot be a common password</span>
+                                    <span>Special character (!@#$%^&*)</span>
                                 </li>
                             </ul>
                         </div>
@@ -326,9 +322,9 @@ const goBackToStep = (targetStep) => {
                         <TextInput 
                             id="password_confirmation" 
                             type="password" 
-                            class="mt-1 block w-full"
+                            class="mt-1 block w-full" 
                             v-model="registrationForm.password_confirmation" 
-                            required 
+                            required
                             autocomplete="new-password" 
                         />
                         <InputError class="mt-2" :message="registrationForm.errors.password_confirmation" />
@@ -344,31 +340,28 @@ const goBackToStep = (targetStep) => {
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        {{ registrationForm.processing ? 'Creating account...' : 'Create Account' }}
+                        {{ registrationForm.processing ? 'Creating Account...' : 'Create Account' }}
                     </button>
 
                     <button
                         type="button"
-                        @click="goBackToStep(2)"
+                        @click="goBackToStep(1)"
                         class="w-full text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 text-sm underline"
                     >
-                        ← Back to verification
+                        ← Change email address
                     </button>
                 </form>
             </div>
 
-            <div class="mt-6 text-center text-sm">
-                <span class="text-gray-600 dark:text-gray-400">Already have an account?</span>
-                <Link :href="route('login')" class="ml-1 text-blue-600 dark:text-blue-400 hover:underline">
-                    Log in
-                </Link>
+            <!-- Already have an account -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Already have an account?
+                    <Link :href="route('login')" class="text-blue-600 dark:text-blue-400 underline">
+                        Sign in
+                    </Link>
+                </p>
             </div>
         </div>
     </div>
 </template>
-
-<script lang="ts">
-export default {
-    layout: Layout
-}
-</script>

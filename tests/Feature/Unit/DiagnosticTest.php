@@ -27,19 +27,15 @@ test('can create diagnostic with required fields', function () {
     $diagnostic = Diagnostic::factory()->create([
         'user_id' => $user->id,
         'status' => 'in_progress',
-        'current_phase' => 1,
-        'current_domain' => 1,
-        'phases_completed' => [],
-        'domains_completed' => [],
+        'phase_id' => null,
+        'adaptive_state' => ['bloom_level' => 1, 'confidence' => 0.5],
     ]);
 
     expect($diagnostic)
         ->user_id->toBe($user->id)
         ->status->toBe('in_progress')
-        ->current_phase->toBe(1)
-        ->current_domain->toBe(1)
-        ->phases_completed->toBe([])
-        ->domains_completed->toBe([]);
+        ->phase_id->toBeNull()
+        ->adaptive_state->toBe(['bloom_level' => 1, 'confidence' => 0.5]);
 });
 
 test('diagnostic belongs to user', function () {
@@ -64,33 +60,27 @@ test('diagnostic has many responses', function () {
 });
 
 test('can check if phase is completed', function () {
+    $user = User::factory()->create();
+    $phase1 = DiagnosticPhase::factory()->create(['order_sequence' => 1]);
+    $phase2 = DiagnosticPhase::factory()->create(['order_sequence' => 2]);
     $diagnostic = Diagnostic::factory()->create([
-        'phases_completed' => [1, 2],
+        'user_id' => $user->id,
+        'phase_id' => $phase2->id, // Current phase is phase2
     ]);
 
-    expect($diagnostic->isPhaseCompleted(1))->toBeTrue();
-    expect($diagnostic->isPhaseCompleted(2))->toBeTrue();
-    expect($diagnostic->isPhaseCompleted(3))->toBeFalse();
+    expect($diagnostic->isPhaseCompleted($phase1->id))->toBeTrue(); // phase1 is before phase2
+    expect($diagnostic->isPhaseCompleted($phase2->id))->toBeFalse(); // phase2 is current
+    $phase3 = DiagnosticPhase::factory()->create(['order_sequence' => 3]);
+    expect($diagnostic->isPhaseCompleted($phase3->id))->toBeFalse(); // phase3 is after phase2
 });
 
 test('can get phase progress', function () {
-    $diagnostic = Diagnostic::factory()->create([
-        'domain_progress' => [
-            1 => [
-                'domains_completed' => 3,
-                'questions_answered' => 15,
-                'started_at' => '2025-01-01 00:00:00',
-                'completed_at' => null,
-            ],
-        ],
-    ]);
-
+    $diagnostic = Diagnostic::factory()->create();
     $progress = $diagnostic->getPhaseProgress(1);
-
     expect($progress)
-        ->domains_completed->toBe(3)
-        ->questions_answered->toBe(15)
-        ->started_at->toBe('2025-01-01 00:00:00')
+        ->domains_completed->toBe(0)
+        ->questions_answered->toBe(0)
+        ->started_at->toBeNull()
         ->completed_at->toBeNull();
 });
 
@@ -125,25 +115,18 @@ test('duration minutes returns null when no duration', function () {
 test('diagnostic casts arrays correctly', function () {
     $diagnostic = Diagnostic::factory()->create([
         'adaptive_state' => ['bloom_level' => 3, 'confidence' => 0.8],
-        'target_phases' => [1, 2, 3],
-        'phases_completed' => [1],
     ]);
-
     expect($diagnostic->adaptive_state)->toBeArray();
-    expect($diagnostic->target_phases)->toBeArray();
-    expect($diagnostic->phases_completed)->toBeArray();
     expect($diagnostic->adaptive_state['bloom_level'])->toBe(3);
 });
 
 test('diagnostic audit includes important fields', function () {
     $diagnostic = new Diagnostic();
-
     $auditInclude = $diagnostic->getAuditInclude();
-
     expect($auditInclude)->toContain('status');
     expect($auditInclude)->toContain('score');
-    expect($auditInclude)->toContain('current_phase');
-    expect($auditInclude)->toContain('phases_completed');
+    expect($auditInclude)->toContain('phase_id');
+    expect($auditInclude)->toContain('completed_at');
 });
 
 test('diagnostic soft deletes', function () {

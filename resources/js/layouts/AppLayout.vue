@@ -91,12 +91,6 @@ watchEffect(() => {
                                 ? 'hover:text-white hover:bg-gray-700' 
                                 : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
                         ]" :href="route('info.about')">About</a></li>
-                        <li><a :class="[
-                            'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
-                            isDarkMode 
-                                ? 'hover:text-white hover:bg-gray-700' 
-                                : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
-                        ]" :href="route('info.contact')">Contact</a></li>
                     </ul>
                     <div class="col-start-3 hidden w-full justify-end gap-2 lg:flex items-center">
                         <!-- Dark Mode Toggle -->
@@ -265,7 +259,6 @@ watchEffect(() => {
             <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™</Link>
             <Link :href="route('info.features')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Features</Link>
             <Link :href="route('info.about')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">About</Link>
-            <Link :href="route('info.contact')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Contact</Link>
             
             <!-- User menu items (if authenticated) -->
             <template v-if="user">
@@ -362,11 +355,6 @@ watchEffect(() => {
                             Support
                         </h3>
                         <ul class="space-y-3">
-                            <li>
-                                <Link :href="route('info.contact')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
-                                    Contact Us
-                                </Link>
-                            </li>
                             <li>
                                 <Link :href="route('info.help')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Help Center

@@ -328,16 +328,18 @@ class D4PrivacySeeder extends Seeder
                         'Marketing company deciding what customer data to collect',
                         'Payroll service processing employee salaries'
                     ],
-                    'targets' => [
+                    'responses' => [
+                        'Data Controller',
+                        'Data Processor',
                         'Data Controller',
                         'Data Processor'
                     ]
                 ],
                 'correct_options' => [
-                    'Hospital determining patient data retention periods' => 'Data Controller',
-                    'Cloud provider storing data on behalf of clients' => 'Data Processor',
-                    'Marketing company deciding what customer data to collect' => 'Data Controller',
-                    'Payroll service processing employee salaries' => 'Data Processor'
+                    'Data Controller',
+                    'Data Processor',
+                    'Data Controller',
+                    'Data Processor'
                 ],
                 'justifications' => [
                     'Hospital determining patient data retention periods' => 'Controllers determine purposes and means of processing',
@@ -965,7 +967,7 @@ class D4PrivacySeeder extends Seeder
                         'Regular privacy training for all developers',
                         'Privacy features that enhance user experience'
                     ],
-                    'targets' => [
+                    'responses' => [
                         'Full functionality',
                         'Privacy as default',
                         'Visibility and transparency',
@@ -973,10 +975,10 @@ class D4PrivacySeeder extends Seeder
                     ]
                 ],
                 'correct_options' => [
-                    'End-to-end encryption for messaging app' => 'Full functionality',
-                    'Privacy settings defaulted to most restrictive' => 'Privacy as default',
-                    'Regular privacy training for all developers' => 'Visibility and transparency',
-                    'Privacy features that enhance user experience' => 'Positive-sum approach'
+                    'Full functionality',
+                    'Privacy as default',
+                    'Visibility and transparency',
+                    'Positive-sum approach'
                 ],
                 'justifications' => [
                     'End-to-end encryption for messaging app' => 'Full lifecycle protection demonstrates full functionality',

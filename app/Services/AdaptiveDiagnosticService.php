@@ -172,7 +172,7 @@ class AdaptiveDiagnosticService
                 }
             }
             $accuracy = $totalAtLevel > 0 ? $correctAtLevel / $totalAtLevel : 0;
-            $isEarlyAdvancement = ($questionsAtCurrentAttempt == 2 && $accuracy == 1.0 && $currentBloom < 5);
+            $isEarlyAdvancement = ($questionsAtCurrentAttempt == 2 && $accuracy >= 0.9999 && $currentBloom < 5);
 
             // CRITICAL FIX: Immediate regression after 2 questions if accuracy is already below threshold
             if ($currentBloom > 1 && $currentBloom !== 5 && $questionsAtCurrentAttempt == 2 && $accuracy < self::BLOOM_REGRESS_THRESHOLDS[$currentBloom]) {
@@ -1014,6 +1014,12 @@ class AdaptiveDiagnosticService
         // Check levels 1-4 for stable performance and plus level eligibility
         for ($level = 4; $level >= 1; $level--) {
             if (!isset($questionsByBloom[$level]) || $questionsByBloom[$level]['total'] < 2) {
+                // Special case: If this is the current adaptive level and we have no questions yet,
+                // but we advanced to this level, return this level
+                $currentAdaptiveLevel = $state['domain_bloom_levels'][$domainId] ?? 3;
+                if ($level === $currentAdaptiveLevel && $level > 1) {
+                    return (float) $level;
+                }
                 continue; // Not enough questions at this level
             }
             

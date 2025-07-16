@@ -169,7 +169,7 @@
         
         <!-- Modals - Clean, minimal design -->
         <TransitionRoot appear :show="showPauseModal" as="template">
-            <DialogComponent as="div" @close="showPauseModal = false" class="relative z-50">
+            <Dialog as="div" @close="showPauseModal = false" class="relative z-50">
                 <TransitionChild
                     as="template"
                     enter="duration-300 ease-out"
@@ -193,10 +193,10 @@
                             leave-from="opacity-100 scale-100"
                             leave-to="opacity-0 scale-95"
                         >
-                            <DialogComponentPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl transition-all">
-                                <DialogComponentTitle as="h3" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl transition-all">
+                                <DialogTitle as="h3" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                     Pause Assessment?
-                                </DialogComponentTitle>
+                                </DialogTitle>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
                                     You can resume this assessment later from where you left off.
                                 </p>
@@ -214,11 +214,11 @@
                                         Pause & Exit
                                     </button>
                                 </div>
-                            </DialogComponentPanel>
+                            </DialogPanel>
                         </TransitionChild>
                     </div>
                 </div>
-            </DialogComponent>
+            </Dialog>
         </TransitionRoot>
     </div>
 </template>
@@ -227,6 +227,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
 import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useTheme } from '@/composables/useTheme'
 import { router } from '@inertiajs/vue3'
 import Type1 from '@/components/QuizTypes/Type1.vue'
@@ -234,13 +235,12 @@ import Type2 from '@/components/QuizTypes/Type2.vue'
 import Type3 from '@/components/QuizTypes/Type3.vue'
 import Type4 from '@/components/QuizTypes/Type4.vue'
 import Type5 from '@/components/QuizTypes/Type5.vue'
-import Type5Apple from '@/components/QuizTypes/Type5Apple.vue'
 import Type6 from '@/components/QuizTypes/Type6.vue'
 import Type7 from '@/components/QuizTypes/Type7.vue'
 
 export default {
     components: {
-        DialogComponent: Dialog,
+        Dialog,
         DialogPanel,
         DialogTitle,
         TransitionChild,
@@ -253,7 +253,6 @@ export default {
         Type3,
         Type4,
         Type5,
-        Type5Apple,
         Type6,
         Type7
     },
@@ -333,10 +332,6 @@ export default {
         // Computed properties
         const currentQuestionComponent = computed(() => {
             const typeId = currentQuestionData.value?.type_id || 1
-            // Use Apple-designed Type5 component for matching questions
-            if (typeId === 5) {
-                return 'Type5Apple'
-            }
             return `Type${typeId}`
         })
         

@@ -1,268 +1,263 @@
 <template>
-    <!-- Question Panel -->
-    <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl',
-            isThemeDark 
-                ? 'bg-gray-800 border-gray-700' 
-                : 'bg-white border-gray-200'
-         ]">
-        <div class="p-4 sm:p-6">
-            <h4 class="text-lg font-bold mb-4 sm:mb-6"
-                :class="isThemeDark 
-                    ? 'text-white' 
-                    : 'text-gray-800'">
+    <!-- Question Panel with Apple-style design -->
+    <div class="w-full">
+        <!-- Compact Header -->
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold text-center"
+                :class="isThemeDark ? 'text-white' : 'text-gray-900'">
                 {{ question.content }}
-            </h4>
-            
+            </h3>
+            <p class="text-sm text-center mt-1"
+               :class="isThemeDark ? 'text-gray-400' : 'text-gray-600'">
+                Drag items from below and drop them on the matching pairs • {{ getMatchedCount() }} of {{ displayItems.length }} matched
+            </p>
+        </div>
+        
+        <!-- Matching Interface -->
+        <div class="max-w-5xl mx-auto">
             <!-- Desktop Layout -->
             <div class="hidden md:block">
-                <!-- Two Column Layout for Desktop -->
-                <div class="flex gap-6">
-                    <!-- Left Column: Terms and Drop Zones -->
-                    <div class="flex-1 space-y-3">
-                        <div
-                            v-for="(element, index) in displayItems"
-                            :key="index"
-                            class="flex items-center gap-3"
-                        >
-                            <!-- Term -->
-                            <div
-                                :class="[
-                                    'w-1/3 p-3 rounded-lg border text-sm font-medium',
-                                    isThemeDark 
-                                        ? 'text-gray-200 bg-gray-800/50 border-gray-600' 
-                                        : 'text-gray-800 bg-white border-gray-300 shadow-sm'
-                                ]"
-                            >
-                                {{ element }}
-                            </div>
-                            
-                            <!-- Arrow -->
-                            <svg xmlns="http://www.w3.org/2000/svg" 
-                                 :class="[
-                                     'w-5 h-5 flex-shrink-0',
-                                     isThemeDark ? 'text-gray-500' : 'text-gray-400'
-                                 ]"
-                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                            
-                            <!-- Drop Zone -->
-                            <div
-                                :class="[
-                                    'flex-1 h-[50px] border-2 border-dashed rounded-lg transition-all overflow-hidden',
-                                    dropZones[index] && dropZones[index].length > 0
-                                        ? (isThemeDark ? 'bg-blue-900/20 border-blue-500' : 'bg-blue-50 border-blue-400')
-                                        : (isThemeDark ? 'bg-gray-700/20 border-gray-600' : 'bg-gray-100 border-gray-400'),
-                                    dragOverZone === index && 'scale-105 border-yellow-500'
-                                ]"
-                                @dragover.prevent="dragOverZone = index"
-                                @dragleave="dragOverZone = null"
-                                @drop="handleDrop($event, index)"
-                            >
-                                <draggable
-                                    v-model="dropZones[index]"
-                                    class="h-full"
-                                    :group="{ name: 'definitions', put: true, pull: true }"
-                                    :item-key="itemKey"
-                                    @change="(evt) => handleDropZoneChange(evt, index)"
-                                >
-                                    <template #item="{ element }">
-                                        <div
-                                            :key="element.key"
-                                            :class="[
-                                                'h-full px-3 py-2 rounded cursor-move text-sm flex items-center',
-                                                isThemeDark 
-                                                    ? 'text-white bg-blue-800/60' 
-                                                    : 'text-gray-900 bg-blue-100'
-                                            ]"
-                                        >
-                                            {{ element.value }}
-                                        </div>
-                                    </template>
-                                    <template #footer>
-                                        <div v-if="(!dropZones[index] || dropZones[index].length === 0)"
-                                             :class="[
-                                                 'flex items-center justify-center h-full text-sm',
-                                                 isThemeDark ? 'text-gray-500' : 'text-gray-400'
-                                             ]">
-                                            Drop here
-                                        </div>
-                                    </template>
-                                </draggable>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Right Column: Available Definitions -->
-                    <div class="w-1/3">
-                        <h3 class="mb-3 font-semibold text-sm uppercase tracking-wider"
-                            :class="isThemeDark 
-                                ? 'text-gray-400' 
-                                : 'text-gray-600'">
-                            Available ({{ availableDefinitions.length }})
-                        </h3>
+                <!-- Items with Drop Zones -->
+                <div class="space-y-2 mb-6">
+                    <div
+                        v-for="(element, index) in displayItems"
+                        :key="`item-${index}`"
+                        class="flex items-center gap-3"
+                    >
+                        <!-- Item -->
                         <div :class="[
-                            'p-3 rounded-xl border max-h-[400px] overflow-y-auto',
+                            'flex-1 p-3 rounded-lg border text-sm',
                             isThemeDark 
-                                ? 'bg-gray-800/30 border-gray-700' 
-                                : 'bg-gray-50 border-gray-300'
+                                ? 'bg-gray-800 border-gray-700' 
+                                : 'bg-white border-gray-300'
                         ]">
-                            <draggable
-                                v-model="availableDefinitions"
-                                class="space-y-2"
-                                :group="{ name: 'definitions', put: true, pull: true }"
-                                :item-key="itemKey"
+                            <span :class="[
+                                'font-medium',
+                                isThemeDark ? 'text-gray-200' : 'text-gray-900'
+                            ]">
+                                {{ element }}
+                            </span>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <svg class="w-5 h-5 flex-shrink-0" 
+                             :class="isThemeDark ? 'text-gray-600' : 'text-gray-400'"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        
+                        <!-- Drop Zone -->
+                        <div
+                            :data-role-index="index"
+                            :class="[
+                                'flex-1 min-h-[44px] rounded-lg border-2 border-dashed transition-all duration-200 flex items-center justify-center cursor-pointer',
+                                matches[index]
+                                    ? (isThemeDark ? 'bg-blue-900/50 border-blue-500' : 'bg-blue-50 border-blue-400')
+                                    : dragOverIndex === index
+                                        ? (isThemeDark ? 'bg-blue-900/70 border-blue-400 scale-[1.02]' : 'bg-blue-100 border-blue-500 scale-[1.02]')
+                                        : (isThemeDark ? 'bg-gray-800 border-gray-600 hover:bg-gray-700' : 'bg-gray-100 border-gray-400 hover:bg-gray-200'),
+                            ]"
+                            @dragover.prevent="dragOverIndex = index"
+                            @dragleave="dragOverIndex = null"
+                            @drop="handleDrop($event, index)"
+                            @click="matches[index] && clearMatch(index)"
+                        >
+                            <div v-if="!matches[index]" :class="[
+                                'text-xs',
+                                isThemeDark ? 'text-gray-500' : 'text-gray-400'
+                            ]">
+                                Drop here
+                            </div>
+                            <div v-else 
+                                 class="w-full h-full flex items-center justify-center cursor-move"
+                                 draggable="true"
+                                 @dragstart="handleDragStartFromDropzone($event, index)"
+                                 @dragend="handleDragEnd"
+                                 title="Drag to move or click to remove"
                             >
-                                <template #item="{ element }">
-                                    <div
-                                        :key="element.key"
-                                        :class="[
-                                            'p-3 rounded-lg border cursor-move text-sm transition-all hover:scale-105',
-                                            isThemeDark 
-                                                ? 'text-white bg-gray-700 border-gray-600 hover:bg-gray-600' 
-                                                : 'text-gray-800 bg-white border-gray-300 hover:bg-gray-50'
-                                        ]"
-                                        draggable="true"
-                                        @dragstart="handleDragStart($event, element)"
-                                    >
-                                        <div class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                            </svg>
-                                            <span>{{ element.value }}</span>
-                                        </div>
-                                    </div>
-                                </template>
-                            </draggable>
+                                <p :class="[
+                                    'text-sm text-center truncate pointer-events-none',
+                                    isThemeDark ? 'text-gray-200' : 'text-gray-700'
+                                ]">
+                                    {{ getMatchedDefinitionText(index) }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                <!-- Draggable Definitions at Bottom -->
+                <div>
+                    <h4 :class="[
+                        'text-xs font-semibold uppercase tracking-wider mb-2',
+                        isThemeDark ? 'text-gray-500' : 'text-gray-600'
+                    ]">
+                        Drag these options
+                    </h4>
+                    <div :class="[
+                        'p-3 rounded-lg border min-h-[60px]',
+                        isThemeDark 
+                            ? 'bg-gray-800 border-gray-700' 
+                            : 'bg-gray-50 border-gray-300',
+                        dragOverBottom && 'ring-2 ring-blue-500'
+                    ]"
+                    @dragover.prevent="dragOverBottom = true"
+                    @dragleave="dragOverBottom = false"
+                    @drop="handleDropToBottom($event)"
+                    >
+                        <div class="flex flex-wrap gap-2">
+                            <div
+                                v-for="definition in availableDefinitions"
+                                :key="definition.id"
+                                :class="[
+                                    'px-3 py-2 rounded-md border cursor-move transition-all duration-200',
+                                    isThemeDark 
+                                        ? 'bg-gray-700 border-gray-600 hover:bg-gray-600 hover:border-gray-500' 
+                                        : 'bg-white border-gray-300 hover:bg-gray-100 hover:border-gray-400',
+                                    'hover:scale-[1.02] active:scale-[0.98]',
+                                    draggedItem === definition.id && 'opacity-50'
+                                ]"
+                                draggable="true"
+                                @dragstart="handleDragStart($event, definition)"
+                                @dragend="handleDragEnd"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                    </svg>
+                                    <span :class="[
+                                        'text-sm',
+                                        isThemeDark ? 'text-gray-200' : 'text-gray-700'
+                                    ]">
+                                        {{ definition.text }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div v-if="availableDefinitions.length === 0" :class="[
+                            'text-center py-4',
+                            isThemeDark ? 'text-gray-500' : 'text-gray-400'
+                        ]">
+                            <svg class="w-8 h-8 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="text-xs">All items matched!</p>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
             
             <!-- Mobile Layout -->
             <div class="md:hidden">
-                <!-- Mobile Progress Indicator -->
-                <div class="mb-4 text-center">
-                    <span :class="[
-                        'text-sm font-medium',
-                        isThemeDark ? 'text-gray-300' : 'text-gray-600'
-                    ]">
-                        {{ getMatchedCount() }} of {{ displayItems.length }} matched
-                    </span>
+                <!-- Progress Pills -->
+                <div class="flex justify-center mb-6">
+                    <div class="flex space-x-2">
+                        <div
+                            v-for="(item, index) in displayItems"
+                            :key="`pill-${index}`"
+                            :class="[
+                                'w-2 h-2 rounded-full transition-all duration-300',
+                                matches[index] 
+                                    ? 'bg-green-500 w-8' 
+                                    : (isThemeDark ? 'bg-gray-600' : 'bg-gray-300')
+                            ]"
+                        ></div>
+                    </div>
                 </div>
                 
-                <!-- Mobile Tap Mode Toggle -->
-                <div class="mb-4 flex justify-center">
-                    <button
-                        @click="mobileMode = mobileMode === 'drag' ? 'tap' : 'drag'"
-                        :class="[
-                            'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-                            isThemeDark 
-                                ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        ]"
-                    >
-                        Mode: {{ mobileMode === 'tap' ? 'Tap to Match' : 'Drag & Drop' }}
-                    </button>
-                </div>
-                
-                <!-- Mobile Terms and Drop Zones -->
-                <div class="space-y-3 mb-6">
+                <!-- Cards Stack -->
+                <div class="relative h-[400px] mb-8">
                     <div
                         v-for="(element, index) in displayItems"
-                        :key="index"
-                        :class="[
-                            'p-3 rounded-lg border transition-all',
-                            isThemeDark 
-                                ? 'bg-gray-700/30 border-gray-600' 
-                                : 'bg-gray-50 border-gray-300',
-                            selectedMobileTerm === index && 'ring-2 ring-blue-500'
-                        ]"
+                        :key="`mobile-role-${index}`"
+                        v-show="currentCardIndex === index"
+                        class="absolute inset-0"
                     >
-                        <!-- Term -->
-                        <div class="flex items-center justify-between mb-2">
-                            <span :class="[
-                                'font-medium',
-                                isThemeDark ? 'text-white' : 'text-gray-800'
-                            ]">
-                                {{ element }}
-                            </span>
-                            <button
-                                v-if="dropZones[index] && dropZones[index].length > 0"
-                                @click="clearDropZone(index)"
-                                :class="[
-                                    'text-sm px-2 py-1 rounded',
-                                    isThemeDark 
-                                        ? 'text-red-400 hover:bg-red-900/20' 
-                                        : 'text-red-600 hover:bg-red-50'
-                                ]"
-                            >
-                                Clear
-                            </button>
-                        </div>
-                        
-                        <!-- Drop Zone -->
+                        <!-- Role Card -->
                         <div
                             :class="[
-                                'min-h-[50px] border-2 border-dashed rounded-lg p-2 transition-all',
-                                dropZones[index] && dropZones[index].length > 0
-                                    ? (isThemeDark ? 'bg-blue-900/20 border-blue-500' : 'bg-blue-50 border-blue-400')
-                                    : (isThemeDark ? 'bg-gray-800/20 border-gray-600' : 'bg-white border-gray-400'),
-                                mobileMode === 'tap' && selectedMobileTerm === index && 'animate-pulse'
+                                'rounded-3xl p-8 h-full flex flex-col justify-center',
+                                'backdrop-blur-xl border',
+                                isThemeDark 
+                                    ? 'bg-gray-800/90 border-gray-700/50 shadow-2xl' 
+                                    : 'bg-white/90 border-gray-200/50 shadow-xl'
                             ]"
-                            @click="mobileMode === 'tap' && handleMobileTapZone(index)"
                         >
-                            <div v-if="dropZones[index] && dropZones[index].length > 0"
-                                 :class="[
-                                     'text-sm',
-                                     isThemeDark ? 'text-white' : 'text-gray-800'
-                                 ]">
-                                {{ dropZones[index][0].value }}
-                            </div>
-                            <div v-else
-                                 :class="[
-                                     'text-sm text-center',
-                                     isThemeDark ? 'text-gray-500' : 'text-gray-400'
-                                 ]">
-                                {{ mobileMode === 'tap' ? 'Tap to select' : 'Drop here' }}
+                            <h4 :class="[
+                                'text-2xl font-semibold text-center mb-8',
+                                isThemeDark ? 'text-white' : 'text-gray-900'
+                            ]">
+                                {{ element }}
+                            </h4>
+                            
+                            <!-- Definition Options -->
+                            <div class="space-y-3">
+                                <button
+                                    v-for="(def, defIndex) in availableDefinitionsForCurrent"
+                                    :key="`def-${defIndex}`"
+                                    @click="selectDefinition(def)"
+                                    :class="[
+                                        'w-full p-4 rounded-2xl text-left transition-all duration-200',
+                                        'border backdrop-blur-md',
+                                        isThemeDark 
+                                            ? 'bg-gray-700/50 border-gray-600 hover:bg-gray-700/70 active:bg-gray-700/90' 
+                                            : 'bg-gray-50/50 border-gray-200 hover:bg-gray-100/70 active:bg-gray-200/90',
+                                        'transform hover:scale-[1.02] active:scale-[0.98]'
+                                    ]"
+                                >
+                                    <p :class="[
+                                        'text-sm',
+                                        isThemeDark ? 'text-gray-200' : 'text-gray-700'
+                                    ]">
+                                        {{ def.text }}
+                                    </p>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Mobile Available Definitions -->
-                <div>
-                    <h3 class="mb-3 font-semibold text-sm uppercase tracking-wider"
-                        :class="isThemeDark 
-                            ? 'text-gray-400' 
-                            : 'text-gray-600'">
-                        Available Definitions
-                    </h3>
-                    <div :class="[
-                        'max-h-[300px] overflow-y-auto space-y-2',
-                        mobileMode === 'tap' && selectedMobileDefinition !== null && 'opacity-50'
+                <!-- Navigation -->
+                <div class="flex justify-between items-center px-4">
+                    <button
+                        v-if="currentCardIndex > 0"
+                        @click="previousCard"
+                        :class="[
+                            'p-3 rounded-full transition-all duration-200',
+                            isThemeDark 
+                                ? 'bg-gray-800 hover:bg-gray-700 active:bg-gray-900' 
+                                : 'bg-gray-100 hover:bg-gray-200 active:bg-gray-300'
+                        ]"
+                    >
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    
+                    <span :class="[
+                        'text-sm font-medium',
+                        isThemeDark ? 'text-gray-400' : 'text-gray-600'
                     ]">
-                        <div
-                            v-for="element in availableDefinitions"
-                            :key="element.key"
-                            :class="[
-                                'p-3 rounded-lg border cursor-pointer transition-all',
-                                isThemeDark 
-                                    ? 'text-white bg-gray-700 border-gray-600' 
-                                    : 'text-gray-800 bg-white border-gray-300',
-                                mobileMode === 'tap' && selectedMobileDefinition === element.key 
-                                    ? 'ring-2 ring-blue-500 scale-105' 
-                                    : 'hover:scale-102',
-                                mobileMode === 'drag' && 'cursor-move'
-                            ]"
-                            @click="mobileMode === 'tap' && handleMobileTapDefinition(element)"
-                            :draggable="mobileMode === 'drag'"
-                            @dragstart="mobileMode === 'drag' && handleDragStart($event, element)"
-                        >
-                            <div class="text-sm">{{ element.value }}</div>
-                        </div>
-                    </div>
+                        {{ currentCardIndex + 1 }} of {{ displayItems.length }}
+                    </span>
+                    
+                    <button
+                        v-if="currentCardIndex < displayItems.length - 1"
+                        @click="nextCard"
+                        :class="[
+                            'p-3 rounded-full transition-all duration-200',
+                            isThemeDark 
+                                ? 'bg-gray-800 hover:bg-gray-700 active:bg-gray-900' 
+                                : 'bg-gray-100 hover:bg-gray-200 active:bg-gray-300'
+                        ]"
+                    >
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -270,7 +265,6 @@
 </template>
 
 <script lang="ts">
-import draggable from "vuedraggable";
 import { shuffle } from "lodash";
 
 export default {
@@ -281,310 +275,326 @@ export default {
         },
         answer: {
             type: Object,
-            default: () => ({
-                question_id: null,
-                selected_options: [],
-                duration: 0,
-                is_correct: false
-            })
+            default: () => ({})
         },
         isDarkMode: {
             type: Boolean,
             default: null
         }
     },
-    components: {
-        draggable,
+    data() {
+        return {
+            displayItems: [],
+            definitions: [],
+            matches: {},
+            draggedItem: null,
+            dragOverIndex: null,
+            dragOverBottom: false,
+            currentCardIndex: 0,
+            matchedDefinitions: new Set(),
+        };
     },
     computed: {
         isThemeDark() {
-            // Use prop if provided, otherwise fallback to detection methods
             if (this.isDarkMode !== null) {
                 return this.isDarkMode;
             }
-            // Fallback detection for backward compatibility
             return document.documentElement.classList.contains('dark') ||
-                   this.$el?.classList?.contains('dark-mode') ||
-                   this.$parent?.$el?.classList?.contains('dark-mode') ||
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        },
+        availableDefinitions() {
+            // Show definitions that haven't been matched yet
+            return this.definitions.filter(def => !this.matchedDefinitions.has(def.id));
+        },
+        availableDefinitionsForCurrent() {
+            // For mobile: show unmatched definitions for current card
+            return this.availableDefinitions;
         }
     },
-    data() {
-        return {
-            items: [],
-            displayItems: [], // Items to match (left column)
-            availableDefinitions: [], // Shuffled definitions (right column)
-            dropZones: {}, // Individual drop zones for each item
-            itemKey: "key",
-            dragOverZone: null,
-            // Mobile specific
-            mobileMode: 'tap', // 'tap' or 'drag'
-            selectedMobileTerm: null,
-            selectedMobileDefinition: null,
-        };
-    },
     mounted() {
-        this.$nextTick(function () {
-            this.shuffleItems();
-        });
+        this.initializeData();
     },
-
     methods: {
-        getMatchedCount() {
-            let count = 0;
-            for (let i = 0; i < this.displayItems.length; i++) {
-                if (this.dropZones[i] && this.dropZones[i].length > 0) {
-                    count++;
-                }
-            }
-            return count;
-        },
-        
-        handleDragStart(event, element) {
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('element', JSON.stringify(element));
-        },
-        
-        handleDrop(event, dropZoneIndex) {
-            event.preventDefault();
-            this.dragOverZone = null;
-            
-            const elementData = event.dataTransfer.getData('element');
-            if (elementData) {
-                const element = JSON.parse(elementData);
-                
-                // Check if drop zone already has an item
-                if (this.dropZones[dropZoneIndex] && this.dropZones[dropZoneIndex].length > 0) {
-                    const existingItem = this.dropZones[dropZoneIndex][0];
-                    // Return existing item to available
-                    this.availableDefinitions.push(existingItem);
-                }
-                
-                // Remove from available definitions
-                this.availableDefinitions = this.availableDefinitions.filter(def => def.key !== element.key);
-                
-                // Add to drop zone
-                this.dropZones[dropZoneIndex] = [element];
-                
-                this.emitSelection();
-            }
-        },
-        
-        clearDropZone(index) {
-            if (this.dropZones[index] && this.dropZones[index].length > 0) {
-                const item = this.dropZones[index][0];
-                this.availableDefinitions.push(item);
-                this.dropZones[index] = [];
-                this.emitSelection();
-            }
-        },
-        
-        // Mobile tap mode methods
-        handleMobileTapZone(index) {
-            if (this.mobileMode !== 'tap') return;
-            
-            if (this.selectedMobileDefinition) {
-                // Place the selected definition
-                const definition = this.availableDefinitions.find(d => d.key === this.selectedMobileDefinition);
-                if (definition) {
-                    // Clear existing item if any
-                    if (this.dropZones[index] && this.dropZones[index].length > 0) {
-                        const existingItem = this.dropZones[index][0];
-                        this.availableDefinitions.push(existingItem);
-                    }
-                    
-                    // Remove from available and add to drop zone
-                    this.availableDefinitions = this.availableDefinitions.filter(d => d.key !== definition.key);
-                    this.dropZones[index] = [definition];
-                    
-                    // Reset selections
-                    this.selectedMobileDefinition = null;
-                    this.selectedMobileTerm = null;
-                    
-                    this.emitSelection();
-                }
-            } else {
-                // Select this term
-                this.selectedMobileTerm = index;
-            }
-        },
-        
-        handleMobileTapDefinition(element) {
-            if (this.mobileMode !== 'tap') return;
-            
-            if (this.selectedMobileTerm !== null) {
-                // Place in selected term's drop zone
-                const index = this.selectedMobileTerm;
-                
-                // Clear existing item if any
-                if (this.dropZones[index] && this.dropZones[index].length > 0) {
-                    const existingItem = this.dropZones[index][0];
-                    this.availableDefinitions.push(existingItem);
-                }
-                
-                // Remove from available and add to drop zone
-                this.availableDefinitions = this.availableDefinitions.filter(d => d.key !== element.key);
-                this.dropZones[index] = [element];
-                
-                // Reset selections
-                this.selectedMobileDefinition = null;
-                this.selectedMobileTerm = null;
-                
-                this.emitSelection();
-            } else {
-                // Select this definition
-                this.selectedMobileDefinition = element.key;
-            }
-        },
-        
-        submit() {
-            this.$emit("submit", this.response);
-        },
-        
-        shuffleItems() {
-            // Check for both possible data structures
+        initializeData() {
             const items = this.question.items || (this.question.options && this.question.options.items);
-            const responses = this.question.responses || (this.question.options && this.question.options.responses);
+            const responses = this.question.responses || 
+                           (this.question.options && this.question.options.responses) ||
+                           (this.question.options && this.question.options.targets);
             
             if (items && responses) {
-                // Keep items (left side) in original order
                 this.displayItems = [...items];
                 
-                // Initialize empty drop zones for each item
-                this.dropZones = {};
-                items.forEach((item, index) => {
-                    this.dropZones[index] = [];
+                // Create definition objects with IDs
+                this.definitions = shuffle(responses.map((response, index) => ({
+                    id: `def-${index}`,
+                    text: response,
+                    originalIndex: index // Keep track of original position in responses array
+                })));
+                
+                // Initialize matches
+                this.matches = {};
+                items.forEach((_, index) => {
+                    this.matches[index] = null;
                 });
                 
-                // Check if there's a saved answer to restore
-                if (this.answer?.selected_options && Array.isArray(this.answer.selected_options) && this.answer.selected_options.length > 0) {
-                    // Create all definitions with unique keys
-                    const allDefinitions = responses.map(
-                        (response, index) => ({ key: `def-${index}`, value: response })
-                    );
-                    
-                    // Place saved matches in their drop zones
-                    this.answer.selected_options.forEach((savedMatch, itemIndex) => {
-                        if (savedMatch && itemIndex < items.length) {
-                            const definition = allDefinitions.find(d => d.value === savedMatch);
-                            if (definition) {
-                                this.dropZones[itemIndex] = [definition];
-                            }
-                        }
-                    });
-                    
-                    // Remaining definitions go to available
-                    this.availableDefinitions = allDefinitions.filter(def => {
-                        // Check if this definition is not already placed in any drop zone
-                        for (let i = 0; i < items.length; i++) {
-                            if (this.dropZones[i].some(d => d.key === def.key)) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    });
-                    
-                    // Shuffle the remaining available definitions
-                    this.availableDefinitions = shuffle(this.availableDefinitions);
-                } else {
-                    // No saved answer - shuffle all responses for the right column
-                    this.availableDefinitions = shuffle(responses).map(
-                        (response, index) => ({ key: `def-${index}`, value: response })
-                    );
+                // Restore saved answers if any
+                if (this.answer?.selected_options?.length > 0) {
+                    this.restoreSavedAnswers();
+                }
+            }
+        },
+        
+        handleDrop(event, roleIndex) {
+            event.preventDefault();
+            this.dragOverIndex = null;
+            
+            // Get the dragged definition data
+            const definitionData = event.dataTransfer.getData('definition');
+            const fromDropzone = event.dataTransfer.getData('fromDropzone');
+            
+            if (definitionData) {
+                const definition = JSON.parse(definitionData);
+                
+                // If dragging from another dropzone, clear that dropzone first
+                if (fromDropzone !== null && fromDropzone !== '') {
+                    const fromIndex = parseInt(fromDropzone);
+                    if (fromIndex !== roleIndex) {
+                        // Clear the source dropzone
+                        this.clearMatch(fromIndex);
+                    }
                 }
                 
-                // Emit initial state
+                this.makeMatch(roleIndex, definition);
+            }
+        },
+        
+        handleDragStart(event, definition) {
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('definition', JSON.stringify(definition));
+            this.draggedItem = definition.id;
+        },
+        
+        handleDragStartFromDropzone(event, fromIndex) {
+            const matchedDefId = this.matches[fromIndex];
+            if (matchedDefId) {
+                const definition = this.definitions.find(d => d.id === matchedDefId);
+                if (definition) {
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('definition', JSON.stringify(definition));
+                    event.dataTransfer.setData('fromDropzone', fromIndex.toString());
+                    this.draggedItem = definition.id;
+                }
+            }
+        },
+        
+        handleDragEnd() {
+            this.draggedItem = null;
+            this.dragOverIndex = null;
+            this.dragOverBottom = false;
+        },
+        
+        handleDropToBottom(event) {
+            event.preventDefault();
+            this.dragOverBottom = false;
+            
+            // Get the dragged definition data
+            const fromDropzone = event.dataTransfer.getData('fromDropzone');
+            
+            if (fromDropzone !== null && fromDropzone !== '') {
+                const fromIndex = parseInt(fromDropzone);
+                // Clear the source dropzone
+                this.clearMatch(fromIndex);
+            }
+        },
+        
+        makeMatch(roleIndex, definition) {
+            // Clear any existing match for this role
+            if (this.matches[roleIndex]) {
+                this.matchedDefinitions.delete(this.matches[roleIndex]);
+            }
+            
+            // Make new match
+            this.matches[roleIndex] = definition.id;
+            this.matchedDefinitions.add(definition.id);
+            
+            // Update matches object to trigger reactivity
+            this.matches = { ...this.matches };
+            
+            // Emit selection
+            this.emitSelection();
+            
+            // Animate
+            this.animateMatch(roleIndex);
+        },
+        
+        clearMatch(roleIndex) {
+            if (this.matches[roleIndex]) {
+                this.matchedDefinitions.delete(this.matches[roleIndex]);
+                delete this.matches[roleIndex];
+                
+                // Update matches object to trigger reactivity
+                this.matches = { ...this.matches };
+                
+                // Emit selection
                 this.emitSelection();
             }
+        },
+        
+        selectDefinition(definition) {
+            // Mobile: match with current card
+            this.makeMatch(this.currentCardIndex, definition);
+            
+            // Auto-advance to next card after short delay
+            setTimeout(() => {
+                if (this.currentCardIndex < this.displayItems.length - 1) {
+                    this.nextCard();
+                }
+            }, 500);
+        },
+        
+        animateMatch(index) {
+            // Trigger animation on the matched drop zone
+            this.$nextTick(() => {
+                // Find the drop zone element
+                const dropZone = document.querySelector(`[data-role-index="${index}"]`);
+                if (dropZone) {
+                    // Add a temporary animation class
+                    dropZone.classList.add('animate-pulse');
+                    
+                    // Remove the animation class after it completes
+                    setTimeout(() => {
+                        dropZone.classList.remove('animate-pulse');
+                    }, 1000);
+                }
+            });
+        },
+        
+        previousCard() {
+            if (this.currentCardIndex > 0) {
+                this.currentCardIndex--;
+            }
+        },
+        
+        nextCard() {
+            if (this.currentCardIndex < this.displayItems.length - 1) {
+                this.currentCardIndex++;
+            }
+        },
+        
+        getMatchedCount() {
+            return Object.keys(this.matches).filter(key => this.matches[key]).length;
+        },
+        
+        getMatchedDefinitionText(index) {
+            const matchedDefId = this.matches[index];
+            if (matchedDefId) {
+                const def = this.definitions.find(d => d.id === matchedDefId);
+                return def?.text || '';
+            }
+            return '';
         },
         
         emitSelection() {
-            // Create the matched pairs based on what's in each drop zone
-            const matchedPairs = [];
-            this.displayItems.forEach((item, index) => {
-                if (this.dropZones[index] && this.dropZones[index].length > 0) {
-                    matchedPairs.push(this.dropZones[index][0].value);
-                } else {
-                    matchedPairs.push(null);
+            const selectedOptions = this.displayItems.map((_, index) => {
+                const matchedDefId = this.matches[index];
+                if (matchedDefId) {
+                    // Find definition in all definitions (including matched ones)
+                    const def = this.definitions.find(d => d.id === matchedDefId);
+                    return def?.text || null;
                 }
+                return null;
             });
-            this.$emit("selected", matchedPairs);
+            this.$emit("selected", selectedOptions);
         },
         
-        handleDropZoneChange(evt, dropZoneIndex) {
-            // Check if an item was added to this drop zone
-            if (evt.added) {
-                // If there were already items in this drop zone (more than the one just added)
-                if (this.dropZones[dropZoneIndex].length > 1) {
-                    // Find the item that was already there (not the newly added one)
-                    const existingItem = this.dropZones[dropZoneIndex].find(item => item.key !== evt.added.element.key);
-                    
-                    if (existingItem) {
-                        // Remove the existing item from the drop zone
-                        this.dropZones[dropZoneIndex] = this.dropZones[dropZoneIndex].filter(item => item.key === evt.added.element.key);
-                        
-                        // Add the existing item back to available definitions
-                        this.availableDefinitions.push(existingItem);
+        restoreSavedAnswers() {
+            // Restore from saved state
+            this.answer.selected_options.forEach((savedOption, index) => {
+                if (savedOption) {
+                    const def = this.definitions.find(d => d.text === savedOption);
+                    if (def) {
+                        this.makeMatch(index, def);
                     }
                 }
-            }
+            });
         }
     },
     watch: {
-        question() {
-            this.items = [];
-            this.availableDefinitions = [];
-            this.dropZones = {};
-            this.selectedMobileTerm = null;
-            this.selectedMobileDefinition = null;
-            this.shuffleItems();
-        },
-        dropZones: {
-            handler() {
-                this.emitSelection();
+        question: {
+            handler(newQuestion, oldQuestion) {
+                // Only reinitialize if we have a new question
+                if (newQuestion && newQuestion !== oldQuestion) {
+                    // Reset all state
+                    this.displayItems = [];
+                    this.definitions = [];
+                    this.matches = {};
+                    this.draggedItem = null;
+                    this.dragOverIndex = null;
+                    this.dragOverBottom = false;
+                    this.currentCardIndex = 0;
+                    this.matchedDefinitions.clear();
+                    
+                    // Reinitialize data after DOM update
+                    this.$nextTick(() => {
+                        this.initializeData();
+                    });
+                }
             },
             deep: true
         }
-    },
+    }
 };
 </script>
 
 <style scoped>
-/* Custom scrollbar for dark mode */
-.dark ::-webkit-scrollbar {
-    width: 8px;
-}
-
-.dark ::-webkit-scrollbar-track {
-    background: rgba(31, 41, 55, 0.5);
-    border-radius: 4px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-    background: rgba(75, 85, 99, 0.8);
-    border-radius: 4px;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-    background: rgba(107, 114, 128, 0.8);
-}
-
-/* Smooth transitions */
-.hover\:scale-102:hover {
-    transform: scale(1.02);
-}
-
-/* Mobile tap mode animations */
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
+/* Apple-style animations */
+@keyframes scale-in {
+    0% {
+        transform: scale(0);
+        opacity: 0;
     }
     50% {
-        opacity: 0.7;
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
-.animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.animate-scale-in {
+    animation: scale-in 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Smooth drag transitions */
+.sortable-ghost {
+    opacity: 0.5;
+}
+
+.sortable-drag {
+    transform: scale(1.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Glass morphism effect */
+.backdrop-blur-xl {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+}
+
+/* Mobile swipe hint */
+@media (max-width: 768px) {
+    .swipe-hint {
+        animation: swipe-hint 2s ease-in-out infinite;
+    }
+}
+
+@keyframes swipe-hint {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-10px);
+    }
 }
 </style>

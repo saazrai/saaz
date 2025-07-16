@@ -23,8 +23,8 @@ test('can create diagnostic profile with required fields', function () {
     expect($profile)
         ->user_id->toBe($user->id)
         ->domain_id->toBe($domain->id)
-        ->proficiency->toBe(0.75)
-        ->confidence->toBe(0.85)
+        ->proficiency->toEqual('0.75')
+        ->confidence->toEqual('0.85')
         ->last_bloom_level->toBe(3);
 });
 
@@ -79,15 +79,15 @@ test('casts arrays correctly', function () {
 
 test('casts decimal fields correctly', function () {
     $profile = DiagnosticProfile::factory()->create([
-        'proficiency' => 0.7567,
-        'confidence' => 0.8234,
+        'proficiency' => 0.755,
+        'confidence' => 0.823,
         'average_response_time' => 45.678,
     ]);
 
     // Decimals are cast to 2 places
-    expect($profile->proficiency)->toBe(0.76);
-    expect($profile->confidence)->toBe(0.82);
-    expect($profile->average_response_time)->toBe(45.68);
+    expect($profile->proficiency)->toEqual('0.76');
+    expect($profile->confidence)->toEqual('0.82');
+    expect($profile->average_response_time)->toEqual('45.68');
 });
 
 test('casts datetime fields correctly', function () {

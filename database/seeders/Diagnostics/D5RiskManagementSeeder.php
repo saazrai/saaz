@@ -555,24 +555,24 @@ class D5RiskManagementSeeder extends Seeder
                 'status' => 'published'
             ],
             
-            // Risk Velocity - Item 22
+            // Risk Assessment Methods - Item 22
             [
                 'topic_id' => $topics['Risk Assessment'] ?? 102,
                 'type_id' => 1,
                 'dimension' => 'Managerial',
-                'content' => 'Risk velocity refers to:',
+                'content' => 'Which risk assessment methodology uses predefined scenarios to evaluate potential impacts?',
                 'options' => [
-                    'How fast a risk moves through the organization',
-                    'The speed at which a risk can impact the organization',
-                    'How quickly risks are identified',
-                    'The rate of risk acceptance'
+                    'OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)',
+                    'Scenario-based risk assessment',
+                    'FAIR (Factor Analysis of Information Risk)',
+                    'Bow-tie analysis'
                 ],
-                'correct_options' => ['The speed at which a risk can impact the organization'],
+                'correct_options' => ['Scenario-based risk assessment'],
                 'justifications' => [
-                    'Risks don\'t physically move',
-                    'Correct - Velocity measures time from risk occurrence to impact',
-                    'This is about identification speed, not risk velocity',
-                    'This relates to decision-making, not velocity'
+                    'OCTAVE focuses on organizational risk assessment',
+                    'Correct - Scenario-based assessment evaluates risks through predefined scenarios',
+                    'FAIR uses quantitative risk analysis factors',
+                    'Bow-tie visualizes risk causes and consequences'
                 ],
                 'difficulty_level' => 2,
                 'bloom_level' => 2,

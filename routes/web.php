@@ -21,7 +21,6 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 Route::get('/features', fn() => Inertia::render('Features'))->name('info.features');
 Route::get('/faq', fn() => Inertia::render('FAQ'))->name('info.faq');
 Route::get('/about', fn() => Inertia::render('About'))->name('info.about');
-Route::get('/contact', fn() => Inertia::render('Contact'))->name('info.contact');
 Route::get('/help', fn() => Inertia::render('Help'))->name('info.help');
 
 // Legal pages

@@ -722,9 +722,9 @@ const closeDomainModal = () => {
 const filteredDomains = computed(() => {
     if (loadingDomains.value) return [];
     if (selectedCategory.value === 'all') {
-        return domains.value;
+        return props.domains;
     }
-    return domains.value.filter(domain => domain.category === selectedCategory.value);
+    return props.domains.filter(domain => domain.category === selectedCategory.value);
 });
 
 // Update domain categories count dynamically
@@ -736,12 +736,12 @@ const domainCategories = computed(() => {
         { id: 'managerial', name: 'Managerial', count: 0 }
     ];
     
-    const foundational = domains.value.filter(d => d.category === 'foundational').length;
-    const technical = domains.value.filter(d => d.category === 'technical').length;
-    const managerial = domains.value.filter(d => d.category === 'managerial').length;
+    const foundational = props.domains.filter(d => d.category === 'foundational').length;
+    const technical = props.domains.filter(d => d.category === 'technical').length;
+    const managerial = props.domains.filter(d => d.category === 'managerial').length;
     
     return [
-        { id: 'all', name: 'All Domains', count: domains.value.length },
+        { id: 'all', name: 'All Domains', count: props.domains.length },
         { id: 'foundational', name: 'Foundational', count: foundational },
         { id: 'technical', name: 'Technical Security', count: technical },
         { id: 'managerial', name: 'Managerial', count: managerial }
