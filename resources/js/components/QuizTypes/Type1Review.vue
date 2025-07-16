@@ -196,7 +196,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { marked } from 'marked';
 
 export default {
@@ -310,29 +310,6 @@ export default {
                     : 'text-gray-700';
             }
         },
-        getOptionClasses(option, i) {
-            const classes = [];
-            
-            if (this.isCorrectOption(i)) {
-                classes.push(this.isDarkMode 
-                    ? 'bg-green-900/40 border-green-600 text-white' 
-                    : 'bg-green-100 border-green-500 text-gray-900');
-                classes.push('border');
-            } else if (this.isSelectedOptionInReview(option) && this.isIncorrectOption(option)) {
-                classes.push(this.isDarkMode 
-                    ? 'bg-red-900/40 border-red-600 text-white' 
-                    : 'bg-red-100 border-red-500 text-gray-800');
-                classes.push('border');
-            } else if (!this.isSelectedOptionInReview(option) && !this.isCorrectOption(i)) {
-                classes.push('opacity-60');
-                classes.push(this.isDarkMode 
-                    ? 'bg-gray-700/40 text-gray-300 border-gray-600' 
-                    : 'bg-gray-50 text-gray-600 border-gray-200');
-                classes.push('border');
-            }
-            
-            return classes.join(' ');
-        },
         isCorrectOption(index) {
             return this.correctOptionIndexes.includes(index);
         },
@@ -395,32 +372,36 @@ export default {
 
 /* Dark mode styles for markdown content */
 :deep(.dark strong) {
-    @apply text-white font-semibold;
+    color: white;
+    font-weight: 600;
 }
 
 :deep(.dark p) {
-    @apply text-gray-300;
+    color: rgb(209 213 219);
 }
 
 :deep(.dark code) {
-    @apply bg-slate-700 text-gray-200 px-2 py-1 rounded;
+    background-color: rgb(51 65 85);
+    color: rgb(229 231 235);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
 }
 
 :deep(.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6) {
-    @apply text-white;
+    color: white;
 }
 
 /* Ensure proper text color inheritance in dark mode */
 .dark .text-gray-800 {
-    @apply text-white;
+    color: white;
 }
 
 .dark .text-gray-700 {
-    @apply text-gray-200;
+    color: rgb(229 231 235);
 }
 
 .dark .text-gray-600 {
-    @apply text-gray-300;
+    color: rgb(209 213 219);
 }
 
 /* Radio button customization for dark mode */

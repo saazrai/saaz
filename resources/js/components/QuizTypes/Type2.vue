@@ -43,7 +43,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { marked } from 'marked';
 
 export default {
@@ -121,16 +121,6 @@ export default {
             } else {
                 return [];
             }
-        },
-        renderMarkdown(text) {
-             if (!text) return '';
-             let html = marked(text);
-             // Force white color for bold/strong tags in dark mode
-             if (this.isThemeDark) {
-                 html = html.replace(/<strong>/g, '<strong style="color: inherit;">');
-                 html = html.replace(/<b>/g, '<b style="color: inherit;">');
-             }
-             return html;
         }
     },
     watch: {
@@ -165,15 +155,18 @@ button:focus {
 .bg-gray-800 :deep(strong),
 .bg-gray-800 :deep(b) {
     color: white !important;
-    @apply font-semibold;
+    font-weight: 600;
 }
 
 .bg-gray-800 :deep(p) {
-    @apply text-gray-300;
+    color: rgb(209 213 219);
 }
 
 .bg-gray-800 :deep(code) {
-    @apply bg-slate-700 text-gray-200 px-2 py-1 rounded;
+    background-color: rgb(51 65 85);
+    color: rgb(229 231 235);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .bg-gray-800 :deep(h1),
@@ -182,16 +175,20 @@ button:focus {
 .bg-gray-800 :deep(h4),
 .bg-gray-800 :deep(h5),
 .bg-gray-800 :deep(h6) {
-    @apply text-white;
+    color: white;
 }
 
 /* Light mode markdown styles */
 .bg-white :deep(strong),
 .bg-white :deep(b) {
-    @apply font-bold text-gray-900;
+    font-weight: 700;
+    color: rgb(17 24 39);
 }
 
 .bg-white :deep(code) {
-    @apply bg-gray-100 text-gray-800 px-1 rounded;
+    background-color: rgb(243 244 246);
+    color: rgb(31 41 55);
+    padding: 0 0.25rem;
+    border-radius: 0.25rem;
 }
 </style>

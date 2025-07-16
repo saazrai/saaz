@@ -80,7 +80,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { marked } from 'marked';
 
 export default {
@@ -116,14 +116,12 @@ export default {
             return this.question?.settings?.isMultiSelect === true;
         },
         maxSelectable() {
-            // Use settings if provided, otherwise calculate from correct_options or default to 3
+            // Use settings if provided, otherwise no limit
             if (this.question?.settings?.maxSelectable) {
                 return this.question.settings.maxSelectable;
             }
-            if (this.question?.correct_options && Array.isArray(this.question.correct_options)) {
-                return this.question.correct_options.length;
-            }
-            return 3; // Default fallback
+            // If no setting is provided, allow selecting all options
+            return this.options.length || 999;
         },
         renderedQuestion() {
              if (!this.question?.content) return '';
