@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { Button } from '@/Components/shadcn/ui/button';
+import { Button } from '@/components/shadcn/ui/button';
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from '@/Components/shadcn/ui/form';
-import { Input } from '@/Components/shadcn/ui/input';
+} from '@/components/shadcn/ui/form';
+import { Input } from '@/components/shadcn/ui/input';
 import { TrashIcon } from 'lucide-vue-next';
 import { ref } from 'vue';
 import AutoFormLabel from './AutoFormLabel.vue';

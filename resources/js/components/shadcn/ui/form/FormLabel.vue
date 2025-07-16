@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Label } from '@/Components/shadcn/ui/label';
+import { Label } from '@/components/shadcn/ui/label';
 import { cn } from '@/lib/utils';
 import { useFormField } from './useFormField';
 

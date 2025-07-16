@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { buttonVariants } from '@/Components/shadcn/ui/button';
+import { buttonVariants } from '@/components/shadcn/ui/button';
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-vue-next';
 import { RangeCalendarNext, useForwardProps } from 'radix-vue';

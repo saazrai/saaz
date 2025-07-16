@@ -5,9 +5,9 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/Components/shadcn/ui/form';
-import { Input } from '@/Components/shadcn/ui/input';
-import { Textarea } from '@/Components/shadcn/ui/textarea';
+} from '@/components/shadcn/ui/form';
+import { Input } from '@/components/shadcn/ui/input';
+import { Textarea } from '@/components/shadcn/ui/textarea';
 import { computed } from 'vue';
 import AutoFormLabel from './AutoFormLabel.vue';
 import { beautifyObjectName } from './utils';

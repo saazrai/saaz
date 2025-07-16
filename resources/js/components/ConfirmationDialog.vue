@@ -13,7 +13,7 @@
                 <div 
                     :class="[
                         'fixed inset-0 bg-black/25 backdrop-blur-sm',
-                        isDark ? 'bg-black/40' : 'bg-black/25'
+                        isDarkMode ? 'bg-black/40' : 'bg-black/25'
                     ]" 
                 />
             </TransitionChild>
@@ -32,7 +32,7 @@
                         <DialogPanel 
                             :class="[
                                 'w-full max-w-md transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all border',
-                                isDark 
+                                isDarkMode 
                                     ? 'bg-gray-800 border-gray-700' 
                                     : 'bg-white border-gray-200'
                             ]"
@@ -48,7 +48,7 @@
                                 as="h3" 
                                 :class="[
                                     'text-lg font-semibold leading-6 text-center mb-2',
-                                    isDark ? 'text-gray-100' : 'text-gray-900'
+                                    isDarkMode ? 'text-gray-100' : 'text-gray-900'
                                 ]"
                             >
                                 {{ title }}
@@ -58,7 +58,7 @@
                             <div class="mt-2 mb-6">
                                 <p :class="[
                                     'text-sm text-center',
-                                    isDark ? 'text-gray-300' : 'text-gray-600'
+                                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
                                 ]">
                                     {{ description }}
                                 </p>
@@ -72,7 +72,7 @@
                                     type="button"
                                     :class="[
                                         'flex-1 inline-flex justify-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
-                                        isDark 
+                                        isDarkMode 
                                             ? 'border-gray-600 bg-gray-700 text-gray-200 hover:bg-gray-600 focus:ring-gray-500' 
                                             : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-500'
                                     ]"
@@ -144,7 +144,7 @@ const props = defineProps({
         type: String,
         default: 'Cancel'
     },
-    isDark: {
+    isDarkMode: {
         type: Boolean,
         default: false
     }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Dialog, DialogContent } from '@/Components/shadcn/ui/dialog';
+import { Dialog, DialogContent } from '@/components/shadcn/ui/dialog';
 import { useForwardPropsEmits } from 'radix-vue';
 import Command from './Command.vue';
 

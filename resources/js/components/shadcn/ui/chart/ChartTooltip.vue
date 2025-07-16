@@ -4,7 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from '@/Components/shadcn/ui/card';
+} from '@/components/shadcn/ui/card';
 
 defineProps({
   title: { type: String, required: false },

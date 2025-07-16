@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import Badge from '@/Components/shadcn/ui/badge/Badge.vue';
+import Badge from '@/components/shadcn/ui/badge/Badge.vue';
 
 const props = defineProps({
     difficultyLevel: {

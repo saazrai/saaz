@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Sheet from '@/Components/shadcn/ui/sheet/Sheet.vue';
-import SheetContent from '@/Components/shadcn/ui/sheet/SheetContent.vue';
+import Sheet from '@/components/shadcn/ui/sheet/Sheet.vue';
+import SheetContent from '@/components/shadcn/ui/sheet/SheetContent.vue';
 import { cn } from "@/lib/utils";
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from "./utils";
 

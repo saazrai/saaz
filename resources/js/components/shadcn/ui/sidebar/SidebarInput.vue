@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Input from '@/Components/shadcn/ui/input/Input.vue'
+import Input from '@/components/shadcn/ui/input/Input.vue'
 import { cn } from '@/lib/utils'
 
 const props = defineProps({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChartSingleTooltip, defaultColors } from '@/Components/shadcn/ui/chart';
+import { ChartSingleTooltip, defaultColors } from '@/components/shadcn/ui/chart';
 import { cn } from '@/lib/utils';
 import { Donut } from '@unovis/ts';
 import { VisDonut, VisSingleContainer } from '@unovis/vue';

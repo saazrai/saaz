@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch, type Ref } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
-import { Button } from '@/Components/shadcn/ui/button'
+import { Button } from '@/components/shadcn/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/shadcn/ui/avatar'
 import { useSidebarStore } from '@/stores/sidebarStore.js'
 import { useTheme } from '@/composables/useTheme'

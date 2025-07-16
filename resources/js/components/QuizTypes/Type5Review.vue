@@ -215,7 +215,7 @@ export default {
         }
     },
     computed: {
-        isThemeDark() {
+        isThemeDark(): boolean {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDarkMode !== null) {
                 return this.isDarkMode;
@@ -229,7 +229,8 @@ export default {
     },
     data() {
         return {
-            displayItems: [], // Keep items in original order for review
+            displayItems: [] as any[], // Keep items in original order for review
+            userAnswers: [] as any[],
         };
     },
     mounted() {
@@ -245,7 +246,7 @@ export default {
                 this.displayItems = [...this.question.options.items];
             }
         },
-        getUserAnswers() {
+        getUserAnswers(): any[] {
             // Get user's selected answers from either user_answer or selected_options (for review mode)
             if (this.answer) {
                 const userAnswer = this.answer.user_answer || this.answer.selected_options;
@@ -255,7 +256,7 @@ export default {
             }
             return [];
         },
-        isCorrectOption(index) {
+        isCorrectOption(index: number) {
             // For Type 5 (Drag & Drop Match), check if the user matched the correct definition to the item
             const userAnswers = this.getUserAnswers();
             const item = this.displayItems[index];
@@ -269,11 +270,11 @@ export default {
             // If correct_options is an array (ordered list)
             return userAnswers[index] === this.question?.correct_options?.[index];
         },
-        getAnswerItemClasses(index) {
-            const isDark = this.isThemeDark;
+        getAnswerItemClasses(index: number) {
+            const isDarkMode = this.isThemeDark;
             const isCorrect = this.isCorrectOption(index);
             
-            if (isDark) {
+            if (isDarkMode) {
                 return isCorrect
                     ? 'bg-green-500/10 border border-green-500/50'
                     : 'bg-red-500/10 border border-red-500/50';
@@ -283,7 +284,7 @@ export default {
                     : 'bg-red-100 border border-red-500';
             }
         },
-        getCorrectAnswer(item) {
+        getCorrectAnswer(item: any) {
             // Check if correct_options is an object with item as key (primary case)
             if (this.question?.correct_options && typeof this.question.correct_options === 'object' && !Array.isArray(this.question.correct_options)) {
                 return this.question.correct_options[item] || '';

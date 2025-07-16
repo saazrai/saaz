@@ -4,10 +4,10 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/Components/shadcn/ui/accordion';
-import { Button } from '@/Components/shadcn/ui/button';
-import { FormItem, FormMessage } from '@/Components/shadcn/ui/form';
-import { Separator } from '@/Components/shadcn/ui/separator';
+} from '@/components/shadcn/ui/accordion';
+import { Button } from '@/components/shadcn/ui/button';
+import { FormItem, FormMessage } from '@/components/shadcn/ui/form';
+import { Separator } from '@/components/shadcn/ui/separator';
 import { PlusIcon, TrashIcon } from 'lucide-vue-next';
 import { FieldArray, FieldContextKey, useField } from 'vee-validate';
 import { computed, provide } from 'vue';

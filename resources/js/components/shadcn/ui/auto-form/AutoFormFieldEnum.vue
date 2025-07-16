@@ -5,19 +5,19 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/Components/shadcn/ui/form';
-import { Label } from '@/Components/shadcn/ui/label';
+} from '@/components/shadcn/ui/form';
+import { Label } from '@/components/shadcn/ui/label';
 import {
   RadioGroup,
   RadioGroupItem,
-} from '@/Components/shadcn/ui/radio-group';
+} from '@/components/shadcn/ui/radio-group';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/shadcn/ui/select';
+} from '@/components/shadcn/ui/select';
 import AutoFormLabel from './AutoFormLabel.vue';
 import { beautifyObjectName } from './utils';
 

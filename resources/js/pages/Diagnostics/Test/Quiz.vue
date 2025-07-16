@@ -743,18 +743,18 @@
 </template>
 
 <script lang="ts">
-import ConfirmationDialog from "@/Components/ConfirmationDialog.vue";
-import Modal from "@/Components/Modal.vue";
+import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
+import Modal from "@/components/Modal.vue";
 import { Link } from "@inertiajs/vue3";
-import Timer from "@/Components/QuizTimer.vue";
-import Type1 from "@/Components/QuizTypes/Type1.vue";
-import Type2 from "@/Components/QuizTypes/Type2.vue";
-import Type3 from "@/Components/QuizTypes/Type3.vue";
-import Type4 from "@/Components/QuizTypes/Type4.vue";
-import Type5 from "@/Components/QuizTypes/Type5.vue";
-import Type6 from "@/Components/QuizTypes/Type6.vue";
-import Type7 from "@/Components/QuizTypes/Type7.vue";
-import BarChartLevelIndicator from "@/Components/LevelIndicators/BarChartLevelIndicator.vue";
+import Timer from "@/components/QuizTimer.vue";
+import Type1 from "@/components/QuizTypes/Type1.vue";
+import Type2 from "@/components/QuizTypes/Type2.vue";
+import Type3 from "@/components/QuizTypes/Type3.vue";
+import Type4 from "@/components/QuizTypes/Type4.vue";
+import Type5 from "@/components/QuizTypes/Type5.vue";
+import Type6 from "@/components/QuizTypes/Type6.vue";
+import Type7 from "@/components/QuizTypes/Type7.vue";
+import BarChartLevelIndicator from "@/components/LevelIndicators/BarChartLevelIndicator.vue";
 import { SunIcon, MoonIcon } from 'lucide-vue-next';
 import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';

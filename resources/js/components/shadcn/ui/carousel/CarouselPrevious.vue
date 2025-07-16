@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button } from '@/Components/shadcn/ui/button';
+import { Button } from '@/components/shadcn/ui/button';
 import { cn } from '@/lib/utils';
 import { ArrowLeft } from 'lucide-vue-next';
 import { useCarousel } from './useCarousel';

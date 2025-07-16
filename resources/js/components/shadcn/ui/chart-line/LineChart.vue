@@ -3,7 +3,7 @@ import {
   ChartCrosshair,
   ChartLegend,
   defaultColors,
-} from '@/Components/shadcn/ui/chart';
+} from '@/components/shadcn/ui/chart';
 import { cn } from '@/lib/utils';
 import { CurveType } from '@unovis/ts';
 import { Axis, Line } from '@unovis/ts';

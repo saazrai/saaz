@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { buttonVariants } from '@/Components/shadcn/ui/button';
+import { buttonVariants } from '@/components/shadcn/ui/button';
 import { BulletLegend } from '@unovis/ts';
 import { VisBulletLegend } from '@unovis/vue';
 import { nextTick, onMounted, ref } from 'vue';

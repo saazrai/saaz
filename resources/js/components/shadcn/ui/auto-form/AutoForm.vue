@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form } from '@/Components/shadcn/ui/form';
+import { Form } from '@/components/shadcn/ui/form';
 import { toTypedSchema } from '@vee-validate/zod';
 import { computed, toRefs } from 'vue';
 import AutoFormField from './AutoFormField.vue';

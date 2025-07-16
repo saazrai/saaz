@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Skeleton } from '@/Components/shadcn/ui/skeleton'
+import { Skeleton } from '@/components/shadcn/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { computed } from 'vue'
 

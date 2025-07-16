@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toggleVariants } from '@/Components/shadcn/ui/toggle';
+import { toggleVariants } from '@/components/shadcn/ui/toggle';
 import { cn } from '@/lib/utils';
 import { ToggleGroupItem, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';

@@ -4,8 +4,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/Components/shadcn/ui/accordion';
-import { FormItem } from '@/Components/shadcn/ui/form';
+} from '@/components/shadcn/ui/accordion';
+import { FormItem } from '@/components/shadcn/ui/form';
 import { FieldContextKey, useField } from 'vee-validate';
 import { computed, provide } from 'vue';
 import AutoFormField from './AutoFormField.vue';

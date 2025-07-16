@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { Button } from '@/Components/shadcn/ui/button';
-import { Calendar } from '@/Components/shadcn/ui/calendar';
+import { Button } from '@/components/shadcn/ui/button';
+import { Calendar } from '@/components/shadcn/ui/calendar';
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from '@/Components/shadcn/ui/form';
+} from '@/components/shadcn/ui/form';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/Components/shadcn/ui/popover';
+} from '@/components/shadcn/ui/popover';
 import { cn } from '@/lib/utils';
 
 import { DateFormatter, getLocalTimeZone } from '@internationalized/date';

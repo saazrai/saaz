@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Tooltip from '@/Components/shadcn/ui/tooltip/Tooltip.vue'
-import TooltipContent from '@/Components/shadcn/ui/tooltip/TooltipContent.vue'
-import TooltipTrigger from '@/Components/shadcn/ui/tooltip/TooltipTrigger.vue'
+import Tooltip from '@/components/shadcn/ui/tooltip/Tooltip.vue'
+import TooltipContent from '@/components/shadcn/ui/tooltip/TooltipContent.vue'
+import TooltipTrigger from '@/components/shadcn/ui/tooltip/TooltipTrigger.vue'
 import { computed } from 'vue'
 import SidebarMenuButtonChild from './SidebarMenuButtonChild.vue'
 import { useSidebar } from './utils'

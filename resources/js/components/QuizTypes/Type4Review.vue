@@ -188,7 +188,7 @@ export default {
         }
     },
     computed: {
-        isThemeDark() {
+        isThemeDark(): boolean {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDarkMode !== null) {
                 return this.isDarkMode;
@@ -210,16 +210,16 @@ export default {
             }
             return [];
         },
-        isCorrectOption(index) {
+        isCorrectOption(index: number) {
             // Check if the user's answer at this index matches the correct answer
             const userAnswers = this.getUserAnswers();
             return userAnswers[index] === this.question?.correct_options?.[index];
         },
-        getAnswerItemClasses(index) {
-            const isDark = this.isThemeDark;
+        getAnswerItemClasses(index: number) {
+            const isDarkMode = this.isThemeDark;
             const isCorrect = this.isCorrectOption(index);
             
-            if (isDark) {
+            if (isDarkMode) {
                 return isCorrect
                     ? 'border bg-green-500/10 border-green-500/50'
                     : 'border bg-red-500/10 border-red-500/50';

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { Checkbox } from '@/Components/shadcn/ui/checkbox';
+import { Checkbox } from '@/components/shadcn/ui/checkbox';
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormMessage,
-} from '@/Components/shadcn/ui/form';
-import { Switch } from '@/Components/shadcn/ui/switch';
+} from '@/components/shadcn/ui/form';
+import { Switch } from '@/components/shadcn/ui/switch';
 import { computed } from 'vue';
 import AutoFormLabel from './AutoFormLabel.vue';
 import { beautifyObjectName } from './utils';
