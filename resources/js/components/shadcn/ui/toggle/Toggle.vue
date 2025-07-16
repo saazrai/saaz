@@ -17,11 +17,7 @@ const props = defineProps({
 
 const emits = defineEmits(['update:pressed']);
 
-const delegatedProps = computed(() => {
-  const { size, variant, ...delegated } = props;
-
-  return delegated;
-});
+const delegatedProps = computed(() => ({ ...props }));
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>

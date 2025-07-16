@@ -245,7 +245,7 @@ import { Link } from '@inertiajs/vue3';
 import moment from 'moment';
 import AppLayout from "@/layouts/AppLayout.vue";
 
-const _props = defineProps({
+// const _props = defineProps({
     totalQuestions: {
         type: Number,
         default: 100,

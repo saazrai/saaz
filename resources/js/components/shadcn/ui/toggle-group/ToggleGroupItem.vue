@@ -2,26 +2,21 @@
 import { toggleVariants } from '@/Components/shadcn/ui/toggle';
 import { cn } from '@/lib/utils';
 import { ToggleGroupItem, useForwardProps } from 'radix-vue';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 
-const props = defineProps({
-  value: { type: String, required: true },
-  defaultValue: { type: Boolean, required: false },
-  pressed: { type: Boolean, required: false },
-  disabled: { type: Boolean, required: false },
-  asChild: { type: Boolean, required: false },
-  as: { type: null, required: false },
-  class: { type: null, required: false },
-  variant: { type: null, required: false },
-  size: { type: null, required: false },
-});
+const props = defineProps<{
+  value: string;
+  defaultValue?: boolean;
+  pressed?: boolean;
+  disabled?: boolean;
+  asChild?: boolean;
+  as?: any;
+  class?: any;
+  variant?: 'default' | 'outline' | null | undefined;
+  size?: 'default' | 'sm' | 'lg' | null | undefined;
+}>();
 
-const context = inject('toggleGroup');
-
-const delegatedProps = computed(() => {
-  const { variant, size, ...delegated } = props;
-  return delegated;
-});
+const delegatedProps = computed(() => ({ ...props }));
 
 const forwardedProps = useForwardProps(delegatedProps);
 </script>
@@ -32,8 +27,8 @@ const forwardedProps = useForwardProps(delegatedProps);
     :class="
       cn(
         toggleVariants({
-          variant: context?.variant || variant,
-          size: context?.size || size,
+          variant: props.variant,
+          size: props.size,
         }),
         props.class,
       )

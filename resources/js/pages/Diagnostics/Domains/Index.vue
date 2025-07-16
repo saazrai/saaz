@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { useForm, Link } from '@inertiajs/vue3';
 
-const props = defineProps({
+// const props = defineProps({
     domains: Array
 });
 

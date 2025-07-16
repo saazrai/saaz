@@ -68,6 +68,7 @@ const page = usePage()
 const sidebarStore = useSidebarStore()
 
 // Helper function to safely generate routes
+const safeRoute = (routeName, params = {}) => {
     try {
         return route(routeName, params)
     } catch {

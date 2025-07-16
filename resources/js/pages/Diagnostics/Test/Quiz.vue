@@ -1072,7 +1072,7 @@ export default {
             this.answer.selected_options = this.selectedOptions;
 
             try {
-                const _response = await axios.post(
+                // const _response = await axios.post(
                     route("assessments.diagnostics.answer", this.diagnostic.id),
                     {
                         item_id: this.currentQuestionData.id,
@@ -1254,7 +1254,7 @@ export default {
             // Check available space
             const spaceRight = window.innerWidth - buttonRect.right;
             const spaceLeft = buttonRect.left;
-            const _spaceTop = buttonRect.top;
+            // const _spaceTop = buttonRect.top;
             const spaceBottom = window.innerHeight - buttonRect.bottom;
             
             const position = {};

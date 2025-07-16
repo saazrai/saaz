@@ -485,17 +485,17 @@ const performanceLevel = computed(() => {
     return 'Needs Improvement';
 });
 
-const _performanceVariant = computed(() => {
+// const _performanceVariant = computed(() => {
     if (props.score >= 80) return 'success';
     if (props.score >= 60) return 'default';
     return 'warning';
 });
 
-const _accuracyRate = computed(() => {
+// const _accuracyRate = computed(() => {
     return Math.round((props.correctCount / props.diagnostic.current_question) * 100);
 });
 
-const _accuracyTrend = computed(() => {
+// const _accuracyTrend = computed(() => {
     if (!props.previousScore) return 0;
     return Math.round(props.score - props.previousScore);
 });

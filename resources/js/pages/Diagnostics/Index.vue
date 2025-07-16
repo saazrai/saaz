@@ -655,7 +655,7 @@ const isAuthenticated = computed(() => props.isAuthenticated || !!page.props.aut
 
 // Interactive domain exploration state
 const selectedCategory = ref('all');
-const _selectedDomain = ref(null);
+// const _selectedDomain = ref(null);
 const showDomainModal = ref(false);
 const selectedDomainDetails = ref(null);
 const loadingDomains = ref(true);

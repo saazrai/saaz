@@ -94,4 +94,3 @@ import BarChartLevelIndicator from './BarChartLevelIndicator.vue';
 const progress = ref(3);
 const rating = ref(4);
 </script>
-</template>

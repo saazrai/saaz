@@ -33,14 +33,16 @@ export default function useDependencies(fieldName) {
     const source = dep.sourceField;
     const index = getIndexIfArray(fieldName) ?? -1;
     const [sourceLast, ...sourceInitial] = source.split('.').toReversed();
-    const [_targetLast, ...targetInitial] = dep.targetField
+    const targetInitial = dep.targetField
       .split('.')
-      .toReversed();
+      .toReversed()
+      .slice(1);
 
     if (index >= 0 && sourceInitial.join(',') === targetInitial.join(',')) {
-      const [_currentLast, ...currentInitial] = fieldName
+      const currentInitial = fieldName
         .split('.')
-        .toReversed();
+        .toReversed()
+        .slice(1);
       return getFromPath(form.value, currentInitial.join('.') + sourceLast);
     }
 

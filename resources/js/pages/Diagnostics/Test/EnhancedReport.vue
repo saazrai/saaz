@@ -316,7 +316,7 @@ const levelBadgeVariant = computed(() => {
     return levelMap[props.currentCourseLevel?.name] || 'default';
 });
 
-const _radarData = computed(() => {
+// const _radarData = computed(() => {
     if (!props.domainPerformance) return [];
     return props.domainPerformance.map(domain => ({
         category: domain.name,
