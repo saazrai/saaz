@@ -629,6 +629,12 @@ test('domain stops when no valid questions available', function () {
     $state = $this->service->initializeTest();
     $state['domain_bloom_levels'][$this->domain->id] = 4;
     
+    // Initialize domain history to ensure domain is considered for testing
+    $state['domain_history'][$this->domain->id] = [true, true]; // 2 correct answers
+    $state['domain_bloom_history'][$this->domain->id] = [3, 3]; // at L3
+    $state['domain_questions_at_level'][$this->domain->id] = [3 => 2, 4 => 0];
+    $state['domain_attempt_questions'][$this->domain->id] = [3 => 2, 4 => 0];
+    
     // Exclude ALL questions to force stop
     $allQuestionIds = collect($this->bloomLevels)->flatten()->pluck('id')->toArray();
     
@@ -896,6 +902,12 @@ test('question selection integrity: never lower-level fallbacks', function () {
     $state = $this->service->initializeTest();
     $domainId = $this->domain->id;
     $state['domain_bloom_levels'][$domainId] = 4;
+    
+    // Initialize domain history to ensure domain is considered for testing
+    $state['domain_history'][$domainId] = [true, true]; // 2 correct answers
+    $state['domain_bloom_history'][$domainId] = [3, 3]; // at L3
+    $state['domain_questions_at_level'][$domainId] = [3 => 2, 4 => 0];
+    $state['domain_attempt_questions'][$domainId] = [3 => 2, 4 => 0];
     
     Log::info("🔍 Testing Question Selection Integrity");
     
