@@ -149,7 +149,7 @@ export default {
             try {
                 const questionData = JSON.parse(this.question.question);
                 return marked(questionData.scenario || '');
-            } catch (e) {
+            } catch {
                 return '';
             }
         },
@@ -174,7 +174,7 @@ export default {
                         .replace(/\\./g, match => match.charAt(1)); // Remove backslash from escaped chars
                 }
                 return '';
-            } catch (e) {
+            } catch {
                 return '';
             }
         },
@@ -182,7 +182,7 @@ export default {
             try {
                 const questionData = JSON.parse(this.question.question);
                 return questionData.command_data.success_response || '';
-            } catch (e) {
+            } catch {
                 return '';
             }
         }

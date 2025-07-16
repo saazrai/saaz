@@ -545,7 +545,6 @@ export default {
         generateResponse(command, match, generatorConfig) {
             // Simple response generator based on configuration
             // This allows for dynamic responses without hardcoding
-            const type = generatorConfig.type || 'default';
             const template = generatorConfig.template || '';
             
             // Replace placeholders with captured groups from regex match

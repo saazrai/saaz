@@ -34,37 +34,39 @@
                 </div>
                 
                 <!-- Hotspot overlays -->
-                <div
-                    v-if="isReview"
-                    v-for="(option, i) in question.options"
-                    :key="`review-${i}`"
-                    :class="getReviewOptionClasses(i, option)"
-                    :style="{
-                        position: 'absolute',
-                        top: option.y + 'px',
-                        left: option.x + 'px',
-                        marginLeft: '-35px',
-                        marginTop: '-35px'
-                    }"
-                ></div>
-                <div
-                    v-else
-                    v-for="(option, i) in question.options"
-                    :key="`interactive-${i}`"
-                    :class="getInteractiveOptionClasses(option)"
-                    :style="{
-                        position: 'absolute',
-                        top: option.y + 'px',
-                        left: option.x + 'px',
-                        marginLeft: '-35px',
-                        marginTop: '-35px'
-                    }"
-                    @click="select(option)"
-                >
-                    <span v-if="selectedOptions === option" class="absolute inset-0 flex items-center justify-center text-white font-bold text-lg">
-                        ✓
-                    </span>
-                </div>
+                <template v-if="isReview">
+                    <div
+                        v-for="(option, i) in question.options"
+                        :key="`review-${i}`"
+                        :class="getReviewOptionClasses(i, option)"
+                        :style="{
+                            position: 'absolute',
+                            top: option.y + 'px',
+                            left: option.x + 'px',
+                            marginLeft: '-35px',
+                            marginTop: '-35px'
+                        }"
+                    ></div>
+                </template>
+                <template v-else>
+                    <div
+                        v-for="(option, i) in question.options"
+                        :key="`interactive-${i}`"
+                        :class="getInteractiveOptionClasses(option)"
+                        :style="{
+                            position: 'absolute',
+                            top: option.y + 'px',
+                            left: option.x + 'px',
+                            marginLeft: '-35px',
+                            marginTop: '-35px'
+                        }"
+                        @click="select(option)"
+                    >
+                        <span v-if="selectedOptions === option" class="absolute inset-0 flex items-center justify-center text-white font-bold text-lg">
+                            ✓
+                        </span>
+                    </div>
+                </template>
             </div>
         </div>
         

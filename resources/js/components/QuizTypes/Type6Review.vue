@@ -19,36 +19,40 @@
                 ></div>
                 <div class="relative overflow-hidden mb-8">
                     <img v-if="question.image && question.image.path" :src="question.image.path" class="pl-8" />
-                    <div
-                        v-if="isReview"
-                        v-for="(option, i) in question.options"
-                        :class="[
-                            'h-[70px] w-[70px] absolute rounded-none z-[200] ml-[-35px] mt-[-35px]',
-                            {
-                                'bg-[#8addae] border-[#22c55d] border bg-opacity-50':
-                                    isCorrectOption(i),
-                                'bg-[#f8e7e6] border border-[#cb7d75] bg-opacity-50':
-                                    isIncorrectOption(option),
-                            },
-                        ]"
+                    <template v-if="isReview">
+                        <div
+                            v-for="(option, i) in question.options"
+                            :key="`option-${i}`"
+                            :class="[
+                                'h-[70px] w-[70px] absolute rounded-none z-[200] ml-[-35px] mt-[-35px]',
+                                {
+                                    'bg-[#8addae] border-[#22c55d] border bg-opacity-50':
+                                        isCorrectOption(i),
+                                    'bg-[#f8e7e6] border border-[#cb7d75] bg-opacity-50':
+                                        isIncorrectOption(option),
+                                },
+                            ]"
                         :style="
                             'top:' + option.y + 'px; left:' + option.x + 'px'
                         "
                     ></div>
-                    <div
-                        v-else
-                        v-for="option in question.options"
-                        :class="[
-                            'h-[70px] w-[70px] absolute rounded-none cursor-pointer z-[200] ml-[-35px] mt-[-35px]',
-                            selectedOptions == option
-                                ? 'bg-blue-500 border border-blue-700 bg-opacity-50'
-                                : 'hover:bg-blue-500 hover:bg-opacity-50 hover:border hover:border-blue-700',
-                        ]"
-                        :style="
-                            'top:' + option.y + 'px; left:' + option.x + 'px'
-                        "
-                        @click="select(option)"
-                    ></div>
+                    </template>
+                    <template v-else>
+                        <div
+                            v-for="(option, i) in question.options"
+                            :key="`interactive-${i}`"
+                            :class="[
+                                'h-[70px] w-[70px] absolute rounded-none cursor-pointer z-[200] ml-[-35px] mt-[-35px]',
+                                selectedOptions == option
+                                    ? 'bg-blue-500 border border-blue-700 bg-opacity-50'
+                                    : 'hover:bg-blue-500 hover:bg-opacity-50 hover:border hover:border-blue-700',
+                            ]"
+                            :style="
+                                'top:' + option.y + 'px; left:' + option.x + 'px'
+                            "
+                            @click="select(option)"
+                        ></div>
+                    </template>
                 </div>
             </div>
             <div
@@ -71,6 +75,7 @@
                 <ul class="list-disc list-outside">
                     <li
                         v-for="(option, i) in question.justifications"
+                        :key="`justification-${i}`"
                         class="m-5"
                         :class="{ 'font-semibold': isCorrectOption(i) }"
                     >

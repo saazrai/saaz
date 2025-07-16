@@ -207,7 +207,7 @@ export default {
                     : 'border bg-red-100 border-red-500';
             }
         },
-        getAnswerItemStyle(index) {
+        getAnswerItemStyle() {
             // Return empty string - we'll use classes instead
             return '';
         },
