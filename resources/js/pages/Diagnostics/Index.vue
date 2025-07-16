@@ -659,14 +659,14 @@ const selectedCategory = ref('all');
 const showDomainModal = ref(false);
 const selectedDomainDetails = ref(null);
 const loadingDomains = ref(true);
-const domains = ref([]);
+const processedDomains = ref([]);
 
 // Layout is now handled by defineOptions at the bottom of the file
 
 // Process domains from props
 onMounted(() => {
     if (props.domains && props.domains.length > 0) {
-        domains.value = props.domains.map(domain => ({
+        processedDomains.value = props.domains.map(domain => ({
             ...domain,
             questionCount: 5, // Each domain gets 5 questions
             colorClass: getColorClass(domain.color),

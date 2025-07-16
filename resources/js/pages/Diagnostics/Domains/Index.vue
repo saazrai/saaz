@@ -58,8 +58,8 @@
 import { useForm, Link } from '@inertiajs/vue3';
 
 // const props = defineProps({
-    domains: Array
-});
+//     domains: Array
+// });
 
 const form = useForm({
     name: '',

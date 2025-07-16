@@ -317,12 +317,12 @@ const levelBadgeVariant = computed(() => {
 });
 
 // const _radarData = computed(() => {
-    if (!props.domainPerformance) return [];
-    return props.domainPerformance.map(domain => ({
-        category: domain.name,
-        score: domain.score
-    }));
-});
+//     if (!props.domainPerformance) return [];
+//     return props.domainPerformance.map(domain => ({
+//         category: domain.name,
+//         score: domain.score
+//     }));
+// });
 
 // Helper functions
 const getDomainColorClass = (score) => {

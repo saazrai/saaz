@@ -206,7 +206,7 @@
 
             <h2 class="text-xl font-semibold mb-3">Previous Assessments</h2>
 
-            <div v-if="diagnosticsHistory.length > 0" class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div v-if="props.diagnosticsHistory && props.diagnosticsHistory.length > 0" class="bg-white shadow-md rounded-lg overflow-hidden">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
@@ -219,7 +219,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="diagnostic in diagnosticsHistory" :key="diagnostic.id">
+                        <tr v-for="diagnostic in props.diagnosticsHistory" :key="diagnostic.id">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(diagnostic.created_at) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnostic.status }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnostic.score !== null ? diagnostic.score + '%' : 'N/A' }}</td>
@@ -245,7 +245,7 @@ import { Link } from '@inertiajs/vue3';
 import moment from 'moment';
 import AppLayout from "@/layouts/AppLayout.vue";
 
-// const _props = defineProps({
+const props = defineProps({
     totalQuestions: {
         type: Number,
         default: 100,

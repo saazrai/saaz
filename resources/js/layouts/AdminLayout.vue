@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch, type Ref } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
-import { Button } from '@/components/shadcn/ui/button'
+import { Button } from '@/Components/shadcn/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/shadcn/ui/avatar'
 import { useSidebarStore } from '@/stores/sidebarStore.js'
 import { useTheme } from '@/composables/useTheme'
@@ -49,7 +49,6 @@ import {
     LogOut,
     User,
     ChevronDown,
-    ChevronRight,
     FileText,
     FileCheck,
     Activity,
@@ -66,19 +65,20 @@ defineProps({
 
 const page = usePage()
 const sidebarStore = useSidebarStore()
+const currentUrl = computed(() => page.url);
 
 // Helper function to safely generate routes
-const safeRoute = (routeName, params = {}) => {
-    try {
-        return route(routeName, params)
-    } catch {
-        console.warn(`Route ${routeName} not found`)
-        return '#'
-    }
-}
+// const safeRoute = (routeName: string, params: Record<string, any> = {}) => {
+//     try {
+//         return route(routeName, params)
+//     } catch {
+//         console.warn(`Route ${routeName} not found`)
+//         return '#'
+//     }
+// }
 
 // Refs for scroll preservation
-const sidebarRef = ref(null)
+const sidebarRef: Ref<HTMLElement | null> = ref(null)
 
 // Dark mode state
 // Theme management
@@ -97,10 +97,17 @@ const recentPurchases = ref([])
 const activeQuizAttempts = ref([])
 
 // Echo connection references for admin
-let adminChannel = null
-let presenceChannel = null
-let purchaseChannel = null
-let quizChannel = null
+let adminChannel: any = null
+let presenceChannel: any = null
+let purchaseChannel: any = null
+let quizChannel: any = null
+
+// Extend window type for Echo
+declare global {
+  interface Window {
+    Echo?: any;
+  }
+}
 
 // Menu structure with icons
 const menuItems = computed(() => [
@@ -183,12 +190,12 @@ const menuItems = computed(() => [
 ])
 
 // Enhanced active checking to support nested routes
-const isActiveItem = (href) => {
-    return currentUrl === href || (href !== '/admin/dashboard' && currentUrl.startsWith(href))
+const isActiveItem = (href: string) => {
+    return currentUrl.value === href || (href !== '/admin/dashboard' && currentUrl.value.startsWith(href))
 }
 
 // Determine which group should be open based on current URL
-const getActiveGroup = () => {
+const getActiveGroup = (): string | null => {
 
     for (const group of menuItems.value) {
         for (const item of group.items) {
@@ -201,11 +208,11 @@ const getActiveGroup = () => {
 }
 
 // Store-based methods
-const isGroupOpen = (groupKey) => {
+const isGroupOpen = (groupKey: string) => {
     return sidebarStore.isGroupOpen(groupKey)
 }
 
-const handleGroupUpdate = (groupKey, isOpen) => {
+const handleGroupUpdate = (groupKey: string) => {
     sidebarStore.toggleGroup(groupKey)
 }
 
@@ -220,7 +227,7 @@ const restoreScrollPosition = () => {
 }
 
 // Enhanced navigation handler with store
-const handleNavigation = (href) => {
+const handleNavigation = (href: string) => {
     // Save current scroll position before navigation
     const sidebarElement = sidebarRef.value
     if (sidebarElement) {
@@ -297,7 +304,7 @@ const setupAdminChannels = () => {
         
         // Join admin presence channel
         presenceChannel = window.Echo.join('online-users')
-            .here((users) => {
+            .here((users: any) => {
                 console.log('👥 Admin presence channel - here:', users.length, 'users')
                 onlineUsersCount.value = users.length
                 isConnected.value = true
@@ -307,7 +314,7 @@ const setupAdminChannels = () => {
                     detail: { users: users, count: users.length }
                 }))
             })
-            .joining((user) => {
+            .joining((user: any) => {
                 console.log('🟢 User joined:', user.name)
                 onlineUsersCount.value++
                 
@@ -321,7 +328,7 @@ const setupAdminChannels = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || undefined
                     },
                     body: JSON.stringify({
                         user_id: user.id,
@@ -342,7 +349,7 @@ const setupAdminChannels = () => {
                         console.log('✅ Sync join success:', data)
                     }
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     console.error('❌ Failed to sync user online status (join):', error)
                 })
                 
@@ -353,7 +360,7 @@ const setupAdminChannels = () => {
                         timestamp: new Date().toISOString()
                     })
             })
-            .leaving((user) => {
+            .leaving((user: any) => {
                 console.log('🔴 User left:', user.name)
                 onlineUsersCount.value = Math.max(0, onlineUsersCount.value - 1)
                 
@@ -367,7 +374,7 @@ const setupAdminChannels = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || undefined
                     },
                     body: JSON.stringify({
                         user_id: user.id,
@@ -388,7 +395,7 @@ const setupAdminChannels = () => {
                         console.log('✅ Sync leave success:', data)
                     }
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     console.error('❌ Failed to sync user online status (leave):', error)
                 })
                 
@@ -399,20 +406,20 @@ const setupAdminChannels = () => {
                         timestamp: new Date().toISOString()
                     })
             })
-            .error((error) => {
+            .error((error: any) => {
                 console.error('❌ Admin presence channel error:', error)
                 isConnected.value = false
             })
 
         // Listen to admin dashboard channel
         adminChannel = window.Echo.private('admin-dashboard')
-            .listen('UserOnlineStatusChanged', (e) => {
+            .listen('UserOnlineStatusChanged', (e: any) => {
                 // Dispatch custom event for LiveMonitor
                 window.dispatchEvent(new CustomEvent('admin-user-online', {
                     detail: e
                 }))
             })
-            .listen('PurchaseMade', (e) => {
+            .listen('PurchaseMade', (e: any) => {
                 recentPurchases.value.unshift({
                     id: e.purchase.id,
                     user: e.user.name,
@@ -439,7 +446,7 @@ const setupAdminChannels = () => {
                     detail: e
                 }))
             })
-            .listen('UserActivityUpdate', (e) => {
+            .listen('UserActivityUpdate', (e: any) => {
                 // Dispatch custom event for LiveMonitor
                 window.dispatchEvent(new CustomEvent('admin-user-activity', {
                     detail: e
@@ -492,7 +499,7 @@ const setupAdminChannels = () => {
 
         // Listen to purchase notifications channel
         purchaseChannel = window.Echo.private('purchase-notifications')
-            .listen('PurchaseMade', (e) => {
+            .listen('PurchaseMade', () => {
                 // Additional purchase processing if needed
             })
 
@@ -589,7 +596,7 @@ const simulateUserActivity = () => {
     if (presenceChannel && presenceChannel.members) {
         const users = Object.values(presenceChannel.members.members)
         
-        users.forEach((user, index) => {
+        users.forEach((user: any, index: number) => {
             // Simulate random activity every 30-120 seconds
             setTimeout(() => {
                 const activities = [
@@ -891,9 +898,9 @@ onBeforeUnmount(() => {
             ]">
                 <div class="p-4">
                     <!-- Menu Groups with Collapsible functionality -->
-                    <div v-for="(group, index) in menuItems" :key="group.title" class="mb-4">
+                    <div v-for="group in menuItems" :key="group.title" class="mb-4">
                         <Collapsible :open="isGroupOpen(group.key)"
-                            @update:open="(isOpen) => handleGroupUpdate(group.key, isOpen)">
+                            @update:open="(isOpen) => handleGroupUpdate(group.key)">
                             <CollapsibleTrigger
                                 :class="[
                                     'flex w-full items-center justify-between py-2 text-xs font-semibold uppercase tracking-wide transition-colors duration-200',

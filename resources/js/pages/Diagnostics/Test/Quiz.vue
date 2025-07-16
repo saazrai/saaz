@@ -1072,7 +1072,7 @@ export default {
             this.answer.selected_options = this.selectedOptions;
 
             try {
-                // const _response = await axios.post(
+                await axios.post(
                     route("assessments.diagnostics.answer", this.diagnostic.id),
                     {
                         item_id: this.currentQuestionData.id,

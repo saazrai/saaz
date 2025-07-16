@@ -909,7 +909,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 export default {
     layout: null, // No layout for sample quiz
     components: {
-        Link,
+        LinkComponent: Link,
         Type1,
         Type2,
         Type3,

@@ -421,7 +421,7 @@
 </template>
 
 <script setup lang="ts">
-import { Link, Head } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import AppLayout from "@/layouts/AppLayout.vue";

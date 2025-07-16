@@ -240,7 +240,7 @@ import Type7 from '@/components/QuizTypes/Type7.vue'
 
 export default {
     components: {
-        Dialog,
+        DialogComponent: Dialog,
         DialogPanel,
         DialogTitle,
         TransitionChild,

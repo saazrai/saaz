@@ -1,27 +1,27 @@
 <template>
     <div :class="[
             'transition-all duration-300 w-full backdrop-blur-md rounded-2xl pt-8 font-medium shadow-xl',
-            isDark ? 'bg-slate-800' : 'bg-white'
+            isThemeDark ? 'bg-slate-800' : 'bg-white'
          ]">
         <div :class="[
                 'border rounded-2xl',
-                isDark ? 'border-slate-700' : 'border-gray-200'
+                isThemeDark ? 'border-slate-700' : 'border-gray-200'
              ]">
             <div class="px-2 py-8 lg:p-8">
                 <h4 class="text-lg font-bold mb-10 px-6"
-                    :class="isDark ? 'text-white' : 'text-gray-800'">
+                    :class="isThemeDark ? 'text-white' : 'text-gray-800'">
                     <b>{{ question.content }}</b>
                 </h4>
                 <div class="question-options grid grid-cols-1 sm:grid-cols-2 gap-4 px-6">
                     <div class="mb-8">
                         <h3 class="text-md font-semibold mb-2"
-                            :class="isDark ? 'text-white' : 'text-gray-800'">ITEMS</h3>
+                            :class="isThemeDark ? 'text-white' : 'text-gray-800'">ITEMS</h3>
                         <div
                             v-for="(option, index) in question.options"
                             :key="index"
                             :class="[
                                 'h-[82px] sm:h-[82px] flex items-center p-4 my-2 text-lg rounded-xl border shadow-sm transition-all duration-200 cursor-default',
-                                isDark ? 'text-white bg-slate-700/40 border-slate-600' : 'text-gray-900 bg-gray-200 border-gray-200'
+                                isThemeDark ? 'text-white bg-slate-700/40 border-slate-600' : 'text-gray-900 bg-gray-200 border-gray-200'
                             ]"
                         >
                             {{ option }}
@@ -29,24 +29,24 @@
                     </div>
                     <div class="mb-8">
                         <h3 class="text-md font-semibold mb-2"
-                            :class="isDark ? 'text-white' : 'text-gray-800'">YOUR ANSWERS</h3>
+                            :class="isThemeDark ? 'text-white' : 'text-gray-800'">YOUR ANSWERS</h3>
                         <div
                             v-for="(option, index) in getUserAnswers()"
                             :key="index"
                             class="option h-[82px] sm:h-[82px] flex items-center p-4 my-2 text-lg rounded-xl shadow-sm transition-all duration-200"
                             :class="getAnswerItemClasses(index)"
                         >
-                            <span class="flex-1" :class="isUserAnswerCorrect(option) ? (isDark ? 'text-green-300' : 'text-green-700') : (isDark ? 'text-red-300' : 'text-red-700')">{{ option }}</span>
+                            <span class="flex-1" :class="isUserAnswerCorrect(option) ? (isThemeDark ? 'text-green-300' : 'text-green-700') : (isThemeDark ? 'text-red-300' : 'text-red-700')">{{ option }}</span>
                             <span class="ml-auto">
                                 <span
                                     v-if="isUserAnswerCorrect(option)"
                                     class="font-bold text-xl"
-                                    :class="isDark ? 'text-green-400' : 'text-green-600'"
+                                    :class="isThemeDark ? 'text-green-400' : 'text-green-600'"
                                 >✓</span>
                                 <span
                                     v-else
                                     class="font-bold text-xl"
-                                    :class="isDark ? 'text-red-400' : 'text-red-600'"
+                                    :class="isThemeDark ? 'text-red-400' : 'text-red-600'"
                                 >✗</span>
                             </span>
                         </div>
@@ -59,8 +59,8 @@
                 :class="[
                     'border-t',
                     answer.is_correct
-                        ? (this.isDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
-                        : (this.isDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-300')
+                        ? (this.isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
+                        : (this.isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-300')
                 ]"
             >
                 <div class="p-8">
@@ -69,8 +69,8 @@
                         <div :class="[
                                 'w-10 h-10 rounded-xl flex items-center justify-center mr-3',
                                 answer.is_correct
-                                    ? (isDark ? 'bg-green-500/20' : 'bg-green-500/20')
-                                    : (isDark ? 'bg-red-500/20' : 'bg-red-500/20')
+                                    ? (isThemeDark ? 'bg-green-500/20' : 'bg-green-500/20')
+                                    : (isThemeDark ? 'bg-red-500/20' : 'bg-red-500/20')
                             ]">
                             <svg v-if="answer.is_correct" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -80,7 +80,7 @@
                             </svg>
                         </div>
                         <h3 class="text-xl font-bold"
-                            :class="isDark ? 'text-white' : 'text-gray-900'">
+                            :class="isThemeDark ? 'text-white' : 'text-gray-900'">
                             Answer Review
                         </h3>
                     </div>
@@ -90,12 +90,12 @@
                         <p :class="[
                             'font-semibold text-lg mb-2',
                             answer.is_correct
-                                ? (isDark ? 'text-green-400' : 'text-green-700')
-                                : (isDark ? 'text-red-400' : 'text-red-700')
+                                ? (isThemeDark ? 'text-green-400' : 'text-green-700')
+                                : (isThemeDark ? 'text-red-400' : 'text-red-700')
                         ]">
                             {{ answer.is_correct ? '✓ Correct!' : '✗ Incorrect' }}
                         </p>
-                        <p :class="isDark ? 'text-gray-300 text-lg' : 'text-gray-700 text-lg'">
+                        <p :class="isThemeDark ? 'text-gray-300 text-lg' : 'text-gray-700 text-lg'">
                             {{ answer.is_correct 
                                 ? 'Great job! You selected all the correct items.' 
                                 : 'Some of your selections were incorrect.' }}
@@ -105,24 +105,24 @@
                     <!-- Correct Answer -->
                     <div class="lg:max-w-[50%] lg:mx-auto">
                         <h4 class="font-semibold text-lg mb-3"
-                            :class="isDark ? 'text-white' : 'text-gray-900'">
+                            :class="isThemeDark ? 'text-white' : 'text-gray-900'">
                             Correct Answer:
                         </h4>
                         <div class="space-y-3">
                             <div v-for="(option, index) in question.correct_options" :key="index"
                                  :class="[
                                      'rounded-xl p-4 transition-all',
-                                     isDark 
+                                     isThemeDark 
                                          ? 'bg-green-500/20 border border-green-500/50' 
                                          : 'bg-green-50 border border-green-500'
                                  ]">
                                 <div class="flex items-center">
                                     <span class="font-medium text-lg"
-                                          :class="isDark ? 'text-white' : 'text-gray-900'">
+                                          :class="isThemeDark ? 'text-white' : 'text-gray-900'">
                                         {{ option }}
                                     </span>
                                     <svg class="w-5 h-5 ml-2 inline-block" 
-                                         :class="isDark ? 'text-green-400' : 'text-green-600'"
+                                         :class="isThemeDark ? 'text-green-400' : 'text-green-600'"
                                          fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                     </svg>
@@ -152,7 +152,7 @@ export default {
         }
     },
     computed: {
-        isDark() {
+        isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDarkMode !== null) {
                 return this.isDarkMode;
@@ -198,11 +198,11 @@ export default {
             const userAnswer = userAnswers[index];
             
             if (this.isUserAnswerCorrect(userAnswer)) {
-                return this.isDark
+                return this.isThemeDark
                     ? 'border bg-green-500/10 border-green-500/50'
                     : 'border bg-green-100 border-green-500';
             } else {
-                return this.isDark
+                return this.isThemeDark
                     ? 'border bg-red-500/10 border-red-500/50'
                     : 'border bg-red-100 border-red-500';
             }

@@ -13,10 +13,10 @@ const showMobileMenu = ref(false)
 const isMobile = ref(false)
 
 // Theme management
-const { isDark, toggleTheme } = useTheme()
+const { isDark: isDarkMode, toggleTheme } = useTheme()
 
 // Provide dark mode state to child components
-provide('isDark', isDark)
+provide('isDarkMode', isDarkMode)
 
 const toggleMobileMenu = () => {
     showMobileMenu.value = !showMobileMenu.value;
@@ -55,45 +55,45 @@ watchEffect(() => {
 </script>
 
 <template>
-    <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-[#efefef]']">
+    <div :class="['min-h-screen transition-colors duration-300', isDarkMode ? 'bg-gray-900' : 'bg-[#efefef]']">
         <!-- Navbar -->
         <nav class="fixed top-4 z-navbar w-full lg:top-6 z-[9999]">
             <div class="container box-border !max-w-[1672px] !px-6 md:!px-9">
                 <div :class="[
                     'relative flex h-[var(--navbar-height)] w-full items-center justify-between rounded-lg border px-2 py-1.5 transition-all duration-300 motion-reduce:transition-none lg:grid lg:grid-cols-[1fr_auto_1fr] lg:rounded-2xl lg:py-[0.4375rem] lg:pr-[0.4375rem] shadow-md',
-                    isDark 
+                    isDarkMode 
                         ? 'bg-gray-800 border-gray-700' 
                         : 'bg-white border-gray-200'
                 ]">
                     <Link aria-label="Homepage" class="relative flex w-fit items-center gap-0.5 overflow-hidden lg:px-3" :href="user ? route('dashboard') : route('home')">
-                        <img src="/images/logo.png" alt="Saaz Academy" :class="['h-10 transition-all duration-300', isDark ? 'brightness-0 invert' : '']">
+                        <img src="/images/logo.png" alt="Saaz Academy" :class="['h-10 transition-all duration-300', isDarkMode ? 'brightness-0 invert' : '']">
                     </Link>
                     <ul :class="[
                         'col-start-2 gap-5 px-2 font-medium xl:gap-6 hidden lg:flex items-center',
-                        isDark ? 'text-gray-200' : 'text-brand-neutrals-700'
+                        isDarkMode ? 'text-gray-200' : 'text-brand-neutrals-700'
                     ]">
                         <!-- V1 Enhanced Navigation - Diagnostics Focus -->
                         <li><a :class="[
                             'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
-                            isDark 
+                            isDarkMode 
                                 ? 'hover:text-white hover:bg-gray-700' 
                                 : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
                         ]" :href="safeRoute('assessments.diagnostics.index', '/diagnostics')">SecureStart™</a></li>
                         <li><a :class="[
                             'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
-                            isDark 
+                            isDarkMode 
                                 ? 'hover:text-white hover:bg-gray-700' 
                                 : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
                         ]" :href="route('info.features')">Features</a></li>
                         <li><a :class="[
                             'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
-                            isDark 
+                            isDarkMode 
                                 ? 'hover:text-white hover:bg-gray-700' 
                                 : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
                         ]" :href="route('info.about')">About</a></li>
                         <li><a :class="[
                             'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
-                            isDark 
+                            isDarkMode 
                                 ? 'hover:text-white hover:bg-gray-700' 
                                 : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
                         ]" :href="route('info.contact')">Contact</a></li>
@@ -104,13 +104,13 @@ watchEffect(() => {
                             @click="toggleTheme"
                             :class="[
                                 'p-2 rounded-lg transition-all duration-300 mr-2',
-                                isDark 
+                                isDarkMode 
                                     ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
                                     : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
                             ]"
-                            :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+                            :title="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
                         >
-                            <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
                             </svg>
                             <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -118,49 +118,49 @@ watchEffect(() => {
                             </svg>
                         </button>
                         <div v-if="user" class="relative">
-                            <Dropdown align="right" :contentClasses="`py-0 ${isDark ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg min-w-[220px] max-w-[90vw] z-50`" ref="userDropdown" width="auto">
+                            <Dropdown align="right" :contentClasses="`py-0 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg min-w-[220px] max-w-[90vw] z-50`" ref="userDropdown" width="auto">
                                 <template #trigger>
                                     <button type="button" :class="[
                                         'inline-flex items-center justify-center w-12 h-12 rounded-xl focus:outline-none transition-colors duration-300',
-                                        isDark 
+                                        isDarkMode 
                                             ? 'bg-gray-700 hover:bg-gray-600' 
                                             : 'bg-white hover:border hover:bg-gray-100'
                                     ]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="['w-8 h-8', isDark ? 'text-gray-300' : 'text-gray-700']">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="['w-8 h-8', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9A3.75 3.75 0 1 1 8.25 9a3.75 3.75 0 0 1 7.5 0ZM4.5 19.5a7.5 7.5 0 0 1 15 0v.75a.75.75 0 0 1-.75.75h-13.5a.75.75 0 0 1-.75-.75v-.75Z" />
                                         </svg>
                                     </button>
                                 </template>
                                 <template #content>
-                                    <div :class="['px-6 py-4', isDark ? 'border-b border-gray-700' : 'border-b']">
-                                        <div :class="['font-semibold text-base uppercase', isDark ? 'text-gray-100' : 'text-gray-900']">{{ user.name }}</div>
-                                        <div :class="['text-sm whitespace-nowrap', isDark ? 'text-gray-400' : 'text-gray-600']">{{ user.email }}</div>
+                                    <div :class="['px-6 py-4', isDarkMode ? 'border-b border-gray-700' : 'border-b']">
+                                        <div :class="['font-semibold text-base uppercase', isDarkMode ? 'text-gray-100' : 'text-gray-900']">{{ user.name }}</div>
+                                        <div :class="['text-sm whitespace-nowrap', isDarkMode ? 'text-gray-400' : 'text-gray-600']">{{ user.email }}</div>
                                     </div>
                                     <div class="py-2">
                                         <!-- V1 Enhanced User Menu -->
-                                        <Link :href="safeRoute('assessments.diagnostics.all-results', '/diagnostics/results')" :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap', isDark ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
+                                        <Link :href="safeRoute('assessments.diagnostics.all-results', '/diagnostics/results')" :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap', isDarkMode ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
                                             Diagnostic Results
                                         </Link>
                                         
                                         <!-- Admin Access (only show for admin/super-admin users) -->
                                         <Link v-if="$page.props.auth.roles && ($page.props.auth.roles.includes('admin') || $page.props.auth.roles.includes('super-admin'))" 
                                               :href="route('admin.audits.index')" 
-                                              :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap flex items-center', isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-50']">
+                                              :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap flex items-center', isDarkMode ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-50']">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                                             </svg>
                                             Admin Panel
                                         </Link>
                                         
-                                        <Link :href="route('settings.profile')" :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap', isDark ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
+                                        <Link :href="route('settings.profile')" :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap', isDarkMode ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
                                             Profile Settings
                                         </Link>
                                         
-                                        <Link :href="route('privacy.settings')" :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap', isDark ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
+                                        <Link :href="route('privacy.settings')" :class="['block px-6 py-3 text-base font-semibold whitespace-nowrap', isDarkMode ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
                                             Privacy Settings
                                         </Link>
                                         
-                                        <Link :href="route('logout')" method="post" as="button" :class="['block w-full text-left px-6 py-3 text-base font-semibold flex items-center justify-between whitespace-nowrap', isDark ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
+                                        <Link :href="route('logout')" method="post" as="button" :class="['block w-full text-left px-6 py-3 text-base font-semibold flex items-center justify-between whitespace-nowrap', isDarkMode ? 'text-gray-100 hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100']">
                                             Log Out
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
@@ -174,7 +174,7 @@ watchEffect(() => {
                             <Link :href="route('login')"
                                 :class="[
                                     'inline-block px-6 py-2 border-2 font-semibold rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 mr-2',
-                                    isDark 
+                                    isDarkMode 
                                         ? 'bg-gray-700 border-gray-600 text-gray-100 hover:bg-gray-600 hover:text-white focus:ring-gray-500' 
                                         : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-600 hover:text-white focus:ring-gray-400'
                                 ]">
@@ -183,7 +183,7 @@ watchEffect(() => {
                             <Link :href="route('register')"
                                 :class="[
                                     'inline-block px-6 py-2 border-2 font-semibold rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2',
-                                    isDark 
+                                    isDarkMode 
                                         ? 'bg-gray-800 border-gray-600 text-gray-100 hover:bg-gray-700 hover:text-white focus:ring-gray-500' 
                                         : 'bg-black border-gray-300 text-gray-100 hover:bg-gray-100 hover:border-gray-600 hover:text-gray-600 focus:ring-gray-400'
                                 ]">
@@ -198,14 +198,14 @@ watchEffect(() => {
                             @click="toggleTheme"
                             :class="[
                                 'flex items-center justify-center w-12 h-12 rounded-xl focus:outline-none transition-colors duration-300',
-                                isDark 
+                                isDarkMode 
                                     ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
                                     : 'bg-white hover:border hover:bg-gray-100 text-gray-900'
                             ]"
-                            :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+                            :title="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
                             aria-label="Toggle theme"
                         >
-                            <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
                             </svg>
                             <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -217,7 +217,7 @@ watchEffect(() => {
                             @click="toggleMobileMenu"
                             :class="[
                                 'lg:hidden flex items-center justify-center w-12 h-12 rounded-xl focus:outline-none transition-colors duration-300',
-                                isDark 
+                                isDarkMode 
                                     ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
                                     : 'bg-white hover:border hover:bg-gray-100 text-gray-700'
                             ]"
@@ -232,13 +232,13 @@ watchEffect(() => {
                             @click="toggleMobileMenu"
                             :class="[
                                 'lg:hidden flex items-center justify-center w-12 h-12 rounded-xl focus:outline-none transition-colors duration-300',
-                                isDark 
+                                isDarkMode 
                                     ? 'bg-gray-700 hover:bg-gray-600' 
                                     : 'bg-white hover:border hover:bg-gray-100'
                             ]"
                             aria-label="Open user menu"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="['w-8 h-8', isDark ? 'text-gray-300' : 'text-gray-700']">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="['w-8 h-8', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9A3.75 3.75 0 1 1 8.25 9a3.75 3.75 0 0 1 7.5 0ZM4.5 19.5a7.5 7.5 0 0 1 15 0v.75a.75.75 0 0 1-.75.75h-13.5a.75.75 0 0 1-.75-.75v-.75Z" />
                             </svg>
                         </button>
@@ -250,51 +250,51 @@ watchEffect(() => {
         <!-- Mobile scrollable menu -->
         <div v-if="showMobileMenu && isMobile" :class="[
             'fixed top-24 left-0 w-full z-[9999] px-4 py-2 shadow-lg max-h-[calc(100vh-6rem)] overflow-y-auto',
-            isDark 
+            isDarkMode 
                 ? 'bg-gray-800 border-b border-gray-700' 
                 : 'bg-white border-b border-gray-200'
         ]">
             <!-- Close (X) button -->
-            <button @click="showMobileMenu = false" :class="['absolute top-4 right-4 focus:outline-none', isDark ? 'text-gray-400 hover:text-white' : 'text-gray-700 hover:text-black']" aria-label="Close menu">
+            <button @click="showMobileMenu = false" :class="['absolute top-4 right-4 focus:outline-none', isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-700 hover:text-black']" aria-label="Close menu">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
             
             <!-- Mobile menu items - V1 Enhanced only -->
-            <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™</Link>
-            <Link :href="route('info.features')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Features</Link>
-            <Link :href="route('info.about')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">About</Link>
-            <Link :href="route('info.contact')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Contact</Link>
+            <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™</Link>
+            <Link :href="route('info.features')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Features</Link>
+            <Link :href="route('info.about')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">About</Link>
+            <Link :href="route('info.contact')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Contact</Link>
             
             <!-- User menu items (if authenticated) -->
             <template v-if="user">
-                <div :class="['my-2', isDark ? 'border-t border-gray-700' : 'border-t']"></div>
+                <div :class="['my-2', isDarkMode ? 'border-t border-gray-700' : 'border-t']"></div>
                 <div class="px-2 py-2">
-                    <div :class="['font-semibold text-base mb-1 uppercase', isDark ? 'text-gray-100' : 'text-gray-900']">{{ user.name }}</div>
-                    <div :class="['text-sm mb-2', isDark ? 'text-gray-400' : 'text-gray-600']">{{ user.email }}</div>
+                    <div :class="['font-semibold text-base mb-1 uppercase', isDarkMode ? 'text-gray-100' : 'text-gray-900']">{{ user.name }}</div>
+                    <div :class="['text-sm mb-2', isDarkMode ? 'text-gray-400' : 'text-gray-600']">{{ user.email }}</div>
                 </div>
-                <Link :href="safeRoute('assessments.diagnostics.all-results', '/diagnostics/results')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™ Results</Link>
+                <Link :href="safeRoute('assessments.diagnostics.all-results', '/diagnostics/results')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™ Results</Link>
                 
                 <!-- Admin Access (only show for admin/super-admin users) -->
                 <Link v-if="$page.props.auth.roles && ($page.props.auth.roles.includes('admin') || $page.props.auth.roles.includes('super-admin'))" 
                       :href="route('admin.audits.index')" 
-                      :class="['block py-2 font-semibold flex items-center', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">
+                      :class="['block py-2 font-semibold flex items-center', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">
                     Admin Panel
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                 </Link>
                 
-                <Link :href="route('settings.profile')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Profile Settings</Link>
-                <Link :href="route('privacy.settings')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Privacy Settings</Link>
-                <Link :href="route('logout')" method="post" as="button" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Log Out</Link>
+                <Link :href="route('settings.profile')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Profile Settings</Link>
+                <Link :href="route('privacy.settings')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Privacy Settings</Link>
+                <Link :href="route('logout')" method="post" as="button" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Log Out</Link>
             </template>
             <template v-else>
                 <Link :href="route('login')"
                     :class="[
                         'block w-full text-center px-6 py-2 border-2 font-semibold rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 mb-2',
-                        isDark 
+                        isDarkMode 
                             ? 'bg-gray-700 border-gray-600 text-gray-100 hover:bg-gray-600 hover:text-white focus:ring-gray-500' 
                             : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-600 hover:text-white focus:ring-gray-400'
                     ]"
@@ -302,7 +302,7 @@ watchEffect(() => {
                 <Link :href="route('register')"
                     :class="[
                         'block w-full text-center px-6 py-2 border-2 font-semibold rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2',
-                        isDark 
+                        isDarkMode 
                             ? 'bg-gray-800 border-gray-600 text-gray-100 hover:bg-gray-700 hover:text-white focus:ring-gray-500' 
                             : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-600 hover:text-gray-600 focus:ring-gray-400'
                     ]"
@@ -323,33 +323,33 @@ watchEffect(() => {
         </div>
 
         <!-- Footer -->
-        <footer :class="['mt-12 transition-colors duration-300', isDark ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200']">
+        <footer :class="['mt-12 transition-colors duration-300', isDarkMode ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200']">
             <div class="container mx-auto px-6 py-12 max-w-7xl">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <!-- Company Info -->
                     <div class="col-span-1 lg:col-span-1">
                         <div class="flex items-center mb-4">
-                            <img src="/images/logo.png" alt="Saaz Academy" :class="['h-8 mr-2 transition-all duration-300', isDark ? 'brightness-0 invert' : '']">
-                            <span :class="['text-xl font-bold', isDark ? 'text-white' : 'text-gray-900']">Saaz Academy</span>
+                            <img src="/images/logo.png" alt="Saaz Academy" :class="['h-8 mr-2 transition-all duration-300', isDarkMode ? 'brightness-0 invert' : '']">
+                            <span :class="['text-xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Saaz Academy</span>
                         </div>
-                        <p :class="['text-sm mb-4', isDark ? 'text-gray-400' : 'text-gray-600']">
+                        <p :class="['text-sm mb-4', isDarkMode ? 'text-gray-400' : 'text-gray-600']">
                             Enterprise diagnostic platform with SecureStart™ assessments.
                         </p>
                     </div>
 
                     <!-- Quick Links -->
                     <div>
-                        <h3 :class="['text-sm font-semibold tracking-wider uppercase mb-4', isDark ? 'text-white' : 'text-gray-900']">
+                        <h3 :class="['text-sm font-semibold tracking-wider uppercase mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">
                             Platform
                         </h3>
                         <ul class="space-y-3">
                             <li>
-                                <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     SecureStart™
                                 </Link>
                             </li>
                             <li>
-                                <Link :href="route('info.features')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('info.features')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Features
                                 </Link>
                             </li>
@@ -358,22 +358,22 @@ watchEffect(() => {
 
                     <!-- Support -->
                     <div>
-                        <h3 :class="['text-sm font-semibold tracking-wider uppercase mb-4', isDark ? 'text-white' : 'text-gray-900']">
+                        <h3 :class="['text-sm font-semibold tracking-wider uppercase mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">
                             Support
                         </h3>
                         <ul class="space-y-3">
                             <li>
-                                <Link :href="route('info.contact')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('info.contact')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Contact Us
                                 </Link>
                             </li>
                             <li>
-                                <Link :href="route('info.help')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('info.help')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Help Center
                                 </Link>
                             </li>
                             <li>
-                                <Link :href="route('info.faq')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('info.faq')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     FAQ
                                 </Link>
                             </li>
@@ -382,27 +382,27 @@ watchEffect(() => {
 
                     <!-- Legal -->
                     <div>
-                        <h3 :class="['text-sm font-semibold tracking-wider uppercase mb-4', isDark ? 'text-white' : 'text-gray-900']">
+                        <h3 :class="['text-sm font-semibold tracking-wider uppercase mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">
                             Legal
                         </h3>
                         <ul class="space-y-3">
                             <li>
-                                <Link :href="route('privacy.policy')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('privacy.policy')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Privacy Policy
                                 </Link>
                             </li>
                             <li>
-                                <Link :href="route('terms')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('terms')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Terms of Service
                                 </Link>
                             </li>
                             <li>
-                                <Link :href="route('cookies')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('cookies')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     Cookie Policy
                                 </Link>
                             </li>
                             <li>
-                                <Link :href="route('info.about')" :class="['transition-colors', isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('info.about')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     About Us
                                 </Link>
                             </li>
@@ -411,9 +411,9 @@ watchEffect(() => {
                 </div>
 
                 <!-- Bottom Section -->
-                <div :class="['mt-8 pt-8', isDark ? 'border-t border-gray-700' : 'border-t border-gray-200']">
+                <div :class="['mt-8 pt-8', isDarkMode ? 'border-t border-gray-700' : 'border-t border-gray-200']">
                     <div class="flex flex-col md:flex-row justify-between items-center">
-                        <div :class="['text-sm mb-4 md:mb-0', isDark ? 'text-gray-400' : 'text-gray-600']">
+                        <div :class="['text-sm mb-4 md:mb-0', isDarkMode ? 'text-gray-400' : 'text-gray-600']">
                             © {{ new Date().getFullYear() }} Saaz Academy. All rights reserved.
                         </div>
                     </div>

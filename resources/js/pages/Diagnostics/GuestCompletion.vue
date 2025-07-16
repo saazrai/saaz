@@ -11,7 +11,7 @@ const props = defineProps({
 
 // Calculate basic metrics
 const scorePercentage = computed(() => Math.round(props.score || 0))
-const isPassed = computed(() => scorePercentage.value >= 70)
+// const isPassed = computed(() => scorePercentage.value >= 70)
 const performanceLevel = computed(() => {
     if (scorePercentage.value >= 85) return 'excellent'
     if (scorePercentage.value >= 70) return 'good'

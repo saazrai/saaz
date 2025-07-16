@@ -449,8 +449,6 @@ import {
     TrophyIcon, 
     AlertCircleIcon, 
     ClockIcon, 
-    ArrowUpIcon, 
-    ArrowDownIcon,
     CheckCircleIcon,
     BookOpenIcon,
     FileTextIcon,
@@ -486,19 +484,19 @@ const performanceLevel = computed(() => {
 });
 
 // const _performanceVariant = computed(() => {
-    if (props.score >= 80) return 'success';
-    if (props.score >= 60) return 'default';
-    return 'warning';
-});
+//     if (props.score >= 80) return 'success';
+//     if (props.score >= 60) return 'default';
+//     return 'warning';
+// });
 
 // const _accuracyRate = computed(() => {
-    return Math.round((props.correctCount / props.diagnostic.current_question) * 100);
-});
+//     return Math.round((props.correctCount / props.diagnostic.current_question) * 100);
+// });
 
 // const _accuracyTrend = computed(() => {
-    if (!props.previousScore) return 0;
-    return Math.round(props.score - props.previousScore);
-});
+//     if (!props.previousScore) return 0;
+//     return Math.round(props.score - props.previousScore);
+// });
 
 const avgTimePerQuestion = computed(() => {
     const avgSeconds = Math.round(props.diagnostic.total_duration_seconds / props.diagnostic.current_question);
