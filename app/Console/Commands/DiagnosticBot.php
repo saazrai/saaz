@@ -16,7 +16,8 @@ class DiagnosticBot extends Command
                             {--strategy=mixed : Answer strategy: always-correct, always-wrong, mixed, smart}
                             {--accuracy=70 : Target accuracy percentage for mixed/smart strategies}
                             {--details : Show detailed progress}
-                            {--show-selection : Show question selection reasoning}';
+                            {--show-selection : Show question selection reasoning}
+                            {--fresh : Clear previous diagnostic profiles for truly fresh start}';
 
     protected $description = 'Bot to automatically take diagnostic assessments for testing';
 
@@ -40,6 +41,13 @@ class DiagnosticBot extends Command
         $this->info("User: {$user->name} (ID: {$user->id})");
         $this->info("Strategy: {$strategy}");
         $this->info("Target Accuracy: {$targetAccuracy}%");
+        
+        // Clear previous profiles if --fresh flag is used
+        if ($this->option('fresh')) {
+            \App\Models\DiagnosticProfile::where('user_id', $user->id)->delete();
+            $this->info("🧹 Cleared previous diagnostic profiles for fresh start");
+        }
+        
         $this->newLine();
 
         // Start a new diagnostic
@@ -169,9 +177,8 @@ class DiagnosticBot extends Command
                 ? min($stats['bloom_levels']) . '-' . max($stats['bloom_levels'])
                 : 'N/A';
                 
-            // Show last 10 results as progression
-            $lastResults = array_slice($stats['last_results'], -10);
-            $progression = implode('', array_map(fn($r) => $r ? '✓' : '✗', $lastResults));
+            // Show ACTUAL bloom level progression with results
+            $progression = $this->buildBloomProgression($domain, $diagnostic->id);
             
             $rows[] = [
                 substr($domain, 0, 30),
@@ -211,6 +218,42 @@ class DiagnosticBot extends Command
         }
 
         return 0;
+    }
+    
+    /**
+     * Build actual bloom level progression for a domain in chronological order
+     */
+    private function buildBloomProgression(string $domainName, int $diagnosticId): string
+    {
+        // Get all responses for this domain in chronological order
+        $responses = DiagnosticResponse::where('diagnostic_id', $diagnosticId)
+            ->whereHas('diagnosticItem.topic.domain', function($query) use ($domainName) {
+                $query->where('name', $domainName);
+            })
+            ->with('diagnosticItem')
+            ->whereNotNull('is_correct')
+            ->orderBy('id') // Chronological order
+            ->get();
+        
+        if ($responses->isEmpty()) {
+            return 'N/A';
+        }
+        
+        $progression = [];
+        foreach ($responses as $response) {
+            $bloomLevel = $response->diagnosticItem->bloom_level;
+            $result = $response->is_correct ? '✓' : '✗';
+            $progression[] = "{$bloomLevel}{$result}";
+        }
+        
+        // Show all if ≤ 10, otherwise show first 3 and last 7
+        if (count($progression) <= 10) {
+            return implode(' → ', $progression);
+        } else {
+            $start = array_slice($progression, 0, 3);
+            $end = array_slice($progression, -7);
+            return implode(' → ', $start) . ' → ... → ' . implode(' → ', $end);
+        }
     }
     
     private function displaySelectionReasoning(int $diagnosticId): void
@@ -338,7 +381,8 @@ class DiagnosticBot extends Command
         // Process adaptive state
         $adaptiveService = new \App\Services\AdaptiveDiagnosticService();
         $adaptiveState = json_decode($diagnostic->adaptive_state, true);
-        $adaptiveState = $adaptiveService->processAnswer($adaptiveState, $response->diagnosticItem, $isCorrect);
+        // For bot testing, don't pass user ID to avoid warm-start contamination
+        $adaptiveState = $adaptiveService->processAnswer($adaptiveState, $response->diagnosticItem, $isCorrect, null);
         
         // Check if complete
         $totalAnswered = $diagnostic->responses()->whereNotNull('user_answer')->count();
