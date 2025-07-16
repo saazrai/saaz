@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ $appearance ?? 'system' }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+        {{-- Inline script to detect theme preference and apply it immediately --}}
         <script>
             (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
-                let theme = appearance;
-
-                if (appearance === 'system') {
+                // First check localStorage for user preference
+                const savedTheme = localStorage.getItem('theme');
+                let theme = savedTheme || 'dark'; // Default to dark
+                
+                // If no saved preference, check system preference
+                if (!savedTheme) {
                     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                     theme = prefersDark ? 'dark' : 'light';
-
-                    if (prefersDark) {
-                        document.documentElement.classList.add('dark');
-                    }
                 }
+                
+                // Apply theme class for Tailwind
+                document.documentElement.classList.remove('light', 'dark');
+                document.documentElement.classList.add(theme);
                 
                 // Set data-theme attribute for CSS variables
                 document.documentElement.setAttribute('data-theme', theme);

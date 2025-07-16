@@ -140,6 +140,9 @@ class AdaptiveDiagnosticService
         }
         
         // Update streaks
+        if (!isset($state['domain_streaks'][$domainId])) {
+            $state['domain_streaks'][$domainId] = ['correct' => 0, 'incorrect' => 0];
+        }
         if ($isCorrect) {
             $state['domain_streaks'][$domainId]['correct']++;
             $state['domain_streaks'][$domainId]['incorrect'] = 0;

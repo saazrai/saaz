@@ -61,6 +61,23 @@ test('can login existing user with google oauth', function () {
         'google_id' => null, // No Google ID yet
     ]);
 
+    \App\Models\PrivacyConsent::create([
+        'user_id' => $existingUser->id,
+        'regulation' => 'GDPR',
+        'consent_version' => '1.0',
+        'is_consent_given' => true,
+        'consent_given_at' => now(),
+        'consent_preferences' => [
+            'cookie_consent_given' => true,
+            'strictly_necessary' => true,
+            'functional' => true,
+            'analytics' => true,
+            'marketing' => true,
+        ],
+        'ip_address' => '127.0.0.1',
+        'user_agent' => 'TestAgent',
+    ]);
+
     // Mock the Socialite facade
     $socialiteUser = Mockery::mock(SocialiteUser::class);
     $socialiteUser->shouldReceive('getId')->andReturn('123456789');
@@ -92,6 +109,23 @@ test('existing google user can login', function () {
         'email' => 'john@example.com',
         'google_id' => '123456789',
         'avatar' => 'https://old-avatar.com/avatar.jpg',
+    ]);
+
+    \App\Models\PrivacyConsent::create([
+        'user_id' => $existingUser->id,
+        'regulation' => 'GDPR',
+        'consent_version' => '1.0',
+        'is_consent_given' => true,
+        'consent_given_at' => now(),
+        'consent_preferences' => [
+            'cookie_consent_given' => true,
+            'strictly_necessary' => true,
+            'functional' => true,
+            'analytics' => true,
+            'marketing' => true,
+        ],
+        'ip_address' => '127.0.0.1',
+        'user_agent' => 'TestAgent',
     ]);
 
     // Mock the Socialite facade
@@ -227,6 +261,23 @@ test('google oauth preserves existing user data', function () {
         'email' => 'john@example.com',
         'name' => 'John Doe',
         'created_at' => now()->subDays(30),
+    ]);
+
+    \App\Models\PrivacyConsent::create([
+        'user_id' => $existingUser->id,
+        'regulation' => 'GDPR',
+        'consent_version' => '1.0',
+        'is_consent_given' => true,
+        'consent_given_at' => now(),
+        'consent_preferences' => [
+            'cookie_consent_given' => true,
+            'strictly_necessary' => true,
+            'functional' => true,
+            'analytics' => true,
+            'marketing' => true,
+        ],
+        'ip_address' => '127.0.0.1',
+        'user_agent' => 'TestAgent',
     ]);
 
     // Mock the Socialite facade

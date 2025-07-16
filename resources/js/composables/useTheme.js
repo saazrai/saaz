@@ -44,11 +44,13 @@ export function useTheme() {
   
   // Initialize on mount
   onMounted(() => {
-    // Re-sync with current state
+    // Re-sync with current state and apply theme
     const savedTheme = getCurrentTheme();
     if (savedTheme !== currentTheme.value) {
       currentTheme.value = savedTheme;
     }
+    // Ensure theme is applied to DOM
+    applyTheme(currentTheme.value);
   });
   
   return {

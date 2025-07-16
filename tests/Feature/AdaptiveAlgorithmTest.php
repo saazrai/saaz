@@ -15,6 +15,22 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
+    \App\Models\PrivacyConsent::create([
+        'user_id' => $this->user->id,
+        'regulation' => 'GDPR',
+        'consent_version' => '1.0',
+        'is_consent_given' => true,
+        'consent_given_at' => now(),
+        'consent_preferences' => [
+            'cookie_consent_given' => true,
+            'strictly_necessary' => true,
+            'functional' => true,
+            'analytics' => true,
+            'marketing' => true,
+        ],
+        'ip_address' => '127.0.0.1',
+        'user_agent' => 'TestAgent',
+    ]);
     
     // Seed question types first (required for diagnostic items)
     $this->seed(\Database\Seeders\QuestionTypesSeeder::class);
