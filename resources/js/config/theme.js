@@ -112,4 +112,7 @@ export function getCurrentTheme() {
 export function initializeTheme() {
   const theme = getCurrentTheme();
   applyTheme(theme);
+  
+  // Also ensure data-theme attribute is set
+  document.documentElement.setAttribute('data-theme', theme);
 }
