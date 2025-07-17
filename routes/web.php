@@ -22,6 +22,9 @@ Route::get('/features', fn() => Inertia::render('Features'))->name('info.feature
 Route::get('/about', fn() => Inertia::render('About'))->name('info.about');
 Route::get('/help', fn() => Inertia::render('Help'))->name('info.help');
 
+// Public sample diagnostic (no auth required)
+Route::get('/diagnostics/sample', [DiagnosticController::class, 'sample'])->name('assessments.diagnostics.sample');
+
 // Legal pages
 Route::get('/privacy', [PrivacyController::class, 'policy'])->name('privacy.policy');
 Route::get('/privacy/consent', [PrivacyController::class, 'showConsent'])->middleware('auth')->name('privacy.consent');
@@ -36,20 +39,25 @@ Route::prefix('legal/privacy')->group(function () {
     Route::post('/cookie-consent', [PrivacyController::class, 'storeCookieConsent']);
 });
 
-// Diagnostics routes (require authentication for V1)
-Route::middleware(['auth', 'verified'])->prefix('diagnostics')->name('assessments.diagnostics.')->group(function () {
+// Diagnostics routes (mixed public/auth)
+Route::prefix('diagnostics')->name('assessments.diagnostics.')->group(function () {
+    // Public routes (no auth required)
     Route::get('/', [DiagnosticController::class, 'index'])->name('index');
-    Route::get('/results', [DiagnosticController::class, 'allResults'])->name('all-results');
-    Route::get('/start', [DiagnosticController::class, 'start'])->name('start');
-    Route::post('/begin', [DiagnosticController::class, 'begin'])->name('begin');
-    Route::post('/store', [DiagnosticController::class, 'store'])->name('store');
-    Route::get('/{diagnostic}', [DiagnosticController::class, 'show'])->name('show');
-    Route::post('/{diagnostic}/answer', [DiagnosticController::class, 'answer'])->name('answer');
-    Route::post('/{diagnostic}/submit', [DiagnosticController::class, 'submit'])->name('submit');
-    Route::get('/{diagnostic}/results', [DiagnosticController::class, 'results'])->name('results');
-    Route::get('/{diagnostic}/report', [DiagnosticController::class, 'report'])->name('report');
-    Route::get('/{diagnostic}/phase/{phase}/results', [DiagnosticController::class, 'phaseResults'])->name('phase-results');
-    Route::post('/{diagnostic}/continue-phase', [DiagnosticController::class, 'continuePhase'])->name('continue-phase');
+    
+    // Protected routes (require authentication)
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/results', [DiagnosticController::class, 'allResults'])->name('all-results');
+        Route::get('/start', [DiagnosticController::class, 'start'])->name('start');
+        Route::post('/begin', [DiagnosticController::class, 'begin'])->name('begin');
+        Route::post('/store', [DiagnosticController::class, 'store'])->name('store');
+        Route::get('/{diagnostic}', [DiagnosticController::class, 'show'])->name('show');
+        Route::post('/{diagnostic}/answer', [DiagnosticController::class, 'answer'])->name('answer');
+        Route::post('/{diagnostic}/submit', [DiagnosticController::class, 'submit'])->name('submit');
+        Route::get('/{diagnostic}/results', [DiagnosticController::class, 'results'])->name('results');
+        Route::get('/{diagnostic}/report', [DiagnosticController::class, 'report'])->name('report');
+        Route::get('/{diagnostic}/phase/{phase}/results', [DiagnosticController::class, 'phaseResults'])->name('phase-results');
+        Route::post('/{diagnostic}/continue-phase', [DiagnosticController::class, 'continuePhase'])->name('continue-phase');
+    });
 });
 
 // Admin routes (require admin permissions)

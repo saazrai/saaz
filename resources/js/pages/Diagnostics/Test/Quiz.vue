@@ -1,1440 +1,667 @@
 <template>
-    <div :class="[
-        'min-h-screen flex flex-col pb-40',
-        isDark ? 'bg-gray-900' : 'bg-slate-100'
-    ]">
-        <!-- Top Navbar -->
-        <div
-            :class="[
-                'backdrop-blur-md border-b shadow-lg px-4 sm:px-8 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-4',
-                isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-slate-300 shadow-slate-200'
-            ]"
-        >
-            <div
-                class="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2"
-            >
-                <div
-                    :class="[
-                        'flex-1 min-w-[50%] md:text-base xl:text-2xl font-semibold truncate',
-                        isDark ? 'text-gray-100' : 'text-slate-900'
-                    ]"
-                >
-                    Diagnostic Assessment
-                </div>
-                <div class="sm:w-auto flex items-center gap-3">
-                    <!-- Theme Toggle Button -->
-                    <button
-                        @click="toggleDarkMode"
-                        :class="[
-                            'p-2 rounded-lg transition-colors',
-                            isDark 
-                                ? 'bg-gray-700 hover:bg-gray-600' 
-                                : 'bg-slate-200 hover:bg-slate-300'
-                        ]"
-                        aria-label="Toggle theme"
-                    >
-                        <SunIcon v-if="isDark" class="w-5 h-5 text-yellow-500" />
-                        <MoonIcon v-else :class="[
-                            'w-5 h-5',
-                            isDark ? 'text-gray-300' : 'text-slate-700'
-                        ]" />
-                    </button>
+    <div class="min-h-screen flex flex-col bg-gray-200 dark:bg-gray-900">
+        <!-- Refined Top Bar - Cleaner, more focused -->
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <!-- Left: Title and Phase -->
+                    <div class="flex-1">
+                        <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            Diagnostic Assessment
+                        </h1>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ currentPhaseData.name }}
+                            </span>
+                            <span class="text-gray-300 dark:text-gray-600">•</span>
+                            <span class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                {{ overallConfidence }}% confidence
+                            </span>
+                        </div>
+                    </div>
                     
-                    <!-- Keep timer visible -->
-                    <Timer
-                        ref="timer"
-                        :initialElapsed="initialTimeElapsed"
-                        @question-tick="handleQuestionTick"
-                    />
+                    <!-- Right: Timer and Actions -->
+                    <div class="flex items-center gap-3">
+                        <!-- Timer - Subtle design -->
+                        <div class="flex items-center gap-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500 dark:text-gray-400">Question</span>
+                                <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {{ formatTime(questionTime) }}
+                                </span>
+                            </div>
+                            <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500 dark:text-gray-400">Total</span>
+                                <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    {{ formatTime(totalTime) }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Theme Toggle - iOS style -->
+                        <button
+                            @click="toggleTheme"
+                            class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            :class="isDark ? 'bg-blue-600' : 'bg-gray-300'"
+                            aria-label="Toggle theme"
+                        >
+                            <span
+                                class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
+                                :class="isDark ? 'translate-x-6' : 'translate-x-1'"
+                            >
+                                <SunIcon v-if="!isDark" class="h-5 w-5 p-1 text-yellow-500" />
+                                <MoonIcon v-else class="h-5 w-5 p-1 text-gray-700" />
+                            </span>
+                        </button>
+                        
+                        <!-- Pause Button - Red accent -->
+                        <button
+                            @click="pauseTest"
+                            class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                        >
+                            Pause Test
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Progress Section -->
-        <div
-            :class="[
-                'backdrop-blur-md border-b shadow px-4 sm:px-8 py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-4',
-                isDark ? 'bg-gray-800/50 border-gray-700' : 'bg-white/90 border-slate-300'
-            ]"
-        >
-            <div
-                :class="[
-                    'md:text-base xl:text-xl font-semibold truncate',
-                    isDark ? 'text-gray-200' : 'text-slate-800'
-                ]"
-            >
-                <!-- Always show current question number -->
-                Question {{ currentQuestionNumber }} /
-                {{ diagnostic?.total_questions ?? 100 }}
-            </div>
-
-            <div
-                class="hidden sm:block landscape:block portrait:hidden flex-grow sm:w-auto"
-            >
-                <div
-                    :class="[
-                        'w-full border shadow-inner rounded-full h-4 overflow-hidden',
-                        isDark ? 'bg-gray-700 border-gray-600' : 'bg-slate-300 border-slate-400'
-                    ]"
-                >
-                    <!-- Use currentProgress for the progress bar -->
-                    <div
-                        :class="[
-                            'h-4 transition-all duration-300 shadow-sm',
-                            isDark ? 'bg-blue-500' : 'bg-blue-700'
-                        ]"
-                        :style="{ width: `${currentProgress}%` }"
+            
+            <!-- Progress Bar - Integrated into header -->
+            <div class="px-6 pb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <template v-if="totalQuestions">
+                            Question {{ currentQuestionNumber }} of {{ totalQuestions }}
+                        </template>
+                        <template v-else>
+                            Q{{ currentQuestionNumber }} • {{ diagnostic?.current_domain || 'Assessment' }}
+                        </template>
+                    </span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                        <template v-if="diagnostic?.phases_total">
+                            Phase {{ diagnostic.current_phase || 1 }} of {{ diagnostic.phases_total }} • {{ Math.round(progress) }}% Complete
+                        </template>
+                        <template v-else>
+                            {{ Math.round(progress) }}% Complete
+                        </template>
+                    </span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                    <div 
+                        class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
+                        :style="{ width: `${progress}%` }"
                     ></div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Pause Test Button -->
-        <div
-            class="w-full flex flex-row flex-wrap justify-end items-center gap-2 px-4 mt-2 relative z-40"
-        >
-            <!-- Always show Pause Test button -->
-            <button
-                type="button"
-                @click.prevent.stop="handlePauseClick"
-                dusk="pause-btn"
-                :class="[
-                    'px-4 py-2 rounded-lg text-white font-medium shadow-md transition-colors cursor-pointer',
-                    isDark 
-                        ? 'bg-rose-600 hover:bg-rose-700' 
-                        : 'bg-rose-500 hover:bg-rose-600'
-                ]"
-            >
-                Pause Test
-            </button>
-        </div>
-
-        <!-- Question Section -->
-        <div class="mx-2 sm:mx-2 my-2 rounded-md flex-1 overflow-hidden">
-            <div class="flex flex-col md:flex-row h-full gap-4">
-                <div class="flex-1">
-                    <div
-                        class="flex flex-col lg:flex-row bg-transparent space-y-4 lg:space-y-0"
+                
+                <!-- Domain Pills - Clean tags -->
+                <div v-if="currentMilestoneDomains.length > 0" class="flex items-center gap-2 mt-3 flex-wrap">
+                    <span 
+                        v-for="domain in currentMilestoneDomains" 
+                        :key="domain.id"
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                        :class="getDomainStatusClasses(domain.id)"
                     >
-                        <component
-                            :is="currentQuestionComponent"
-                            :question="currentQuestionData"
-                            :answer="answer"
-                            :isReview="false"
-                            :isDarkMode="isDark"
-                            @selected="selected"
-                            v-if="currentQuestionData"
-                            :class="['diagnostic-question', isDark ? 'dark-mode' : 'light-mode']"
-                        />
-                        <div
-                            v-else
-                            :class="[
-                                'flex justify-center items-center h-full text-xl rounded-2xl p-8',
-                                isDark 
-                                    ? 'text-gray-400 bg-gray-800' 
-                                    : 'text-slate-600 bg-white border border-slate-300 shadow-sm'
-                            ]"
-                        >
-                            Loading question...
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Question Details Section -->
-                <div :class="[
-                    'backdrop-blur-md rounded-2xl w-full lg:w-2/6 p-6 border',
-                    isDark
-                        ? 'bg-gray-800 border-gray-700 shadow-xl'
-                        : 'bg-white border-gray-200 shadow-sm'
-                ]">
-                    <h3 :class="[
-                        'text-xl font-bold mb-6 pb-3 border-b',
-                        isDark
-                            ? 'text-gray-100 border-gray-700'
-                            : 'text-slate-900 border-slate-200'
-                    ]">
-                        Question Details
-                    </h3>
-
-                    <!-- Metadata Grid -->
-                    <div class="space-y-4">
-                        <!-- Domain -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Domain
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ currentQuestionData?.topic?.domain?.name || "N/A" }}
-                            </span>
-                        </div>
-
-                        <!-- Topic -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Topic
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ currentQuestionData?.topic?.name || "N/A" }}
-                            </span>
-                        </div>
-
-                        <!-- Dimension -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Dimension
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ currentQuestionData?.dimension || "N/A" }}
-                            </span>
-                        </div>
-
-                        <!-- Question Type -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Question Type
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ getQuestionTypeName() }}
-                            </span>
-                        </div>
-
-                        <!-- Difficulty Level -->
-                        <div class="flex flex-col space-y-1">
-                            <div class="flex items-center space-x-2">
-                                <span :class="[
-                                    'text-xs uppercase tracking-wider font-semibold',
-                                    isDark ? 'text-gray-400' : 'text-slate-500'
-                                ]">
-                                    Difficulty Level
-                                </span>
-                                <!-- Desktop Tooltip -->
-                                <Popover class="relative hidden sm:block" v-slot="{ open }">
-                                    <PopoverButton 
-                                        ref="difficultyTooltipButton"
-                                        :class="[
-                                        'p-0.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus-visible:ring-gray-600 focus-visible:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus-visible:ring-slate-400 focus-visible:ring-offset-white'
-                                    ]">
-                                        <QuestionMarkCircleIcon :class="[
-                                            'h-4 w-4',
-                                            isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                        ]" />
-                                    </PopoverButton>
-
-                                    <transition
-                                        enter-active-class="transition duration-200 ease-out"
-                                        enter-from-class="opacity-0 scale-95"
-                                        enter-to-class="opacity-100 scale-100"
-                                        leave-active-class="transition duration-150 ease-in"
-                                        leave-from-class="opacity-100 scale-100"
-                                        leave-to-class="opacity-0 scale-95"
-                                    >
-                                        <PopoverPanel 
-                                            v-if="open"
-                                            :class="[
-                                            'absolute z-50 w-80 px-4 py-3 rounded-lg shadow-xl border max-h-[calc(100vh-4rem)] overflow-y-auto',
-                                            isDark 
-                                                ? 'bg-gray-800 border-gray-700' 
-                                                : 'bg-white border-gray-200'
-                                        ]"
-                                            :style="getTooltipPosition('difficulty', open)"
-                                        >
-                                            <!-- Dynamic Arrow -->
-                                            <div :class="[
-                                                'absolute w-4 h-4 transform rotate-45 z-[-1]',
-                                                isDark ? 'bg-gray-800' : 'bg-white',
-                                                getArrowClasses('difficulty', open)
-                                            ]"
-                                            :style="getArrowStyle()"
-                                            ></div>
-
-                                            <div class="space-y-3 relative">
-                                                <h4 :class="[
-                                                    'text-base font-semibold flex items-center gap-2',
-                                                    isDark ? 'text-gray-100' : 'text-gray-900'
-                                                ]">
-                                                    ❓ Difficulty Level?
-                                                </h4>
-                                                <p :class="[
-                                                    'text-sm leading-relaxed',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    Each question is rated by how challenging it is:
-                                                </p>
-                                                <ul :class="[
-                                                    'text-sm space-y-1',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    <li>• <span class="font-medium">1 – Very Easy:</span> Basic facts or definitions</li>
-                                                    <li>• <span class="font-medium">2 – Easy:</span> Simple application of key concepts</li>
-                                                    <li>• <span class="font-medium">3 – Medium:</span> Involves moderate reasoning or scenarios</li>
-                                                    <li>• <span class="font-medium">4 – Hard:</span> Requires deep analysis and multi-step thinking</li>
-                                                    <li>• <span class="font-medium">5 – Very Hard:</span> Complex, expert-level questions</li>
-                                                </ul>
-                                                <p :class="[
-                                                    'text-sm pt-2 border-t',
-                                                    isDark ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-200'
-                                                ]">
-                                                    Helps the system adapt to your skill level!
-                                                </p>
-                                            </div>
-                                        </PopoverPanel>
-                                    </transition>
-                                </Popover>
-                                <!-- Mobile Tooltip Button -->
-                                <button 
-                                    @click="showDifficultyModal = true"
-                                    class="sm:hidden p-0.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1"
-                                    :class="[
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus:ring-gray-600 focus:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus:ring-slate-400 focus:ring-offset-white'
-                                    ]"
-                                >
-                                    <QuestionMarkCircleIcon :class="[
-                                        'h-4 w-4',
-                                        isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                    ]" />
-                                </button>
-                            </div>
-                            <div class="flex items-end space-x-3">
-                                <span :class="[
-                                    'text-lg font-medium leading-none pb-0.5',
-                                    isDark ? 'text-gray-200' : 'text-slate-800'
-                                ]">
-                                    {{ getDifficultyLabel() }}
-                                </span>
-                                <BarChartLevelIndicator 
-                                    :totalBars="5"
-                                    :filledBars="getDifficultyScore()"
-                                    :showLabel="false"
-                                    :containerClass="'flex items-end pb-1'"
-                                    :baseHeight="8"
-                                    :heightIncrement="3" />
-                            </div>
-                        </div>
-
-                        <!-- Bloom Level -->
-                        <div class="flex flex-col space-y-1">
-                            <div class="flex items-center space-x-2">
-                                <span :class="[
-                                    'text-xs uppercase tracking-wider font-semibold',
-                                    isDark ? 'text-gray-400' : 'text-slate-500'
-                                ]">
-                                    Bloom Level
-                                </span>
-                                <!-- Desktop Tooltip - Only show when Bloom level is not NA -->
-                                <Popover v-if="getBloomScore() > 0" class="relative hidden sm:block" v-slot="{ open }">
-                                    <PopoverButton 
-                                        ref="bloomTooltipButton"
-                                        :class="[
-                                        'p-0.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus-visible:ring-gray-600 focus-visible:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus-visible:ring-slate-400 focus-visible:ring-offset-white'
-                                    ]">
-                                        <QuestionMarkCircleIcon :class="[
-                                            'h-4 w-4',
-                                            isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                        ]" />
-                                    </PopoverButton>
-
-                                    <transition
-                                        enter-active-class="transition duration-200 ease-out"
-                                        enter-from-class="opacity-0 scale-95"
-                                        enter-to-class="opacity-100 scale-100"
-                                        leave-active-class="transition duration-150 ease-in"
-                                        leave-from-class="opacity-100 scale-100"
-                                        leave-to-class="opacity-0 scale-95"
-                                    >
-                                        <PopoverPanel 
-                                            v-if="open"
-                                            :class="[
-                                            'absolute z-50 w-80 px-4 py-3 rounded-lg shadow-xl border max-h-[calc(100vh-4rem)] overflow-y-auto',
-                                            isDark 
-                                                ? 'bg-gray-800 border-gray-700' 
-                                                : 'bg-white border-gray-200'
-                                        ]"
-                                            :style="getTooltipPosition('bloom', open)"
-                                        >
-                                            <!-- Dynamic Arrow -->
-                                            <div :class="[
-                                                'absolute w-4 h-4 transform rotate-45 z-[-1]',
-                                                isDark ? 'bg-gray-800' : 'bg-white',
-                                                getArrowClasses('bloom', open)
-                                            ]"
-                                            :style="getArrowStyle()"
-                                            ></div>
-
-                                            <div class="space-y-3 relative">
-                                                <h4 :class="[
-                                                    'text-base font-semibold flex items-center gap-2',
-                                                    isDark ? 'text-gray-100' : 'text-gray-900'
-                                                ]">
-                                                    💡 Bloom's Taxonomy Levels
-                                                </h4>
-                                                <p :class="[
-                                                    'text-sm leading-relaxed',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    A framework that measures the depth of understanding:
-                                                </p>
-                                                <div :class="[
-                                                    'text-sm space-y-2 pl-2',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-blue-500">1.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Remember</span>
-                                                            <span class="text-xs block opacity-80">Recall facts and basic concepts</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-blue-500">2.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Understand</span>
-                                                            <span class="text-xs block opacity-80">Explain ideas or concepts</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-green-500">3.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Apply</span>
-                                                            <span class="text-xs block opacity-80">Use information in new situations</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-green-500">4.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Analyze</span>
-                                                            <span class="text-xs block opacity-80">Draw connections among ideas</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-orange-500">5.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Evaluate</span>
-                                                            <span class="text-xs block opacity-80">Justify decisions or judgments</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-red-500">6.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Create</span>
-                                                            <span class="text-xs block opacity-80">Produce new or original work</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p :class="[
-                                                    'text-xs pt-2 border-t italic',
-                                                    isDark ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-200'
-                                                ]">
-                                                    The assessment adapts difficulty based on your performance at each level.
-                                                </p>
-                                            </div>
-                                        </PopoverPanel>
-                                    </transition>
-                                </Popover>
-                                <!-- Mobile Tooltip Button - Only show when Bloom level is not NA -->
-                                <button 
-                                    v-if="getBloomScore() > 0"
-                                    @click="showBloomModal = true"
-                                    class="sm:hidden p-0.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1"
-                                    :class="[
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus:ring-gray-600 focus:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus:ring-slate-400 focus:ring-offset-white'
-                                    ]"
-                                >
-                                    <QuestionMarkCircleIcon :class="[
-                                        'h-4 w-4',
-                                        isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                    ]" />
-                                </button>
-                            </div>
-                            <div class="flex items-end space-x-3">
-                                <span :class="[
-                                    'text-lg font-medium leading-none pb-0.5',
-                                    isDark ? 'text-gray-200' : 'text-slate-800'
-                                ]">
-                                    {{ getBloomLabel() }}
-                                </span>
-                                <!-- Only show bar chart when Bloom level is not NA -->
-                                <BarChartLevelIndicator 
-                                    v-if="getBloomScore() > 0"
-                                    :totalBars="6"
-                                    :filledBars="getBloomScore()"
-                                    :showLabel="false"
-                                    :containerClass="'flex items-end pb-1'"
-                                    :baseHeight="8"
-                                    :heightIncrement="3" />
-                            </div>
-                        </div>
-                    </div>
-
+                        <span class="w-1.5 h-1.5 rounded-full" :class="getDomainDotClasses(domain.id)"></span>
+                        {{ domain.name }}
+                    </span>
                 </div>
             </div>
         </div>
 
-        <!-- Footer Controls -->
-        <div
-            :class="[
-                'backdrop-blur-xl border-t shadow-2xl py-4 px-4 fixed bottom-0 left-0 w-full z-50',
-                isDark 
-                    ? 'bg-gray-800/90 border-gray-700' 
-                    : 'bg-white/95 border-slate-300 shadow-slate-300'
-            ]"
-        >
-            <div class="flex w-full gap-2 md:max-w-xl md:mx-auto">
-                <div class="w-full">
+        <!-- Main Content Area - Clean layout -->
+        <div class="flex-1 px-6 py-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Question Card - Primary focus -->
+                    <div>
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+                            <div class="p-8">
+                                <!-- Question Content using QuizTypes -->
+                                <div v-if="currentQuestionData">
+                                    <component
+                                        :is="currentQuestionComponent"
+                                        :question="currentQuestionData"
+                                        :answer="currentAnswer"
+                                        :isDarkMode="isDark"
+                                        @selected="handleSelection"
+                                    />
+                                </div>
+                                
+                                <!-- Loading State -->
+                                <div v-else class="flex items-center justify-center h-64">
+                                    <div class="text-center">
+                                        <div class="inline-flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
+                                            <svg class="animate-spin h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-500 dark:text-gray-400">Loading question...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Action Bar - Floating design -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50">
+            <div class="px-6 py-4">
+                <div class="max-w-6xl mx-auto flex justify-end">
                     <button
-                        v-if="!isLastQuestion"
                         @click="submitAnswer"
                         :disabled="!hasSelection"
-                        dusk="submit-answer-btn"
+                        class="px-8 py-3 rounded-full font-medium transition-all transform"
                         :class="[
-                            'px-5 py-3 rounded-lg font-semibold w-full backdrop-blur-md border text-white transition-all transform active:scale-95 shadow-lg',
-                            !hasSelection
-                                ? (isDark 
-                                    ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
-                                    : 'bg-slate-500 border-slate-400 cursor-not-allowed opacity-60')
-                                : (isDark 
-                                    ? 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500 hover:shadow-emerald-500/25'
-                                    : 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500 hover:shadow-emerald-500/25')
+                            hasSelection 
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl active:scale-95 cursor-pointer' 
+                                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60',
+                            !hasSelection && 'pointer-events-none'
                         ]"
                     >
-                        Submit Answer
-                    </button>
-                    <button
-                        v-else
-                        @click="finishAssessment"
-                        :disabled="!hasSelection"
-                        dusk="submit-answer-btn"
-                        :class="[
-                            'px-5 py-3 rounded-lg font-semibold w-full backdrop-blur-md border text-white transition-all transform active:scale-95 shadow-lg',
-                            !hasSelection
-                                ? (isDark 
-                                    ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
-                                    : 'bg-slate-500 border-slate-400 cursor-not-allowed opacity-60')
-                                : (isDark 
-                                    ? 'bg-rose-600 hover:bg-rose-700 border-rose-500 hover:shadow-rose-500/25'
-                                    : 'bg-rose-600 hover:bg-rose-700 border-rose-500 hover:shadow-rose-500/25')
-                        ]"
-                    >
-                        End Assessment
+                        {{ isLastQuestion ? 'Complete Assessment' : 'Submit Answer' }}
                     </button>
                 </div>
             </div>
         </div>
+        
+        <!-- Modals - Clean, minimal design -->
+        <TransitionRoot appear :show="showPauseModal" as="template">
+            <BaseDialog as="div" @close="showPauseModal = false" class="relative z-50">
+                <TransitionChild
+                    as="template"
+                    enter="duration-300 ease-out"
+                    enter-from="opacity-0"
+                    enter-to="opacity-100"
+                    leave="duration-200 ease-in"
+                    leave-from="opacity-100"
+                    leave-to="opacity-0"
+                >
+                    <div class="fixed inset-0 bg-black/30 backdrop-blur-sm" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 overflow-y-auto">
+                    <div class="flex min-h-full items-center justify-center p-4">
+                        <TransitionChild
+                            as="template"
+                            enter="duration-300 ease-out"
+                            enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100"
+                            leave="duration-200 ease-in"
+                            leave-from="opacity-100 scale-100"
+                            leave-to="opacity-0 scale-95"
+                        >
+                            <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl transition-all">
+                                <DialogTitle as="h3" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                    {{ showPauseModal && inactivityTimer === null ? 'Assessment Paused' : 'Pause Assessment?' }}
+                                </DialogTitle>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                                    {{ showPauseModal && inactivityTimer === null 
+                                        ? 'Your assessment has been automatically paused due to 5 minutes of inactivity. You can resume from where you left off.' 
+                                        : 'You can resume this assessment later from where you left off.' }}
+                                </p>
+                                <div class="flex gap-3 justify-end">
+                                    <button
+                                        @click="resumeFromPause"
+                                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                                    >
+                                        Continue Test
+                                    </button>
+                                    <button
+                                        @click="confirmPause"
+                                        class="px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                                    >
+                                        Pause & Exit
+                                    </button>
+                                </div>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </div>
+            </BaseDialog>
+        </TransitionRoot>
     </div>
-
-    <!-- Pause Test Modal -->
-    <ConfirmationDialog
-        :is-open="showPauseModal"
-        title="Pause Test?"
-        description="You can resume the test later from the results page."
-        type="question"
-        confirm-text="Yes, Pause it!"
-        cancel-text="Continue Test"
-        :is-dark="isDark"
-        @confirm="confirmPause"
-        @cancel="cancelPause"
-        @close="showPauseModal = false"
-    />
-
-    <!-- Finish Assessment Modal -->
-    <ConfirmationDialog
-        :is-open="showFinishModal"
-        title="End Assessment?"
-        description="You are about to complete your diagnostic assessment. Are you sure you want to end the assessment now?"
-        type="warning"
-        confirm-text="Yes, End Assessment"
-        cancel-text="Continue Assessment"
-        :is-dark="isDark"
-        @confirm="confirmFinish"
-        @cancel="showFinishModal = false"
-        @close="showFinishModal = false"
-    />
-
-    <!-- Time Warning Modal -->
-    <ConfirmationDialog
-        :is-open="showTimeWarningModal"
-        title="Time on Question Exceeded"
-        :description="timeWarningMessage"
-        type="warning"
-        confirm-text="Continue Test"
-        cancel-text="Pause Immediately"
-        :is-dark="isDark"
-        @confirm="handleTimeWarningContinue"
-        @cancel="handleTimeWarningPause"
-        @close="handleTimeWarningContinue"
-    />
-
-    <!-- Error Modal -->
-    <ConfirmationDialog
-        :is-open="showErrorModal"
-        title="Error"
-        :description="errorMessage"
-        type="error"
-        confirm-text="OK"
-        cancel-text=""
-        :is-dark="isDark"
-        @confirm="handleErrorConfirm"
-        @close="showErrorModal = false"
-    />
-
-    <!-- Mobile Difficulty Modal -->
-    <Modal :show="showDifficultyModal" @close="showDifficultyModal = false">
-        <div :class="[
-            'p-6 max-w-md mx-auto',
-            isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'
-        ]">
-            <h3 :class="[
-                'text-lg font-semibold mb-4 flex items-center gap-2',
-                isDark ? 'text-gray-100' : 'text-gray-900'
-            ]">
-                ❓ Difficulty Level?
-            </h3>
-            <p :class="[
-                'text-sm mb-4',
-                isDark ? 'text-gray-300' : 'text-gray-600'
-            ]">
-                Each question is rated by how challenging it is:
-            </p>
-            <ul :class="[
-                'text-sm space-y-2 mb-4',
-                isDark ? 'text-gray-300' : 'text-gray-600'
-            ]">
-                <li>• <span class="font-medium">1 – Very Easy:</span> Basic facts or definitions</li>
-                <li>• <span class="font-medium">2 – Easy:</span> Simple application of key concepts</li>
-                <li>• <span class="font-medium">3 – Medium:</span> Involves moderate reasoning or scenarios</li>
-                <li>• <span class="font-medium">4 – Hard:</span> Requires deep analysis and multi-step thinking</li>
-                <li>• <span class="font-medium">5 – Very Hard:</span> Complex, expert-level questions</li>
-            </ul>
-            <p :class="[
-                'text-sm pt-4 border-t',
-                isDark ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-200'
-            ]">
-                Helps the system adapt to your skill level!
-            </p>
-            <div class="mt-6 flex justify-end">
-                <button @click="showDifficultyModal = false" :class="[
-                    'px-4 py-2 rounded-lg font-medium',
-                    isDark 
-                        ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-                ]">
-                    Got it!
-                </button>
-            </div>
-        </div>
-    </Modal>
-
-    <!-- Mobile Bloom Modal -->
-    <Modal :show="showBloomModal" @close="showBloomModal = false">
-        <div :class="[
-            'p-6 max-w-md mx-auto',
-            isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-900'
-        ]">
-            <h3 :class="[
-                'text-lg font-semibold mb-4 flex items-center gap-2',
-                isDark ? 'text-gray-100' : 'text-gray-900'
-            ]">
-                💡 Bloom's Taxonomy Levels
-            </h3>
-            <p :class="[
-                'text-sm mb-4',
-                isDark ? 'text-gray-300' : 'text-gray-600'
-            ]">
-                A framework that measures the depth of understanding:
-            </p>
-            <div :class="[
-                'text-sm space-y-3 mb-4',
-                isDark ? 'text-gray-300' : 'text-gray-600'
-            ]">
-                <div class="flex items-start gap-2">
-                    <span class="font-bold text-blue-500">1.</span>
-                    <div>
-                        <span class="font-semibold">Remember</span>
-                        <span class="text-xs block opacity-80">Recall facts and basic concepts</span>
-                    </div>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="font-bold text-blue-500">2.</span>
-                    <div>
-                        <span class="font-semibold">Understand</span>
-                        <span class="text-xs block opacity-80">Explain ideas or concepts</span>
-                    </div>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="font-bold text-green-500">3.</span>
-                    <div>
-                        <span class="font-semibold">Apply</span>
-                        <span class="text-xs block opacity-80">Use information in new situations</span>
-                    </div>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="font-bold text-green-500">4.</span>
-                    <div>
-                        <span class="font-semibold">Analyze</span>
-                        <span class="text-xs block opacity-80">Draw connections among ideas</span>
-                    </div>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="font-bold text-orange-500">5.</span>
-                    <div>
-                        <span class="font-semibold">Evaluate</span>
-                        <span class="text-xs block opacity-80">Justify decisions or judgments</span>
-                    </div>
-                </div>
-                <div class="flex items-start gap-2">
-                    <span class="font-bold text-red-500">6.</span>
-                    <div>
-                        <span class="font-semibold">Create</span>
-                        <span class="text-xs block opacity-80">Produce new or original work</span>
-                    </div>
-                </div>
-            </div>
-            <p :class="[
-                'text-xs pt-4 border-t italic',
-                isDark ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-200'
-            ]">
-                The assessment adapts difficulty based on your performance at each level.
-            </p>
-            <div class="mt-6 flex justify-end">
-                <button @click="showBloomModal = false" :class="[
-                    'px-4 py-2 rounded-lg font-medium',
-                    isDark 
-                        ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-                ]">
-                    Got it!
-                </button>
-            </div>
-        </div>
-    </Modal>
 </template>
 
 <script lang="ts">
-import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
-import Modal from "@/components/Modal.vue";
-import { Link } from "@inertiajs/vue3";
-import Timer from "@/components/QuizTimer.vue";
-import Type1 from "@/components/QuizTypes/Type1.vue";
-import Type2 from "@/components/QuizTypes/Type2.vue";
-import Type3 from "@/components/QuizTypes/Type3.vue";
-import Type4 from "@/components/QuizTypes/Type4.vue";
-import Type5 from "@/components/QuizTypes/Type5.vue";
-import Type6 from "@/components/QuizTypes/Type6.vue";
-import Type7 from "@/components/QuizTypes/Type7.vue";
-import BarChartLevelIndicator from "@/components/LevelIndicators/BarChartLevelIndicator.vue";
-import { SunIcon, MoonIcon } from 'lucide-vue-next';
-import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline';
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
-import { useTheme } from '@/composables/useTheme';
-import axios from "axios";
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
+import { QuestionMarkCircleIcon } from '@heroicons/vue/24/outline'
+import { Dialog as BaseDialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { useTheme } from '@/composables/useTheme'
+import { router } from '@inertiajs/vue3'
+import Type1 from '@/components/QuizTypes/Type1.vue'
+import Type2 from '@/components/QuizTypes/Type2.vue'
+import Type3 from '@/components/QuizTypes/Type3.vue'
+import Type4 from '@/components/QuizTypes/Type4.vue'
+import Type5 from '@/components/QuizTypes/Type5.vue'
+import Type6 from '@/components/QuizTypes/Type6.vue'
+import Type7 from '@/components/QuizTypes/Type7.vue'
 
 export default {
-    components: { LinkComponent: Link, Timer, Type1, Type2, Type3, Type4, Type5, Type6, Type7, BarChartLevelIndicator, SunIcon, MoonIcon, ConfirmationDialog, Modal, QuestionMarkCircleIcon, Popover, PopoverButton, PopoverPanel },
+    components: {
+        BaseDialog,
+        DialogPanel,
+        DialogTitle,
+        TransitionChild,
+        TransitionRoot,
+        SunIcon,
+        MoonIcon,
+        QuestionMarkCircleIcon,
+        Type1,
+        Type2,
+        Type3,
+        Type4,
+        Type5,
+        Type6,
+        Type7
+    },
     props: {
         diagnostic: Object,
-        question: Object, // This will be the *initial* current question or null
+        question: Object,
         progress: Number,
-        initialTimeElapsed: {
-            type: Number,
-            default: 0,
-        },
-        questionTimeThreshold: {
-            type: Number,
-            default: 30, // Test with 30 seconds auto-pause
-        },
+        totalQuestions: Number,
+        currentQuestionNumber: Number,
+        domains: Array,
+        milestoneConfig: Object
     },
-    setup() {
-        const { isDarkMode, toggleTheme, initializeTheme } = useTheme();
-        return {
-            isDarkMode,
-            toggleTheme,
-            initializeTheme
-        };
-    },
-    data() {
-        return {
-            selectedOptions: [],
-            answer: this.initialAnswer(),
-            currentQuestionData: this.question,
-            currentProgress: Math.floor(this.progress ?? 0),
-            currentTotalTime: this.initialTimeElapsed, // Local property for total time
-            questionThresholdMultipliers: {}, // To track threshold extensions per question
-            
-            // Modal states
-            showPauseModal: false,
-            showFinishModal: false,
-            showErrorModal: false,
-            showTimeWarningModal: false,
-            errorMessage: '',
-            timeWarningMessage: '',
-            autoAdvanceCountdown: 5,
-            countdownInterval: null,
-            shouldRedirectOnError: false,
-            userContinuedTest: false,
-            showDifficultyModal: false,
-            showBloomModal: false,
-            tooltipDirection: 'right'
-        };
-    },
-    computed: {
-        isDark() {
-            return this.isDarkMode;
-        },
-        currentQuestionNumber() {
-            // Use the current_question from the diagnostic object if available
-            // This is the server-side count of submitted answers
-            if (this.diagnostic?.current_question !== undefined) {
-                // Add 1 because current_question is 0-based or represents completed questions
-                return Math.min(this.diagnostic.current_question + 1, this.diagnostic?.total_questions || 20);
+    setup(props) {
+        const { isDark, toggleTheme, setTheme } = useTheme()
+        
+        // Initialize dark theme immediately
+        if (!localStorage.getItem('theme')) {
+            setTheme('dark');
+        }
+        
+        // Reactive data
+        const selectedOptions = ref([])
+        const selectedAnswer = ref(null) // For single choice (radio)
+        const currentQuestionData = ref(props.question)
+        const showPauseModal = ref(false)
+        const showBloomHelp = ref(false)
+        const questionTime = ref(0)
+        const totalTime = ref(0)
+        
+        // Inactivity timer variables
+        let inactivityTimer = null
+        const lastActivity = ref(Date.now())
+        
+        // Watch for prop changes to update reactive state
+        watch(() => props.question, (newQuestion) => {
+            if (newQuestion) {
+                currentQuestionData.value = newQuestion
+                // Clear previous selections when new question loads
+                selectedOptions.value = []
+                selectedAnswer.value = null
+            }
+        }, { deep: true })
+        
+        // Timer logic
+        let questionTimer = null
+        let totalTimer = null
+        
+        onMounted(() => {
+            // Initialize theme - ensure dark theme is applied
+            if (!localStorage.getItem('theme')) {
+                // Apply dark theme as default
+                localStorage.setItem('theme', 'dark');
             }
             
-            // Fallback: Calculate based on progress
-            const progressBasedNumber = Math.ceil((this.currentProgress / 100) * (this.diagnostic?.total_questions || 20));
-            return Math.max(1, Math.min(progressBasedNumber, this.diagnostic?.total_questions || 20));
-        },
-        currentQuestionComponent() {
-            return `Type${this.currentQuestionData?.type_id || 1}`;
-        },
-        hasSelection() {
-            // Special handling for Type4 (drag and drop ordering) questions
-            if (this.currentQuestionData?.type_id === 4) {
-                // For Type4, allow submit when at least one option has been moved to target area
-                return (
-                    Array.isArray(this.selectedOptions) &&
-                    this.selectedOptions.length > 0
-                );
+            // Always ensure the theme classes match the stored preference
+            const currentStoredTheme = localStorage.getItem('theme') || 'dark';
+            if (currentStoredTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
             }
             
-            // Default handling for other question types
-            return Array.isArray(this.selectedOptions)
-                ? this.selectedOptions.length > 0
-                : !!this.selectedOptions;
-        },
-        // Format total time for display
-        formattedTotalTime() {
-             return this.formatTime(this.currentTotalTime);
-        },
-        isLastQuestion() {
-            // Check if we're on the last question based on answered count
-            const answeredCount = this.diagnostic?.responses?.filter(r => r.user_answer !== null).length || 0;
-            return answeredCount >= (this.diagnostic?.total_questions ?? 20) - 1;
-        },
-    },
-    methods: {
-        initialAnswer() {
+            // Start timers
+            questionTimer = setInterval(() => {
+                questionTime.value++
+            }, 1000)
+            
+            totalTimer = setInterval(() => {
+                totalTime.value++
+            }, 1000)
+            
+            // Start inactivity timer
+            resetInactivityTimer()
+            
+            // Add event listeners for user activity
+            document.addEventListener('click', trackActivity)
+            document.addEventListener('keydown', trackActivity)
+            document.addEventListener('mousemove', trackActivity)
+            document.addEventListener('touchstart', trackActivity)
+        })
+        
+        onUnmounted(() => {
+            // Clean up timers
+            if (questionTimer) clearInterval(questionTimer)
+            if (totalTimer) clearInterval(totalTimer)
+            
+            // Clean up inactivity timer
+            if (inactivityTimer) {
+                clearTimeout(inactivityTimer)
+            }
+            
+            // Remove event listeners
+            document.removeEventListener('click', trackActivity)
+            document.removeEventListener('keydown', trackActivity)
+            document.removeEventListener('mousemove', trackActivity)
+            document.removeEventListener('touchstart', trackActivity)
+        })
+        
+        // Computed properties
+        const currentQuestionComponent = computed(() => {
+            const typeId = currentQuestionData.value?.type_id || 1
+            return `Type${typeId}`
+        })
+        
+        const currentAnswer = computed(() => {
+            // Always return an object that matches Type1's expected answer prop structure
+            const selectedOptionsArray = currentQuestionData.value?.type_id === 2 
+                ? selectedOptions.value 
+                : (selectedAnswer.value !== null ? [selectedAnswer.value] : []);
+            
             return {
-                question_id: null,
-                selected_options: [],
+                question_id: currentQuestionData.value?.id || null,
+                selected_options: selectedOptionsArray,
                 duration: 0,
-                is_correct: null,
+                is_correct: false
             };
-        },
-        selected(options) {
-            this.selectedOptions = options;
-        },
-        toggleDarkMode() {
-            this.toggleTheme(false); // false = app theme, not admin theme
-        },
-        async submitAnswer() {
-            if (!this.hasSelection) return;
-
-            this.answer.question_id = this.currentQuestionData.id;
-            this.answer.duration = this.$refs.timer?.questionTimer || 0;
-            this.answer.selected_options = this.selectedOptions;
-
-            try {
-                const submittedAnswerData = { ...this.answer };
-
-                const response = await axios.post(
-                    typeof route !== 'undefined' ? route("assessments.diagnostics.answer", { diagnostic: this.diagnostic.id }) : `/assessments/diagnostics/${this.diagnostic.id}/answer`,
-                    {
-                        item_id: this.currentQuestionData.id,
-                        answer: submittedAnswerData.selected_options,
-                        time_taken: submittedAnswerData.duration,
-                    }
-                );
-
-                if (response.data.completed) {
-                    this.$inertia.visit(
-                        typeof route !== 'undefined' ? route("assessments.diagnostics.results", this.diagnostic.id) : `/assessments/diagnostics/${this.diagnostic.id}/results`
-                    );
+        })
+        
+        const hasSelection = computed(() => {
+            if (!currentQuestionData.value) return false;
+            
+            if (currentQuestionData.value.type_id === 2) {
+                // Multiple choice - check if array has items
+                return Array.isArray(selectedOptions.value) && selectedOptions.value.length > 0;
+            } else {
+                // Single choice - check if value is not null/undefined/empty
+                return selectedAnswer.value !== null && 
+                       selectedAnswer.value !== undefined && 
+                       selectedAnswer.value !== '';
+            }
+        })
+        
+        // Debug: Watch selection state changes (after hasSelection is defined)
+        watch([selectedAnswer, selectedOptions, hasSelection], ([answer, options, hasSelectionValue]) => {
+            console.log('Selection state changed:', {
+                selectedAnswer: answer,
+                selectedOptions: options,
+                hasSelection: hasSelectionValue,
+                questionType: currentQuestionData.value?.type_id
+            });
+        });
+        
+        const isLastQuestion = computed(() => {
+            // Implementation
+            return false
+        })
+        
+        const currentPhaseData = computed(() => {
+            return {
+                name: 'Foundation',
+                description: 'Core concepts'
+            }
+        })
+        
+        const overallConfidence = computed(() => {
+            // Calculate confidence based on diagnostic data if available
+            if (props.diagnostic?.score) {
+                return Math.round(props.diagnostic.score);
+            }
+            
+            // If diagnostic has responses data, use that
+            if (props.diagnostic?.responses && Array.isArray(props.diagnostic.responses)) {
+                const correctAnswers = props.diagnostic.responses.filter(response => response.is_correct).length;
+                const totalAnswered = props.diagnostic.responses.length;
+                
+                if (totalAnswered === 0) return 0;
+                
+                const percentage = Math.round((correctAnswers / totalAnswered) * 100);
+                return Math.min(100, Math.max(0, percentage));
+            }
+            
+            // For in-progress diagnostics, show current question number as progress indicator
+            if (props.currentQuestionNumber && props.currentQuestionNumber > 1) {
+                // Simple confidence approximation based on progress
+                // This is just a visual indicator, real confidence is calculated server-side
+                return Math.min(85, Math.max(25, props.currentQuestionNumber * 2));
+            }
+            
+            return 0;
+        })
+        
+        const currentMilestoneDomains = computed(() => {
+            return []
+        })
+        
+        // Methods
+        const formatTime = (seconds) => {
+            const mins = Math.floor(seconds / 60)
+            const secs = seconds % 60
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+        }
+        
+        const pauseTest = () => {
+            showPauseModal.value = true
+        }
+        
+        const confirmPause = async () => {
+            showPauseModal.value = false
+            // Clear inactivity timer
+            if (inactivityTimer) {
+                clearTimeout(inactivityTimer)
+                inactivityTimer = null
+            }
+            // Redirect to results page
+            const route_url = typeof route !== 'undefined' 
+                ? route('assessments.diagnostics.results', props.diagnostic.id)
+                : `/diagnostics/${props.diagnostic.id}/results`;
+            router.visit(route_url)
+        }
+        
+        // Inactivity timer functions
+        const resetInactivityTimer = () => {
+            // Update last activity time
+            lastActivity.value = Date.now()
+            
+            // Clear existing timer if any
+            if (inactivityTimer) {
+                clearTimeout(inactivityTimer)
+            }
+            
+            // Don't set timer if already paused
+            if (showPauseModal.value) {
+                return
+            }
+            
+            // Set new timer for 5 minutes
+            inactivityTimer = setTimeout(() => {
+                autoPauseTest()
+            }, 300000) // 5 minutes (300,000 milliseconds)
+        }
+        
+        const autoPauseTest = () => {
+            // Don't pause if already paused
+            if (showPauseModal.value) {
+                return
+            }
+            
+            console.log('Auto-pausing test due to inactivity')
+            
+            // Clear the timer
+            if (inactivityTimer) {
+                clearTimeout(inactivityTimer)
+                inactivityTimer = null
+            }
+            
+            // Show pause modal
+            pauseTest()
+        }
+        
+        const trackActivity = () => {
+            resetInactivityTimer()
+        }
+        
+        const resumeFromPause = () => {
+            showPauseModal.value = false
+            // Reset inactivity timer when resuming
+            resetInactivityTimer()
+        }
+        
+        const handleSelection = (selection) => {
+            // QuizTypes component always emits arrays, so we handle both types the same way
+            if (currentQuestionData.value?.type_id === 2) {
+                // Multiple choice - selection is an array
+                selectedOptions.value = Array.isArray(selection) ? selection : [selection]
+            } else {
+                // Single choice - selection is still an array from QuizTypes normalization
+                selectedAnswer.value = Array.isArray(selection) ? selection[0] : selection
+            }
+        }
+        
+        const submitAnswer = async () => {
+            // Comprehensive validation before submission
+            if (!hasSelection.value) {
+                console.warn('Submit blocked: No selection made');
+                return;
+            }
+            
+            if (!currentQuestionData.value) {
+                console.warn('Submit blocked: No current question');
+                return;
+            }
+            
+            // Reset inactivity timer on answer submission
+            resetInactivityTimer()
+            
+            // Additional validation based on question type
+            if (currentQuestionData.value.type_id === 2) {
+                if (!Array.isArray(selectedOptions.value) || selectedOptions.value.length === 0) {
+                    console.warn('Submit blocked: No options selected for multiple choice');
                     return;
                 }
-
-                // Debug response data
-                console.log('Answer submission response:', response.data);
-                
-                // Update all relevant data from the response
-                this.currentQuestionData = response.data.question;
-                this.currentProgress = Math.floor(response.data.progress);
-                
-                // Update diagnostic current_question if provided
-                if (response.data.current_question !== undefined) {
-                // Intentional prop mutation: updating diagnostic state from server response                    this.diagnostic.current_question = response.data.current_question;
-                }
-                
-                // Update diagnostic responses if provided
-                if (response.data.answered_count !== undefined) {
-                    // Update the responses array to reflect the new answer
-                    if (this.diagnostic.responses) {
-                        // Find and update the response we just submitted
-                        const responseIndex = this.diagnostic.responses.findIndex(r => r.diagnostic_item_id === this.currentQuestionData.id);
-                        if (responseIndex !== -1) {
-                        // Intentional prop mutation: updating diagnostic responses array                            this.diagnostic.responses[responseIndex].user_answer = submittedAnswerData.selected_options;
-                        }
-                    }
-                }
-                
-                this.selectedOptions = [];
-                this.answer = this.initialAnswer();
-                // Reset question timer for the new question
-                this.$refs.timer?.resetQuestionTimer();
-                 // Update local total time after successful submission and question reset
-                 this.currentTotalTime = this.$refs.timer?.totalTimer || this.currentTotalTime; // Use timer's total or retain current if timer not available
-
-            } catch (error) {
-                console.error("Error submitting answer:", error);
-                console.error("Error details:", error.response?.data);
-                
-                let errorMessage = "Failed to submit answer. Please try again.";
-                
-                if (error.response?.status === 403) {
-                    if (error.response.data?.error === "Invalid diagnostic state") {
-                        const details = error.response.data?.details;
-                        if (details?.user_mismatch) {
-                            errorMessage = "This diagnostic session belongs to a different user. Please log in with the correct account.";
-                        } else if (details?.status === 'completed') {
-                            errorMessage = "This diagnostic has already been completed.";
-                        } else if (details?.status === 'paused') {
-                            errorMessage = "This diagnostic is currently paused. Please resume it from the diagnostics page.";
-                        } else {
-                            errorMessage = "This diagnostic session is no longer valid. The test may have been paused or completed. Please return to the diagnostics page.";
-                        }
-                    } else {
-                        errorMessage = "You don't have permission to submit this answer. Please ensure you're logged in.";
-                    }
-                } else if (error.response?.status === 401) {
-                    errorMessage = "Your session has expired. Please log in again.";
-                    // Redirect to login after showing message
-                    setTimeout(() => {
-                        window.location.href = typeof route !== 'undefined' ? route('login') : '/login';
-                    }, 2000);
-                }
-                
-                this.showError(errorMessage, error.response?.status === 403 && error.response.data?.error === "Invalid diagnostic state");
-            }
-        },
-        handlePauseClick(event) {
-            console.log('Pause button clicked', event);
-            event.preventDefault();
-            event.stopPropagation();
-            this.pauseTest(false);
-        },
-        async pauseTest(isAuto = false) {
-            console.log('pauseTest called with isAuto:', isAuto);
-            
-            if (this.$refs.timer?.pause) {
-                this.$refs.timer.pause();
-            }
-
-            if (isAuto) {
-                try {
-                    await axios.post(typeof route !== 'undefined' ? route("assessments.diagnostics.pause", { diagnostic: this.diagnostic.id }) : `/assessments/diagnostics/${this.diagnostic.id}/pause`, {
-                        time_taken: this.$refs.timer?.totalTimer || 0,
-                    });
-                } catch (error) {
-                    console.error("Error during auto-pause:", error);
-                }
-                this.$inertia.visit(
-                    typeof route !== 'undefined' ? route("assessments.diagnostics.results", this.diagnostic.id) : `/assessments/diagnostics/${this.diagnostic.id}/results`
-                );
             } else {
-                // Show pause confirmation modal
-                this.showPauseModal = true;
+                if (!selectedAnswer.value) {
+                    console.warn('Submit blocked: No answer selected for single choice');
+                    return;
+                }
             }
-        },
-        async confirmPause() {
+            
             try {
-                await axios.post(typeof route !== 'undefined' ? route('assessments.diagnostics.pause', { diagnostic: this.diagnostic.id }) : `/assessments/diagnostics/${this.diagnostic.id}/pause`, {
-                    time_taken: this.$refs.timer?.totalTimer || 0
-                });
-                this.$inertia.visit(typeof route !== 'undefined' ? route('assessments.diagnostics.results', this.diagnostic.id) : `/assessments/diagnostics/${this.diagnostic.id}/results`);
-            } catch (error) {
-                console.error('Error pausing test:', error);
-                this.showError('Failed to pause test. Please try again.');
-            }
-        },
-        cancelPause() {
-            if (this.$refs.timer?.resume) {
-                this.$refs.timer.resume();
-            }
-            this.showPauseModal = false;
-        },
-        handleQuestionTick(questionTime, totalTime) {
-            // Update local total time with the value emitted by the Timer component
-            this.currentTotalTime = totalTime;
-
-            const currentQuestionId = this.currentQuestionData?.id;
-            if (!currentQuestionId) return; // Only apply threshold logic if question data is available
-
-            // Determine the effective threshold for the current question
-            const multiplier = this.questionThresholdMultipliers[currentQuestionId] || 1;
-            const effectiveThreshold = this.questionTimeThreshold * multiplier;
-
-            // Check if the current question time exceeds the effective threshold
-            if (questionTime >= effectiveThreshold) {
-                if (this.$refs.timer?.pause) {
-                    this.$refs.timer.pause();
+                // Reset question timer for next question
+                const currentQuestionTime = questionTime.value
+                questionTime.value = 0
+                
+                // Prepare response data - send as array for consistency
+                const userAnswer = currentQuestionData.value?.type_id === 2 
+                    ? selectedOptions.value  // Array for multiple choice
+                    : [selectedAnswer.value]; // Wrap single answer in array
+                
+                const responseData = {
+                    selected_options: userAnswer,
+                    response_time: currentQuestionTime,
+                    diagnostic_item_id: currentQuestionData.value?.id
                 }
-
-                // Reset the user continued flag for this warning
-                this.userContinuedTest = false;
-
-                // Set up the warning message and countdown
-                this.autoAdvanceCountdown = 5;
-                this.timeWarningMessage = `You've spent over ${this.formatTime(effectiveThreshold)} on this question. Auto-pausing in ${this.autoAdvanceCountdown} seconds...`;
-                this.showTimeWarningModal = true;
-
-                // Start countdown
-                console.log('Starting countdown interval');
-                this.countdownInterval = setInterval(() => {
-                    this.autoAdvanceCountdown--;
-                    this.timeWarningMessage = `You've spent over ${this.formatTime(effectiveThreshold)} on this question. Auto-pausing in ${this.autoAdvanceCountdown} seconds...`;
-                    console.log('Countdown tick:', this.autoAdvanceCountdown);
-                    
-                    if (this.autoAdvanceCountdown <= 0) {
-                        console.log('Countdown reached 0');
-                        if (!this.userContinuedTest) {
-                            console.log('Auto-pausing test (user did not continue)');
-                            this.clearCountdown();
-                            this.showTimeWarningModal = false;
-                            this.pauseTest(true);
-                        } else {
-                            console.log('User already continued test - skipping auto-pause');
-                            this.clearCountdown();
-                        }
-                    }
-                }, 1000);
-            }
-        },
-        formatTime(seconds) {
-            if (seconds === null || seconds === undefined) {
-                return '00:00:00';
-            }
-            const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-            const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-            const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-            return `${h}:${m}:${s}`;
-        },
-        async finishAssessment() {
-            if (!this.hasSelection) return;
-
-            // Show finish confirmation modal
-            this.showFinishModal = true;
-        },
-        async confirmFinish() {
-            // Submit the final answer and complete the assessment
-            this.answer.question_id = this.currentQuestionData.id;
-            this.answer.duration = this.$refs.timer?.questionTimer || 0;
-            this.answer.selected_options = this.selectedOptions;
-
-            try {
-                await axios.post(
-                    route("assessments.diagnostics.answer", this.diagnostic.id),
-                    {
-                        item_id: this.currentQuestionData.id,
-                        answer: this.answer.selected_options,
-                        time_taken: this.answer.duration,
-                    }
-                );
-
-                // Navigate to results page
-                this.$inertia.visit(
-                    route("assessments.diagnostics.results", this.diagnostic.id)
-                );
+                
+                // Submit answer to backend using route helper
+                console.log('Diagnostic ID:', props.diagnostic?.id)
+                console.log('Response data:', responseData)
+                
+                const route_url = typeof route !== 'undefined' 
+                    ? route('assessments.diagnostics.answer', props.diagnostic.id)
+                    : `/assessments/diagnostics/${props.diagnostic.id}/answer`;
+                
+                console.log('Submitting to URL:', route_url)
+                await router.post(route_url, responseData)
+                
+                // Selection will be cleared automatically by the watcher when new question loads
+                
             } catch (error) {
-                console.error("Error submitting final answer:", error);
-                this.showError("Failed to submit answer. Please try again.");
+                console.error('Error submitting answer:', error)
+                // Handle error - maybe show a notification
             }
-        },
-        showError(message, shouldRedirect = false) {
-            this.errorMessage = message;
-            this.showErrorModal = true;
-            this.shouldRedirectOnError = shouldRedirect;
-        },
-        handleErrorConfirm() {
-            this.showErrorModal = false;
-            if (this.shouldRedirectOnError) {
-                // Redirect to diagnostics page
-                this.$inertia.visit(typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics');
-            }
-        },
-        clearCountdown() {
-            if (this.countdownInterval) {
-                console.log('Clearing countdown interval');
-                clearInterval(this.countdownInterval);
-                this.countdownInterval = null;
-            } else {
-                console.log('No countdown interval to clear');
-            }
-        },
-        handleTimeWarningContinue() {
-            console.log('handleTimeWarningContinue called - should CONTINUE the test');
-            
-            // Prevent multiple calls
-            if (this.userContinuedTest) {
-                console.log('Already handled continue - ignoring duplicate call');
-                return;
-            }
-            
-            // Immediately clear countdown to prevent race condition
-            this.clearCountdown();
-            this.showTimeWarningModal = false;
-            
-            // Add a flag to prevent auto-pause from triggering
-            this.userContinuedTest = true;
-            
-            const currentQuestionId = this.currentQuestionData?.id;
-            if (currentQuestionId) {
-                // Increment the multiplier for this question
-                const multiplier = this.questionThresholdMultipliers[currentQuestionId] || 1;
-                this.questionThresholdMultipliers[currentQuestionId] = multiplier + 1;
-            }
-            
-            if (this.$refs.timer?.resume) {
-                console.log('Resuming timer...');
-                this.$refs.timer.resume();
-            } else {
-                console.log('Timer resume method not available');
-            }
-        },
-        handleTimeWarningPause() {
-            console.log('handleTimeWarningPause called - should PAUSE the test');
-            
-            // Prevent pause if user already continued
-            if (this.userContinuedTest) {
-                console.log('User already continued test - ignoring pause call');
-                return;
-            }
-            
-            this.clearCountdown();
-            this.showTimeWarningModal = false;
-            this.pauseTest(true);
-        },
-        getQuestionTypeName() {
-            const typeMap = {
-                1: 'Single Choice',
-                2: 'Multiple Choice',
-                3: 'Fill in the Blank',
-                4: 'Drag and Drop',
-                5: 'Matching',
-                6: 'Hotspot',
-                7: 'Simulation'
-            };
-            return typeMap[this.currentQuestionData?.type_id] || 'Unknown';
-        },
-        getDifficultyLabel() {
-            if (!this.currentQuestionData?.difficulty) return "N/A";
-            
-            // Handle both object and string formats
-            if (typeof this.currentQuestionData.difficulty === 'object') {
-                return this.currentQuestionData.difficulty.name || "N/A";
-            }
-            return this.currentQuestionData.difficulty;
-        },
-        getDifficultyScore() {
-            if (!this.currentQuestionData?.difficulty) return 0;
-            
-            // Handle both object and string formats
-            let difficultyName = this.currentQuestionData.difficulty;
-            if (typeof difficultyName === 'object') {
-                difficultyName = difficultyName.name;
-            }
-            
-            const difficultyMap = {
+        }
+        
+        const getDifficultyLabel = () => {
+            return currentQuestionData.value?.difficulty?.name || 'Medium'
+        }
+        
+        const getDifficultyScore = () => {
+            const scores = {
                 'Very Easy': 1,
                 'Easy': 2,
                 'Medium': 3,
                 'Hard': 4,
                 'Very Hard': 5
-            };
-            
-            return difficultyMap[difficultyName] || 0;
-        },
-        getBloomLabel() {
-            if (!this.currentQuestionData?.bloom) return "N/A";
-            
-            // Handle both object and string formats
-            if (typeof this.currentQuestionData.bloom === 'object') {
-                // Check if level is "NA" or null/undefined
-                const bloomLevel = this.currentQuestionData.bloom.level;
-                if (!bloomLevel || bloomLevel === 'NA' || bloomLevel === 'N/A') {
-                    return "N/A";
-                }
-                return bloomLevel;
             }
-            
-            // Handle string format
-            if (this.currentQuestionData.bloom === 'NA' || this.currentQuestionData.bloom === 'N/A') {
-                return "N/A";
-            }
-            
-            return this.currentQuestionData.bloom;
-        },
-        getBloomScore() {
-            if (!this.currentQuestionData?.bloom) return 0;
-            
-            // Handle both object and string formats
-            let bloomLevel = this.currentQuestionData.bloom;
-            if (typeof bloomLevel === 'object') {
-                bloomLevel = bloomLevel.level;
-            }
-            
-            // Return 0 for NA values
-            if (!bloomLevel || bloomLevel === 'NA' || bloomLevel === 'N/A') {
-                return 0;
-            }
-            
-            const bloomMap = {
-                'Remember': 1,
-                'Understand': 2,
-                'Apply': 3,
-                'Analyze': 4,
-                'Evaluate': 5,
-                'Create': 6
-            };
-            
-            return bloomMap[bloomLevel] || 0;
-        },
-        getTooltipPosition(tooltipType, isOpen) {
-            if (!isOpen) return {};
-            
-            const buttonRef = tooltipType === 'difficulty' ? this.$refs.difficultyTooltipButton : this.$refs.bloomTooltipButton;
-            if (!buttonRef || !buttonRef.$el) return {};
-            
-            const button = buttonRef.$el;
-            const buttonRect = button.getBoundingClientRect();
-            const tooltipWidth = 320; // w-80 = 20rem = 320px
-            const tooltipHeight = 400; // Approximate height
-            const padding = 16; // Minimum padding from viewport edge
-            
-            // Check available space
-            const spaceRight = window.innerWidth - buttonRect.right;
-            const spaceLeft = buttonRect.left;
-            // const _spaceTop = buttonRect.top;
-            const spaceBottom = window.innerHeight - buttonRect.bottom;
-            
-            const position = {};
-            let direction = 'right';
-            
-            // Determine horizontal position
-            if (spaceRight >= tooltipWidth + padding) {
-                // Position to the right
-                position.left = `${buttonRect.width + 8}px`;
-                direction = 'right';
-            } else if (spaceLeft >= tooltipWidth + padding) {
-                // Position to the left
-                position.right = `${buttonRect.width + 8}px`;
-                direction = 'left';
-            } else {
-                // Position below if not enough horizontal space
-                position.left = '50%';
-                position.transform = 'translateX(-50%)';
-                if (spaceBottom >= tooltipHeight + padding) {
-                    position.top = `${buttonRect.height + 8}px`;
-                    direction = 'bottom';
-                } else {
-                    position.bottom = `${buttonRect.height + 8}px`;
-                    direction = 'top';
-                }
-            }
-            
-            // Vertical centering for left/right positioning
-            if (direction === 'left' || direction === 'right') {
-                // Check if tooltip would extend beyond viewport when centered
-                const centerOffset = tooltipHeight / 2;
-                if (buttonRect.top + buttonRect.height / 2 - centerOffset < padding) {
-                    // Too close to top, align with top
-                    position.top = `${padding}px`;
-                    position.transform = '';
-                } else if (buttonRect.top + buttonRect.height / 2 + centerOffset > window.innerHeight - padding) {
-                    // Too close to bottom, align with bottom
-                    position.bottom = `${padding}px`;
-                    position.transform = '';
-                } else {
-                    // Center vertically
-                    position.top = '50%';
-                    position.transform = (position.transform || '') + ' translateY(-50%)';
-                }
-            }
-            
-            // Store direction for arrow classes
-            this.tooltipDirection = direction;
-            
-            return position;
-        },
-        getArrowClasses(tooltipType, isOpen) {
-            if (!isOpen || !this.tooltipDirection) return '';
-            
-            const direction = this.tooltipDirection;
-            
-            switch (direction) {
-                case 'right':
-                    return '-left-2 top-1/2 -translate-y-1/2';
-                case 'left':
-                    return '-right-2 top-1/2 -translate-y-1/2';
-                case 'bottom':
-                    return 'left-1/2 -translate-x-1/2 -top-2';
-                case 'top':
-                    return 'left-1/2 -translate-x-1/2 -bottom-2';
-                default:
-                    return '';
-            }
-        },
-        getArrowStyle() {
-            if (!this.tooltipDirection) return {};
-            
-            const direction = this.tooltipDirection;
-            const isDark = this.isDark;
-            
-            const borderColor = isDark ? '#374151' : '#e5e7eb'; // gray-700 : gray-200
-            
-            switch (direction) {
-                case 'right':
-                    return {
-                        borderLeftColor: borderColor,
-                        borderBottomColor: borderColor,
-                        borderRightColor: 'transparent',
-                        borderTopColor: 'transparent'
-                    };
-                case 'left':
-                    return {
-                        borderRightColor: borderColor,
-                        borderTopColor: borderColor,
-                        borderLeftColor: 'transparent',
-                        borderBottomColor: 'transparent'
-                    };
-                case 'bottom':
-                    return {
-                        borderLeftColor: borderColor,
-                        borderTopColor: borderColor,
-                        borderRightColor: 'transparent',
-                        borderBottomColor: 'transparent'
-                    };
-                case 'top':
-                    return {
-                        borderRightColor: borderColor,
-                        borderBottomColor: borderColor,
-                        borderLeftColor: 'transparent',
-                        borderTopColor: 'transparent'
-                    };
-                default:
-                    return {};
-            }
-        },
-    },
-    async mounted() {
-        // Initialize theme using the composable
-        await this.initializeTheme();
-        
-        // Debug diagnostic state
-        console.log('Diagnostic state:', {
-            id: this.diagnostic?.id,
-            status: this.diagnostic?.status,
-            user_id: this.diagnostic?.user_id,
-            current_question: this.diagnostic?.current_question,
-            total_questions: this.diagnostic?.total_questions,
-            responses: this.diagnostic?.responses?.length,
-            answered_responses: this.diagnostic?.responses?.filter(r => r.user_answer !== null).length,
-            initial_progress: this.currentProgress,
-            calculated_question_number: this.currentQuestionNumber
-        });
-        
-        // Set the initial total time displayed from the diagnostic's total_duration if it exists
-        this.currentTotalTime = this.diagnostic?.total_duration ?? this.initialTimeElapsed;
-        // Ensure initial progress is an integer
-        this.currentProgress = Math.floor(this.currentProgress);
-        // Initialize multiplier for the first question if needed
-        if (this.currentQuestionData?.id && !this.questionThresholdMultipliers[this.currentQuestionData.id]) {
-             this.questionThresholdMultipliers[this.currentQuestionData.id] = 1;
+            return scores[getDifficultyLabel()] || 3
         }
-        // Reset the question timer when the component is mounted (for the first or resumed question)
-        this.$refs.timer?.resetQuestionTimer();
-        // The timer component itself will start from initialElapsed
-
-        // Explicitly resume timers when the component is mounted, ensuring they start with initialElapsed
-        this.$refs.timer?.resume();
-    },
-    beforeUnmount() {
-        // Clean up any running intervals
-        this.clearCountdown();
+        
+        const getBloomLabel = () => {
+            return currentQuestionData.value?.bloom?.level || 'Apply'
+        }
+        
+        const getQuestionTypeName = () => {
+            const types = {
+                1: 'Single Choice',
+                2: 'Multiple Choice',
+                3: 'Fill in Blank',
+                4: 'Ordering',
+                5: 'Matching',
+                6: 'Code Review',
+                7: 'Terminal Command'
+            }
+            return types[currentQuestionData.value?.type_id] || 'Single Choice'
+        }
+        
+        const getDomainStatusClasses = () => {
+            // Implementation based on domain completion status
+            return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+        }
+        
+        const getDomainDotClasses = () => {
+            // Implementation based on domain completion status
+            return 'bg-gray-400'
+        }
+        
+        return {
+            isDark,
+            toggleTheme,
+            selectedOptions,
+            selectedAnswer,
+            currentQuestionData,
+            showPauseModal,
+            showBloomHelp,
+            questionTime,
+            totalTime,
+            currentQuestionComponent,
+            currentAnswer,
+            hasSelection,
+            isLastQuestion,
+            currentPhaseData,
+            overallConfidence,
+            currentMilestoneDomains,
+            formatTime,
+            pauseTest,
+            confirmPause,
+            resumeFromPause,
+            handleSelection,
+            submitAnswer,
+            getDifficultyLabel,
+            getDifficultyScore,
+            getBloomLabel,
+            getQuestionTypeName,
+            getDomainStatusClasses,
+            getDomainDotClasses
+        }
     }
-};
+}
 </script>
-
-<style scoped>
-.form-check-input:focus {
-    outline: none;
-    box-shadow: none;
-}
-.form-check-input:checked {
-    background-color: rgb(
-        96 165 250 / var(--tw-bg-opacity, 1)
-    ); /* Tailwind blue-400 */
-    border-color: #3b82f6; /* Tailwind blue-500 */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* ring effect */
-}
-
-/* Removed review mode specific styles */
-/*
-.question-circle.answered {
-    background-color: #4CAF50;
-    color: white;
-}
-.question-circle.incorrect {
-    background-color: #F44336;
-    color: white;
-}
-.question-circle.correct {
-     background-color: #81C784;
-     color: white;
-}
-.question-circle.current {
-    border-color: #333;
-    border-width: 2px;
-}
-*/
-</style>

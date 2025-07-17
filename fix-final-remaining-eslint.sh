@@ -150,14 +150,14 @@ echo "Fixing reserved component names..."
 sed -i '' 's/components: { Link,/components: { LinkComponent: Link,/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 sed -i '' 's/components: { Link,/components: { LinkComponent: Link,/g' "resources/js/pages/Diagnostics/Test/Quiz 2.vue" 2>/dev/null || true
 
-# 7. Fix Dialog components in QuizApple.vue
-echo "Fixing Dialog components in QuizApple.vue..."
+# 7. Fix Dialog components in Quiz.vue
+echo "Fixing Dialog components in Quiz.vue..."
 # First remove the unused imports
-sed -i '' '228d' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+sed -i '' '228d' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 # Then fix the component registration
-sed -i '' 's/components: { Dialog,/components: { DialogComponent: Dialog,/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
-sed -i '' 's/<Dialog /<DialogComponent /g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
-sed -i '' 's/<\/Dialog>/<\/DialogComponent>/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+sed -i '' 's/components: { Dialog,/components: { DialogComponent: Dialog,/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
+sed -i '' 's/<Dialog /<DialogComponent /g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
+sed -i '' 's/<\/Dialog>/<\/DialogComponent>/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 
 # 8. Fix unused imports
 echo "Fixing unused imports..."
@@ -173,10 +173,10 @@ sed -i '' '1075s/const response/const _response/' "resources/js/pages/Diagnostic
 sed -i '' '1257s/const spaceTop/const _spaceTop/' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 sed -i '' '1257s/const spaceTop/const _spaceTop/' "resources/js/pages/Diagnostics/Test/Quiz 2.vue" 2>/dev/null || true
 
-# 10. Fix QuizApple.vue unused parameters
-echo "Fixing QuizApple.vue unused parameters..."
-sed -i '' '548s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
-sed -i '' '553s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+# 10. Fix Quiz.vue unused parameters
+echo "Fixing Quiz.vue unused parameters..."
+sed -i '' '548s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
+sed -i '' '553s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 
 # 11. Fix ChartComponent unused variable
 echo "Fixing ChartComponent.vue unused variables..."

@@ -26,9 +26,20 @@ class DiagnosticController extends Controller
         UserAbilityService $abilityService, 
         AdaptiveDiagnosticService $adaptiveService
     ) {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['index', 'sample']);
         $this->abilityService = $abilityService;
         $this->adaptiveService = $adaptiveService;
+    }
+
+    /**
+     * Display sample diagnostic without authentication.
+     */
+    public function sample(): Response
+    {
+        return Inertia::render('Diagnostics/SampleQuiz', [
+            'isAuthenticated' => auth()->check(),
+            'user' => auth()->user(),
+        ]);
     }
 
     /**
@@ -36,26 +47,37 @@ class DiagnosticController extends Controller
      */
     public function index(Request $request): Response
     {
-        // Get user diagnostics
-        $userDiagnostics = Diagnostic::where('user_id', auth()->id())
-            ->with('responses')
-            ->latest()
-            ->get();
-            
-        $diagnosticsHistory = $userDiagnostics;
+        $isAuthenticated = auth()->check();
         
-        // Check if user has a completed diagnostic
-        $hasCompletedDiagnostic = $userDiagnostics->where('status', 'completed')->isNotEmpty();
+        if ($isAuthenticated) {
+            // Get user diagnostics
+            $userDiagnostics = Diagnostic::where('user_id', auth()->id())
+                ->with('responses')
+                ->latest()
+                ->get();
+                
+            $diagnosticsHistory = $userDiagnostics;
+            
+            // Check if user has a completed diagnostic
+            $hasCompletedDiagnostic = $userDiagnostics->where('status', 'completed')->isNotEmpty();
 
-        // Check if user has an in-progress diagnostic
-        $inProgressDiagnostic = $userDiagnostics->where('status', 'in_progress')->first();
+            // Check if user has an in-progress diagnostic
+            $inProgressDiagnostic = $userDiagnostics->where('status', 'in_progress')->first();
+        } else {
+            // Guest user - no history
+            $diagnosticsHistory = collect([]);
+            $hasCompletedDiagnostic = false;
+            $inProgressDiagnostic = null;
+        }
+        
         return Inertia::render('Diagnostics/Index', [
             'diagnosticsHistory' => $diagnosticsHistory,
             'hasCompletedDiagnostic' => $hasCompletedDiagnostic,
             'inProgressDiagnostic' => $inProgressDiagnostic,
             'totalQuestions' => 100, // Adaptive - will vary
-            'isAuthenticated' => true,
-            'encourageSignup' => false
+            'isAuthenticated' => $isAuthenticated,
+            'encourageSignup' => !$isAuthenticated,
+            'user' => auth()->user()
         ]);
     }
 
@@ -953,7 +975,7 @@ class DiagnosticController extends Controller
             ]);
         }
 
-        return Inertia::render('Diagnostics/Test/QuizApple', [
+        return Inertia::render('Diagnostics/Test/Quiz', [
             'diagnostic' => array_merge($diagnostic->toArray(), $progressiveData),
             'question' => $currentQuestion,
             'progress' => $progress,

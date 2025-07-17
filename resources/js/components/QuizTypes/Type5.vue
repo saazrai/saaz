@@ -76,7 +76,7 @@
                                  title="Drag to move or click to remove"
                             >
                                 <p :class="[
-                                    'text-sm text-center truncate pointer-events-none',
+                                    'text-sm text-center truncate pointer-events-none px-3',
                                     isThemeDark ? 'text-gray-200' : 'text-gray-700'
                                 ]">
                                     {{ getMatchedDefinitionText(index) }}

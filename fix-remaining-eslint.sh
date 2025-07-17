@@ -13,9 +13,9 @@ done
 # Fix BarChartExample.vue - remove extra >
 sed -i '' 's/<\/Checkbox>>/<\/Checkbox>/g' resources/js/components/LevelIndicators/BarChartExample.vue 2>/dev/null || true
 
-# Fix DialogPanel closing tags in QuizApple.vue
-sed -i '' 's/<\/DialogTitle>/<\/DialogComponentTitle>/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
-sed -i '' 's/<\/DialogPanel>/<\/DialogComponentPanel>/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+# Fix DialogPanel closing tags in Quiz.vue
+sed -i '' 's/<\/DialogTitle>/<\/DialogComponentTitle>/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
+sed -i '' 's/<\/DialogPanel>/<\/DialogComponentPanel>/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 
 # Fix unused variables in shadcn components by removing the underscore pattern
 find resources/js/components/shadcn -name "*.vue" -type f | while read -r file; do
@@ -41,8 +41,8 @@ sed -i '' 's/<\/Link>/<\/LinkComponent>/g' resources/js/pages/Diagnostics/Test/Q
 sed -i '' 's/<Link /<LinkComponent /g' "resources/js/pages/Diagnostics/Test/Quiz 2.vue" 2>/dev/null || true
 sed -i '' 's/<\/Link>/<\/LinkComponent>/g' "resources/js/pages/Diagnostics/Test/Quiz 2.vue" 2>/dev/null || true
 
-# Fix Dialog component in QuizApple.vue
-sed -i '' 's/Dialog, DialogPanel, DialogTitle/Dialog as DialogComponent, DialogPanel as DialogComponentPanel, DialogTitle as DialogComponentTitle/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+# Fix Dialog component in Quiz.vue
+sed -i '' 's/Dialog, DialogPanel, DialogTitle/Dialog as DialogComponent, DialogPanel as DialogComponentPanel, DialogTitle as DialogComponentTitle/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 
 # Fix CompactLevelIndicator.vue and LevelVisualization.vue parsing errors
 sed -i '' '/export default {/,/^}$/{/export default {/!{/^}$/!d;};}' resources/js/components/LevelIndicators/CompactLevelIndicator.vue 2>/dev/null || true

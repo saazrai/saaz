@@ -55,8 +55,8 @@ sed -i '' '1257s/const _spaceTop/\/\/ const _spaceTop/' resources/js/pages/Diagn
 sed -i '' '1075s/const _response/\/\/ const _response/' "resources/js/pages/Diagnostics/Test/Quiz 2.vue" 2>/dev/null || true
 sed -i '' '1257s/const _spaceTop/\/\/ const _spaceTop/' "resources/js/pages/Diagnostics/Test/Quiz 2.vue" 2>/dev/null || true
 
-# Fix QuizApple.vue - already should be fixed, but let's ensure
-sed -i '' 's/components: {.*Dialog[^}]*/components: { DialogComponent: Dialog/' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+# Fix Quiz.vue - already should be fixed, but let's ensure
+sed -i '' 's/components: {.*Dialog[^}]*/components: { DialogComponent: Dialog/' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 
 # Fix Privacy/Consent.vue
 sed -i '' '/import.*Link.*from/d' resources/js/pages/Privacy/Consent.vue 2>/dev/null || true

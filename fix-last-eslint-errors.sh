@@ -64,10 +64,10 @@ sed -i '' '319s/const radarData/const _radarData/' resources/js/pages/Diagnostic
 # Fix Quiz components unused variables (already prefixed with _)
 # These should already be fixed from previous script
 
-# Fix QuizApple.vue
-sed -i '' 's/components: { Dialog,/components: { DialogComponent: Dialog,/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
-sed -i '' '547s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
-sed -i '' '552s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/QuizApple.vue 2>/dev/null || true
+# Fix Quiz.vue
+sed -i '' 's/components: { Dialog,/components: { DialogComponent: Dialog,/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
+sed -i '' '547s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
+sed -i '' '552s/(domainId)/()/g' resources/js/pages/Diagnostics/Test/Quiz.vue 2>/dev/null || true
 
 # 5. Fix duplicate keys error in Diagnostics/Index.vue
 echo "Fixing duplicate keys..."

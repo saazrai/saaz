@@ -78,7 +78,7 @@ watchEffect(() => {
                             isDarkMode 
                                 ? 'hover:text-white hover:bg-gray-700' 
                                 : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
-                        ]" :href="safeRoute('assessments.diagnostics.index', '/diagnostics')">SecureStart™</a></li>
+                        ]" :href="route('assessments.diagnostics.index')">SecureStart™</a></li>
                         <li><a :class="[
                             'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
                             isDarkMode 
@@ -256,7 +256,7 @@ watchEffect(() => {
             </button>
             
             <!-- Mobile menu items - V1 Enhanced only -->
-            <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™</Link>
+            <Link :href="route('assessments.diagnostics.index')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™</Link>
             <Link :href="route('info.features')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">Features</Link>
             <Link :href="route('info.about')" :class="['block py-2 font-semibold', isDarkMode ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">About</Link>
             
@@ -337,7 +337,7 @@ watchEffect(() => {
                         </h3>
                         <ul class="space-y-3">
                             <li>
-                                <Link :href="safeRoute('assessments.diagnostics.index', '/diagnostics')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
+                                <Link :href="route('assessments.diagnostics.index')" :class="['transition-colors', isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900']">
                                     SecureStart™
                                 </Link>
                             </li>

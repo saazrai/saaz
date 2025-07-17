@@ -66,11 +66,16 @@ test('authenticated user can access diagnostic index', function () {
     $response->assertInertia(fn ($page) => $page->component('Diagnostics/Index'));
 });
 
-test('guest user cannot access diagnostic index', function () {
+test('guest user can access diagnostic index', function () {
     $response = $this->get(route('assessments.diagnostics.index'));
 
-    $response->assertStatus(302);
-    $response->assertRedirect(route('login'));
+    $response->assertStatus(200);
+    $response->assertInertia(fn ($page) => $page
+        ->component('Diagnostics/Index')
+        ->has('isAuthenticated')
+        ->where('isAuthenticated', false)
+        ->where('encourageSignup', true)
+    );
 });
 
 test('authenticated user can start new diagnostic', function () {
@@ -137,7 +142,7 @@ test('diagnostic assessment shows questions', function () {
 
     $response->assertStatus(200);
     $response->assertInertia(fn ($page) => $page
-        ->component('Diagnostics/Test/QuizApple')
+        ->component('Diagnostics/Test/Quiz')
         ->has('diagnostic')
         ->where('diagnostic.id', $diagnostic->id)
     );

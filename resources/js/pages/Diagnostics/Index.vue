@@ -7,6 +7,49 @@
         </Head>
         
         <div class="container mx-auto p-4 max-w-6xl">
+            <!-- Success Message for Sample Quiz Completion -->
+            <div v-if="showSampleCompletionMessage" class="mb-6">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border-2 border-green-300 dark:border-green-700">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <h3 class="text-lg font-bold text-green-900 dark:text-green-100 mb-1">
+                                Great Job Completing the Sample Quiz! 🎉
+                            </h3>
+                            <p class="text-green-800 dark:text-green-200 mb-3">
+                                You've experienced the quality of our assessments. Ready to unlock your full cybersecurity potential?
+                            </p>
+                            <div v-if="!isAuthenticated" class="flex flex-wrap gap-3">
+                                <Link 
+                                    :href="route('register')" 
+                                    class="inline-flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md"
+                                >
+                                    Create Free Account
+                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </Link>
+                                <Link 
+                                    :href="route('login')" 
+                                    class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 font-semibold rounded-lg border-2 border-green-600 dark:border-green-400 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    Sign In
+                                </Link>
+                            </div>
+                        </div>
+                        <button @click="showSampleCompletionMessage = false" class="flex-shrink-0 ml-4 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Header Section -->
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">SecureStart™ Diagnostic</h1>
@@ -14,12 +57,18 @@
                 
                 <!-- Quick Start Apple UI/UX Test Button -->
                 <div class="mt-6">
-                    <button 
+                    <button v-if="isAuthenticated"
                         @click="startDiagnostic('standard')"
                         class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
                     >
                         🚀 Start Apple-Style Assessment (V1 Enhanced)
                     </button>
+                    <Link v-else
+                        :href="route('assessments.diagnostics.sample')"
+                        class="inline-block px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-full hover:from-green-600 hover:to-teal-600 transition-all transform hover:scale-105 shadow-lg"
+                    >
+                        🎯 Try Free Sample Quiz First
+                    </Link>
                 </div>
             </div>
 
@@ -233,8 +282,76 @@
                 </div>
             </div>
 
+            <!-- Guest User Section -->
+            <div v-if="!isAuthenticated" class="mb-12">
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 rounded-xl p-8 border-2 border-blue-300 dark:border-blue-700">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Try Our Sample Assessment First!</h3>
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+                            Experience the quality of our diagnostic with a free 10-question sample quiz
+                        </p>
+                        <Link 
+                            :href="route('assessments.diagnostics.sample')" 
+                            class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-full hover:from-green-600 hover:to-teal-600 transition-all transform hover:scale-105 shadow-lg"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Try Sample Quiz Now - No Sign Up Required
+                        </Link>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-blue-200 dark:border-blue-800">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
+                            Ready for the Full Experience? Create Your Free Account
+                        </h4>
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Complete 100+ Questions</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Comprehensive assessment</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Detailed Analytics</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Domain-level insights</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Learning Path</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Personalized recommendations</p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <Link 
+                                :href="route('register')" 
+                                class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+                            >
+                                Create Free Account
+                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Diagnostic Mode Selection -->
-            <div class="mb-12">
+            <div class="mb-12" v-if="isAuthenticated">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-semibold text-gray-900 mb-4">Choose Your Diagnostic Mode</h3>
                     <p class="text-lg text-gray-600">Select the assessment depth that best fits your time and evaluation needs</p>
@@ -661,6 +778,10 @@ const selectedDomainDetails = ref(null);
 const loadingDomains = ref(true);
 const processedDomains = ref([]);
 
+// Show success message if user completed sample quiz
+const urlParams = new URLSearchParams(window.location.search);
+const showSampleCompletionMessage = ref(urlParams.get('completed_sample') === 'true');
+
 // Layout is now handled by defineOptions at the bottom of the file
 
 // Process domains from props
@@ -763,7 +884,7 @@ const formatTime = (seconds) => {
 };
 
 const startDiagnostic = (mode) => {
-    // Go directly to Apple UI/UX QuizApple component
+    // Go directly to Quiz component
     router.visit(typeof route !== 'undefined' ? route('assessments.diagnostics.begin') : `/assessments/diagnostics/begin`, {
         method: 'post',
         data: { mode: mode }

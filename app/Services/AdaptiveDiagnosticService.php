@@ -1428,7 +1428,18 @@ class AdaptiveDiagnosticService
         } // End of L5 tiebreaker conditional
         
         if (!$targetDomainId) {
-            return null; // No more questions needed
+            // If there are domains in the state but no available questions, return stop marker for the first domain
+            if (!empty($domainQuestionCounts)) {
+                $firstDomainId = array_key_first($domainQuestionCounts);
+                $finalLevel = $state['domain_bloom_levels'][$firstDomainId] ?? 3;
+                return [
+                    'stop_domain' => true,
+                    'domain_id' => $firstDomainId,
+                    'reason' => 'no_questions_available',
+                    'final_level' => $finalLevel - 0.5 // Cap at "plus" level
+                ];
+            }
+            return null; // No domains at all
         }
         
         // Find available questions at target bloom level

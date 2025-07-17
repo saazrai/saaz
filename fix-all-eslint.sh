@@ -31,9 +31,9 @@ sed -i '' '/const props = defineProps/d' resources/js/components/LevelIndicators
 sed -i '' 's/v-for="(option, index) in availableOptions"/v-for="option in availableOptions"/g' resources/js/components/QuizTypes/Type5.vue
 
 # Fix reserved component names
-sed -i '' 's/components: { Dialog,/components: { DialogComponent: Dialog,/g' resources/js/pages/Diagnostics/Test/QuizApple.vue
-sed -i '' 's/<Dialog/<DialogComponent/g' resources/js/pages/Diagnostics/Test/QuizApple.vue
-sed -i '' 's/<\/Dialog>/<\/DialogComponent>/g' resources/js/pages/Diagnostics/Test/QuizApple.vue
+sed -i '' 's/components: { Dialog,/components: { DialogComponent: Dialog,/g' resources/js/pages/Diagnostics/Test/Quiz.vue
+sed -i '' 's/<Dialog/<DialogComponent/g' resources/js/pages/Diagnostics/Test/Quiz.vue
+sed -i '' 's/<\/Dialog>/<\/DialogComponent>/g' resources/js/pages/Diagnostics/Test/Quiz.vue
 
 # Fix Props definitions in shadcn
 sed -i '' 's/defineProps(Props)/defineProps<Props>()/g' resources/js/components/shadcn/ui/context-menu/ContextMenuShortcut.vue

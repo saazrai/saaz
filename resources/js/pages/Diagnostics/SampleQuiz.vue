@@ -525,7 +525,7 @@
                             ? 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500'
                             : 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500'
                     ]">
-                        Restart Quiz
+                        Try Full Assessment →
                     </button>
                 </div>
 
@@ -682,7 +682,7 @@
                                 'text-lg leading-relaxed',
                                 isDark ? 'text-gray-400' : 'text-gray-600'
                             ]">
-                                To help prevent fatigue and ensure accurate responses, the quiz automatically pauses after 30 seconds of inactivity.
+                                To help prevent fatigue and ensure accurate responses, the quiz automatically pauses after 5 minutes of inactivity.
                             </p>
                         </div>
                     </div>
@@ -1666,19 +1666,16 @@ export default {
             }
         },
         restartQuiz() {
-            this.currentQuestionIndex = 0;
-            this.selectedOptions = [];
-            this.answer = this.initialAnswer();
-            this.userAnswers = [];
-            this.isReviewMode = false;
-            this.showResults = false;
+            // Redirect to diagnostics page with encouraging message
+            window.location.href = route('assessments.diagnostics.index') + '?completed_sample=true';
         },
         closeResults() {
             this.showResults = false;
         },
         onQuestionTick() {
-            // You can use this to track time spent per question if needed
-            // For now, we'll just let the timer run
+            // Don't reset inactivity timer on every tick
+            // The timer should pause after 30 seconds of no user interaction
+            // Timer ticking is not considered user activity
         },
         resetInactivityTimer() {
             // Update last activity time
@@ -1694,16 +1691,18 @@ export default {
                 return;
             }
             
-            // Set new timer for 30 seconds
+            // Set new timer for 5 minutes (300 seconds)
             this.inactivityTimer = setTimeout(() => {
                 this.pauseQuiz();
-            }, 30000); // 30 seconds
+            }, 300000); // 5 minutes (300,000 milliseconds)
         },
         pauseQuiz() {
-            // Don't pause if already in review mode or showing results
-            if (this.isReviewMode || this.showResults) {
+            // Don't pause if already in review mode, showing results, or already paused
+            if (this.isReviewMode || this.showResults || this.showPauseModal) {
                 return;
             }
+            
+            console.log('Pausing quiz due to inactivity');
             
             // Clear the timer
             if (this.inactivityTimer) {
@@ -1711,16 +1710,18 @@ export default {
                 this.inactivityTimer = null;
             }
             
-            // Pause the timer
-            if (this.$refs.timer) {
-                this.$refs.timer.pause();
-            }
-            if (this.$refs.mobileTimer) {
-                this.$refs.mobileTimer.pause();
-            }
-            
-            // Show pause modal
+            // Show pause modal first
             this.showPauseModal = true;
+            
+            // Then pause the timer with a small delay to ensure modal is shown
+            this.$nextTick(() => {
+                if (this.$refs.timer) {
+                    this.$refs.timer.pause();
+                }
+                if (this.$refs.mobileTimer) {
+                    this.$refs.mobileTimer.pause();
+                }
+            });
         },
         resumeQuiz() {
             // Hide modal

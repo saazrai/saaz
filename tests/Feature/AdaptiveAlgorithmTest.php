@@ -641,8 +641,9 @@ test('domain stops when no valid questions available', function () {
     $result = $this->service->selectNextQuestion($state, $allQuestionIds, 1);
     
     // Should return stop marker rather than invalid question
+    expect($result)->not->toBeNull();
     expect($result['stop_domain'] ?? false)->toBeTrue();
-    expect($result['reason'])->toBe('no_questions_available');
+    expect($result['reason'] ?? '')->toBe('no_questions_available');
 });
 
 test('minimum questions per domain is enforced before assessment stops', function () {
