@@ -1062,17 +1062,22 @@ export default {
                     id: 3,
                     type_id: 1, // Single choice
                     question_type: { id: 1, name: 'Single Choice', code: 'single_choice' },
-                    content: "Which of the following is **MOST** essential to establish non-repudiation in an application?",
+                    content: "An organization is running a legacy system that no longer receives vendor patches or support. In risk management terms, what does this represent?",
                     options: [
-                        "Who did what and when",
-                        "Who did what and how",
-                        "Who did what and why",
-                        "Who did what and where"
+                        "A threat",
+                        "A vulnerability",
+                        "An impact",
+                        "A risk"
                     ],
-                    correct_options: ["Who did what and when"],
-                    explanation: "\"Who did what and when\" information is essential for nonrepudiation and traceability of actors and their actions.",
-                    domain: "Security Architecture & Design",
-                    topic: "Non-repudiation",
+                    correct_options: ["A vulnerability"],
+                    justifications: [
+                        "A threat is a potential danger that could exploit a weakness. The legacy system itself is not the threat, but rather what could be exploited.",
+                        "Correct. A vulnerability is a weakness or gap in security that can be exploited. An unpatched legacy system represents a weakness in the organization's security posture.",
+                        "An impact refers to the potential damage or consequences if a vulnerability is exploited. The legacy system itself is not the impact.",
+                        "A risk is the combination of a threat, vulnerability, and impact. The legacy system alone is just one component (vulnerability) of the overall risk equation."
+                    ],
+                    domain: "Risk Management",
+                    topic: "Risk Components",
                     difficulty: "Medium",
                     bloom: "Understand",
                     dimension: "Managerial"
@@ -1119,6 +1124,14 @@ export default {
                         "ECC"
                     ],
                     correct_options: ["AES", "DES", "3DES"],
+                    justifications: [
+                        "AES (Advanced Encryption Standard) is a symmetric block cipher that uses the same key for encryption and decryption.",
+                        "RSA is an asymmetric algorithm that uses different keys for encryption and decryption (public/private key pair).",
+                        "DES (Data Encryption Standard) is a symmetric block cipher that uses the same 56-bit key for encryption and decryption.",
+                        "Diffie-Hellman is a key exchange protocol, not an encryption algorithm. It's used to securely establish a shared secret.",
+                        "3DES (Triple DES) is a symmetric algorithm that applies DES three times with different keys.",
+                        "ECC (Elliptic Curve Cryptography) is an asymmetric algorithm based on elliptic curve mathematics."
+                    ],
                     domain: "Cryptography",
                     topic: "Encryption Algorithms",
                     difficulty: "Medium",
@@ -1219,7 +1232,7 @@ export default {
                             "commands": [
                                 // Commands that work only for saazacademy.com
                                 {
-                                    "pattern": "dig AAAA saazacademy\\.com$",
+                                    "pattern": "dig (AAAA saazacademy\\.com|saazacademy\\.com AAAA)$",
                                     "response": "; <<>> DiG 9.18.28-0ubuntu0.20.04.1-Ubuntu <<>> AAAA saazacademy.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 47823\n;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;saazacademy.com.\t\tIN\tAAAA\n\n;; ANSWER SECTION:\nsaazacademy.com.\t300\tIN\tAAAA\t2606:4700:3037::6815:4c99\nsaazacademy.com.\t300\tIN\tAAAA\t2606:4700:3037::ac43:b4e3\n\n;; Query time: 23 msec\n;; SERVER: 172.20.10.1#53(172.20.10.1)\n;; WHEN: Sat Jun 08 17:42:31 PST 2025\n;; MSG SIZE  rcvd: 88"
                                 },
                                 {
