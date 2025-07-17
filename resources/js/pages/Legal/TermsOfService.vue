@@ -126,7 +126,7 @@
                         6. Privacy
                     </h2>
                     <p :class="['mb-4', isDark ? 'text-gray-300' : 'text-gray-700']">
-                        Your use of our Services is subject to our <Link :href="route('legal.privacy-policy')" class="text-blue-600 hover:text-blue-700 underline">Privacy Policy</Link>, which explains how we collect, use, and protect your personal information.
+                        Your use of our Services is subject to our <Link :href="route('privacy.policy')" class="text-blue-600 hover:text-blue-700 underline">Privacy Policy</Link>, which explains how we collect, use, and protect your personal information.
                     </p>
                 </section>
 

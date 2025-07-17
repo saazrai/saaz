@@ -179,7 +179,7 @@
                         7. Cookies and Tracking Technologies
                     </h2>
                     <p :class="['mb-4', isDark ? 'text-gray-300' : 'text-gray-700']">
-                        We use cookies and similar tracking technologies to improve your experience on our platform. You can manage your cookie preferences through your browser settings or our cookie consent tool. For more information, please see our <Link :href="route('legal.cookie-policy')" class="text-blue-600 hover:text-blue-700 underline">Cookie Policy</Link>.
+                        We use cookies and similar tracking technologies to improve your experience on our platform. You can manage your cookie preferences through your browser settings or our cookie consent tool. For more information, please see our <Link :href="route('cookies')" class="text-blue-600 hover:text-blue-700 underline">Cookie Policy</Link>.
                     </p>
                 </section>
 
