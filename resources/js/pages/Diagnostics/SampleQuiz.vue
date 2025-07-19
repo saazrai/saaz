@@ -117,7 +117,7 @@
                 <div class="flex-1">
                     <div class="flex flex-col lg:flex-row bg-transparent space-y-4 lg:space-y-0">
                         <component :is="currentQuestionComponent" :question="currentQuestionForDisplay"
-                            :answer="currentAnswerForDisplay" :isReview="isReviewMode" :isDarkMode="isDark"
+                            :answer="currentAnswerForDisplay" :isReview="isReviewMode" :isDark="isDark"
                             @selected="selected" v-if="currentQuestion"
                             :class="['diagnostic-question', isDark ? 'dark-mode' : 'light-mode']" />
                     </div>
@@ -544,19 +544,19 @@
                         Previous
                     </button>
                     <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="submitAnswer"
-                        :disabled="!hasSelection" :class="[
+                        :disabled="!hasSelection || isSubmitting" :class="[
                             'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all transform active:scale-95 shadow-lg',
-                            !hasSelection
+                            !hasSelection || isSubmitting
                                 ? (isDark
                                     ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
                                     : 'bg-gray-400 border-gray-300 cursor-not-allowed opacity-60')
                                 : 'bg-blue-500 hover:bg-blue-600 border-blue-400 text-white hover:shadow-blue-500/25'
                         ]">
-                        Submit Answer
+                        {{ isSubmitting ? 'Submitting...' : 'Submit Answer' }}
                     </button>
-                    <button v-else @click="finishQuiz" :disabled="!hasSelection" :class="[
+                    <button v-else @click="finishQuiz" :disabled="!hasSelection || isSubmitting" :class="[
                         'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all transform active:scale-95 shadow-lg',
-                        !hasSelection
+                        !hasSelection || isSubmitting
                             ? (isDark
                                 ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
                                 : 'bg-gray-400 border-gray-300 cursor-not-allowed opacity-60')
@@ -909,7 +909,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 export default {
     layout: null, // No layout for sample quiz
     components: {
-        LinkComponent: Link,
+        Link,
         Type1,
         Type2,
         Type3,
@@ -952,6 +952,7 @@ export default {
             inactivityTimer: null,
             lastActivity: Date.now(),
             commandHistory: [], // For Type7 terminal commands
+            isSubmitting: false, // Prevent double submissions
             // Sample questions data
             sampleQuestions: [
                 {
@@ -1048,7 +1049,7 @@ export default {
                     id: 2,
                     type_id: 2, // True/False question
                     question_type: { id: 2, name: 'True/False', code: 'true_false' },
-                    content: "**True or False:** In a properly implemented defense-in-depth strategy, if one security control fails, the entire security posture is compromised.",
+                    content: "In a properly implemented defense-in-depth strategy, if one security control fails, the entire security posture is compromised.",
                     options: ["True", "False"],
                     correct_options: ["False"],
                     explanation: "Defense-in-depth uses multiple layers of security controls. If one control fails, other controls continue to provide protection. This layered approach ensures that a single point of failure doesn't compromise the entire security posture.",
@@ -1355,6 +1356,41 @@ export default {
                     difficulty: "Medium",
                     bloom: "Apply",
                     dimension: "Technical"
+                },
+                {
+                    id: 10,
+                    type_id: 5, // Matching
+                    question_type: { id: 5, name: 'Matching', code: 'matching' },
+                    content: "Match each characteristic with the appropriate risk assessment type:",
+                    options: {
+                        items: [
+                            "Uses High/Medium/Low ratings",
+                            "Calculates Annual Loss Expectancy",
+                            "Requires less time and resources",
+                            "Provides monetary values"
+                        ],
+                        responses: [
+                            "Qualitative Assessment",
+                            "Quantitative Assessment"
+                        ]
+                    },
+                    correct_options: {
+                        "Uses High/Medium/Low ratings": "Qualitative Assessment",
+                        "Calculates Annual Loss Expectancy": "Quantitative Assessment",
+                        "Requires less time and resources": "Qualitative Assessment",
+                        "Provides monetary values": "Quantitative Assessment"
+                    },
+                    justifications: {
+                        "Uses High/Medium/Low ratings": "Qualitative assessments use descriptive scales rather than numerical values.",
+                        "Calculates Annual Loss Expectancy": "ALE (SLE × ARO) is a quantitative calculation that produces monetary values.",
+                        "Requires less time and resources": "Qualitative assessments are faster and simpler to conduct than quantitative ones.",
+                        "Provides monetary values": "Quantitative assessments express risk in financial terms and dollar amounts."
+                    },
+                    domain: "Risk Management",
+                    topic: "Risk Assessment",
+                    difficulty: "Easy",
+                    bloom: "Understand",
+                    dimension: "Managerial"
                 }
             ]
         };
@@ -1498,69 +1534,89 @@ export default {
             }
         },
         submitAnswer() {
-            if (!this.hasSelection) return;
+            if (!this.hasSelection || this.isSubmitting) return;
 
-            // Check if answer is correct
-            const isCorrect = this.checkAnswer(this.currentQuestion, this.selectedOptions);
+            // Set submitting flag to prevent double submission
+            this.isSubmitting = true;
 
-            // Store or update the answer
-            const answerData = {
-                questionId: this.currentQuestion.id,
-                selectedOptions: Array.isArray(this.selectedOptions) ? [...this.selectedOptions] : this.selectedOptions,
-                isCorrect: isCorrect
-            };
-            
-            // For Type7, store command history locally
-            if (this.currentQuestion?.type_id === 7) {
-                answerData.commands = [...this.commandHistory]; // Keep for local navigation and review
+            try {
+                // Check if answer is correct
+                const isCorrect = this.checkAnswer(this.currentQuestion, this.selectedOptions);
+
+                // Store or update the answer
+                const answerData = {
+                    questionId: this.currentQuestion.id,
+                    selectedOptions: Array.isArray(this.selectedOptions) ? [...this.selectedOptions] : this.selectedOptions,
+                    isCorrect: isCorrect
+                };
                 
-                // In a real assessment, this would be stored as:
-                // AssessmentResponse::create([
-                //     'selected_options' => [selected_answer],
-                //     'metadata' => [
-                //         'commands' => $commandHistory
-                //     ]
-                // ]);
-            }
-            
-            this.userAnswers[this.currentQuestionIndex] = answerData;
+                // For Type7, store command history locally
+                if (this.currentQuestion?.type_id === 7) {
+                    answerData.commands = [...this.commandHistory]; // Keep for local navigation and review
+                    
+                    // In a real assessment, this would be stored as:
+                    // AssessmentResponse::create([
+                    //     'selected_options' => [selected_answer],
+                    //     'metadata' => [
+                    //         'commands' => $commandHistory
+                    //     ]
+                    // ]);
+                }
+                
+                this.userAnswers[this.currentQuestionIndex] = answerData;
 
-            // Move to next question
-            this.currentQuestionIndex++;
+                // Move to next question
+                this.currentQuestionIndex++;
 
-            // Load next question's answer if it exists
-            if (this.userAnswers[this.currentQuestionIndex]) {
-                this.selectedOptions = this.userAnswers[this.currentQuestionIndex].selectedOptions;
-            } else {
-                this.selectedOptions = [];
-            }
-            this.answer = this.initialAnswer();
+                // Load next question's answer if it exists
+                if (this.userAnswers[this.currentQuestionIndex]) {
+                    this.selectedOptions = this.userAnswers[this.currentQuestionIndex].selectedOptions;
+                } else {
+                    this.selectedOptions = [];
+                }
+                this.answer = this.initialAnswer();
 
-            // Reset question timer
-            if (this.$refs.timer) {
-                this.$refs.timer.resetQuestionTimer();
-            }
-            if (this.$refs.mobileTimer) {
-                this.$refs.mobileTimer.resetQuestionTimer();
-            }
+                // Reset question timer
+                if (this.$refs.timer) {
+                    this.$refs.timer.resetQuestionTimer();
+                }
+                if (this.$refs.mobileTimer) {
+                    this.$refs.mobileTimer.resetQuestionTimer();
+                }
 
-            // Reset inactivity timer
-            this.resetInactivityTimer();
+                // Reset inactivity timer
+                this.resetInactivityTimer();
+            } finally {
+                // Reset submitting flag after a short delay to ensure UI updates
+                setTimeout(() => {
+                    this.isSubmitting = false;
+                }, 300);
+            }
         },
         finishQuiz() {
-            if (!this.hasSelection) return;
+            if (!this.hasSelection || this.isSubmitting) return;
 
-            // Submit the last answer
-            const isCorrect = this.checkAnswer(this.currentQuestion, this.selectedOptions);
-            this.userAnswers[this.currentQuestionIndex] = {
-                questionId: this.currentQuestion.id,
-                selectedOptions: Array.isArray(this.selectedOptions) ? [...this.selectedOptions] : this.selectedOptions,
-                isCorrect: isCorrect,
+            // Set submitting flag to prevent double submission
+            this.isSubmitting = true;
+
+            try {
+                // Submit the last answer
+                const isCorrect = this.checkAnswer(this.currentQuestion, this.selectedOptions);
+                this.userAnswers[this.currentQuestionIndex] = {
+                    questionId: this.currentQuestion.id,
+                    selectedOptions: Array.isArray(this.selectedOptions) ? [...this.selectedOptions] : this.selectedOptions,
+                    isCorrect: isCorrect,
                 commands: this.currentQuestion?.type_id === 7 ? [...this.commandHistory] : undefined
             };
 
-            // Show results
-            this.showResults = true;
+                // Show results
+                this.showResults = true;
+            } finally {
+                // Reset submitting flag after a short delay
+                setTimeout(() => {
+                    this.isSubmitting = false;
+                }, 300);
+            }
         },
         checkAnswer(question, userAnswer) {
             const type = question.type_id;

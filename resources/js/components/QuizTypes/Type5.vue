@@ -277,7 +277,7 @@ export default {
             type: Object,
             default: () => ({})
         },
-        isDarkMode: {
+        isDark: {
             type: Boolean,
             default: null
         }
@@ -296,8 +296,8 @@ export default {
     },
     computed: {
         isThemeDark() {
-            if (this.isDarkMode !== null) {
-                return this.isDarkMode;
+            if (this.isDark !== null) {
+                return this.isDark;
             }
             return document.documentElement.classList.contains('dark') ||
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;

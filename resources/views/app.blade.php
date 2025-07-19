@@ -4,6 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        
+        {{-- Content Security Policy - Allow Vite dev server in development --}}
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.bunny.net{{ config('app.debug') ? ' http://localhost:* http://127.0.0.1:*' : '' }}; style-src 'self' 'unsafe-inline' https://fonts.bunny.net{{ config('app.debug') ? ' http://localhost:* http://127.0.0.1:*' : '' }}; font-src 'self' https://fonts.bunny.net; img-src 'self' data: https:; connect-src 'self'{{ config('app.debug') ? ' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*' : '' }};">
 
         {{-- Inline script to detect theme preference and apply it immediately --}}
         <script>

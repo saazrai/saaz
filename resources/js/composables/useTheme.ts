@@ -20,16 +20,24 @@ const defaultPreferences: UiPreferences = {
     animations_enabled: true
 }
 
-const uiPreferences = ref<UiPreferences>({ ...defaultPreferences })
-const isLoading = ref(false)
-const isInitialized = ref(false)
+// Create singleton state outside of the composable function
+const globalState = {
+    uiPreferences: ref<UiPreferences>({ ...defaultPreferences }),
+    isLoading: ref(false),
+    isInitialized: ref(false)
+}
+
+// Use the global state
+const uiPreferences = globalState.uiPreferences
+const isLoading = globalState.isLoading
+const isInitialized = globalState.isInitialized
 
 export const useTheme = () => {
     const page = usePage()
     const user = computed(() => (page.props as any).auth?.user)
     
-    const isDarkMode = computed(() => uiPreferences.value.theme === 'dark')
-    const isAdminDarkMode = computed(() => uiPreferences.value.admin_theme === 'dark')
+    const isDark = computed(() => uiPreferences.value.theme === 'dark')
+    const isAdminDark = computed(() => uiPreferences.value.admin_theme === 'dark')
 
     const applyTheme = () => {
         // For admin pages, use admin_theme. For regular pages, use theme.
@@ -40,17 +48,19 @@ export const useTheme = () => {
         
         if (effectiveTheme === 'dark') {
             document.documentElement.classList.add('dark')
+            document.documentElement.setAttribute('data-theme', 'dark')
         } else {
             document.documentElement.classList.remove('dark')
+            document.documentElement.setAttribute('data-theme', 'light')
         }
     }
 
     const loadFromLocalStorage = () => {
-        const appTheme = localStorage.getItem('appDarkMode')
+        const savedTheme = localStorage.getItem('theme')
         const adminTheme = localStorage.getItem('adminDarkMode')
         
-        if (appTheme !== null) {
-            uiPreferences.value.theme = appTheme === 'true' ? 'dark' : 'light'
+        if (savedTheme !== null) {
+            uiPreferences.value.theme = savedTheme as Theme
         }
         
         if (adminTheme !== null) {
@@ -59,8 +69,8 @@ export const useTheme = () => {
     }
 
     const saveToLocalStorage = () => {
-        localStorage.setItem('appDarkMode', String(isDarkMode.value))
-        localStorage.setItem('adminDarkMode', String(isAdminDarkMode.value))
+        localStorage.setItem('theme', uiPreferences.value.theme)
+        localStorage.setItem('adminDarkMode', String(isAdminDark.value))
     }
 
     const fetchPreferences = async () => {
@@ -133,14 +143,23 @@ export const useTheme = () => {
     }
 
     const toggleTheme = async (isAdmin = false) => {
-        const currentTheme = isAdmin ? uiPreferences.value.admin_theme : uiPreferences.value.theme
-        const newTheme: Theme = currentTheme === 'dark' ? 'light' : 'dark'
-        
-        const updates: Partial<UiPreferences> = isAdmin 
-            ? { admin_theme: newTheme }
-            : { theme: newTheme }
-        
-        await updatePreferences(updates)
+        try {
+            const currentTheme = isAdmin ? uiPreferences.value.admin_theme : uiPreferences.value.theme
+            const newTheme: Theme = currentTheme === 'dark' ? 'light' : 'dark'
+            
+            const updates: Partial<UiPreferences> = isAdmin 
+                ? { admin_theme: newTheme }
+                : { theme: newTheme }
+            
+            await updatePreferences(updates)
+        } catch (error) {
+            console.error('[Theme Error] Failed to toggle theme:', error)
+            // Fallback: directly update state and DOM
+            const newTheme = uiPreferences.value.theme === 'dark' ? 'light' : 'dark'
+            uiPreferences.value.theme = newTheme
+            applyTheme()
+            saveToLocalStorage()
+        }
     }
 
     const setTheme = async (theme: Theme, isAdmin = false) => {
@@ -180,10 +199,11 @@ export const useTheme = () => {
         { immediate: true }
     )
 
+    
     return {
         uiPreferences: computed(() => uiPreferences.value),
-        isDarkMode,
-        isAdminDarkMode,
+        isDark,
+        isAdminDark,
         isLoading: computed(() => isLoading.value),
         isInitialized: computed(() => isInitialized.value),
         toggleTheme,

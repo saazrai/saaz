@@ -25,6 +25,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'google_id',
         'avatar',
         'email_verified_at',
+        'ui_preferences',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'ui_preferences' => 'array',
         ];
     }
 

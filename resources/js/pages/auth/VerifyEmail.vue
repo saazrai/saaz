@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shadcn/ui/button';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';

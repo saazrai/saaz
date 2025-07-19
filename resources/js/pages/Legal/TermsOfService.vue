@@ -234,29 +234,6 @@
                     </p>
                 </section>
 
-                <!-- Contact Information -->
-                <section>
-                    <h2 :class="['text-2xl font-bold mb-4', isDark ? 'text-white' : 'text-gray-900']">
-                        14. Contact Information
-                    </h2>
-                    <p :class="['mb-4', isDark ? 'text-gray-300' : 'text-gray-700']">
-                        If you have any questions about these Terms, please contact us at:
-                    </p>
-                    <div :class="[
-                        'rounded-lg p-6',
-                        isDark ? 'bg-gray-700' : 'bg-gray-100'
-                    ]">
-                        <p :class="['font-semibold mb-2', isDark ? 'text-white' : 'text-gray-900']">
-                            Saaz Academy Legal Department
-                        </p>
-                        <p :class="isDark ? 'text-gray-300' : 'text-gray-700'">
-                            Email: <a href="mailto:legal@saazacademy.com" class="text-blue-600 hover:text-blue-700">legal@saazacademy.com</a><br>
-                            Address: 123 Enterprise Avenue, Suite 400<br>
-                            New York, NY 10001<br>
-                            United States
-                        </p>
-                    </div>
-                </section>
             </div>
         </div>
     </div>
@@ -264,15 +241,21 @@
 
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { inject } from 'vue';
+import { onMounted } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useTheme } from '@/composables/useTheme';
 
 defineOptions({
     layout: AppLayout,
 });
 
-// Get dark mode state from parent
-const isDark = inject('isDark', false);
+// Use the theme composable
+const { isDark, initializeTheme } = useTheme();
+
+// Initialize theme on mount
+onMounted(async () => {
+    await initializeTheme();
+});
 
 // Last updated date
 const lastUpdated = new Date().toLocaleDateString('en-US', {

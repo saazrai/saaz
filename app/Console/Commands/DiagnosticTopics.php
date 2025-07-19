@@ -2,100 +2,26 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Diagnostic;
 use App\Models\DiagnosticDomain;
+use App\Models\DiagnosticItem;
 use App\Models\DiagnosticTopic;
 use Illuminate\Console\Command;
 
-class ListDiagnostics extends Command
+class DiagnosticTopics extends Command
 {
-    protected $signature = 'diagnostic:list 
-                          {--user= : Filter by user ID}
-                          {--status= : Filter by status (in_progress, completed, paused)}
-                          {--recent=10 : Number of recent diagnostics to show}
-                          {--topics : Show topics and question counts instead of diagnostics}
-                          {--domain= : Filter topics by domain ID or name}
-                          {--phase= : Filter topics by phase (1-4)}
-                          {--h|help : Show detailed help message}';
+    protected $signature = 'diagnostic:topics 
+                            {domain? : Domain ID or name to show topics for}
+                            {--phase= : Show topics for specific phase (1-4)}
+                            {--domain= : Filter by domain ID or name}
+                            {--all : Show all domains and topics}';
 
-    protected $description = 'List diagnostics with basic statistics';
+    protected $description = 'Show diagnostic topics with question counts by domain';
 
     public function handle()
     {
-        // Check if user wants to see topics instead of diagnostics
-        if ($this->option('topics')) {
-            return $this->showTopics();
-        }
-
-        $query = Diagnostic::with(['user', 'responses']);
-
-        // Apply filters
-        if ($userId = $this->option('user')) {
-            $query->where('user_id', $userId);
-        }
-
-        if ($status = $this->option('status')) {
-            $query->where('status', $status);
-        }
-
-        $diagnostics = $query->orderBy('created_at', 'desc')
-            ->limit($this->option('recent'))
-            ->get();
-
-        if ($diagnostics->isEmpty()) {
-            $this->info('No diagnostics found.');
-            return;
-        }
-
-        $this->info('Recent Diagnostics:');
-        
-        $headers = ['ID', 'User', 'Status', 'Questions', 'Score', 'Duration', 'Created'];
-        
-        $rows = $diagnostics->map(function ($diagnostic) {
-            $duration = $diagnostic->total_duration_seconds 
-                ? gmdate("H:i:s", $diagnostic->total_duration_seconds)
-                : 'N/A';
-                
-            return [
-                $diagnostic->id,
-                $diagnostic->user->name ?? 'Unknown',
-                ucfirst($diagnostic->status),
-                $diagnostic->responses->count(),
-                $diagnostic->score ? round($diagnostic->score, 1) . '%' : 'N/A',
-                $duration,
-                $diagnostic->created_at->format('Y-m-d H:i')
-            ];
-        })->toArray();
-
-        $this->table($headers, $rows);
-
-        // Show summary statistics
-        $this->newLine();
-        $this->info('Summary Statistics:');
-        
-        $completed = $diagnostics->where('status', 'completed');
-        if ($completed->count() > 0) {
-            $avgQuestions = $completed->avg(fn($d) => $d->responses->count());
-            $avgScore = $completed->avg('score');
-            
-            $this->line("Average questions per completed diagnostic: " . round($avgQuestions));
-            $this->line("Average score: " . round($avgScore, 1) . "%");
-            
-            // Find diagnostics with unusually high question counts
-            $highQuestionDiagnostics = $completed->filter(fn($d) => $d->responses->count() > 80);
-            if ($highQuestionDiagnostics->count() > 0) {
-                $this->newLine();
-                $this->warn("Diagnostics with >80 questions: " . $highQuestionDiagnostics->count());
-                $this->line("IDs: " . $highQuestionDiagnostics->pluck('id')->join(', '));
-                $this->line("Use 'php artisan diagnostic:analyze {id}' to investigate why.");
-            }
-        }
-    }
-
-    private function showTopics()
-    {
-        $domainId = $this->option('domain');
+        $domainId = $this->argument('domain');
         $phaseId = $this->option('phase');
+        $showAll = $this->option('all');
 
         $this->info("=== DIAGNOSTIC TOPICS AND QUESTIONS ===");
         $this->newLine();
@@ -130,8 +56,15 @@ class ListDiagnostics extends Command
                 ->orderBy('phase_order')
                 ->get();
             
-        } else {
+        } elseif ($showAll) {
             // Show all domains
+            $this->info("Showing all domains and topics");
+            $domains = DiagnosticDomain::where('is_active', true)
+                ->orderBy('phase_id')
+                ->orderBy('phase_order')
+                ->get();
+        } else {
+            // Default: show all domains
             $this->info("Showing all domains and topics");
             $domains = DiagnosticDomain::where('is_active', true)
                 ->orderBy('phase_id')
@@ -184,7 +117,7 @@ class ListDiagnostics extends Command
         $this->line("Average questions per topic: " . round($totalQuestions / max($totalTopics, 1), 1));
 
         // Show warnings for topics with insufficient questions
-        $this->showTopicWarnings($topicStats);
+        $this->showWarnings($topicStats);
 
         return 0;
     }
@@ -254,7 +187,7 @@ class ListDiagnostics extends Command
         }
     }
 
-    private function showTopicWarnings($topicStats)
+    private function showWarnings($topicStats)
     {
         $warnings = [];
         
@@ -275,56 +208,4 @@ class ListDiagnostics extends Command
             $this->info("Recommendation: Add more questions to topics with <10 questions for optimal adaptive testing.");
         }
     }
-    
-    private function showHelp()
-    {
-        $this->info('NAME');
-        $this->line('  diagnostic:list - List diagnostic assessments with statistics');
-        
-        $this->newLine();
-        $this->info('SYNOPSIS');
-        $this->line('  php artisan diagnostic:list [options]');
-        
-        $this->newLine();
-        $this->info('DESCRIPTION');
-        $this->line('  Lists recent diagnostic assessments with basic statistics including:');
-        $this->line('  - User name, status, question count, score, and duration');
-        $this->line('  - Summary statistics for completed diagnostics');
-        $this->line('  - Identifies diagnostics with unusually high question counts (>80)');
-        
-        $this->newLine();
-        $this->info('OPTIONS');
-        $this->line('  --user=<id>      Filter by user ID');
-        $this->line('  --status=<type>  Filter by status (in_progress, completed, paused)');
-        $this->line('  --recent=<n>     Number of recent diagnostics to show (default: 10)');
-        $this->line('  --topics         Show topics and question counts instead of diagnostics');
-        $this->line('  --domain=<id>    Filter topics by domain ID or name (use with --topics)');
-        $this->line('  --phase=<n>      Filter topics by phase (1-4) (use with --topics)');
-        $this->line('  -h, --help       Display this help message');
-        
-        $this->newLine();
-        $this->info('EXAMPLES');
-        $this->line('  # List 10 most recent diagnostics');
-        $this->line('  php artisan diagnostic:list');
-        
-        $this->newLine();
-        $this->line('  # List completed diagnostics for user ID 5');
-        $this->line('  php artisan diagnostic:list --user=5 --status=completed');
-        
-        $this->newLine();
-        $this->line('  # Show last 20 diagnostics');
-        $this->line('  php artisan diagnostic:list --recent=20');
-        
-        $this->newLine();
-        $this->line('  # Show all topics and question counts');
-        $this->line('  php artisan diagnostic:list --topics');
-        
-        $this->newLine();
-        $this->line('  # Show topics for a specific domain');
-        $this->line('  php artisan diagnostic:list --topics --domain="General Security"');
-        
-        $this->newLine();
-        $this->line('  # Show topics for Phase 1');
-        $this->line('  php artisan diagnostic:list --topics --phase=1');
-    }
-}
+} 

@@ -93,6 +93,7 @@ test('user fillable fields are correct', function () {
         'google_id',
         'avatar',
         'email_verified_at',
+        'ui_preferences',
     ]);
 });
 

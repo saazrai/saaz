@@ -18,9 +18,7 @@ Route::get('dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 // Static pages
-Route::get('/features', fn() => Inertia::render('Features'))->name('info.features');
 Route::get('/about', fn() => Inertia::render('About'))->name('info.about');
-Route::get('/help', fn() => Inertia::render('Help'))->name('info.help');
 
 // Public sample diagnostic (no auth required)
 Route::get('/diagnostics/sample', [DiagnosticController::class, 'sample'])->name('assessments.diagnostics.sample');
@@ -33,8 +31,8 @@ Route::get('/privacy/settings', [PrivacyController::class, 'settings'])->middlew
 Route::get('/terms', [PrivacyController::class, 'terms'])->name('terms');
 Route::get('/cookies', [PrivacyController::class, 'cookies'])->name('cookies');
 
-// Cookie consent routes
-Route::prefix('legal/privacy')->group(function () {
+// Cookie consent routes - ensure session is started
+Route::prefix('legal/privacy')->middleware(['web'])->group(function () {
     Route::get('/cookie-consent-status', [PrivacyController::class, 'getConsentStatus']);
     Route::post('/cookie-consent', [PrivacyController::class, 'storeCookieConsent']);
 });

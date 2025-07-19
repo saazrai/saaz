@@ -360,13 +360,22 @@ function saveConsentPreferences(prefs) {
         payload.session_id = getOrCreateSessionId();
     }
     
+    // Ensure we have a CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    if (!csrfToken) {
+        console.error('🍪 CSRF token not found in meta tag');
+        // Still save to localStorage even if backend fails
+        return;
+    }
+    
     fetch('/legal/privacy/cookie-consent', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            'X-CSRF-TOKEN': csrfToken
         },
         credentials: 'include',
         body: JSON.stringify(payload)
@@ -413,6 +422,11 @@ function removeNonEssentialCookies() {
 // Load Google Analytics
 function loadGoogleAnalytics() {
     if (window.gtag) return;
+    
+    // TODO: Enable when GA_MEASUREMENT_ID is configured
+    // For now, just log in development
+    console.log('Google Analytics would be loaded here when configured');
+    return;
     
     // Get the CSP nonce from meta tag
     const nonceMeta = document.querySelector('meta[name="csp-nonce"]');

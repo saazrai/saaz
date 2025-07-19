@@ -64,17 +64,6 @@
                                 </svg>
                             </span>
                         </Link>
-                        <Link
-                            :href="typeof route !== 'undefined' ? route('info.features') : '/features'"
-                            class="group px-8 py-4 rounded-2xl border-2 border-gray-600 text-gray-300 font-semibold text-lg hover:border-purple-400 hover:text-purple-400 transition-all duration-300 bg-gray-800/50 backdrop-blur-sm"
-                        >
-                            <span class="flex items-center">
-                                View Features
-                                <svg class="w-5 h-5 ml-2 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </span>
-                        </Link>
                     </div>
 
                     <!-- Animated Stats -->

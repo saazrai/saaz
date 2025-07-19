@@ -58,7 +58,7 @@ export default {
                 is_correct: false
             })
         },
-        isDarkMode: {
+        isDark: {
             type: Boolean,
             default: null
         }
@@ -81,8 +81,8 @@ export default {
         },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
-            if (this.isDarkMode !== null) {
-                return this.isDarkMode;
+            if (this.isDark !== null) {
+                return this.isDark;
             }
             // Fallback detection for backward compatibility
             return document.documentElement.classList.contains('dark') ||

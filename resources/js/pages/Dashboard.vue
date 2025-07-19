@@ -2,10 +2,10 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import Button from '@/components/ui/button/Button.vue';
-import Avatar from '@/components/ui/avatar/Avatar.vue';
-import AvatarImage from '@/components/ui/avatar/AvatarImage.vue';
-import AvatarFallback from '@/components/ui/avatar/AvatarFallback.vue';
+import Button from '@/components/shadcn/ui/button/Button.vue';
+import Avatar from '@/components/shadcn/ui/avatar/Avatar.vue';
+import AvatarImage from '@/components/shadcn/ui/avatar/AvatarImage.vue';
+import AvatarFallback from '@/components/shadcn/ui/avatar/AvatarFallback.vue';
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
@@ -364,11 +364,8 @@ const formatTimeAgo = (date: string) => {
 
                     <!-- Support Links -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Need Help?</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Platform Info</h3>
                         <div class="space-y-2">
-                            <Link :href="route('info.features')" class="block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">📋 Platform Features</Link>
-                            <Link :href="route('info.help')" class="block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">❓ Help Center</Link>
-                            <Link :href="route('info.contact')" class="block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">💬 Contact Support</Link>
                             <Link :href="route('info.about')" class="block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">ℹ️ About Platform</Link>
                         </div>
                     </div>

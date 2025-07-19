@@ -122,7 +122,7 @@
                                         :is="currentQuestionComponent"
                                         :question="currentQuestionData"
                                         :answer="currentAnswer"
-                                        :isDarkMode="isDark"
+                                        :isDark="isDark"
                                         @selected="handleSelection"
                                     />
                                 </div>
@@ -152,16 +152,17 @@
                 <div class="max-w-6xl mx-auto flex justify-end">
                     <button
                         @click="submitAnswer"
-                        :disabled="!hasSelection"
+                        :disabled="!hasSelection || isSubmitting"
                         class="px-8 py-3 rounded-full font-medium transition-all transform"
                         :class="[
-                            hasSelection 
+                            hasSelection && !isSubmitting
                                 ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl active:scale-95 cursor-pointer' 
                                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60',
-                            !hasSelection && 'pointer-events-none'
+                            (!hasSelection || isSubmitting) && 'pointer-events-none'
                         ]"
                     >
-                        {{ isLastQuestion ? 'Complete Assessment' : 'Submit Answer' }}
+                        <span v-if="isSubmitting">Submitting...</span>
+                        <span v-else>{{ isLastQuestion ? 'Complete Assessment' : 'Submit Answer' }}</span>
                     </button>
                 </div>
             </div>
@@ -283,6 +284,7 @@ export default {
         const showBloomHelp = ref(false)
         const questionTime = ref(0)
         const totalTime = ref(0)
+        const isSubmitting = ref(false) // Prevent double submissions
         
         // Inactivity timer variables
         let inactivityTimer = null
@@ -529,8 +531,8 @@ export default {
         
         const submitAnswer = async () => {
             // Comprehensive validation before submission
-            if (!hasSelection.value) {
-                console.warn('Submit blocked: No selection made');
+            if (!hasSelection.value || isSubmitting.value) {
+                console.warn('Submit blocked: No selection made or already submitting');
                 return;
             }
             
@@ -539,6 +541,9 @@ export default {
                 return;
             }
             
+            // Set submitting flag to prevent double submit
+            isSubmitting.value = true
+            
             // Reset inactivity timer on answer submission
             resetInactivityTimer()
             
@@ -546,11 +551,13 @@ export default {
             if (currentQuestionData.value.type_id === 2) {
                 if (!Array.isArray(selectedOptions.value) || selectedOptions.value.length === 0) {
                     console.warn('Submit blocked: No options selected for multiple choice');
+                    isSubmitting.value = false
                     return;
                 }
             } else {
                 if (!selectedAnswer.value) {
                     console.warn('Submit blocked: No answer selected for single choice');
+                    isSubmitting.value = false
                     return;
                 }
             }
@@ -587,6 +594,11 @@ export default {
             } catch (error) {
                 console.error('Error submitting answer:', error)
                 // Handle error - maybe show a notification
+            } finally {
+                // Reset submitting flag after a small delay to prevent rapid clicks
+                setTimeout(() => {
+                    isSubmitting.value = false
+                }, 300)
             }
         }
         
@@ -646,6 +658,7 @@ export default {
             currentAnswer,
             hasSelection,
             isLastQuestion,
+            isSubmitting,
             currentPhaseData,
             overallConfidence,
             currentMilestoneDomains,

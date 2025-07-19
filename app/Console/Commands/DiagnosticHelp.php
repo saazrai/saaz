@@ -24,6 +24,18 @@ class DiagnosticHelp extends Command
                 'description' => 'List recent diagnostics with basic statistics'
             ],
             [
+                'command' => 'diagnostic:list --topics',
+                'description' => 'Show topics and question counts by domain'
+            ],
+            [
+                'command' => 'diagnostic:topics',
+                'description' => 'Show topics and question counts (dedicated command)'
+            ],
+            [
+                'command' => 'diagnostic:pool',
+                'description' => 'Show question pool statistics by domain and bloom level'
+            ],
+            [
                 'command' => 'diagnostic:summary <id>',
                 'description' => 'Get a detailed summary of why a diagnostic took many questions'
             ],

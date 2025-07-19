@@ -24,13 +24,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Fundamental security principles that form the foundation of all cybersecurity practices. Covers the CIA Triad, security controls, and core concepts essential for understanding more advanced topics.',
                 'learning_objectives' => 'Understand and apply fundamental security principles including confidentiality, integrity, and availability. Identify different types of security controls and their applications.',
                 'topics' => [
-                    'CIA Triad', // Core security objectives: Confidentiality, Integrity, Availability
-                    'Authenticity', // Validity and genuineness of data, users, or systems
-                    'Non-repudiation', // Ensures actions or communications can't be denied
-                    'Privacy', // Protection of personal or sensitive information
-                    'Safety', // Human and system safety in physical/digital environments
-                    'Identification, Authentication, Authorization, Accounting (IAAA)', // Identity & Access foundation
-                    'Security Controls', // Administrative, Technical, Physical; Preventive, Detective, Corrective, Deterrent, Compensating, Recovery
+                    '5 Pillars of Information Security', // Confidentiality, integrity, availability, authenticity, nonrepudiation
+                    'Professional Ethics', // Organizational code of ethics
+                    'Security Controls', // Administrative, Technical, Physical, Deterrent, Preventative, Detective, Corrective, Compensating
+                    'Security Principles', // Least Privilege, Need-to-Know, Separation of Duties, Dual Control, Split Knowledge
+                    'Cybersecurity Frameworks', // NIST CSF, ISO/IEC 27001, COBIT, CIS Controls
                 ],
             ],
             [
