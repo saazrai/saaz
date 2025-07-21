@@ -1,7 +1,7 @@
 <template>
     <div 
         v-if="showBanner" 
-        class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 z-[10000]"
+        class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 z-10000"
     >
         <h3 class="font-semibold mb-2 text-gray-900 dark:text-white">🍪 We Use Cookies</h3>
         <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
@@ -35,10 +35,10 @@
     <!-- Cookie Customization Modal -->
     <div 
         v-if="showCustomizeModal" 
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[10001]"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-10001"
         @click.self="closeModal"
     >
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col relative z-[10002]">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col relative z-10002">
             <div class="sticky top-0 bg-white dark:bg-gray-800 px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700 rounded-t-2xl z-10">
                 <div class="flex items-center justify-between">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Cookie Preferences</h2>

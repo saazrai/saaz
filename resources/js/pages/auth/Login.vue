@@ -52,7 +52,7 @@ defineOptions({ layout: Layout });
                 <button
                     type="button"
                     @click="loginWithGoogle"
-                    class="w-full inline-flex items-center justify-center gap-3 px-6 py-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-medium border border-gray-300 dark:border-gray-600 shadow-sm transition-colors duration-200"
+                    class="w-full inline-flex items-center justify-center gap-3 px-6 py-3 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-medium border border-gray-300 dark:border-gray-600 shadow-xs transition-colors duration-200"
                 >
                     <svg width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -113,7 +113,7 @@ defineOptions({ layout: Layout });
 
                 <button
                     type="submit"
-                    class="w-full inline-flex items-center justify-center px-6 py-3 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg text-sm font-medium shadow-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="w-full inline-flex items-center justify-center px-6 py-3 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg text-sm font-medium shadow-xs transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     :class="{ 'opacity-50': form.processing }"
                     :disabled="form.processing"
                 >

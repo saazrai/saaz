@@ -2,7 +2,7 @@
     <AppLayout title="Diagnostic Report">
         <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
             <!-- Compact Hero Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900">
+            <div class="bg-linear-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900">
                 <div class="container mx-auto px-4 py-8">
                     <div class="flex items-center justify-between">
                         <div>
@@ -95,7 +95,7 @@
                         </div>
                         <div v-if="strengths.length > 0" class="space-y-2">
                             <Card v-for="strength in strengths.slice(0, 3)" :key="strength.name" 
-                                  class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
+                                  class="bg-linear-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
                                 <CardContent class="p-3">
                                     <div class="flex items-center justify-between">
                                         <span class="font-medium text-sm text-green-800 dark:text-green-200">{{ strength.name }}</span>
@@ -119,7 +119,7 @@
                         </div>
                         <div v-if="weaknesses.length > 0" class="space-y-2">
                             <Card v-for="weakness in weaknesses.slice(0, 3)" :key="weakness.name" 
-                                  class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border-orange-200 dark:border-orange-800">
+                                  class="bg-linear-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border-orange-200 dark:border-orange-800">
                                 <CardContent class="p-3">
                                     <div class="flex items-center justify-between">
                                         <span class="font-medium text-sm text-orange-800 dark:text-orange-200">{{ weakness.name }}</span>
@@ -142,13 +142,13 @@
                         <LightbulbIcon class="w-5 h-5 mr-2 text-yellow-600" />
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Study Recommendations</h2>
                     </div>
-                    <Card class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+                    <Card class="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
                         <CardContent class="p-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <div v-for="(recommendation, index) in recommendations.slice(0, 6)" 
                                      :key="index" 
                                      class="flex items-start space-x-2">
-                                    <CheckCircle2Icon class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                                    <CheckCircle2Icon class="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                                     <p class="text-sm text-gray-700 dark:text-gray-300">{{ recommendation }}</p>
                                 </div>
                             </div>
@@ -218,28 +218,28 @@
                         <div class="flex flex-wrap gap-3 justify-center">
                             <Link
                                 :href="typeof route !== 'undefined' ? route('assessments.diagnostics.review', diagnostic.id) : '#'"
-                                class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm"
+                                class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-xs transition-colors text-sm"
                             >
                                 <BookOpenIcon class="w-4 h-4 mr-2" />
                                 Review Questions
                             </Link>
                             <button
                                 @click="downloadReport"
-                                class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm"
+                                class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-xs transition-colors text-sm"
                             >
                                 <DownloadIcon class="w-4 h-4 mr-2" />
                                 Download PDF
                             </button>
                             <Link
                                 :href="typeof route !== 'undefined' ? route('learn.courses.index') : '#'"
-                                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm"
+                                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-xs transition-colors text-sm"
                             >
                                 <GraduationCapIcon class="w-4 h-4 mr-2" />
                                 Start Learning
                             </Link>
                             <Link
                                 :href="typeof route !== 'undefined' ? route('assessments.diagnostics.dashboard') : '#'"
-                                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg shadow-sm transition-colors text-sm"
+                                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg shadow-xs transition-colors text-sm"
                             >
                                 <HomeIcon class="w-4 h-4 mr-2" />
                                 Dashboard

@@ -94,7 +94,7 @@
         <!-- Answer Review Section -->
         <div
             :class="[
-                'border-t -mx-[1px] -mb-[1px] rounded-b-2xl',
+                'border-t -mx-px -mb-px rounded-b-2xl',
                 answer.is_correct
                     ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
                     : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-300')
@@ -183,7 +183,7 @@
                                         : 'bg-white text-green-700'
                                 ]">
                                     <span class="font-medium">{{ getCorrectAnswer(item) }}</span>
-                                    <svg class="w-5 h-5 ml-2 flex-shrink-0" 
+                                    <svg class="w-5 h-5 ml-2 shrink-0" 
                                          :class="isThemeDark ? 'text-green-400' : 'text-green-600'"
                                          fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />

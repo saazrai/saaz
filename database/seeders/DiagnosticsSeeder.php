@@ -330,11 +330,10 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Security for endpoints including desktops, mobile devices, and IoT. Critical as attack surfaces expand.',
                 'learning_objectives' => 'Secure various endpoint types and implement mobile device management. Address IoT security challenges.',
                 'topics' => [
-                    'Endpoint Protection & Configuration', // EPP, EDR, whitelisting, baselines
-                    'Device Security & Encryption', // Encryption, secure boot, TPM, firmware integrity
-                    'Mobile Device Management', // MDM, EMM, BYOD, COPE strategies
-                    'IoT & Embedded Systems Security', // IoT devices, constrained environments
-                    'Industrial Control Systems (ICS/SCADA)', // OT security, air-gapping, safety priorities
+                    'Endpoint Security', // EPP, EDR, whitelisting, baselines, configuration
+                    'Device Security', // Encryption, secure boot, TPM, firmware integrity
+                    'Mobile Security', // MDM, EMM, BYOD, COPE strategies, mobile threats
+                    'IoT Security', // IoT devices, embedded systems, constrained environments, OT/ICS
                 ],
             ],
             [

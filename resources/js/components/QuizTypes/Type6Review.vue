@@ -24,7 +24,7 @@
                             v-for="(option, i) in question.options"
                             :key="`option-${i}`"
                             :class="[
-                                'h-[70px] w-[70px] absolute rounded-none z-[200] ml-[-35px] mt-[-35px]',
+                                'h-[70px] w-[70px] absolute rounded-none z-200 ml-[-35px] mt-[-35px]',
                                 {
                                     'bg-[#8addae] border-[#22c55d] border bg-opacity-50':
                                         isCorrectOption(i),
@@ -42,7 +42,7 @@
                             v-for="(option, i) in question.options"
                             :key="`interactive-${i}`"
                             :class="[
-                                'h-[70px] w-[70px] absolute rounded-none cursor-pointer z-[200] ml-[-35px] mt-[-35px]',
+                                'h-[70px] w-[70px] absolute rounded-none cursor-pointer z-200 ml-[-35px] mt-[-35px]',
                                 selectedOptions == option
                                     ? 'bg-blue-500 border border-blue-700 bg-opacity-50'
                                     : 'hover:bg-blue-500 hover:bg-opacity-50 hover:border hover:border-blue-700',
@@ -87,7 +87,7 @@
         <div class="my-4 lg:hidden flex justify-end px-4">
             <button
                 @click="showMetadata = !showMetadata"
-                class="bg-white text-gray-800 font-semibold px-4 py-2 border border-gray-300 rounded-full shadow-sm hover:bg-gray-100 transition duration-200"
+                class="bg-white text-gray-800 font-semibold px-4 py-2 border border-gray-300 rounded-full shadow-xs hover:bg-gray-100 transition duration-200"
                 aria-label="Toggle Question Details"
             >
                 {{

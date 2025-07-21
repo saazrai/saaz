@@ -248,7 +248,7 @@
                         </div>
                         
                         <div class="flex items-start">
-                            <span class="font-bold mr-3 text-lg flex-shrink-0"
+                            <span class="font-bold mr-3 text-lg shrink-0"
                                   :class="isCorrectOption(index) 
                                       ? (isThemeDark ? 'text-green-400' : 'text-green-700')
                                       : (isThemeDark ? 'text-white' : 'text-black')">
@@ -667,7 +667,7 @@ export default {
                 } else {
                     return this.isThemeDark 
                         ? 'bg-gray-700/40 text-gray-300 border border-gray-600 hover:bg-gray-700/60 hover:border-gray-500 cursor-pointer' 
-                        : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 cursor-pointer shadow-sm';
+                        : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 cursor-pointer shadow-xs';
                 }
             }
         },

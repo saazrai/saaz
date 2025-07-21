@@ -56,7 +56,7 @@ const submit = () => {
                     'space-y-6 p-6 rounded-xl border transition-colors duration-300',
                     isDark 
                         ? 'bg-gray-800 border-gray-700' 
-                        : 'bg-white border-gray-200 shadow-sm'
+                        : 'bg-white border-gray-200 shadow-xs'
                 ]">
                     <div class="grid gap-2">
                         <Label for="name" :class="[

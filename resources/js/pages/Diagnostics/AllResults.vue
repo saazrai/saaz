@@ -2,7 +2,7 @@
     <AppLayout title="Diagnostic Results">
         <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
             <!-- Header -->
-            <div class="bg-white dark:bg-gray-800 shadow-sm">
+            <div class="bg-white dark:bg-gray-800 shadow-xs">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
                         Diagnostic Assessment Results
@@ -18,7 +18,7 @@
                 <!-- 4 Phase Cards in a Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div v-for="phase in 4" :key="phase" 
-                         class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all cursor-pointer border-2"
+                         class="bg-white dark:bg-gray-800 rounded-lg shadow-xs overflow-hidden hover:shadow-lg transition-all cursor-pointer border-2"
                          :class="selectedPhase === phase ? 'border-indigo-500 shadow-lg' : 'border-transparent'"
                          @click="selectedPhase = phase">
                         <!-- Phase Card Header -->
@@ -116,7 +116,7 @@
                 </div>
                 
                 <!-- Overall Progress Bar -->
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xs p-6 mb-8">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             Overall Progress
@@ -127,7 +127,7 @@
                     </div>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                         <div 
-                            class="h-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
+                            class="h-3 bg-linear-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-500"
                             :style="{ width: `${(completedPhasesCount / 4) * 100}%` }"
                         ></div>
                     </div>
@@ -135,7 +135,7 @@
 
                 <!-- Phase Results -->
                 <div class="space-y-6">
-                    <div v-for="phase in 4" :key="phase" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+                    <div v-for="phase in 4" :key="phase" class="bg-white dark:bg-gray-800 rounded-lg shadow-xs overflow-hidden">
                         <!-- Phase Header -->
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center justify-between">
@@ -275,14 +275,14 @@
                 </div>
 
                 <!-- Career Recommendations (when all phases completed) -->
-                <div v-if="all_phases_completed && career_recommendations" class="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <div v-if="all_phases_completed && career_recommendations" class="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-xs p-6">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                         Career Path Recommendations
                     </h2>
                     
                     <!-- Overall Readiness -->
                     <div class="mb-8 text-center">
-                        <div class="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white mb-4">
+                        <div class="inline-flex items-center justify-center w-32 h-32 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 text-white mb-4">
                             <span class="text-3xl font-bold">{{ Math.round(career_recommendations.overall_readiness) }}%</span>
                         </div>
                         <p class="text-lg text-gray-700 dark:text-gray-300">Overall Career Readiness</p>
@@ -310,7 +310,7 @@
                                 <p class="text-xs font-medium text-gray-700 dark:text-gray-300">Next Steps:</p>
                                 <ul class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
                                     <li v-for="step in path.next_steps" :key="step" class="flex items-start">
-                                        <CheckIcon class="w-3 h-3 text-green-500 mr-1 mt-0.5 flex-shrink-0" />
+                                        <CheckIcon class="w-3 h-3 text-green-500 mr-1 mt-0.5 shrink-0" />
                                         {{ step }}
                                     </li>
                                 </ul>

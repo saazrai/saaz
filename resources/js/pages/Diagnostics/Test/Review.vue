@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20">
         <!-- Header -->
-        <div class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="bg-white dark:bg-gray-800 shadow-xs">
             <div class="container mx-auto px-4 py-4">
                 <div class="flex items-center justify-between">
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Review Assessment</h1>
@@ -176,7 +176,7 @@
                     <button
                         v-if="!isLastQuestion"
                         @click="nextQuestion"
-                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all transform hover:scale-105 shadow-md"
+                        class="inline-flex items-center px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-lg transition-all transform hover:scale-105 shadow-md"
                     >
                         Next
                         <ChevronRightIcon class="w-5 h-5 ml-2" />
@@ -184,7 +184,7 @@
                     <Link
                         v-else
                         :href="route('assessments.diagnostics.results', diagnostic.id)"
-                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-lg transition-all transform hover:scale-105 shadow-md"
+                        class="inline-flex items-center px-6 py-3 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-medium rounded-lg transition-all transform hover:scale-105 shadow-md"
                     >
                         <CheckIcon class="w-5 h-5 mr-2" />
                         Finish Review

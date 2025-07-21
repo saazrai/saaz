@@ -2,7 +2,7 @@
     <AppLayout title="Diagnostic Results">
         <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
             <!-- Hero Section with Overall Score -->
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900">
+            <div class="bg-linear-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div class="text-center text-white">
                         <h1 class="text-4xl font-bold mb-4">
@@ -91,7 +91,7 @@
                 
                 <!-- Paused Test Information -->
                 <div v-if="diagnostic.status === 'paused'" class="mb-8">
-                    <Card class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700 shadow-xl rounded-2xl overflow-hidden">
+                    <Card class="bg-linear-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700 shadow-xl rounded-2xl overflow-hidden">
                         <CardHeader class="pb-4">
                             <CardTitle class="flex items-center text-yellow-800 dark:text-yellow-200 text-xl font-semibold">
                                 <ClockIcon class="w-6 h-6 mr-3" />
@@ -352,7 +352,7 @@
                 </Card>
 
                 <!-- Next Steps -->
-                <Card class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 border-blue-200 dark:border-gray-700 shadow-lg">
+                <Card class="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 border-blue-200 dark:border-gray-700 shadow-lg">
                     <CardHeader>
                         <CardTitle class="text-xl">Recommended Next Steps</CardTitle>
                     </CardHeader>
@@ -361,7 +361,7 @@
                             <div v-for="(recommendation, index) in personalizedRecommendations" 
                                  :key="index" 
                                  class="flex items-start space-x-3">
-                                <CheckCircleIcon class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                <CheckCircleIcon class="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
                                 <p class="text-sm">{{ recommendation }}</p>
                             </div>
                         </div>

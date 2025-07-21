@@ -20,7 +20,7 @@
                 <div class="sm:w-auto flex items-center gap-4">
                     <!-- Timer -->
                     <div class="hidden sm:block">
-                        <div :class="isDark ? '' : '[&_span]:!text-white [&_span]:!text-gray-200'">
+                        <div :class="isDark ? '' : '[&_span]:text-white! [&_span]:text-gray-200!'">
                             <QuizTimer :isReview="isReviewMode" @question-tick="onQuestionTick" ref="timer" />
                         </div>
                     </div>
@@ -69,13 +69,13 @@
                     Question {{ currentQuestionIndex + 1 }} / {{ sampleQuestions.length }}
                 </div>
 
-                <div class="flex-grow">
+                <div class="grow">
                     <div :class="[
                         'w-full border shadow-inner rounded-full h-4 overflow-hidden',
                         isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'
                     ]">
                         <div :class="[
-                            'h-4 transition-all duration-300 shadow-sm',
+                            'h-4 transition-all duration-300 shadow-xs',
                             isDark ? 'bg-blue-500' : 'bg-blue-500'
                         ]" :style="{ width: `${progress}%` }"></div>
                     </div>
@@ -98,13 +98,13 @@
                     isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'
                 ]">
                     <div :class="[
-                        'h-4 transition-all duration-300 shadow-sm',
+                        'h-4 transition-all duration-300 shadow-xs',
                         isDark ? 'bg-blue-500' : 'bg-blue-500'
                     ]" :style="{ width: `${progress}%` }"></div>
                 </div>
 
                 <!-- Mobile Timer -->
-                <div :class="isDark ? '' : '[&_span]:!text-white [&_span]:!text-gray-200'">
+                <div :class="isDark ? '' : '[&_span]:text-white! [&_span]:text-gray-200!'">
                     <QuizTimer :isReview="isReviewMode" @question-tick="onQuestionTick" ref="mobileTimer" />
                 </div>
             </div>
@@ -128,7 +128,7 @@
                     'backdrop-blur-md rounded-2xl w-full lg:w-2/6 p-6 border',
                     isDark
                         ? 'bg-gray-800 border-gray-700 shadow-xl'
-                        : 'bg-white border-gray-200 shadow-sm'
+                        : 'bg-white border-gray-200 shadow-xs'
                 ]">
                     <h3 :class="[
                         'text-xl font-bold mb-6 pb-3 border-b',
@@ -660,11 +660,11 @@
                     'mb-8 p-5 rounded-xl border',
                     isDark 
                         ? 'bg-gray-750 border-gray-600 shadow-lg shadow-gray-900/20' 
-                        : 'bg-gray-50 border-gray-200 shadow-sm'
+                        : 'bg-gray-50 border-gray-200 shadow-xs'
                 ]">
                     <div class="flex items-start space-x-3">
                         <div :class="[
-                            'flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5',
+                            'shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5',
                             isDark ? 'bg-blue-900/30' : 'bg-blue-100'
                         ]">
                             <svg class="w-3 h-3 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
@@ -693,8 +693,8 @@
                     <button @click="resumeQuiz" :class="[
                         'px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-xl',
                         isDark 
-                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-500/25 hover:shadow-blue-500/40' 
-                            : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/30 hover:shadow-blue-500/50'
+                            ? 'bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-500/25 hover:shadow-blue-500/40' 
+                            : 'bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/30 hover:shadow-blue-500/50'
                     ]">
                         <span class="flex items-center space-x-2">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

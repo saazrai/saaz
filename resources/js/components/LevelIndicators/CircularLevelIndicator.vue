@@ -116,7 +116,7 @@
                         :class="[
                             'w-3 h-3 rounded-full',
                             star <= getOverallComplexity()
-                                ? 'bg-gradient-to-r from-yellow-400 to-yellow-600'
+                                ? 'bg-linear-to-r from-yellow-400 to-yellow-600'
                                 : 'bg-gray-200 dark:bg-gray-700'
                         ]"
                     />

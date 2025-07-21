@@ -40,7 +40,7 @@
                         </div>
                         
                         <!-- Arrow -->
-                        <svg class="w-5 h-5 flex-shrink-0" 
+                        <svg class="w-5 h-5 shrink-0" 
                              :class="isThemeDark ? 'text-gray-600' : 'text-gray-400'"
                              fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -122,7 +122,7 @@
                                 @dragend="handleDragEnd"
                             >
                                 <div class="flex items-center gap-2">
-                                    <svg class="w-3 h-3 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-3 h-3 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                                     </svg>
                                     <span :class="[

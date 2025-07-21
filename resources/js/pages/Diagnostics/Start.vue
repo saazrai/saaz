@@ -8,7 +8,7 @@
             </div>
 
             <!-- Assessment Overview -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8 mb-8 border border-blue-200">
+            <div class="bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg p-8 mb-8 border border-blue-200">
                 <h2 class="text-2xl font-semibold text-gray-900 mb-6">About This Assessment</h2>
                 <div class="prose prose-lg text-gray-700 mb-6">
                     <p class="leading-relaxed mb-4">
@@ -23,12 +23,12 @@
                 </div>
                 
                 <div class="grid md:grid-cols-2 gap-6 mt-8">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-100">
                         <div class="text-3xl font-bold text-green-600 mb-2">20</div>
                         <div class="text-sm font-medium text-gray-600">Security Domains</div>
                         <div class="text-xs text-gray-500 mt-1">Covering essential cybersecurity skills</div>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-100">
                         <div class="text-3xl font-bold text-purple-600 mb-2">60-90</div>
                         <div class="text-sm font-medium text-gray-600">Minutes Duration</div>
                         <div class="text-xs text-gray-500 mt-1">Self-paced with pause capability</div>
@@ -47,7 +47,7 @@
                 
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div v-for="domain in knowledgeDomains" :key="domain.id" 
-                         class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-200">
+                         class="bg-white p-6 rounded-xl shadow-xs border border-gray-200 hover:shadow-lg hover:border-gray-300 transition-all duration-200">
                         <div class="flex items-center mb-3">
                             <div class="w-4 h-4 rounded-full mr-3" :class="domain.color"></div>
                             <h3 class="font-bold text-gray-900 text-sm">{{ domain.name }}</h3>
@@ -183,7 +183,7 @@
 
             <!-- Start Assessment Button -->
             <div class="text-center mb-12">
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+                <div class="bg-linear-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
                     <h3 class="text-2xl font-bold mb-4">Ready to Begin SecureStart™ Diagnostic?</h3>
                     <p class="text-lg mb-6 opacity-90">
                         Take the first step toward understanding your cybersecurity competency profile and advancing your information security career.

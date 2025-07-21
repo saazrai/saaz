@@ -112,10 +112,10 @@ watchEffect(() => {
 <template>
     <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-[#efefef]']">
         <!-- Navbar -->
-        <nav class="fixed top-4 z-navbar w-full lg:top-6 z-[9999]">
-            <div class="container box-border !max-w-[1672px] !px-6 md:!px-9">
+        <nav class="fixed top-4 z-navbar w-full lg:top-6 z-9999">
+            <div class="container box-border max-w-[1672px]! px-6! md:px-9!">
                 <div :class="[
-                    'relative flex h-[var(--navbar-height)] w-full items-center justify-between rounded-lg border px-2 py-1.5 transition-all duration-300 motion-reduce:transition-none lg:grid lg:grid-cols-[1fr_auto_1fr] lg:rounded-2xl lg:py-[0.4375rem] lg:pr-[0.4375rem] shadow-md',
+                    'relative flex h-(--navbar-height) w-full items-center justify-between rounded-lg border px-2 py-1.5 transition-all duration-300 motion-reduce:transition-none lg:grid lg:grid-cols-[1fr_auto_1fr] lg:rounded-2xl lg:py-1.75 lg:pr-1.75 shadow-md',
                     isDark 
                         ? 'bg-gray-800 border-gray-700' 
                         : 'bg-white border-gray-200'
@@ -286,7 +286,7 @@ watchEffect(() => {
         
         <!-- Mobile scrollable menu -->
         <div v-if="showMobileMenu && isMobile" :class="[
-            'fixed top-24 left-0 w-full z-[9999] px-4 py-2 shadow-lg max-h-[calc(100vh-6rem)] overflow-y-auto',
+            'fixed top-24 left-0 w-full z-9999 px-4 py-2 shadow-lg max-h-[calc(100vh-6rem)] overflow-y-auto',
             isDark 
                 ? 'bg-gray-800 border-b border-gray-700' 
                 : 'bg-white border-b border-gray-200'

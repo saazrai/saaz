@@ -157,7 +157,7 @@
                         </div>
                         
                         <div class="flex items-start">
-                            <span class="font-bold mr-3 text-lg flex-shrink-0"
+                            <span class="font-bold mr-3 text-lg shrink-0"
                                   :class="isCorrectOption(index) 
                                       ? (isThemeDark ? 'text-green-400' : 'text-green-700')
                                       : (isThemeDark ? 'text-white' : 'text-black')">

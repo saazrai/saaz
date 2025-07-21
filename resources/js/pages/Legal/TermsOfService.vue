@@ -10,8 +10,8 @@
         <div :class="[
             'py-16 transition-colors duration-300',
             isDark 
-                ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800' 
-                : 'bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700'
+                ? 'bg-linear-to-br from-gray-800 via-gray-700 to-gray-800' 
+                : 'bg-linear-to-br from-blue-900 via-blue-800 to-blue-700'
         ]">
             <div class="max-w-4xl mx-auto px-6 text-center text-white">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">Terms of Service</h1>

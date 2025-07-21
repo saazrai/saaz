@@ -73,7 +73,7 @@
         <!-- Answer Review Section (only in review mode) -->
         <div v-if="isReview && answer"
             :class="[
-                'border-t -mx-[1px] -mb-[1px] rounded-b-2xl',
+                'border-t -mx-px -mb-px rounded-b-2xl',
                 answer.is_correct
                     ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
                     : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-300')
@@ -274,7 +274,7 @@ export default {
             );
         },
         getReviewOptionClasses(i, option) {
-            const baseClasses = 'h-[70px] w-[70px] rounded-lg z-[200] border-2';
+            const baseClasses = 'h-[70px] w-[70px] rounded-lg z-200 border-2';
             
             if (this.isCorrectOption(i)) {
                 return `${baseClasses} ${this.isThemeDark ? 'bg-green-500/40 border-green-400' : 'bg-green-400/40 border-green-600'}`;
@@ -284,7 +284,7 @@ export default {
             return `${baseClasses} ${this.isThemeDark ? 'bg-gray-600/20 border-gray-500' : 'bg-gray-300/20 border-gray-400'}`;
         },
         getInteractiveOptionClasses(option) {
-            const baseClasses = 'h-[70px] w-[70px] rounded-lg cursor-pointer z-[200] border-2 transition-all duration-200';
+            const baseClasses = 'h-[70px] w-[70px] rounded-lg cursor-pointer z-200 border-2 transition-all duration-200';
             
             if (this.selectedOptions === option) {
                 return `${baseClasses} ${this.isThemeDark ? 'bg-blue-500/60 border-blue-400 shadow-lg shadow-blue-500/30' : 'bg-blue-500/60 border-blue-600 shadow-lg shadow-blue-500/30'}`;

@@ -88,7 +88,7 @@
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                     <div 
-                        class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
+                        class="h-full bg-linear-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
                         :style="{ width: `${progress}%` }"
                     ></div>
                 </div>
@@ -114,7 +114,7 @@
                 <div class="max-w-4xl mx-auto">
                     <!-- Question Card - Primary focus -->
                     <div>
-                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xs border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
                             <div class="p-8">
                                 <!-- Question Content using QuizTypes -->
                                 <div v-if="currentQuestionData">

@@ -6,12 +6,12 @@
             <meta name="keywords" content="cybersecurity assessment, security skills test, CISSP preparation, security diagnostic" />
         </Head>
         
-        <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <div class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             <!-- Hero Section with Apple-style gradient -->
             <div class="relative overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5"></div>
+                <div class="absolute inset-0 bg-linear-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5"></div>
                 <div class="relative flex flex-col items-center justify-center px-4 py-20 text-center">
-                    <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
+                    <h1 class="text-5xl md:text-6xl font-bold bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
                         SecureStart™ Diagnostics
                     </h1>
                     <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl">
@@ -22,7 +22,7 @@
                     <div v-if="isAuthenticated" class="mb-8">
                         <button 
                             @click="startDiagnostic('standard')"
-                            class="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                            class="px-12 py-4 bg-linear-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                         >
                             Start Full Assessment
                         </button>
@@ -42,7 +42,7 @@
                             
                             <Link 
                                 :href="route('register')"
-                                class="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
+                                class="inline-block px-8 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
                             >
                                 Create Account
                             </Link>
@@ -63,7 +63,7 @@
 
             <!-- Domains Section with Apple-style Cards -->
             <div class="px-4 py-6 mx-auto w-full max-w-7xl">
-                <h2 class="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-center bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-12">
                     20 Security Domains. One Comprehensive Assessment.
                 </h2>
                 
@@ -80,7 +80,7 @@
                                  class="domain-card group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                         <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                             <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -106,7 +106,7 @@
                                  class="domain-card group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                         <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                                             <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -132,7 +132,7 @@
                                  class="domain-card group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                         <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                                             <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -158,7 +158,7 @@
                                  class="domain-card group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                         <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                             <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -181,7 +181,7 @@
             </div>
 
             <!-- Final CTA Section -->
-            <div class="px-4 py-20 text-center bg-gradient-to-t from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent">
+            <div class="px-4 py-20 text-center bg-linear-to-t from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent">
                 <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
                     {{ isAuthenticated ? 'Ready to begin?' : 'See how you compare to industry professionals' }}
                 </h3>
@@ -189,7 +189,7 @@
                 <div v-if="isAuthenticated" class="mb-6">
                     <button 
                         @click="startDiagnostic('standard')"
-                        class="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                        class="px-12 py-4 bg-linear-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                     >
                         Start Full Assessment
                     </button>
@@ -228,7 +228,7 @@
                                 
                                 <Link 
                                     :href="route('register')"
-                                    class="inline-block px-10 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
+                                    class="inline-block px-10 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
                                 >
                                     Create Free Account
                                 </Link>

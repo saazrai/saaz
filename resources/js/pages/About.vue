@@ -101,7 +101,7 @@
                 <div class="grid lg:grid-cols-3 gap-8">
                     <!-- Excellence Card -->
                     <div class="value-card group">
-                        <div class="value-icon-wrapper bg-gradient-to-br from-blue-500/20 to-cyan-500/20 group-hover:from-blue-500/30 group-hover:to-cyan-500/30">
+                        <div class="value-icon-wrapper bg-linear-to-br from-blue-500/20 to-cyan-500/20 group-hover:from-blue-500/30 group-hover:to-cyan-500/30">
                             <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                             </svg>
@@ -114,7 +114,7 @@
                     
                     <!-- Integrity Card -->
                     <div class="value-card group">
-                        <div class="value-icon-wrapper bg-gradient-to-br from-green-500/20 to-emerald-500/20 group-hover:from-green-500/30 group-hover:to-emerald-500/30">
+                        <div class="value-icon-wrapper bg-linear-to-br from-green-500/20 to-emerald-500/20 group-hover:from-green-500/30 group-hover:to-emerald-500/30">
                             <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
@@ -127,7 +127,7 @@
                     
                     <!-- Innovation Card -->
                     <div class="value-card group">
-                        <div class="value-icon-wrapper bg-gradient-to-br from-purple-500/20 to-pink-500/20 group-hover:from-purple-500/30 group-hover:to-pink-500/30">
+                        <div class="value-icon-wrapper bg-linear-to-br from-purple-500/20 to-pink-500/20 group-hover:from-purple-500/30 group-hover:to-pink-500/30">
                             <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
@@ -144,7 +144,7 @@
         <!-- CTA Section with stunning gradient -->
         <div class="relative py-24 px-6 overflow-hidden">
             <!-- Gradient background -->
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/90 to-purple-600/90"></div>
+            <div class="absolute inset-0 bg-linear-to-br from-blue-600/90 to-purple-600/90"></div>
             
             <!-- Pattern overlay -->
             <div class="absolute inset-0 opacity-10">
@@ -443,7 +443,7 @@ defineOptions({
 }
 
 /* Background gradient utilities */
-.bg-gradient-to-br {
+.bg-linear-to-br {
     background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
 

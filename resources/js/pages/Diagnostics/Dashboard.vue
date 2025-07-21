@@ -2,7 +2,7 @@
     <AppLayout title="Diagnostics Dashboard">
         <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
             <!-- Header Section -->
-            <div class="bg-white dark:bg-gray-800 shadow-sm">
+            <div class="bg-white dark:bg-gray-800 shadow-xs">
                 <div class="container mx-auto px-4 py-6">
                     <div class="flex items-center justify-between">
                         <div>

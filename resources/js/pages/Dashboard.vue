@@ -90,7 +90,7 @@ const formatTimeAgo = (date: string) => {
             </div>
 
             <!-- Diagnostic Test Encouragement (if not taken) -->
-            <div v-if="!diagnosticTaken" class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white shadow-lg">
+            <div v-if="!diagnosticTaken" class="bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white shadow-lg">
                 <div class="flex flex-col lg:flex-row items-center justify-between">
                     <div class="mb-6 lg:mb-0 lg:mr-8">
                         <h2 class="text-2xl font-bold mb-3">Start Your SecureStart™ Assessment</h2>
@@ -134,7 +134,7 @@ const formatTimeAgo = (date: string) => {
 
             <!-- Enterprise Metrics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" v-if="enterpriseMetrics">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center">
                         <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
                             <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,7 +148,7 @@ const formatTimeAgo = (date: string) => {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center">
                         <div class="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
                             <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,7 +162,7 @@ const formatTimeAgo = (date: string) => {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center">
                         <div class="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
                             <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ const formatTimeAgo = (date: string) => {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center">
                         <div class="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
                             <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +195,7 @@ const formatTimeAgo = (date: string) => {
                 <!-- Main Content Area -->
                 <div class="lg:col-span-2 space-y-8">
                     <!-- Diagnostic Results Section -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-gray-200 dark:border-gray-700">
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Diagnostic Results</h2>
@@ -264,7 +264,7 @@ const formatTimeAgo = (date: string) => {
                     </div>
 
                     <!-- Privacy & Compliance Section -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-gray-200 dark:border-gray-700">
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white">Privacy & Compliance</h2>
                             <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Enterprise-grade privacy and compliance management</p>
@@ -316,7 +316,7 @@ const formatTimeAgo = (date: string) => {
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Quick Actions -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-gray-200 dark:border-gray-700 p-6">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
                         <div class="space-y-3">
                             <Link :href="route('assessments.diagnostics.index')" class="block">
@@ -347,7 +347,7 @@ const formatTimeAgo = (date: string) => {
                     </div>
 
                     <!-- Recent Activity -->
-                    <div v-if="hasRecentActivity" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div v-if="hasRecentActivity" class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-gray-200 dark:border-gray-700 p-6">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
                         <div class="space-y-4">
                             <div v-for="activity in recentActivity?.slice(0, 5)" :key="activity.title + activity.date" 
@@ -363,7 +363,7 @@ const formatTimeAgo = (date: string) => {
                     </div>
 
                     <!-- Support Links -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xs border border-gray-200 dark:border-gray-700 p-6">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Platform Info</h3>
                         <div class="space-y-2">
                             <Link :href="route('info.about')" class="block text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">ℹ️ About Platform</Link>

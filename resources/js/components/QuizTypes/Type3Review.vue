@@ -20,7 +20,7 @@
                             v-for="(option, index) in question.options"
                             :key="index"
                             :class="[
-                                'h-[82px] sm:h-[82px] flex items-center p-4 my-2 text-lg rounded-xl border shadow-sm transition-all duration-200 cursor-default',
+                                'h-[82px] sm:h-[82px] flex items-center p-4 my-2 text-lg rounded-xl border shadow-xs transition-all duration-200 cursor-default',
                                 isThemeDark ? 'text-white bg-slate-700/40 border-slate-600' : 'text-gray-900 bg-gray-200 border-gray-200'
                             ]"
                         >
@@ -33,7 +33,7 @@
                         <div
                             v-for="(option, index) in getUserAnswers()"
                             :key="index"
-                            class="option h-[82px] sm:h-[82px] flex items-center p-4 my-2 text-lg rounded-xl shadow-sm transition-all duration-200"
+                            class="option h-[82px] sm:h-[82px] flex items-center p-4 my-2 text-lg rounded-xl shadow-xs transition-all duration-200"
                             :class="getAnswerItemClasses(index)"
                         >
                             <span class="flex-1" :class="isUserAnswerCorrect(option) ? (isThemeDark ? 'text-green-300' : 'text-green-700') : (isThemeDark ? 'text-red-300' : 'text-red-700')">{{ option }}</span>
