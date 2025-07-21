@@ -1,956 +1,602 @@
 <template>
     <div>
         <Head>
-            <title>SecureStart™ Diagnostic - Cybersecurity Skills Assessment | Saaz Academy</title>
-            <meta name="description" content="Evaluate your cybersecurity expertise across 20 critical domains with our comprehensive diagnostic assessment. Get personalized learning recommendations and career insights." />
-            <meta name="keywords" content="cybersecurity assessment, security skills test, CISSP preparation, security diagnostic, cybersecurity certification" />
+            <title>SecureStart™ Diagnostics - Cybersecurity Skills Assessment | Saaz Academy</title>
+            <meta name="description" content="Evaluate your cybersecurity expertise across 20 critical domains with our comprehensive diagnostic assessment." />
+            <meta name="keywords" content="cybersecurity assessment, security skills test, CISSP preparation, security diagnostic" />
         </Head>
         
-        <div class="container mx-auto p-4 max-w-6xl">
-            <!-- Success Message for Sample Quiz Completion -->
-            <div v-if="showSampleCompletionMessage" class="mb-6">
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border-2 border-green-300 dark:border-green-700">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+        <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+            <!-- Hero Section with Apple-style gradient -->
+            <div class="relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5"></div>
+                <div class="relative flex flex-col items-center justify-center px-4 py-20 text-center">
+                    <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
+                        SecureStart™ Diagnostics
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl">
+                        {{ isAuthenticated ? 'Discover your cybersecurity expertise.' : 'Test your cybersecurity knowledge across 20 critical domains.' }}
+                    </p>
+                    
+                    <!-- Primary CTA with Apple-style button -->
+                    <div v-if="isAuthenticated" class="mb-8">
+                        <button 
+                            @click="startDiagnostic('standard')"
+                            class="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                            Start Full Assessment
+                        </button>
+                    </div>
+                    
+                    <!-- Guest User CTAs -->
+                    <div v-else class="mb-8">
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+                            <Link 
+                                :href="route('login')"
+                                class="inline-block px-8 py-3 bg-gray-900 dark:bg-gray-700 text-white text-base font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
+                            >
+                                Sign In
+                            </Link>
+                            
+                            <div class="text-sm text-gray-500 dark:text-gray-400 hidden md:block">or</div>
+                            
+                            <Link 
+                                :href="route('register')"
+                                class="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
+                            >
+                                Create Account
+                            </Link>
                         </div>
-                        <div class="ml-4 flex-1">
-                            <h3 class="text-lg font-bold text-green-900 dark:text-green-100 mb-1">
-                                Great Job Completing the Sample Quiz! 🎉
-                            </h3>
-                            <p class="text-green-800 dark:text-green-200 mb-3">
-                                You've experienced the quality of our assessments. Ready to unlock your full cybersecurity potential?
-                            </p>
-                            <div v-if="!isAuthenticated" class="flex flex-wrap gap-3">
+                        
+                        <div class="text-center mb-6">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Not ready to commit?</p>
+                            <Link 
+                                :href="route('assessments.diagnostics.sample')"
+                                class="inline-block px-6 py-2 bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            >
+                                Try 10-Question Sample First
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Domains Section with Apple-style Cards -->
+            <div class="px-4 py-6 mx-auto w-full max-w-7xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-12">
+                    20 Security Domains. One Comprehensive Assessment.
+                </h2>
+                
+                <!-- Domains by Phase -->
+                <div class="space-y-8 mb-8">
+                    <!-- Phase 1 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+                            <span class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-blue-600 dark:text-blue-400">1</span>
+                            Foundation & Governance
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                            <div v-for="(domain, index) in phase1Domains" :key="domain.name"
+                                 class="domain-card group"
+                                 @click="showDomainTooltip(domain)">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            <path v-else-if="index === 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            <path v-else-if="index === 3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phase 2 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+                            <span class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-green-600 dark:text-green-400">2</span>
+                            Technical Controls
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                            <div v-for="(domain, index) in phase2Domains" :key="domain.name"
+                                 class="domain-card group"
+                                 @click="showDomainTooltip(domain)">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                            <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            <path v-else-if="index === 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                            <path v-else-if="index === 3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8 8m0 0V4m0 11h11M9 4H4v5m0 0l8 8" />
+                                            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phase 3 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+                            <span class="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-purple-600 dark:text-purple-400">3</span>
+                            Infrastructure & Applications
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                            <div v-for="(domain, index) in phase3Domains" :key="domain.name"
+                                 class="domain-card group"
+                                 @click="showDomainTooltip(domain)">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                            <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                            <path v-else-if="index === 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                                            <path v-else-if="index === 3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phase 4 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center">
+                            <span class="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-orange-600 dark:text-orange-400">4</span>
+                            Operations & Response
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                            <div v-for="(domain, index) in phase4Domains" :key="domain.name"
+                                 class="domain-card group"
+                                 @click="showDomainTooltip(domain)">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path v-if="index === 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            <path v-else-if="index === 1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                            <path v-else-if="index === 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            <path v-else-if="index === 3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Assessment Features -->
+                <p class="text-center text-lg text-gray-600 dark:text-gray-400">
+                    Adaptive questions. Personalized insights. Professional report.
+                </p>
+            </div>
+
+            <!-- Final CTA Section -->
+            <div class="px-4 py-20 text-center bg-gradient-to-t from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent">
+                <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
+                    {{ isAuthenticated ? 'Ready to begin?' : 'See how you compare to industry professionals' }}
+                </h3>
+                
+                <div v-if="isAuthenticated" class="mb-6">
+                    <button 
+                        @click="startDiagnostic('standard')"
+                        class="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                        Start Full Assessment
+                    </button>
+                </div>
+                
+                <div v-else class="mb-6">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="mb-8 text-gray-600 dark:text-gray-400">
+                            <p class="text-lg mb-4">Join 10,000+ cybersecurity professionals who have tested their skills</p>
+                            <div class="flex justify-center space-x-8 text-sm">
+                                <div>
+                                    <span class="text-2xl font-bold text-gray-900 dark:text-white">20</span>
+                                    <p>Security Domains</p>
+                                </div>
+                                <div>
+                                    <span class="text-2xl font-bold text-gray-900 dark:text-white">4</span>
+                                    <p>Learning Phases</p>
+                                </div>
+                                <div>
+                                    <span class="text-2xl font-bold text-gray-900 dark:text-white">5</span>
+                                    <p>Proficiency Levels</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-4">
                                 <Link 
-                                    :href="route('register')" 
-                                    class="inline-flex items-center px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md"
+                                    :href="route('login')"
+                                    class="inline-block px-10 py-3 bg-gray-900 dark:bg-gray-700 text-white text-base font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
+                                >
+                                    Sign In to Start
+                                </Link>
+                                
+                                <div class="text-sm text-gray-500 dark:text-gray-400 hidden md:block">or</div>
+                                
+                                <Link 
+                                    :href="route('register')"
+                                    class="inline-block px-10 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
                                 >
                                     Create Free Account
-                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                    </svg>
                                 </Link>
+                            </div>
+                            
+                            <div class="text-gray-500 dark:text-gray-400">
                                 <Link 
-                                    :href="route('login')" 
-                                    class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 font-semibold rounded-lg border-2 border-green-600 dark:border-green-400 hover:bg-green-50 dark:hover:bg-gray-700 transition-colors"
+                                    :href="route('assessments.diagnostics.sample')"
+                                    class="hover:text-gray-700 dark:hover:text-gray-300 underline text-sm"
                                 >
-                                    Sign In
+                                    Or try the 10-question sample without registration
                                 </Link>
                             </div>
                         </div>
-                        <button @click="showSampleCompletionMessage = false" class="flex-shrink-0 ml-4 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Domain Tooltip Modal -->
+        <Transition name="fade">
+            <div v-if="tooltipDomain" 
+                 @click="tooltipDomain = null"
+                 class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md shadow-2xl transform transition-all"
+                     @click.stop>
+                    <div class="flex items-start justify-between mb-4">
+                        <h4 class="font-semibold text-lg text-gray-900 dark:text-white">{{ tooltipDomain.name }}</h4>
+                        <button @click="tooltipDomain = null" 
+                                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
-                </div>
-            </div>
-
-            <!-- Header Section -->
-            <div class="text-center mb-8">
-                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">SecureStart™ Diagnostic</h1>
-                <p class="text-xl text-gray-600 dark:text-gray-300">Evaluate your expertise across 20 critical cybersecurity domains</p>
-                
-                <!-- Quick Start Apple UI/UX Test Button -->
-                <div class="mt-6">
-                    <button v-if="isAuthenticated"
-                        @click="startDiagnostic('standard')"
-                        class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-full hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
-                    >
-                        🚀 Start Apple-Style Assessment (V1 Enhanced)
-                    </button>
-                    <Link v-else
-                        :href="route('assessments.diagnostics.sample')"
-                        class="inline-block px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-full hover:from-green-600 hover:to-teal-600 transition-all transform hover:scale-105 shadow-lg"
-                    >
-                        🎯 Try Free Sample Quiz First
-                    </Link>
-                </div>
-            </div>
-
-            <!-- Assessment Overview -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 rounded-lg p-8 mb-8 border border-blue-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-6">About This Assessment</h2>
-                <div class="prose prose-lg text-gray-700 dark:text-gray-300 mb-6">
-                    <p class="leading-relaxed">
-                        SecureStart™ Diagnostic provides comprehensive insights into your cybersecurity knowledge across 20 fundamental domains. Crafted by industry experts using NIST, ISO 27001, and real-world scenarios, this assessment delivers personalized analytics to guide your professional development.
-                    </p>
-                </div>
-                
-                <div class="grid md:grid-cols-2 gap-6 mt-8">
-                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600">
-                        <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">20</div>
-                        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">Security Domains</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Covering essential cybersecurity skills</div>
-                    </div>
-                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600">
-                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">60-90</div>
-                        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">Minutes Duration</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Self-paced with pause capability</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Interactive Domain Exploration Section -->
-            <div class="mb-10">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-semibold text-gray-900 dark:text-white mb-4">Explore the 20 SecureStart™ Assessment Domains</h2>
-                    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                        Click on any domain to discover what makes it essential for cybersecurity professionals. Each domain represents critical knowledge areas that drive career success in information security.
-                    </p>
-                </div>
-
-                <!-- Domain Categories -->
-                <div class="mb-8">
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <button 
-                            v-for="category in domainCategories" 
-                            :key="category.id"
-                            @click="selectedCategory = category.id"
-                            :class="[
-                                'px-4 py-2 rounded-lg font-medium transition-all duration-200',
-                                selectedCategory === category.id 
-                                    ? 'bg-blue-600 text-white shadow-md' 
-                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                            ]"
-                        >
-                            {{ category.name }} ({{ category.count }})
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Loading State -->
-                <div v-if="loadingDomains" class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div v-for="i in 8" :key="i" class="animate-pulse">
-                        <div class="bg-gray-200 dark:bg-gray-700 h-24 rounded-xl"></div>
-                    </div>
-                </div>
-
-                <!-- Interactive Domain Grid -->
-                <div v-else class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div v-for="domain in filteredDomains" :key="domain.id" 
-                         @click="openDomainModal(domain)"
-                         :class="[
-                             'cursor-pointer p-4 rounded-xl shadow-sm border transition-all duration-200',
-                             'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600'
-                         ]">
-                        <div class="flex items-start justify-between">
-                            <div class="flex items-center flex-1 min-w-0">
-                                <div class="w-3 h-3 rounded-full mr-3 flex-shrink-0" :class="domain.colorClass"></div>
-                                <h3 class="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-tight">{{ domain.name }}</h3>
-                            </div>
-                            <div class="ml-2 flex-shrink-0">
-                                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        
-                        <!-- Question Count Badge -->
-                        <div class="mt-2 flex items-center">
-                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ domain.questionCount }} questions</span>
-                            <div class="ml-auto flex items-center space-x-1">
-                                <span class="text-xs text-gray-400">{{ domain.weight_percentage }}%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8 bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Diagnostic Methodology</h3>
-                    <div class="grid md:grid-cols-2 gap-6 text-sm text-gray-700 dark:text-gray-300">
-                        <div>
-                            <h4 class="font-medium mb-2 dark:text-gray-200">Industry-Aligned Content</h4>
-                            <p>Assessment items based on NIST, ISO 27001, SANS, and other leading cybersecurity frameworks and real-world scenarios.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-medium mb-2 dark:text-gray-200">Comprehensive Coverage</h4>
-                            <p>Balanced evaluation across technical, operational, and governance aspects of information security.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-medium mb-2 dark:text-gray-200">Expert Validated</h4>
-                            <p>All content reviewed and validated by certified cybersecurity professionals and industry practitioners.</p>
-                        </div>
-                        <div>
-                            <h4 class="font-medium mb-2 dark:text-gray-200">Career Relevance</h4>
-                            <p>Assessment reflects current threat landscape and practical challenges faced by security professionals.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Assessment Features -->
-            <div class="grid md:grid-cols-2 gap-8 mb-10">
-                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">What You'll Receive</h3>
-                    </div>
-                    <ul class="space-y-4 text-gray-700 dark:text-gray-300">
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-3 mt-1">✓</span>
-                            <div>
-                                <strong>Comprehensive Security Profile Analysis</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Detailed breakdown of your cybersecurity strengths and knowledge gaps across all 20 security domains</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-3 mt-1">✓</span>
-                            <div>
-                                <strong>Personalized Learning Roadmap</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Customized recommendations for cybersecurity training, certifications, and skill development paths</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-3 mt-1">✓</span>
-                            <div>
-                                <strong>Industry Benchmarking</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Performance comparison with cybersecurity professionals at similar career levels and specializations</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-3 mt-1">✓</span>
-                            <div>
-                                <strong>Career Pathway Alignment</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Analysis of how your profile aligns with various cybersecurity roles and specialization tracks</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-3 mt-1">✓</span>
-                            <div>
-                                <strong>Professional Assessment Report</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Comprehensive PDF report suitable for professional development planning and career advancement</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Diagnostic Guidelines</h3>
-                    </div>
-                    <ul class="space-y-4 text-gray-700 dark:text-gray-300">
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mr-3 mt-1">•</span>
-                            <div>
-                                <strong>Time Management</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Allocate 60-90 minutes in a quiet environment for optimal focus and accuracy</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mr-3 mt-1">•</span>
-                            <div>
-                                <strong>Honest Responses</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Answer authentically to ensure results accurately reflect your current capabilities</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mr-3 mt-1">•</span>
-                            <div>
-                                <strong>Flexible Completion</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Pause and resume functionality allows you to complete the diagnostic at your own pace</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mr-3 mt-1">•</span>
-                            <div>
-                                <strong>Independent Work</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Complete the diagnostic independently without external resources for valid results</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mr-3 mt-1">•</span>
-                            <div>
-                                <strong>Technical Requirements</strong>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Stable internet connection and modern browser recommended for optimal experience</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Guest User Section -->
-            <div v-if="!isAuthenticated" class="mb-12">
-                <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 rounded-xl p-8 border-2 border-blue-300 dark:border-blue-700">
-                    <div class="text-center mb-6">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Try Our Sample Assessment First!</h3>
-                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                            Experience the quality of our diagnostic with a free 10-question sample quiz
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ tooltipDomain.description }}</p>
+                    <div v-if="tooltipDomain.topics && tooltipDomain.topics.length > 0">
+                        <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Topics covered:</h5>
+                        <ul class="space-y-1">
+                            <li v-for="topic in tooltipDomain.topics.slice(0, 5)" :key="topic" 
+                                class="text-xs text-gray-600 dark:text-gray-400 flex items-start">
+                                <span class="text-gray-400 dark:text-gray-500 mr-2">•</span>
+                                <span>{{ topic }}</span>
+                            </li>
+                        </ul>
+                        <p v-if="tooltipDomain.topics.length > 5" class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            And {{ tooltipDomain.topics.length - 5 }} more topics...
                         </p>
-                        <Link 
-                            :href="route('assessments.diagnostics.sample')" 
-                            class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold rounded-full hover:from-green-600 hover:to-teal-600 transition-all transform hover:scale-105 shadow-lg"
-                        >
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            Try Sample Quiz Now - No Sign Up Required
-                        </Link>
-                    </div>
-                    
-                    <div class="mt-8 pt-6 border-t border-blue-200 dark:border-blue-800">
-                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 text-center">
-                            Ready for the Full Experience? Create Your Free Account
-                        </h4>
-                        <div class="grid md:grid-cols-3 gap-4 mb-6">
-                            <div class="text-center">
-                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Complete 100+ Questions</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Comprehensive assessment</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                    </svg>
-                                </div>
-                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Detailed Analytics</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Domain-level insights</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-2">
-                                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </div>
-                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Learning Path</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Personalized recommendations</p>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <Link 
-                                :href="route('register')" 
-                                class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md"
-                            >
-                                Create Free Account
-                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Diagnostic Mode Selection -->
-            <div class="mb-12" v-if="isAuthenticated">
-                <div class="text-center mb-8">
-                    <h3 class="text-3xl font-semibold text-gray-900 mb-4">Choose Your Diagnostic Mode</h3>
-                    <p class="text-lg text-gray-600">Select the assessment depth that best fits your time and evaluation needs</p>
-                </div>
-                
-                <div class="grid md:grid-cols-4 gap-6 mb-8">
-                    <!-- Dynamic Diagnostic Modes -->
-                    <div v-for="mode in diagnosticModes" :key="mode.slug" 
-                         class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow relative"
-                         :class="mode.badge_text ? 'border-2' : 'border border-gray-200'"
-                         :style="{ borderColor: mode.badge_text ? getColorValue(mode.color_scheme, '300') : '' }">
-                        
-                        <div v-if="mode.badge_text" class="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                            <span class="text-white text-xs font-bold px-3 py-1 rounded-full"
-                                  :style="{ backgroundColor: getColorValue(mode.color_scheme, '500') }">
-                                {{ mode.badge_text }}
-                            </span>
-                        </div>
-                        
-                        <div class="text-center mb-4">
-                            <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-                                 :style="{ backgroundColor: getColorValue(mode.color_scheme, '100') }">
-                                <svg class="w-8 h-8" :style="{ color: getColorValue(mode.color_scheme, '600') }" 
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                          :d="getIconPath(mode.icon)"></path>
-                                </svg>
-                            </div>
-                            <h4 class="text-xl font-bold text-gray-900 mb-2">{{ mode.name }}</h4>
-                            <div class="text-3xl font-bold mb-2" :style="{ color: getColorValue(mode.color_scheme, '600') }">
-                                {{ mode.question_count }} Questions
-                            </div>
-                            <div class="text-sm text-gray-600 mb-2">{{ mode.duration_minutes }} minutes</div>
-                            <p class="text-xs text-gray-500 mb-4">{{ mode.description }}</p>
-                        </div>
-                        
-                        <div v-if="mode.features && mode.features.display_features" class="space-y-2 mb-6">
-                            <p v-for="(feature, index) in mode.features.display_features" :key="index" class="text-sm text-gray-700 flex items-start">
-                                <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                </svg>
-                                {{ feature }}
-                            </p>
-                        </div>
-                        
-                        <div v-if="isAuthenticated">
-                            <div v-if="mode.can_retake">
-                                <button 
-                                    @click="startDiagnostic(mode.slug)"
-                                    class="w-full px-6 py-3 text-white font-semibold rounded-lg transition-colors"
-                                    :style="{ 
-                                        backgroundColor: getColorValue(mode.color_scheme, '600'),
-                                        ':hover': { backgroundColor: getColorValue(mode.color_scheme, '700') }
-                                    }"
-                                    @mouseover="$event.target.style.backgroundColor = getColorValue(mode.color_scheme, '700')"
-                                    @mouseout="$event.target.style.backgroundColor = getColorValue(mode.color_scheme, '600')"
-                                >
-                                    Start {{ mode.name }}
-                                </button>
-                            </div>
-                            <div v-else class="text-center">
-                                <div class="bg-gray-100 rounded-lg p-3 mb-2">
-                                    <p class="text-sm text-gray-600">Available in:</p>
-                                    <p class="text-lg font-semibold text-gray-800">
-                                        {{ formatTimeRemaining(mode.time_until_retake) }}
-                                    </p>
-                                </div>
-                                <p class="text-xs text-gray-500">Cooldown period active</p>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <Link 
-                                :href="typeof route !== 'undefined' ? route('register') : '/register'" 
-                                class="block w-full px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors text-center"
-                            >
-                                Sign Up to Start
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gray-50 rounded-lg p-6 text-center">
-                    <p class="text-sm text-gray-600">
-                        <strong>Not sure which to choose?</strong> We recommend the Standard Diagnostic for most users. 
-                        It provides comprehensive insights while respecting your time investment.
-                    </p>
-                </div>
-            </div>
-
-
-            <!-- Social Proof Section -->
-            <div class="mb-12">
-                <div class="text-center mb-8">
-                    <h3 class="text-3xl font-semibold text-gray-900 dark:text-white mb-4">Built for Cybersecurity Professionals</h3>
-                    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                        Designed to provide accurate assessment and personalized learning paths for your cybersecurity career development
-                    </p>
-                </div>
-
-                <!-- Assessment Features Section -->
-                <div class="grid md:grid-cols-4 gap-6 mb-12">
-                    <div class="text-center">
-                        <div class="text-4xl mb-2">📊</div>
-                        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">Comprehensive Assessment</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Across all security domains</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl mb-2">🔒</div>
-                        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">Professional Focus</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Industry-aligned content</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl mb-2">🚀</div>
-                        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">Career Development</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Personalized growth paths</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl mb-2">⭐</div>
-                        <div class="text-sm font-medium text-gray-600 dark:text-gray-300">Quality Content</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Expert-crafted assessments</div>
-                    </div>
-                </div>
-
-                <!-- Testimonials Section -->
-                <div class="mb-12">
-                    <h4 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-8">What Security Professionals Say</h4>
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <!-- Testimonial 1 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                            <div class="mb-4">
-                                <div class="flex text-yellow-400 mb-2">
-                                    <svg v-for="i in 5" :key="i" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                    </svg>
-                                </div>
-                                <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                    "SecureStart™ Diagnostic gave me the confidence to pursue CISSP certification. The detailed analysis helped me identify exactly which domains to focus on."
-                                </p>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
-                                    <span class="text-blue-600 dark:text-blue-400 font-semibold text-sm">SM</span>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">Sarah Martinez</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Senior Security Analyst</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 2 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                            <div class="mb-4">
-                                <div class="flex text-yellow-400 mb-2">
-                                    <svg v-for="i in 5" :key="i" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                    </svg>
-                                </div>
-                                <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                    "The adaptive testing saved me hours of study time by focusing on my weak areas. I passed my Security+ on the first attempt!"
-                                </p>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mr-3">
-                                    <span class="text-green-600 dark:text-green-400 font-semibold text-sm">JC</span>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">James Chen</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">IT Security Specialist</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Testimonial 3 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                            <div class="mb-4">
-                                <div class="flex text-yellow-400 mb-2">
-                                    <svg v-for="i in 5" :key="i" class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                    </svg>
-                                </div>
-                                <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                    "Finally, an assessment that reflects real-world cybersecurity challenges. The personalized report was incredibly valuable for my career planning."
-                                </p>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mr-3">
-                                    <span class="text-purple-600 dark:text-purple-400 font-semibold text-sm">AR</span>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">Aisha Rahman</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">CISO, Tech Startup</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trust Badges Section -->
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 text-center">
-                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Aligned with Industry Standards</h4>
-                    <div class="flex flex-wrap justify-center items-center gap-8">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">NIST Framework</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">ISO 27001</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
-                                <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">(ISC)² CBK</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
-                                <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">SANS Training</span>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">
-                        Our assessments align with globally recognized cybersecurity frameworks and standards
-                    </p>
-                </div>
-            </div>
-
-            <!-- Previous Assessments Section - Only for authenticated users -->
-            <div v-if="isAuthenticated">
-                <h2 class="text-xl font-semibold mb-3">Previous Assessments</h2>
-
-                <div v-if="diagnosticsHistory.length > 0" class="bg-white shadow-md rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Answered</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                            <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="diagnostic in diagnosticsHistory" :key="diagnostic.id">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(diagnostic.created_at) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnostic.status }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnostic.score !== null ? diagnostic.score + '%' : 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnostic.responses.length }} / {{ diagnostic.total_questions }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatTime(diagnostic.total_duration) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <Link v-if="diagnostic.status === 'completed'" :href="typeof route !== 'undefined' ? route('assessments.diagnostics.results', { diagnostic: diagnostic.id }) : `/assessments/diagnostics/${diagnostic.id}/results`" class="text-blue-600 hover:text-blue-900 mr-3">Review</Link>
-                                <Link v-if="diagnostic.status === 'in_progress' || diagnostic.status === 'paused'" :href="typeof route !== 'undefined' ? route('assessments.diagnostics.show', { diagnostic: diagnostic.id }) : `/assessments/diagnostics/${diagnostic.id}`" class="text-green-600 hover:text-green-900">Resume</Link>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                </div>
-                <div v-else class="text-gray-600 dark:text-gray-400 text-center mt-4">
-                    No previous assessments found.
-                </div>
-            </div>
-        </div>
-
-        <!-- Domain Details Modal using Headless UI -->
-        <TransitionRoot appear :show="showDomainModal" as="template">
-            <Dialog as="div" @close="closeDomainModal" class="relative z-50">
-                <TransitionChild
-                    as="template"
-                    enter="duration-300 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-200 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
-                >
-                    <div class="fixed inset-0 bg-black bg-opacity-25" />
-                </TransitionChild>
-
-                <div class="fixed inset-0 overflow-y-auto">
-                    <div class="flex min-h-full items-center justify-center p-4 text-center">
-                        <TransitionChild
-                            as="template"
-                            enter="duration-300 ease-out"
-                            enter-from="opacity-0 scale-95"
-                            enter-to="opacity-100 scale-100"
-                            leave="duration-200 ease-in"
-                            leave-from="opacity-100 scale-100"
-                            leave-to="opacity-0 scale-95"
-                        >
-                            <DialogPanel class="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 text-left align-middle shadow-xl transition-all">
-                                <div v-if="selectedDomainDetails">
-                                    <div class="flex items-start justify-between mb-4">
-                                        <div>
-                                            <DialogTitle as="h3" class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                                                {{ selectedDomainDetails.name }}
-                                            </DialogTitle>
-                                            <div class="flex items-center space-x-3 mb-3">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{
-                                                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': selectedDomainDetails.category === 'foundational',
-                                                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': selectedDomainDetails.category === 'technical',
-                                                    'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200': selectedDomainDetails.category === 'managerial'
-                                                }">
-                                                    {{ selectedDomainDetails.category }}
-                                                </span>
-                                                <span class="text-sm text-gray-500 dark:text-gray-400">
-                                                    {{ selectedDomainDetails.code }} • {{ selectedDomainDetails.weight_percentage }}% weight
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <button @click="closeDomainModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
-                                        {{ selectedDomainDetails.description }}
-                                    </p>
-
-                                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
-                                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Learning Objectives</h4>
-                                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                                            {{ selectedDomainDetails.learning_objectives }}
-                                        </p>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4 mb-6">
-                                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                            <div class="flex items-center mb-2">
-                                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                                </svg>
-                                                <h5 class="font-medium text-gray-900 dark:text-white">Assessment Details</h5>
-                                            </div>
-                                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                                                {{ selectedDomainDetails.questionCount }} questions covering Bloom levels {{ selectedDomainDetails.min_bloom_level || 1 }}-{{ selectedDomainDetails.max_bloom_level || 6 }}
-                                            </p>
-                                        </div>
-                                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                                            <div class="flex items-center mb-2">
-                                                <svg class="w-5 h-5 text-green-600 dark:text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                </svg>
-                                                <h5 class="font-medium text-gray-900 dark:text-white">Priority Level</h5>
-                                            </div>
-                                            <p class="text-sm text-gray-600 dark:text-gray-400">
-                                                Priority {{ selectedDomainDetails.priority_order }} of 20 domains
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex justify-end">
-                                        <button
-                                            type="button"
-                                            @click="closeDomainModal"
-                                            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 dark:bg-blue-900 px-4 py-2 text-sm font-medium text-blue-900 dark:text-blue-100 hover:bg-blue-200 dark:hover:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                        >
-                                            Got it!
-                                        </button>
-                                    </div>
-                                </div>
-                            </DialogPanel>
-                        </TransitionChild>
-                    </div>
-                </div>
-            </Dialog>
-        </TransitionRoot>
+        </Transition>
     </div>
 </template>
 
 <script setup lang="ts">
-import { Link, router, usePage, Head } from '@inertiajs/vue3';
-import { computed, ref, onMounted } from 'vue';
-import moment from 'moment';
+import { Link, router, Head } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 import AppLayout from "@/layouts/AppLayout.vue";
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 
 const props = defineProps({
-    diagnosticModes: {
-        type: Array,
-        default: () => []
-    },
-    diagnosticsHistory: {
-        type: Array,
-        default: () => []
-    },
     isAuthenticated: {
         type: Boolean,
         default: false
     },
-    domains: {
-        type: Array,
-        default: () => []
+});
+
+// Domains organized by phase with simplified structure
+const phase1Domains = ref([
+    { 
+        name: 'General Security', 
+        description: 'Core security principles including CIA Triad and security controls',
+        topics: [
+            '5 Pillars of Information Security',
+            'Professional Ethics',
+            'Security Controls',
+            'Security Principles',
+            'Cybersecurity Frameworks'
+        ]
     },
-});
-
-// Use the shared auth data from Inertia
-const page = usePage();
-const isAuthenticated = computed(() => props.isAuthenticated || !!page.props.auth?.user);
-
-// Removed email capture functionality - backend route 'diagnostics.capture-email' was not implemented
-
-// Interactive domain exploration state
-const selectedCategory = ref('all');
-// const _selectedDomain = ref(null);
-const showDomainModal = ref(false);
-const selectedDomainDetails = ref(null);
-const loadingDomains = ref(true);
-const processedDomains = ref([]);
-
-// Show success message if user completed sample quiz
-const urlParams = new URLSearchParams(window.location.search);
-const showSampleCompletionMessage = ref(urlParams.get('completed_sample') === 'true');
-
-// Layout is now handled by defineOptions at the bottom of the file
-
-// Process domains from props
-onMounted(() => {
-    if (props.domains && props.domains.length > 0) {
-        processedDomains.value = props.domains.map(domain => ({
-            ...domain,
-            questionCount: 5, // Each domain gets 5 questions
-            colorClass: getColorClass(domain.color),
-            keyTopics: [], // Will be populated if needed
-            careerApplications: [], // Will be populated if needed
-            industryRelevance: domain.learning_objectives || domain.description
-        }));
+    { 
+        name: 'Governance', 
+        description: 'Management frameworks and security policies',
+        topics: [
+            'Information Security Program',
+            'Strategic Alignment',
+            'Leadership & Accountability',
+            'Security Policy Framework',
+            'Policy Governance and Management'
+        ]
+    },
+    { 
+        name: 'Risk Management', 
+        description: 'Risk assessment and treatment strategies',
+        topics: [
+            'Risk Management Fundamentals',
+            'Risk Identification',
+            'Risk Assessment',
+            'Risk Treatment',
+            'Risk Monitoring & Reporting'
+        ]
+    },
+    { 
+        name: 'Legal & Compliance', 
+        description: 'Regulatory requirements and legal frameworks',
+        topics: [
+            'Compliance Requirements',
+            'Contracts',
+            'Industry Specific Regulations',
+            'Intellectual Property',
+            'Investigation Types'
+        ]
+    },
+    { 
+        name: 'Privacy', 
+        description: 'Data protection and privacy principles',
+        topics: [
+            'Personal Information',
+            'Privacy Principles',
+            'Data Subject Rights',
+            'Privacy Governance',
+            'Privacy Protection'
+        ]
     }
-    loadingDomains.value = false;
-});
+]);
 
-// Helper function to convert hex color to Tailwind class
-const getColorClass = (hexColor) => {
-    const colorMap = {
-        '#3B82F6': 'bg-blue-500',
-        '#10B981': 'bg-emerald-500', 
-        '#8B5CF6': 'bg-purple-500',
-        '#EC4899': 'bg-pink-500',
-        '#F59E0B': 'bg-amber-500',
-        '#6366F1': 'bg-indigo-500',
-        '#EF4444': 'bg-red-500',
-        '#14B8A6': 'bg-teal-500',
-        '#0EA5E9': 'bg-sky-500',
-        '#84CC16': 'bg-lime-500',
-        '#06B6D4': 'bg-cyan-500',
-        '#7C3AED': 'bg-violet-500',
-        '#2563EB': 'bg-blue-600',
-        '#DC2626': 'bg-red-600',
-        '#059669': 'bg-emerald-600',
-        '#F97316': 'bg-orange-500',
-        '#64748B': 'bg-slate-500',
-        '#0891B2': 'bg-cyan-600',
-        '#BE123C': 'bg-rose-700',
-        '#0F766E': 'bg-teal-700'
-    };
-    return colorMap[hexColor] || 'bg-gray-500';
-};
-
-// Open domain details modal
-const openDomainModal = (domain) => {
-    selectedDomainDetails.value = domain;
-    showDomainModal.value = true;
-};
-
-// Close domain details modal  
-const closeDomainModal = () => {
-    showDomainModal.value = false;
-    selectedDomainDetails.value = null;
-};
-
-
-// Computed property for filtering domains by category
-const filteredDomains = computed(() => {
-    if (loadingDomains.value) return [];
-    if (selectedCategory.value === 'all') {
-        return props.domains;
+const phase2Domains = ref([
+    { 
+        name: 'Security Audits', 
+        description: 'Audit methodologies and assessment techniques',
+        topics: [
+            'Audit Fundamentals & Planning',
+            'Evidence Gathering & Documentation',
+            'Control Assessment & Testing',
+            'Testing Methodologies & Approaches',
+            'Security Testing & Assessment'
+        ]
+    },
+    { 
+        name: 'Threat & Vulnerability', 
+        description: 'Threat identification and vulnerability management',
+        topics: [
+            'Threat Actors',
+            'TTPs',
+            'Vulnerability Management',
+            'Vulnerability Assessment',
+            'Malware'
+        ]
+    },
+    { 
+        name: 'Cryptography', 
+        description: 'Encryption algorithms and key management',
+        topics: [
+            'Cryptographic Algorithms',
+            'Cryptographic Applications',
+            'Public Key Infrastructure (PKI)',
+            'Key Management',
+            'Cryptanalysis & Security'
+        ]
+    },
+    { 
+        name: 'Data Governance', 
+        description: 'Data lifecycle and protection strategies',
+        topics: [
+            'Data Classification & Categorization',
+            'Data Lifecycle Management',
+            'Data Retention & Archival',
+            'Data Sanitization',
+            'Data Security Controls'
+        ]
+    },
+    { 
+        name: 'Identity & Access', 
+        description: 'IAM principles and access control',
+        topics: [
+            'Identification',
+            'Authentication',
+            'Authorization',
+            'Accounting (Auditing)',
+            'Federation & Advanced IAM'
+        ]
     }
-    return props.domains.filter(domain => domain.category === selectedCategory.value);
-});
+]);
 
-// Update domain categories count dynamically
-const domainCategories = computed(() => {
-    if (loadingDomains.value) return [
-        { id: 'all', name: 'All Domains', count: 0 },
-        { id: 'foundational', name: 'Foundational', count: 0 },
-        { id: 'technical', name: 'Technical Security', count: 0 },
-        { id: 'managerial', name: 'Managerial', count: 0 }
-    ];
-    
-    const foundational = props.domains.filter(d => d.category === 'foundational').length;
-    const technical = props.domains.filter(d => d.category === 'technical').length;
-    const managerial = props.domains.filter(d => d.category === 'managerial').length;
-    
-    return [
-        { id: 'all', name: 'All Domains', count: props.domains.length },
-        { id: 'foundational', name: 'Foundational', count: foundational },
-        { id: 'technical', name: 'Technical Security', count: technical },
-        { id: 'managerial', name: 'Managerial', count: managerial }
-    ];
-});
-
-const formatDate = (date) => {
-    return moment(date).format('YYYY-MM-DD HH:mm');
-};
-
-const formatTime = (seconds) => {
-    if (seconds === null || seconds === undefined) {
-        return 'N/A';
+const phase3Domains = ref([
+    { 
+        name: 'Networking', 
+        description: 'Network protocols and infrastructure',
+        topics: [
+            'OSI Model',
+            'TCP/IP Protocols',
+            'Network Appliances',
+            'Network Services',
+            'Communication Protocols'
+        ]
+    },
+    { 
+        name: 'Network Security', 
+        description: 'Network defense and security protocols',
+        topics: [
+            'Security Protocols',
+            'Network Attacks',
+            'Network Segmentation',
+            'Wireless Security',
+            'Network Diagnostic Tools'
+        ]
+    },
+    { 
+        name: 'Application Security', 
+        description: 'Secure development and DevSecOps',
+        topics: [
+            'Secure Software Development Lifecycle',
+            'Models',
+            'Application vulnerabilities',
+            'Security Testing',
+            'Secure Coding'
+        ]
+    },
+    { 
+        name: 'Cloud Security', 
+        description: 'Cloud infrastructure and security controls',
+        topics: [
+            'Cloud Fundamentals',
+            'Cloud Models',
+            'Cloud Governance',
+            'Cloud Security Controls',
+            'Cloud Infrastructure Security'
+        ]
+    },
+    { 
+        name: 'Endpoint & IoT', 
+        description: 'Device security and management',
+        topics: [
+            'Endpoint Protection Platform',
+            'Application Whitelisting',
+            'Secure Configuration',
+            'Device Encryption',
+            'Mobile Device Management'
+        ]
     }
-    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-    const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-    return `${h}:${m}:${s}`;
+]);
+
+const phase4Domains = ref([
+    { 
+        name: 'Security Architecture', 
+        description: 'Design principles and frameworks',
+        topics: [
+            'Security by Design',
+            'Secure Defaults',
+            'Least Privilege',
+            'Defense in Depth',
+            'Zero Trust'
+        ]
+    },
+    { 
+        name: 'Human Factors', 
+        description: 'Security awareness and training',
+        topics: [
+            'Social Engineering',
+            'Security Awareness Training',
+            'Personnel Security',
+            'Physical Access Controls',
+            'Environmental Security'
+        ]
+    },
+    { 
+        name: 'Security Operations', 
+        description: 'SOC and monitoring operations',
+        topics: [
+            'Security Operations Center',
+            'Operational Metrics',
+            'Log & Event Management',
+            'Patch Management',
+            'SIEM & SOAR'
+        ]
+    },
+    { 
+        name: 'Incident Response', 
+        description: 'Incident handling and forensics',
+        topics: [
+            'Incident Response Phases',
+            'Playbooks & Runbooks',
+            'Reporting & Communication',
+            'Forensic Investigation',
+            'Digital Forensics Tools'
+        ]
+    },
+    { 
+        name: 'Business Continuity', 
+        description: 'Disaster recovery and resilience',
+        topics: [
+            'Business Impact Analysis',
+            'Recovery Objectives',
+            'Business Continuity Plan',
+            'Disaster Recovery Plan',
+            'Backup Strategies'
+        ]
+    }
+]);
+
+// Tooltip state
+const tooltipDomain = ref(null);
+
+const showDomainTooltip = (domain) => {
+    tooltipDomain.value = domain;
 };
 
 const startDiagnostic = (mode) => {
-    // Go directly to Quiz component
-    router.visit(typeof route !== 'undefined' ? route('assessments.diagnostics.begin') : `/assessments/diagnostics/begin`, {
+    router.visit(route('assessments.diagnostics.begin'), {
         method: 'post',
         data: { mode: mode }
     });
 };
 
-// Helper methods for dynamic UI
-const getColorValue = (colorScheme, shade) => {
-    const colors = {
-        orange: {
-            '100': '#fed7aa',
-            '300': '#fdba74',
-            '500': '#f97316',
-            '600': '#ea580c',
-            '700': '#c2410c'
-        },
-        green: {
-            '100': '#bbf7d0',
-            '300': '#86efac',
-            '500': '#22c55e',
-            '600': '#16a34a',
-            '700': '#15803d'
-        },
-        blue: {
-            '100': '#dbeafe',
-            '300': '#93c5fd',
-            '500': '#3b82f6',
-            '600': '#2563eb',
-            '700': '#1d4ed8'
-        },
-        purple: {
-            '100': '#e9d5ff',
-            '300': '#c084fc',
-            '500': '#a855f7',
-            '600': '#9333ea',
-            '700': '#7e22ce'
-        }
-    };
-    
-    return colors[colorScheme]?.[shade] || colors.blue[shade];
-};
-
-const getIconPath = (iconName) => {
-    const icons = {
-        'beaker': 'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4',
-        'lightning-bolt': 'M13 10V3L4 14h7v7l9-11h-7z',
-        'check-circle': 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-        'clipboard-list': 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'
-    };
-    
-    return icons[iconName] || icons['check-circle'];
-};
-
-const formatTimeRemaining = (timeData) => {
-    if (!timeData) return '';
-    return timeData.formatted || `${timeData.hours}h ${timeData.minutes}m`;
-};
-
-// Removed email capture functionality - backend route was not implemented
-
-// Set the layout for this page
+// Set the layout
 defineOptions({
     layout: AppLayout
 });
 </script>
 
 <style scoped>
-/* Add any specific styles for the table or layout here */
+/* Fade transitions */
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
+/* Domain card styles - Apple-inspired design */
+.domain-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 72px;
+    width: 100%;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.dark .domain-card {
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(148, 163, 184, 0.1);
+}
+
+.domain-card:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.dark .domain-card:hover {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 768px) {
+    .domain-card {
+        min-height: 80px;
+    }
+}
 </style>

@@ -241,19 +241,34 @@ class DiagnosticsSeeder extends Seeder
                 ],
             ],
             [
-                'name' => 'Network & Communication Security',
+                'name' => 'Network Concepts',
                 'code' => 'NET',
                 'priority_order' => 11,
                 'category' => 'technical',
-                'weight_percentage' => 13,
+                'weight_percentage' => 6,
                 'color' => '#06B6D4', // Cyan
                 'icon' => 'globe',
-                'description' => 'Network security fundamentals including protocols, architectures, and defense mechanisms. Essential for protecting data in transit.',
-                'learning_objectives' => 'Design secure network architectures and implement network security controls. Understand network protocols and attacks.',
+                'description' => 'Fundamental networking concepts and protocols. Essential foundation for understanding network security.',
+                'learning_objectives' => 'Understand network protocols, architectures, and communication models.',
                 'topics' => [
                     'Network Standards (IEEE 802)', // LAN/Wi-Fi protocols
                     'OSI & TCP/IP Models', // Layered communication models
                     'Common Ports & Protocols', // HTTP, FTP, SSH, DNS
+                    'Network Architecture', // LAN, WAN, topology
+                    'Routing & Switching', // Basic networking concepts
+                ],
+            ],
+            [
+                'name' => 'Network Security',
+                'code' => 'NETS',
+                'priority_order' => 12,
+                'category' => 'technical',
+                'weight_percentage' => 7,
+                'color' => '#0891B2', // Cyan-600
+                'icon' => 'shield',
+                'description' => 'Network security fundamentals including defense mechanisms and attack vectors. Essential for protecting data in transit.',
+                'learning_objectives' => 'Design secure network architectures and implement network security controls. Understand network attacks and defenses.',
+                'topics' => [
                     'DNS Security', // DNSSEC, zone transfer, poisoning
                     'Firewall & Proxy Types', // NGFW, WAF, UTM
                     'Network Segmentation', // VLAN, DMZ, air-gap
@@ -264,9 +279,9 @@ class DiagnosticsSeeder extends Seeder
                 ],
             ],
             [
-                'name' => 'Application Security & DevSecOps',
+                'name' => 'Application Security',
                 'code' => 'APP',
-                'priority_order' => 12,
+                'priority_order' => 13,
                 'category' => 'technical',
                 'weight_percentage' => 11,
                 'color' => '#7C3AED', // Violet
@@ -274,19 +289,17 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Secure software development practices and application security. Integrates security throughout the development lifecycle.',
                 'learning_objectives' => 'Implement secure coding practices and integrate security into CI/CD pipelines. Identify and mitigate application vulnerabilities.',
                 'topics' => [
-                    'Secure SDLC & Security Gates', // Phases with security reviews
-                    'DevSecOps & CI/CD Pipeline Security', // Integrating security in DevOps
-                    'Agile & Security User Stories', // Sprint-based development
-                    'OWASP Top 10', // SQLi, XSS, CSRF, etc.
-                    'Application Security Testing', // SAST, DAST, IAST, RASP
-                    'Secure Coding Standards', // Input validation, error handling
-                    'API Security', // Tokens, rate limiting, schema validation
+                    'Secure Software Development Lifecycle (SSDLC)', // SDLC Security Integration, Gates, Threat Modeling, Requirements
+                    'Development Models', // Waterfall, Agile, CI/CD, DevSecOps practices
+                    'Application Vulnerabilities', // SQLi, XSS, CSRF, Buffer Overflow, SSRF, Path Traversal
+                    'Security Testing', // Functional, QA, Security testing methods
+                    'Secure Coding', // Input validation, output encoding, session management
                 ],
             ],
             [
                 'name' => 'Cloud Security',
                 'code' => 'CLD',
-                'priority_order' => 13,
+                'priority_order' => 14,
                 'category' => 'technical',
                 'weight_percentage' => 6,
                 'color' => '#2563EB', // Blue-600
@@ -309,7 +322,7 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Endpoint, Mobile & IoT Security',
                 'code' => 'EPT',
-                'priority_order' => 14,
+                'priority_order' => 15,
                 'category' => 'technical',
                 'weight_percentage' => 5,
                 'color' => '#DC2626', // Red-600
@@ -317,21 +330,17 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Security for endpoints including desktops, mobile devices, and IoT. Critical as attack surfaces expand.',
                 'learning_objectives' => 'Secure various endpoint types and implement mobile device management. Address IoT security challenges.',
                 'topics' => [
-                    'Endpoint Protection Platform (EPP) & EDR', // Malware prevention and detection
-                    'Application Whitelisting / Blacklisting', // Allow/deny app execution
-                    'Secure Configuration Baselines', // CIS Benchmarks, gold images
-                    'Device Encryption & Secure Boot', // TPM, full-disk encryption
-                    'Mobile Device Management (MDM / EMM)', // Policy enforcement on mobile
-                    'Bring Your Own Device (BYOD) & COPE', // Personal device security
-                    'IoT Security', // Embedded, constrained device controls
-                    'Hardware Root of Trust & Firmware Integrity', // Bootloader, signed firmware
-                    'Industrial Control Systems (ICS) / SCADA Security', // OT environments
+                    'Endpoint Protection & Configuration', // EPP, EDR, whitelisting, baselines
+                    'Device Security & Encryption', // Encryption, secure boot, TPM, firmware integrity
+                    'Mobile Device Management', // MDM, EMM, BYOD, COPE strategies
+                    'IoT & Embedded Systems Security', // IoT devices, constrained environments
+                    'Industrial Control Systems (ICS/SCADA)', // OT security, air-gapping, safety priorities
                 ],
             ],
             [
                 'name' => 'Security Architecture & Design',
                 'code' => 'SAD',
-                'priority_order' => 15,
+                'priority_order' => 16,
                 'category' => 'technical',
                 'weight_percentage' => 13,
                 'color' => '#059669', // Emerald-600
@@ -359,7 +368,7 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Security Awareness & Human Factors',
                 'code' => 'SAH',
-                'priority_order' => 16,
+                'priority_order' => 17,
                 'category' => 'managerial',
                 'weight_percentage' => 4,
                 'color' => '#F97316', // Orange-500
@@ -385,7 +394,7 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Physical & Environmental Security',
                 'code' => 'PHY',
-                'priority_order' => 17,
+                'priority_order' => 18,
                 'category' => 'managerial',
                 'weight_percentage' => 3,
                 'color' => '#64748B', // Slate-500
@@ -411,7 +420,7 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Security Operations & Monitoring',
                 'code' => 'OPS',
-                'priority_order' => 18,
+                'priority_order' => 19,
                 'category' => 'technical',
                 'weight_percentage' => 13,
                 'color' => '#0891B2', // Cyan-600
@@ -435,7 +444,7 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Incident Management & Forensics',
                 'code' => 'INC',
-                'priority_order' => 19,
+                'priority_order' => 20,
                 'category' => 'managerial',
                 'weight_percentage' => 5,
                 'color' => '#BE123C', // Rose-700
@@ -455,7 +464,7 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Business Continuity & Disaster Recovery',
                 'code' => 'BCP',
-                'priority_order' => 20,
+                'priority_order' => 21,
                 'category' => 'managerial',
                 'weight_percentage' => 4,
                 'color' => '#0F766E', // Teal-700
