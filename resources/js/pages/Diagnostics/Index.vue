@@ -6,12 +6,12 @@
             <meta name="keywords" content="cybersecurity assessment, security skills test, CISSP preparation, security diagnostic" />
         </Head>
         
-        <div class="min-h-screen bg-linear-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
             <!-- Hero Section with Apple-style gradient -->
             <div class="relative overflow-hidden">
-                <div class="absolute inset-0 bg-linear-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 dark:from-blue-500/20 dark:via-purple-500/20 dark:to-pink-500/20"></div>
                 <div class="relative flex flex-col items-center justify-center px-4 py-20 text-center">
-                    <h1 class="text-5xl md:text-6xl font-bold bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
+                    <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
                         SecureStart™ Diagnostics
                     </h1>
                     <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl">
@@ -22,7 +22,7 @@
                     <div v-if="isAuthenticated" class="mb-8">
                         <button 
                             @click="startDiagnostic('standard')"
-                            class="px-12 py-4 bg-linear-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                            class="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                         >
                             Start Full Assessment
                         </button>
@@ -42,7 +42,7 @@
                             
                             <Link 
                                 :href="route('register')"
-                                class="inline-block px-8 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
+                                class="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
                             >
                                 Create Account
                             </Link>
@@ -63,7 +63,7 @@
 
             <!-- Domains Section with Apple-style Cards -->
             <div class="px-4 py-6 mx-auto w-full max-w-7xl">
-                <h2 class="text-3xl md:text-4xl font-bold text-center bg-linear-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-12">
                     20 Security Domains. One Comprehensive Assessment.
                 </h2>
                 
@@ -77,7 +77,7 @@
                         </h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase1Domains" :key="domain.name"
-                                 class="domain-card group"
+                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -103,7 +103,7 @@
                         </h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase2Domains" :key="domain.name"
-                                 class="domain-card group"
+                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -129,7 +129,7 @@
                         </h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase3Domains" :key="domain.name"
-                                 class="domain-card group"
+                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -155,7 +155,7 @@
                         </h3>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase4Domains" :key="domain.name"
-                                 class="domain-card group"
+                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -181,7 +181,7 @@
             </div>
 
             <!-- Final CTA Section -->
-            <div class="px-4 py-20 text-center bg-linear-to-t from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent">
+            <div class="px-4 py-20 text-center bg-gradient-to-t from-gray-50 to-transparent dark:from-gray-900 dark:to-transparent">
                 <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
                     {{ isAuthenticated ? 'Ready to begin?' : 'See how you compare to industry professionals' }}
                 </h3>
@@ -189,7 +189,7 @@
                 <div v-if="isAuthenticated" class="mb-6">
                     <button 
                         @click="startDiagnostic('standard')"
-                        class="px-12 py-4 bg-linear-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                        class="px-12 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-lg font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                     >
                         Start Full Assessment
                     </button>
@@ -228,7 +228,7 @@
                                 
                                 <Link 
                                     :href="route('register')"
-                                    class="inline-block px-10 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
+                                    class="inline-block px-10 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
                                 >
                                     Create Free Account
                                 </Link>
@@ -286,10 +286,10 @@
 
 <script setup lang="ts">
 import { Link, router, Head } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import AppLayout from "@/layouts/AppLayout.vue";
 
-const props = defineProps({
+defineProps({
     isAuthenticated: {
         type: Boolean,
         default: false
@@ -558,45 +558,5 @@ defineOptions({
     opacity: 0;
 }
 
-/* Domain card styles - Apple-inspired design */
-.domain-card {
-    position: relative;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 16px;
-    padding: 16px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    min-height: 72px;
-    width: 100%;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-}
-
-.dark .domain-card {
-    background: rgba(30, 41, 59, 0.8);
-    border-color: rgba(148, 163, 184, 0.1);
-}
-
-.domain-card:hover {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(0, 0, 0, 0.15);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transform: translateY(-2px);
-}
-
-.dark .domain-card:hover {
-    background: rgba(30, 41, 59, 0.95);
-    border-color: rgba(148, 163, 184, 0.2);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-}
-
-@media (min-width: 768px) {
-    .domain-card {
-        min-height: 80px;
-    }
-}
+/* Removed domain card styles - using Tailwind classes instead */
 </style>

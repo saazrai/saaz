@@ -2,25 +2,8 @@
 @import 'tw-animate-css';
 @import './theme.css';
 
-/* Tailwind v4 theme configuration */
-@theme {
-    /* Custom colors using CSS variables from theme.css */
-    --color-border: hsl(var(--border));
-    --color-background: hsl(var(--background));
-    --color-foreground: hsl(var(--foreground));
-    --color-ring: hsl(var(--ring));
-}
-
-@layer base {
-    * {
-        border-color: theme(--color-border);
-        outline-color: color-mix(in srgb, theme(--color-ring) 50%, transparent);
-    }
-    body {
-        background-color: theme(--color-background);
-        color: theme(--color-foreground);
-    }
-}
+/* Enable class-based dark mode for Tailwind CSS v4 */
+@variant dark (&:where(.dark, .dark *));
 
 @layer utilities {
     body,
@@ -31,3 +14,14 @@
 }
 
 /* All theme variables are defined in theme.css for single source of truth */
+
+@layer base {
+    * {
+        border-color: hsl(var(--border));
+        outline-color: hsl(var(--ring) / 0.5);
+    }
+    body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+    }
+}

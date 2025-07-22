@@ -46,13 +46,23 @@ export const useTheme = () => {
         
         const effectiveTheme = isAdminPage ? uiPreferences.value.admin_theme : uiPreferences.value.theme
         
+        // Force remove both classes first
+        document.documentElement.classList.remove('dark', 'light')
+        
         if (effectiveTheme === 'dark') {
             document.documentElement.classList.add('dark')
             document.documentElement.setAttribute('data-theme', 'dark')
+            document.documentElement.style.setProperty('--theme-mode', 'dark')
         } else {
-            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.add('light') 
             document.documentElement.setAttribute('data-theme', 'light')
+            document.documentElement.style.setProperty('--theme-mode', 'light')
         }
+        
+        // Force a repaint to ensure styles are applied
+        document.documentElement.style.display = 'none'
+        void document.documentElement.offsetHeight // Trigger reflow
+        document.documentElement.style.display = ''
     }
 
     const loadFromLocalStorage = () => {
@@ -172,6 +182,10 @@ export const useTheme = () => {
 
     const initializeTheme = async () => {
         if (isInitialized.value) return
+        
+        // Immediately apply dark theme as default
+        uiPreferences.value.theme = 'dark'
+        uiPreferences.value.admin_theme = 'dark'
         
         loadFromLocalStorage()
         applyTheme()

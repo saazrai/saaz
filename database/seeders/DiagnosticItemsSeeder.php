@@ -55,20 +55,20 @@ class DiagnosticItemsSeeder extends Seeder
             // Domain 10: Access Control
             Diagnostics\D10AccessControlSeeder::class,
             
-            // Domain 11: Network & Communication Security
-            Diagnostics\D11NetworkCommunicationSecuritySeeder::class,
+            // Domain 11: Network Concepts
+            Diagnostics\D11NetworkConceptsSeeder::class,
             
-            // Domain 12: Application Security & DevSecOps
-            Diagnostics\D12ApplicationSecurityDevSecOpsSeeder::class,
+            // Domain 12: Network Security
+            Diagnostics\D12NetworkSecuritySeeder::class,
             
-            // Domain 13: Cloud Security
-            Diagnostics\D13CloudSecuritySeeder::class,
+            // Domain 13: Application Security
+            Diagnostics\D13ApplicationSecuritySeeder::class,
             
-            // Domain 14: Endpoint, Mobile & IoT Security
-            Diagnostics\D14EndpointMobileIoTSecuritySeeder::class,
+            // Domain 14: Cloud Security
+            Diagnostics\D14CloudSecuritySeeder::class,
             
-            // Domain 15: Security Architecture & Design
-            Diagnostics\D15SecurityArchitectureDesignSeeder::class,
+            // Domain 15: Endpoint, Mobile & IoT Security
+            Diagnostics\D15EndpointMobileIoTSecuritySeeder::class,
             
             // Domain 16: Security Awareness & Human Factors
             Diagnostics\D16SecurityAwarenessHumanFactorsSeeder::class,

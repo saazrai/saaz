@@ -6,23 +6,21 @@
         <!-- Top Navbar -->
         <div :class="[
             'backdrop-blur-xl border-b px-4 sm:px-8 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-4',
-            isDark
-                ? 'bg-gray-800 border-gray-700 shadow-lg'
-                : 'bg-gray-700 border-gray-800 shadow-lg shadow-gray-800/20'
+            isDark 
+                ? 'bg-gray-800/90 border-gray-700' 
+                : 'bg-white/90 border-gray-200'
         ]">
             <div class="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
                 <div :class="[
                     'flex-1 min-w-[50%] md:text-base xl:text-2xl font-semibold truncate',
-                    isDark ? 'text-gray-100' : 'text-white'
+                    isDark ? 'text-white' : 'text-gray-900'
                 ]">
                     Sample Diagnostic Quiz
                 </div>
                 <div class="sm:w-auto flex items-center gap-4">
                     <!-- Timer -->
                     <div class="hidden sm:block">
-                        <div :class="isDark ? '' : '[&_span]:text-white! [&_span]:text-gray-200!'">
-                            <QuizTimer :isReview="isReviewMode" @question-tick="onQuestionTick" ref="timer" />
-                        </div>
+                        <QuizTimer :isReview="isReviewMode" :isDark="isDark" @question-tick="onQuestionTick" ref="timer" />
                     </div>
 
                     <!-- Theme Toggle Button -->
@@ -44,7 +42,7 @@
                         'px-3 py-2 rounded-lg font-medium transition-colors flex items-center gap-2',
                         isDark
                             ? 'bg-red-900/20 hover:bg-red-900/30 text-red-400 border border-red-800'
-                            : 'bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-700'
+                            : 'bg-red-600/20 hover:bg-red-600/30 text-red-700 border border-red-700'
                     ]" aria-label="Exit quiz">
                         <XMarkIcon class="w-4 h-4" />
                         <span class="hidden sm:inline">Exit Quiz</span>
@@ -104,9 +102,7 @@
                 </div>
 
                 <!-- Mobile Timer -->
-                <div :class="isDark ? '' : '[&_span]:text-white! [&_span]:text-gray-200!'">
-                    <QuizTimer :isReview="isReviewMode" @question-tick="onQuestionTick" ref="mobileTimer" />
-                </div>
+                <QuizTimer :isReview="isReviewMode" :isDark="isDark" @question-tick="onQuestionTick" ref="mobileTimer" />
             </div>
         </div>
 
@@ -483,11 +479,11 @@
                     <p class="text-base">
                         <strong>Note:</strong> This is a sample quiz for demonstration purposes. Your answers won't be
                         saved.
-                        <Link
+                        <InertiaLink
                             :href="typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics'"
                             class="underline hover:no-underline font-semibold">
                         Take the full diagnostic assessment
-                        </Link> to receive personalized results and recommendations.
+                        </InertiaLink> to receive personalized results and recommendations.
                     </p>
                 </div>
             </div>
@@ -614,13 +610,13 @@
                     ]">
                         Review Answers
                     </button>
-                    <Link :href="typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics'"
+                    <InertiaLink :href="typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics'"
                         :class="[
                             'px-4 py-2 rounded-lg font-semibold transition-colors',
                             'bg-blue-600 hover:bg-blue-700 text-white'
                         ]">
                     Take Full Assessment
-                    </Link>
+                    </InertiaLink>
                 </div>
             </div>
         </Modal>
@@ -909,7 +905,7 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 export default {
     layout: null, // No layout for sample quiz
     components: {
-        Link,
+        InertiaLink: Link,
         Type1,
         Type2,
         Type3,
@@ -944,7 +940,7 @@ export default {
             userAnswers: [],
             isReviewMode: false,
             showResults: false,
-            isDark: false,
+            isDark: true,
             showPauseModal: false,
             showExitConfirmation: false,
             showDifficultyModal: false,
@@ -1891,10 +1887,11 @@ export default {
         }
     },
     mounted() {
-        // Check initial theme
+        // Set dark theme as default
         if (typeof window !== 'undefined') {
-            this.isDark = document.documentElement.classList.contains('dark') ||
-                window.matchMedia('(prefers-color-scheme: dark)').matches;
+            this.isDark = true;
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
         }
         
         // Start inactivity timer

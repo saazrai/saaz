@@ -93,9 +93,7 @@ return new class extends Migration
                 ->comment('Domain categorization for learning paths');
             $table->string('code', 20)->nullable()->comment('Short code for domain (e.g., SRM, IAM)');
             
-            // Weighting and visualization
-            $table->decimal('weight_percentage', 5, 2)->nullable()
-                ->comment('Domain weight in overall assessment (must sum to 100%)');
+            // Visualization
             $table->string('color', 20)->nullable()->comment('UI color for charts and reports');
             $table->string('icon', 50)->nullable()->comment('Icon identifier for UI display');
             

@@ -8,25 +8,39 @@
         {{-- Content Security Policy - Allow Vite dev server in development --}}
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.bunny.net{{ config('app.debug') ? ' http://localhost:* http://127.0.0.1:*' : '' }}; style-src 'self' 'unsafe-inline' https://fonts.bunny.net{{ config('app.debug') ? ' http://localhost:* http://127.0.0.1:*' : '' }}; font-src 'self' https://fonts.bunny.net; img-src 'self' data: https:; connect-src 'self'{{ config('app.debug') ? ' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*' : '' }};">
 
+        {{-- Force dark theme by default with CSS --}}
+        <style>
+            html { 
+                background-color: #0f172a !important; 
+                color: #f8fafc !important; 
+            }
+            html.dark { 
+                background-color: #0f172a !important; 
+                color: #f8fafc !important; 
+            }
+        </style>
+
         {{-- Inline script to detect theme preference and apply it immediately --}}
         <script>
             (function() {
-                // First check localStorage for user preference
+                // Force dark theme as default - be more aggressive
                 const savedTheme = localStorage.getItem('theme');
-                let theme = savedTheme || 'dark'; // Default to dark
+                let theme = savedTheme || 'dark'; // Default to dark always
                 
-                // If no saved preference, check system preference
+                // Store dark as default if nothing was saved
                 if (!savedTheme) {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    theme = prefersDark ? 'dark' : 'light';
+                    localStorage.setItem('theme', 'dark');
                 }
                 
-                // Apply theme class for Tailwind
+                // Force apply theme classes immediately
                 document.documentElement.classList.remove('light', 'dark');
                 document.documentElement.classList.add(theme);
                 
                 // Set data-theme attribute for CSS variables
                 document.documentElement.setAttribute('data-theme', theme);
+                
+                // Also set a CSS custom property for immediate styling
+                document.documentElement.style.setProperty('--theme-mode', theme);
             })();
         </script>
 

@@ -1,26 +1,26 @@
 <template>
-    <div class="timer w-full">
+    <div class="quiz-timer w-full">
         <div
-            class="flex flex-wrap justify-between items-center gap-x-6 gap-y-1 w-full text-gray-800 dark:text-gray-200"
+            class="flex flex-wrap justify-between items-center gap-x-6 gap-y-1 w-full"
         >
             <div class="flex items-center">
-                <span class="text-gray-700 dark:text-gray-300">Question Time:</span>
-                <span class="ml-1 font-bold text-gray-900 dark:text-white">{{
+                <span :class="['text-sm', isDark ? 'text-gray-400' : 'text-gray-600']">Question Time:</span>
+                <span :class="['ml-1 font-bold text-sm', isDark ? 'text-gray-100' : 'text-gray-900']">{{
                     formatTime(questionTimer)
                 }}</span>
             </div>
             <div class="flex items-center">
-                <span class="text-gray-700 dark:text-gray-300">Total Time:</span>
-                <span class="ml-1 font-bold text-gray-900 dark:text-white">{{
+                <span :class="['text-sm', isDark ? 'text-gray-400' : 'text-gray-600']">Total Time:</span>
+                <span :class="['ml-1 font-bold text-sm', isDark ? 'text-gray-100' : 'text-gray-900']">{{
                     formatTime(totalTimer)
                 }}</span>
             </div>
             <div
                 v-if="maxDuration"
-                class="flex items-center text-red-600 dark:text-red-400 font-semibold"
+                class="flex items-center font-semibold"
             >
-                <span>Time Remaining:</span>
-                <span class="ml-1 font-bold">{{ formatTime(remaining) }}</span>
+                <span :class="['text-sm', isDark ? 'text-red-400' : 'text-red-600']">Time Remaining:</span>
+                <span :class="['ml-1 font-bold text-sm', isDark ? 'text-red-400' : 'text-red-600']">{{ formatTime(remaining) }}</span>
             </div>
         </div>
     </div>
@@ -40,6 +40,10 @@ export default {
         initialElapsed: {
             type: Number,
             default: 0, // Time already spent if resuming exam
+        },
+        isDark: {
+            type: Boolean,
+            default: false,
         },
     },
     data() {
@@ -108,9 +112,3 @@ export default {
     },
 };
 </script>
-<style>
-.timer {
-    display: flex;
-    justify-content: space-between;
-}
-</style>

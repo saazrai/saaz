@@ -18,7 +18,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'GSC',
                 'priority_order' => 1,
                 'category' => 'foundational',
-                'weight_percentage' => 12,
                 'color' => '#3B82F6', // Blue
                 'icon' => 'shield-check',
                 'description' => 'Fundamental security principles that form the foundation of all cybersecurity practices. Covers the CIA Triad, security controls, and core concepts essential for understanding more advanced topics.',
@@ -27,7 +26,7 @@ class DiagnosticsSeeder extends Seeder
                     '5 Pillars of Information Security', // Confidentiality, integrity, availability, authenticity, nonrepudiation
                     'Professional Ethics', // Organizational code of ethics
                     'Security Controls', // Administrative, Technical, Physical, Deterrent, Preventative, Detective, Corrective, Compensating
-                    'Security Principles', // Least Privilege, Need-to-Know, Separation of Duties, Dual Control, Split Knowledge
+                    'Security Principles', // Least Privilege, Need-to-Know
                     'Cybersecurity Frameworks', // NIST CSF, ISO/IEC 27001, COBIT, CIS Controls
                 ],
             ],
@@ -36,7 +35,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'ISG',
                 'priority_order' => 2,
                 'category' => 'foundational',
-                'weight_percentage' => 10,
                 'color' => '#10B981', // Green
                 'icon' => 'office-building',
                 'description' => 'Organizational frameworks and policies that establish security management structure. Essential for aligning security with business objectives and ensuring proper oversight.',
@@ -57,7 +55,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'LRC',
                 'priority_order' => 3,
                 'category' => 'managerial',
-                'weight_percentage' => 8,
                 'color' => '#8B5CF6', // Purple
                 'icon' => 'scale',
                 'description' => 'Legal frameworks, regulations, and compliance requirements that organizations must follow. Critical for avoiding legal liabilities and maintaining regulatory compliance.',
@@ -77,7 +74,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'PRV',
                 'priority_order' => 4,
                 'category' => 'managerial',
-                'weight_percentage' => 7,
                 'color' => '#EC4899', // Pink
                 'icon' => 'eye-off',
                 'description' => 'Privacy principles and data protection requirements. Focuses on protecting personal information and ensuring compliance with privacy regulations like GDPR.',
@@ -102,7 +98,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'RSK',
                 'priority_order' => 5,
                 'category' => 'foundational',
-                'weight_percentage' => 15,
                 'color' => '#F59E0B', // Amber
                 'icon' => 'chart-bar',
                 'description' => 'Comprehensive risk management processes from identification to monitoring. Core competency for security professionals to assess and manage organizational risks.',
@@ -126,7 +121,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'SAA',
                 'priority_order' => 6,
                 'category' => 'managerial',
-                'weight_percentage' => 6,
                 'color' => '#6366F1', // Indigo
                 'icon' => 'clipboard-check',
                 'description' => 'Audit methodologies and assessment techniques to evaluate security effectiveness. Essential for maintaining compliance and identifying security gaps.',
@@ -151,7 +145,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'TVM',
                 'priority_order' => 7,
                 'category' => 'technical',
-                'weight_percentage' => 8,
                 'color' => '#EF4444', // Red
                 'icon' => 'exclamation-triangle',
                 'description' => 'Identification and management of threats and vulnerabilities. Covers threat actors, attack vectors, and vulnerability lifecycle management.',
@@ -179,7 +172,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'CKM',
                 'priority_order' => 8,
                 'category' => 'technical',
-                'weight_percentage' => 5,
                 'color' => '#14B8A6', // Teal
                 'icon' => 'key',
                 'description' => 'Cryptographic principles and key management practices. Essential for protecting data confidentiality and integrity.',
@@ -201,7 +193,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'DGV',
                 'priority_order' => 9,
                 'category' => 'managerial',
-                'weight_percentage' => 4,
                 'color' => '#0EA5E9', // Sky
                 'icon' => 'database',
                 'description' => 'Data lifecycle management and governance practices. Covers classification, retention, and protection of organizational data.',
@@ -221,7 +212,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'IAM',
                 'priority_order' => 10,
                 'category' => 'foundational',
-                'weight_percentage' => 13,
                 'color' => '#84CC16', // Lime
                 'icon' => 'lock-closed',
                 'description' => 'Identity and access management principles. Critical for ensuring only authorized users access resources.',
@@ -245,7 +235,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'NET',
                 'priority_order' => 11,
                 'category' => 'technical',
-                'weight_percentage' => 6,
                 'color' => '#06B6D4', // Cyan
                 'icon' => 'globe',
                 'description' => 'Fundamental networking concepts and protocols. Essential foundation for understanding network security.',
@@ -263,7 +252,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'NETS',
                 'priority_order' => 12,
                 'category' => 'technical',
-                'weight_percentage' => 7,
                 'color' => '#0891B2', // Cyan-600
                 'icon' => 'shield',
                 'description' => 'Network security fundamentals including defense mechanisms and attack vectors. Essential for protecting data in transit.',
@@ -283,7 +271,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'APP',
                 'priority_order' => 13,
                 'category' => 'technical',
-                'weight_percentage' => 11,
                 'color' => '#7C3AED', // Violet
                 'icon' => 'code',
                 'description' => 'Secure software development practices and application security. Integrates security throughout the development lifecycle.',
@@ -301,7 +288,6 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'CLD',
                 'priority_order' => 14,
                 'category' => 'technical',
-                'weight_percentage' => 6,
                 'color' => '#2563EB', // Blue-600
                 'icon' => 'cloud',
                 'description' => 'Cloud computing security across different service and deployment models. Understanding shared responsibility is crucial.',
@@ -324,78 +310,40 @@ class DiagnosticsSeeder extends Seeder
                 'code' => 'EPT',
                 'priority_order' => 15,
                 'category' => 'technical',
-                'weight_percentage' => 5,
                 'color' => '#DC2626', // Red-600
                 'icon' => 'device-mobile',
                 'description' => 'Security for endpoints including desktops, mobile devices, and IoT. Critical as attack surfaces expand.',
                 'learning_objectives' => 'Secure various endpoint types and implement mobile device management. Address IoT security challenges.',
                 'topics' => [
-                    'Endpoint Security', // EPP, EDR, whitelisting, baselines, configuration
-                    'Device Security', // Encryption, secure boot, TPM, firmware integrity
-                    'Mobile Security', // MDM, EMM, BYOD, COPE strategies, mobile threats
-                    'IoT Security', // IoT devices, embedded systems, constrained environments, OT/ICS
-                ],
-            ],
-            [
-                'name' => 'Security Architecture & Design',
-                'code' => 'SAD',
-                'priority_order' => 16,
-                'category' => 'technical',
-                'weight_percentage' => 13,
-                'color' => '#059669', // Emerald-600
-                'icon' => 'template',
-                'description' => 'Security design principles and architecture frameworks. Foundation for building secure systems from the ground up.',
-                'learning_objectives' => 'Apply security design principles and create secure architectures. Understand security models and frameworks.',
-                'topics' => [
-                    'Security by Design', // Embedded security from planning
-                    'Secure Defaults', // Least privilege by default
-                    'Least Privilege & Need to Know', // Access restriction principles
-                    'Separation of Duties (SoD)', // Multi-person control
-                    'Defense in Depth', // Layered security
-                    'Zero Trust', // Trust no device/user by default
-                    'Threat Modeling', // STRIDE, PASTA
-                    'Economy of Mechanism', // Design simplicity
-                    'Fail Secure', // Secure failure state
-                    'Complete Mediation', // Revalidate every access
-                    'Security Through Obscurity', // Weak if sole control
-                    'Security Models', // Bell-LaPadula, Biba, Clark-Wilson
-                    'Trusted Computing Base (TCB) & Protection Rings', // Kernel vs user mode
-                    'Common Criteria & Evaluation Assurance Levels (EAL)', // Product trust levels
-                    'Security Architecture Frameworks', // SABSA, TOGAF
+                    'Endpoint Security', // EPP & EDR, XDR, Whitelisting & baselines, Configuration management
+                    'Device Security', // Encryption & TPM, Secure boot & firmware, Hardware security
+                    'Mobile Security', // MDM & EMM, BYOD & COPE, Mobile threats
+                    'IoT Security', // Device challenges, Constrained environments, Network segmentation
+                    'Operational Technology (OT)', // ICS & SCADA, PLCs, Air-gapping & safety
                 ],
             ],
             [
                 'name' => 'Security Awareness & Human Factors',
                 'code' => 'SAH',
-                'priority_order' => 17,
+                'priority_order' => 16,
                 'category' => 'managerial',
-                'weight_percentage' => 4,
                 'color' => '#F97316', // Orange-500
                 'icon' => 'users',
                 'description' => 'Human aspects of security including awareness training and social engineering defense. People are often the weakest link.',
                 'learning_objectives' => 'Design security awareness programs and mitigate human-factor risks. Implement policies for secure behavior.',
                 'topics' => [
-                    'Social Engineering', // Phishing, vishing, tailgating
-                    'Insider Threats', // Negligent or malicious insiders
-                    'Security Awareness & Training Lifecycle', // Plan → Deliver → Reinforce → Measure
-                    'Phishing Simulation Metrics & Gamification', // Learning reinforcement
-                    'Behavioral Analytics & User Risk Scoring', // Detect unsafe behavior
-                    'Acceptable Use Policy (AUP)', // Rules for systems usage
-                    'Bring Your Own Device (BYOD) Policy', // Personal device security guidelines
-                    'Clear Desk / Clear Screen Policy', // Prevent visual data leakage
-                    'Non-Disclosure Agreement (NDA)', // Legal confidentiality
-                    'Candidate Screening & Background Checks', // Pre-employment risk vetting
-                    'On-Boarding & Security Briefings', // Initial training
-                    'Job Rotation & Mandatory Vacation', // Fraud detection mechanism
-                    'Termination / Exit Process', // Timely revocation of access
+                    'Social Engineering', // Phishing, vishing, smishing, tailgating, pretexting, baiting
+                    'Security Awareness & Training', // Training lifecycle, phishing simulation, education programs
+                    'Human Behavior & Psychology', // Behavioral analytics, security culture, cognitive biases
+                    'Personnel Security Controls', // SoD, Dual Control, Split Knowledge, Job Rotation, Mandatory Vacation
+                    'Security Policies & Agreements', // NDA, Clear Desk/Screen Policy, AUP, Security Briefings
                 ],
             ],
             [
                 'name' => 'Physical & Environmental Security',
                 'code' => 'PHY',
-                'priority_order' => 18,
+                'priority_order' => 17,
                 'category' => 'managerial',
-                'weight_percentage' => 3,
                 'color' => '#64748B', // Slate-500
                 'icon' => 'office-building',
                 'description' => 'Physical security controls and environmental protection. Often overlooked but critical for comprehensive security.',
@@ -419,9 +367,8 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Security Operations & Monitoring',
                 'code' => 'OPS',
-                'priority_order' => 19,
+                'priority_order' => 18,
                 'category' => 'technical',
-                'weight_percentage' => 13,
                 'color' => '#0891B2', // Cyan-600
                 'icon' => 'desktop-computer',
                 'description' => 'Day-to-day security operations including monitoring, detection, and response. The front line of security defense.',
@@ -441,11 +388,10 @@ class DiagnosticsSeeder extends Seeder
                 ],
             ],
             [
-                'name' => 'Incident Management & Forensics',
+                'name' => 'Incident Management',
                 'code' => 'INC',
-                'priority_order' => 20,
+                'priority_order' => 19,
                 'category' => 'managerial',
-                'weight_percentage' => 5,
                 'color' => '#BE123C', // Rose-700
                 'icon' => 'search-circle',
                 'description' => 'Incident response procedures and digital forensics. Critical for minimizing damage and learning from security events.',
@@ -463,9 +409,8 @@ class DiagnosticsSeeder extends Seeder
             [
                 'name' => 'Business Continuity & Disaster Recovery',
                 'code' => 'BCP',
-                'priority_order' => 21,
+                'priority_order' => 20,
                 'category' => 'managerial',
-                'weight_percentage' => 4,
                 'color' => '#0F766E', // Teal-700
                 'icon' => 'refresh',
                 'description' => 'Ensuring business resilience through continuity planning and disaster recovery. Essential for organizational survival.',
@@ -490,7 +435,6 @@ class DiagnosticsSeeder extends Seeder
                 'description' => $domain['description'],
                 'priority_order' => $domain['priority_order'],
                 'category' => $domain['category'],
-                'weight_percentage' => $domain['weight_percentage'],
                 'color' => $domain['color'],
                 'icon' => $domain['icon'],
                 'learning_objectives' => $domain['learning_objectives'],

@@ -36,7 +36,16 @@ const observeThemeChanges = () => {
 provide('isDark', isDark)
 
 // Direct theme toggle that always works
-const directThemeToggle = () => {
+const directThemeToggle = (event?: Event) => {
+    // Prevent default behavior and stop propagation
+    if (event) {
+        event.preventDefault()
+        event.stopPropagation()
+    }
+    
+    // Save current scroll position
+    const scrollY = window.scrollY
+    
     const html = document.documentElement
     const currentIsDark = html.classList.contains('dark')
     
@@ -56,6 +65,11 @@ const directThemeToggle = () => {
     } catch (e) {
         console.error('Theme sync failed:', e)
     }
+    
+    // Restore scroll position
+    requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY)
+    })
 }
 
 
@@ -138,7 +152,8 @@ watchEffect(() => {
                     <div class="col-start-3 hidden w-full justify-end gap-2 lg:flex items-center">
                         <!-- Dark Mode Toggle -->
                         <button
-                            @click="directThemeToggle"
+                            type="button"
+                            @click="directThemeToggle($event)"
                             :class="[
                                 'p-2 rounded-lg transition-all duration-300 mr-2',
                                 isDark 
@@ -232,7 +247,8 @@ watchEffect(() => {
                     <div v-if="isMobile" class="flex items-center ml-auto gap-2">
                         <!-- Theme Toggle Button (visible on mobile) -->
                         <button
-                            @click="directThemeToggle"
+                            type="button"
+                            @click="directThemeToggle($event)"
                             :class="[
                                 'flex items-center justify-center w-12 h-12 rounded-xl focus:outline-none transition-colors duration-300',
                                 isDark 
