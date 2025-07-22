@@ -33,7 +33,6 @@ class DiagnosticDomainFactory extends Factory
             'priority_order' => $this->faker->numberBetween(1, 20),
             'category' => $this->faker->randomElement(['foundational', 'technical', 'managerial']),
             'code' => $this->faker->randomElement(['SRM', 'AS', 'SAE', 'CNS', 'IAM', 'SAT', 'SO', 'SDS']),
-            'weight_percentage' => $this->faker->randomFloat(2, 4, 8),
             'color' => $this->faker->randomElement(['blue', 'green', 'orange', 'purple', 'red']),
             'icon' => $this->faker->randomElement(['shield', 'lock', 'network', 'key', 'scan']),
             'is_active' => $this->faker->boolean(90),
