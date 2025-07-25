@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple-Inspired Review Page - Large Screen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'apple': ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        apple: {
+                            blue: '#007AFF',
+                            green: '#34C759',
+                            red: '#FF3B30',
+                            orange: '#FF9500',
+                            purple: '#AF52DE'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .apple-blur {
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+        }
+        
+        .apple-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 0.5px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        }
+        
+        .dark .apple-card {
+            background: rgba(28, 28, 30, 0.8);
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .apple-gradient {
+            background: linear-gradient(180deg, #f2f2f7 0%, #e5e5ea 100%);
+        }
+        
+        .dark .apple-gradient {
+            background: linear-gradient(180deg, #1c1c1e 0%, #000000 100%);
+        }
+        
+        .question-option {
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .question-option:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dark .question-option:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+        
+        .question-indicator {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .apple-button {
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .apple-button:hover {
+            transform: scale(0.98);
+        }
+        
+        .apple-button:active {
+            transform: scale(0.96);
+        }
+        
+        /* SF Pro Display font loading */
+        @font-face {
+            font-family: 'SF Pro Display';
+            font-weight: 400;
+            src: local('SF Pro Display Regular'), local('SFProDisplay-Regular');
+        }
+        
+        @font-face {
+            font-family: 'SF Pro Display';
+            font-weight: 600;
+            src: local('SF Pro Display Semibold'), local('SFProDisplay-Semibold');
+        }
+        
+        @font-face {
+            font-family: 'SF Pro Display';
+            font-weight: 700;
+            src: local('SF Pro Display Bold'), local('SFProDisplay-Bold');
+        }
+    </style>
+</head>
+<body class="apple-gradient min-h-screen font-apple">
+    <!-- Minimal Header - Apple Style -->
+    <div class="apple-blur apple-card sticky top-0 z-50 border-b-0">
+        <div class="max-w-6xl mx-auto px-8 py-4">
+            <div class="flex items-center justify-center relative">
+                <!-- Back Button - Left -->
+                <button class="absolute left-0 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 apple-button">
+                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                
+                <!-- Centered Progress - Apple Style -->
+                <div class="flex flex-col items-center space-y-2">
+                    <span class="text-2xl font-semibold text-gray-900 dark:text-white">1 of 35</span>
+                    <div class="w-80 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-apple-blue rounded-full transition-all duration-500 ease-out" style="width: 3%"></div>
+                    </div>
+                </div>
+                
+                <!-- Close Button - Right -->
+                <button class="absolute right-0 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center apple-button">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content - Apple Two-Column Layout -->
+    <div class="max-w-6xl mx-auto px-8 py-8">
+        <div class="grid grid-cols-12 gap-12">
+            <!-- Main Question Area -->
+            <div class="col-span-8">
+                <!-- Question Content Card -->
+                <div class="apple-blur apple-card rounded-3xl p-10 mb-6">
+                    <!-- Question Meta - Subtle -->
+                    <div class="flex items-center justify-center space-x-3 mb-6">
+                        <span class="px-4 py-2 bg-apple-blue/10 text-apple-blue rounded-full text-sm font-medium">Risk Management</span>
+                    </div>
+                    
+                    <!-- Question Text - Large & Readable -->
+                    <h1 class="text-2xl font-medium text-gray-900 dark:text-white text-center leading-relaxed mb-8 tracking-tight">
+                        Your organization is implementing a new payroll system. How should you determine the appropriate risk owner assignment strategy?
+                    </h1>
+
+                    <!-- Answer Options - Clean & Spacious -->
+                    <div class="space-y-3">
+                        <!-- Option A -->
+                        <div class="question-option apple-card rounded-2xl p-5 cursor-pointer border-2 border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 font-semibold flex-shrink-0 text-sm">A</div>
+                                <p class="text-gray-900 dark:text-white font-medium leading-relaxed">
+                                    Assign the Chief Security Officer as owner for all IT risks
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Option B - User's Wrong Answer -->
+                        <div class="question-option apple-card rounded-2xl p-5 border-2 border-apple-red bg-red-50 dark:bg-red-900/20">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-7 h-7 rounded-full bg-apple-red flex items-center justify-center text-white font-semibold flex-shrink-0 text-sm">B</div>
+                                <div class="flex-1">
+                                    <p class="text-gray-900 dark:text-white font-medium leading-relaxed mb-2">
+                                        Assign the Application Developer who built the system
+                                    </p>
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-apple-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                        <span class="text-apple-red text-sm font-medium">Your answer</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Option C - Correct Answer -->
+                        <div class="question-option apple-card rounded-2xl p-5 border-2 border-apple-green bg-green-50 dark:bg-green-900/20">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-7 h-7 rounded-full bg-apple-green flex items-center justify-center text-white font-semibold flex-shrink-0 text-sm">C</div>
+                                <div class="flex-1">
+                                    <p class="text-gray-900 dark:text-white font-medium leading-relaxed mb-2">
+                                        Assign the HR Department Head who owns the business process
+                                    </p>
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4 text-apple-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        <span class="text-apple-green text-sm font-medium">Correct answer</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Option D -->
+                        <div class="question-option apple-card rounded-2xl p-5 cursor-pointer border-2 border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 font-semibold flex-shrink-0 text-sm">D</div>
+                                <p class="text-gray-900 dark:text-white font-medium leading-relaxed">
+                                    Rotate ownership among all stakeholders quarterly
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Card - Only when incorrect -->
+                <div class="apple-blur apple-card rounded-2xl p-6 border-l-4 border-apple-orange">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-8 h-8 rounded-full bg-apple-orange/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-apple-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Why this matters</h3>
+                            <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
+                                Business process owners are best positioned to make risk decisions about their processes because they understand the business impact, have accountability for outcomes, and can balance security requirements with operational needs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar: Question Details - Apple Style -->
+            <div class="col-span-4">
+                <!-- Current Question Details -->
+                <div class="apple-blur apple-card rounded-2xl p-6 space-y-6">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white tracking-wide">Question Details</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Domain</span>
+                            <p class="text-gray-900 dark:text-white font-medium mt-1">Risk Management</p>
+                        </div>
+                        
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Topic</span>
+                            <p class="text-gray-900 dark:text-white font-medium mt-1">Risk Assessment</p>
+                        </div>
+                        
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Difficulty</span>
+                            <div class="flex items-center space-x-1 mt-2">
+                                <div class="w-2 h-2 bg-apple-blue rounded-full"></div>
+                                <div class="w-2 h-2 bg-apple-blue rounded-full"></div>
+                                <div class="w-2 h-2 bg-apple-blue rounded-full"></div>
+                                <div class="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                <div class="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                <span class="text-gray-600 dark:text-gray-400 text-xs ml-2">Intermediate</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bloom Level</span>
+                            <div class="flex items-center space-x-1 mt-2">
+                                <div class="w-2 h-2 bg-apple-purple rounded-full"></div>
+                                <div class="w-2 h-2 bg-apple-purple rounded-full"></div>
+                                <div class="w-2 h-2 bg-apple-purple rounded-full"></div>
+                                <div class="w-2 h-2 bg-apple-purple rounded-full"></div>
+                                <div class="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                <span class="text-gray-600 dark:text-gray-400 text-xs ml-2">Analysis (L4)</span>
+                            </div>
+                        </div>
+                        
+                        <hr class="border-gray-200/50 dark:border-gray-700/50">
+                        
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Your Answer</span>
+                            <p class="text-apple-red font-medium mt-1 text-sm">Assign the Application Developer who built the system</p>
+                        </div>
+                        
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Correct Answer</span>
+                            <p class="text-apple-green font-medium mt-1 text-sm">Assign the HR Department Head who owns the business process</p>
+                        </div>
+                        
+                        <div>
+                            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Time Taken</span>
+                            <p class="text-gray-900 dark:text-white font-medium mt-1">43 seconds</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Performance Insight - Minimal -->
+                <div class="apple-blur apple-card rounded-2xl p-6 mt-6">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 tracking-wide">Performance</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600 dark:text-gray-400 text-sm">Similar Questions</span>
+                            <span class="text-apple-orange font-semibold">60%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                            <div class="bg-apple-orange rounded-full h-1.5 transition-all duration-300" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bottom Navigation - Clean & Minimal -->
+    <div class="fixed bottom-0 left-0 right-0 apple-blur apple-card border-t-0 z-50">
+        <div class="max-w-6xl mx-auto px-8 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Previous Button -->
+                <button disabled class="flex items-center space-x-2 px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed apple-button">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    <span class="font-medium">Previous</span>
+                </button>
+
+                <!-- Next Button -->
+                <button class="flex items-center space-x-2 px-6 py-3 rounded-xl bg-apple-blue hover:bg-blue-600 text-white font-medium apple-button">
+                    <span>Next</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                // Previous question logic
+            } else if (event.key === 'ArrowRight') {
+                // Next question logic
+            }
+        });
+
+        // Theme detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // Simple button interactions
+        document.querySelectorAll('.apple-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Button interaction logic here
+                console.log('Button clicked:', this.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

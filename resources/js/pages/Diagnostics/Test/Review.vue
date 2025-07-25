@@ -1,72 +1,125 @@
 <template>
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pb-20">
-        <!-- Minimal Header -->
-        <div class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200/30 dark:border-gray-700/30 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-2 py-2">
-                <div class="relative flex items-center h-6">
-                    <!-- Back Button -->
-                    <Link
-                        :href="route('assessments.diagnostics.all-results')"
-                        class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    >
-                        <ChevronLeftIcon class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                    </Link>
-                    
-                    <!-- Question Indicator - Absolutely centered -->
-                    <div class="absolute left-1/2 transform -translate-x-1/2">
-                        <span class="text-sm font-semibold text-gray-900 dark:text-white">
-                            Q{{ currentQuestionIndex + 1 }}/{{ diagnostic?.responses?.length ?? 0 }}
-                        </span>
-                    </div>
-                    
-                    <!-- Right Actions -->
-                    <div class="flex items-center space-x-2 ml-auto">
-                        <!-- Explanations Toggle (Mobile Only) -->
-                        <button
-                            v-if="currentQuestionHasJustifications && windowWidth < 1024"
-                            @click="toggleExplanations"
-                            :class="[
-                                'px-3 py-1.5 rounded-full transition-all duration-200 text-xs font-semibold flex items-center space-x-1.5',
-                                showAllExplanations
-                                    ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
-                                    : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
-                            ]"
-                            :aria-label="showAllExplanations ? 'Hide explanations' : 'Show explanations'"
-                        >
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 17.25h.01" />
-                            </svg>
-                            <span class="tracking-wide">{{ showAllExplanations ? 'Hide' : 'Explain' }}</span>
-                        </button>
-                        
-                        <!-- Theme Toggle -->
-                        <button
-                            @click="toggleTheme"
-                            class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            aria-label="Toggle theme"
-                        >
-                            <SunIcon v-if="isDark" class="w-5 h-5 text-yellow-500" />
-                            <MoonIcon v-else class="w-5 h-5 text-gray-600" />
-                        </button>
-                        
-                        <!-- End Review Button -->
+        <!-- Apple-Style Header - Responsive -->
+        <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50" style="box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+            <!-- Mobile Header -->
+            <div class="xl:hidden">
+                <div class="max-w-7xl mx-auto px-2 py-2">
+                    <div class="relative flex items-center h-6">
+                        <!-- Back Button -->
                         <Link
                             :href="route('assessments.diagnostics.all-results')"
-                            class="p-1 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
-                            aria-label="End review"
+                            class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         >
-                            <XIcon class="w-5 h-5" />
+                            <ChevronLeftIcon class="w-5 h-5 text-gray-600 dark:text-gray-400" />
                         </Link>
+                        
+                        <!-- Question Indicator - Absolutely centered -->
+                        <div class="absolute left-1/2 transform -translate-x-1/2">
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                                Q{{ currentQuestionIndex + 1 }}/{{ diagnostic?.responses?.length ?? 0 }}
+                            </span>
+                        </div>
+                        
+                        <!-- Right Actions -->
+                        <div class="flex items-center space-x-2 ml-auto">
+                            <!-- Explanations Toggle (Mobile Only) -->
+                            <button
+                                v-if="currentQuestionHasJustifications"
+                                @click="toggleExplanations"
+                                :class="[
+                                    'px-3 py-1.5 rounded-full transition-all duration-200 text-xs font-semibold flex items-center space-x-1.5',
+                                    showAllExplanations
+                                        ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
+                                        : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
+                                ]"
+                                :aria-label="showAllExplanations ? 'Hide explanations' : 'Show explanations'"
+                            >
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 17.25h.01" />
+                                </svg>
+                                <span class="tracking-wide">{{ showAllExplanations ? 'Hide' : 'Explain' }}</span>
+                            </button>
+                            
+                            <!-- Theme Toggle -->
+                            <button
+                                @click="toggleTheme"
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                aria-label="Toggle theme"
+                            >
+                                <SunIcon v-if="isDark" class="w-5 h-5 text-yellow-500" />
+                                <MoonIcon v-else class="w-5 h-5 text-gray-600" />
+                            </button>
+                            
+                            <!-- End Review Button -->
+                            <Link
+                                :href="route('assessments.diagnostics.all-results')"
+                                class="p-1 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors"
+                                aria-label="End review"
+                            >
+                                <XIcon class="w-5 h-5" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Large Screen Header -->
+            <div class="hidden xl:block">
+                <div class="max-w-6xl mx-auto px-8 py-4">
+                    <div class="flex items-center justify-center relative">
+                        <!-- Back Button - Left -->
+                        <Link
+                            :href="route('assessments.diagnostics.all-results')"
+                            class="absolute left-0 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200 transform hover:scale-105"
+                        >
+                            <ChevronLeftIcon class="w-6 h-6 text-gray-600 dark:text-gray-300" />
+                        </Link>
+                        
+                        <!-- Centered Progress - Apple Style -->
+                        <div class="flex flex-col items-center space-y-2">
+                            <span class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                {{ currentQuestionIndex + 1 }} of {{ diagnostic?.responses?.length ?? 0 }}
+                            </span>
+                            <div class="w-80 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div 
+                                    class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out" 
+                                    :style="{ width: ((currentQuestionIndex + 1) / (diagnostic?.responses?.length || 1)) * 100 + '%' }"
+                                ></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Actions -->
+                        <div class="absolute right-0 flex items-center space-x-3">
+                            <!-- Theme Toggle -->
+                            <button
+                                @click="toggleTheme"
+                                class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200 transform hover:scale-105"
+                                aria-label="Toggle theme"
+                            >
+                                <SunIcon v-if="isDark" class="w-6 h-6 text-yellow-500" />
+                                <MoonIcon v-else class="w-6 h-6 text-gray-600" />
+                            </button>
+                            
+                            <!-- Close Button -->
+                            <Link
+                                :href="route('assessments.diagnostics.all-results')"
+                                class="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 transform hover:scale-105"
+                            >
+                                <XIcon class="w-4 h-4 text-white" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content with Maximum Space -->
-        <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-4 pb-20">
-            <div class="grid grid-cols-1 xl:grid-cols-4 gap-6 lg:gap-8">
-                <!-- Question and Answer Section with Swipe Support -->
-                <div class="xl:col-span-3">
+        <!-- Main Content - Apple Clean Layout -->
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20">
+            <!-- Mobile Layout (existing) -->
+            <div class="xl:hidden">
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Question and Answer Section with Swipe Support -->
                     <!-- Swipeable Container -->
                     <div 
                         ref="swipeContainer"
@@ -207,11 +260,114 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Large Screen Layout - Apple Design -->
+            <div class="hidden xl:block">
+                <div class="grid grid-cols-12 gap-8">
+                    <!-- Main Question Area -->
+                    <div class="col-span-8">
+                        <!-- Review Component -->
+                        <component
+                            :is="getReviewComponentForIndex(currentQuestionIndex)"
+                            :question="currentQuestionData"
+                            :answer="currentResponse"
+                            :isDark="isDark"
+                            :showExplanations="true"
+                            class="large-screen-review"
+                        />
+                    </div>
+
+                    <!-- Right Sidebar: Question Details - Apple Style -->
+                    <div class="col-span-4">
+                        <!-- Current Question Details -->
+                        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 space-y-6">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white tracking-wide">Question Details</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Domain</span>
+                                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ currentQuestionData?.topic?.domain?.name ?? "N/A" }}</p>
+                                </div>
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Topic</span>
+                                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ currentQuestionData?.topic?.name ?? "N/A" }}</p>
+                                </div>
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Difficulty</span>
+                                    <div class="flex items-center space-x-1 mt-2">
+                                        <div 
+                                            v-for="i in 5" 
+                                            :key="i"
+                                            :class="[
+                                                'w-2 h-2 rounded-full',
+                                                i <= (currentQuestionData?.difficulty || 0) ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'
+                                            ]"
+                                        ></div>
+                                        <span class="text-gray-600 dark:text-gray-400 text-xs ml-2">
+                                            {{ getDifficultyLabel(currentQuestionData?.difficulty) }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Bloom Level</span>
+                                    <div class="flex items-center space-x-1 mt-2">
+                                        <div 
+                                            v-for="i in 5" 
+                                            :key="i"
+                                            :class="[
+                                                'w-2 h-2 rounded-full',
+                                                i <= (currentQuestionData?.bloom || 0) ? 'bg-purple-500' : 'bg-gray-300 dark:bg-gray-600'
+                                            ]"
+                                        ></div>
+                                        <span class="text-gray-600 dark:text-gray-400 text-xs ml-2">
+                                            {{ getBloomLabel(currentQuestionData?.bloom) }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <hr class="border-gray-200/50 dark:border-gray-700/50">
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Your Answer</span>
+                                    <p class="text-red-500 dark:text-red-400 font-medium mt-1 text-sm">{{ formatAnswer(currentResponse?.user_answer) }}</p>
+                                </div>
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Correct Answer</span>
+                                    <p class="text-green-500 dark:text-green-400 font-medium mt-1 text-sm">{{ formatAnswer(currentQuestionData?.correct_options) }}</p>
+                                </div>
+                                
+                                <div>
+                                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Time Taken</span>
+                                    <p class="text-gray-900 dark:text-white font-medium mt-1">{{ formatTime(currentResponse?.response_time_seconds) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Insight - Minimal -->
+                        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 mt-6">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 tracking-wide">Performance</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400 text-sm">Current Score</span>
+                                    <span class="text-blue-500 font-semibold">{{ calculateScore() }}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-blue-500 rounded-full h-1.5 transition-all duration-300" :style="{ width: calculateScore() + '%' }"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Review Navigation -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/40 dark:border-gray-700/40 z-50">
-            <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-50" style="box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);">
+            <div class="max-w-6xl mx-auto px-4 py-4">
                 <div class="flex items-center justify-between gap-3">
                     <!-- Previous Button -->
                     <button
@@ -521,6 +677,36 @@ const formatTime = (seconds) => {
     return `${minutes}m ${secs}s`;
 };
 
+// Helper methods for large screen layout
+const getDifficultyLabel = (difficulty) => {
+    const labels = {
+        1: 'Beginner',
+        2: 'Easy',
+        3: 'Intermediate',
+        4: 'Advanced',
+        5: 'Expert'
+    };
+    return labels[difficulty] || 'Unknown';
+};
+
+const getBloomLabel = (bloom) => {
+    const labels = {
+        1: 'Remember (L1)',
+        2: 'Understand (L2)',
+        3: 'Apply (L3)',
+        4: 'Analysis (L4)',
+        5: 'Evaluate (L5)',
+        6: 'Create (L6)'
+    };
+    return labels[bloom] || 'Unknown';
+};
+
+const calculateScore = () => {
+    if (!props.diagnostic?.responses?.length) return 0;
+    const correct = props.diagnostic.responses.filter(response => response.is_correct).length;
+    return Math.round((correct / props.diagnostic.responses.length) * 100);
+};
+
 // Window resize handler
 const handleResize = () => {
     windowWidth.value = window.innerWidth;
@@ -620,6 +806,37 @@ onUnmounted(() => {
 
 .swipe-container > * {
     backface-visibility: hidden;
+}
+
+/* Large screen review styling */
+.large-screen-review {
+    padding: 2.5rem !important;
+}
+
+.large-screen-review :deep(.question-option) {
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin-bottom: 0.75rem;
+}
+
+.large-screen-review :deep(.question-option:hover) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dark .large-screen-review :deep(.question-option:hover) {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Add extra spacing for question text on large screens */
+.large-screen-review :deep(h2),
+.large-screen-review :deep(.question-text) {
+    margin-bottom: 2rem !important;
+    padding: 0 1rem;
+}
+
+/* Better spacing for answer options on large screens */
+.large-screen-review :deep(.answer-options) {
+    padding: 0 1rem;
 }
 
 /* Hide scrollbar for navigation */

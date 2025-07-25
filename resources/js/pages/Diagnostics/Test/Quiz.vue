@@ -275,7 +275,7 @@ export default {
         milestoneConfig: Object
     },
     setup(props) {
-        const { isDark, toggleTheme, setTheme, initializeTheme } = useTheme()
+        const { isDark, toggleTheme, initializeTheme } = useTheme()
         
         // Initialize theme properly using the composable
         initializeTheme()
