@@ -6,7 +6,7 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -34,7 +34,7 @@ test('profile page is displayed', function () {
 
 test('profile information can be updated', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -70,7 +70,7 @@ test('profile information can be updated', function () {
 
 test('email verification status is unchanged when the email address is unchanged', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -103,7 +103,7 @@ test('email verification status is unchanged when the email address is unchanged
 
 test('user can delete their account', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -136,7 +136,7 @@ test('user can delete their account', function () {
 
 test('correct password must be provided to delete account', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,

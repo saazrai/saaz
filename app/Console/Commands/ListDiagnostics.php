@@ -44,26 +44,27 @@ class ListDiagnostics extends Command
 
         if ($diagnostics->isEmpty()) {
             $this->info('No diagnostics found.');
+
             return;
         }
 
         $this->info('Recent Diagnostics:');
-        
+
         $headers = ['ID', 'User', 'Status', 'Questions', 'Score', 'Duration', 'Created'];
-        
+
         $rows = $diagnostics->map(function ($diagnostic) {
-            $duration = $diagnostic->total_duration_seconds 
-                ? gmdate("H:i:s", $diagnostic->total_duration_seconds)
+            $duration = $diagnostic->total_duration_seconds
+                ? gmdate('H:i:s', $diagnostic->total_duration_seconds)
                 : 'N/A';
-                
+
             return [
                 $diagnostic->id,
                 $diagnostic->user->name ?? 'Unknown',
                 ucfirst($diagnostic->status),
                 $diagnostic->responses->count(),
-                $diagnostic->score ? round($diagnostic->score, 1) . '%' : 'N/A',
+                $diagnostic->score ? round($diagnostic->score, 1).'%' : 'N/A',
                 $duration,
-                $diagnostic->created_at->format('Y-m-d H:i')
+                $diagnostic->created_at->format('Y-m-d H:i'),
             ];
         })->toArray();
 
@@ -72,21 +73,21 @@ class ListDiagnostics extends Command
         // Show summary statistics
         $this->newLine();
         $this->info('Summary Statistics:');
-        
+
         $completed = $diagnostics->where('status', 'completed');
         if ($completed->count() > 0) {
-            $avgQuestions = $completed->avg(fn($d) => $d->responses->count());
+            $avgQuestions = $completed->avg(fn ($d) => $d->responses->count());
             $avgScore = $completed->avg('score');
-            
-            $this->line("Average questions per completed diagnostic: " . round($avgQuestions));
-            $this->line("Average score: " . round($avgScore, 1) . "%");
-            
+
+            $this->line('Average questions per completed diagnostic: '.round($avgQuestions));
+            $this->line('Average score: '.round($avgScore, 1).'%');
+
             // Find diagnostics with unusually high question counts
-            $highQuestionDiagnostics = $completed->filter(fn($d) => $d->responses->count() > 80);
+            $highQuestionDiagnostics = $completed->filter(fn ($d) => $d->responses->count() > 80);
             if ($highQuestionDiagnostics->count() > 0) {
                 $this->newLine();
-                $this->warn("Diagnostics with >80 questions: " . $highQuestionDiagnostics->count());
-                $this->line("IDs: " . $highQuestionDiagnostics->pluck('id')->join(', '));
+                $this->warn('Diagnostics with >80 questions: '.$highQuestionDiagnostics->count());
+                $this->line('IDs: '.$highQuestionDiagnostics->pluck('id')->join(', '));
                 $this->line("Use 'php artisan diagnostic:analyze {id}' to investigate why.");
             }
         }
@@ -97,7 +98,7 @@ class ListDiagnostics extends Command
         $domainId = $this->option('domain');
         $phaseId = $this->option('phase');
 
-        $this->info("=== DIAGNOSTIC TOPICS AND QUESTIONS ===");
+        $this->info('=== DIAGNOSTIC TOPICS AND QUESTIONS ===');
         $this->newLine();
 
         // Determine which domains to show
@@ -114,14 +115,15 @@ class ListDiagnostics extends Command
             }
             $domain = $domainQuery->first();
 
-            if (!$domain) {
+            if (! $domain) {
                 $this->error("Domain with ID or name '{$searchTerm}' not found.");
+
                 return 1;
             }
 
             $this->info("Showing topics for domain: {$domain->name}");
             $domains = collect([$domain]);
-            
+
         } elseif ($phaseId) {
             // Show topics from specific phase
             $this->info("Showing topics for Phase {$phaseId}");
@@ -129,10 +131,10 @@ class ListDiagnostics extends Command
                 ->where('is_active', true)
                 ->orderBy('phase_order')
                 ->get();
-            
+
         } else {
             // Show all domains
-            $this->info("Showing all domains and topics");
+            $this->info('Showing all domains and topics');
             $domains = DiagnosticDomain::where('is_active', true)
                 ->orderBy('phase_id')
                 ->orderBy('phase_order')
@@ -140,7 +142,8 @@ class ListDiagnostics extends Command
         }
 
         if ($domains->isEmpty()) {
-            $this->warn("No domains found.");
+            $this->warn('No domains found.');
+
             return 0;
         }
 
@@ -151,7 +154,7 @@ class ListDiagnostics extends Command
 
         foreach ($domains as $domain) {
             $domainTopics = DiagnosticTopic::where('domain_id', $domain->id)
-                ->withCount(['items' => function($query) {
+                ->withCount(['items' => function ($query) {
                     $query->where('status', 'published');
                 }])
                 ->orderBy('name')
@@ -164,9 +167,9 @@ class ListDiagnostics extends Command
                     'phase' => $domain->phase_id,
                     'topic_id' => $topic->id,
                     'topic_name' => $topic->name,
-                    'question_count' => $topic->items_count
+                    'question_count' => $topic->items_count,
                 ];
-                
+
                 $totalQuestions += $topic->items_count;
                 $totalTopics++;
             }
@@ -177,11 +180,11 @@ class ListDiagnostics extends Command
 
         // Summary
         $this->newLine();
-        $this->info("SUMMARY:");
-        $this->line("Total domains: " . $domains->count());
-        $this->line("Total topics: " . $totalTopics);
-        $this->line("Total questions: " . $totalQuestions);
-        $this->line("Average questions per topic: " . round($totalQuestions / max($totalTopics, 1), 1));
+        $this->info('SUMMARY:');
+        $this->line('Total domains: '.$domains->count());
+        $this->line('Total topics: '.$totalTopics);
+        $this->line('Total questions: '.$totalQuestions);
+        $this->line('Average questions per topic: '.round($totalQuestions / max($totalTopics, 1), 1));
 
         // Show warnings for topics with insufficient questions
         $this->showTopicWarnings($topicStats);
@@ -193,38 +196,38 @@ class ListDiagnostics extends Command
     {
         // Group topics by domain
         $domains = collect($topicStats)->groupBy('domain_id');
-        
+
         // Find the maximum number of topics across all domains
         $maxTopics = $domains->map->count()->max();
-        
+
         // Build headers
         $headers = ['ID', 'Domain', 'Total'];
         for ($i = 1; $i <= $maxTopics; $i++) {
             $headers[] = "T{$i}";
         }
-        
+
         // Build rows
         $rows = [];
         foreach ($domains as $domainId => $domainTopics) {
             $domainName = $domainTopics->first()['domain_name'];
             $totalQuestions = $domainTopics->sum('question_count');
-            
+
             $row = [
                 $domainId,
                 substr($domainName, 0, 30),
-                $this->formatCount($totalQuestions)
+                $this->formatCount($totalQuestions),
             ];
-            
+
             // Add topic question counts
             foreach ($domainTopics as $topic) {
                 $row[] = $this->formatCount($topic['question_count']);
             }
-            
+
             // Pad with empty cells if needed
             while (count($row) < count($headers)) {
                 $row[] = '-';
             }
-            
+
             $rows[] = $row;
         }
 
@@ -233,9 +236,16 @@ class ListDiagnostics extends Command
 
     private function formatCount($count)
     {
-        if ($count == 0) return '<fg=red>0</>';
-        if ($count < 5) return "<fg=red>{$count}</>";
-        if ($count < 10) return "<fg=yellow>{$count}</>";
+        if ($count == 0) {
+            return '<fg=red>0</>';
+        }
+        if ($count < 5) {
+            return "<fg=red>{$count}</>";
+        }
+        if ($count < 10) {
+            return "<fg=yellow>{$count}</>";
+        }
+
         return "<fg=green>{$count}</>";
     }
 
@@ -257,41 +267,41 @@ class ListDiagnostics extends Command
     private function showTopicWarnings($topicStats)
     {
         $warnings = [];
-        
+
         foreach ($topicStats as $stat) {
             if ($stat['question_count'] < 10) {
                 $warnings[] = "⚠️  {$stat['domain_name']} > {$stat['topic_name']}: {$stat['question_count']} questions";
             }
         }
-        
-        if (!empty($warnings)) {
+
+        if (! empty($warnings)) {
             $this->newLine();
-            $this->warn("TOPICS WITH INSUFFICIENT QUESTIONS (<10):");
+            $this->warn('TOPICS WITH INSUFFICIENT QUESTIONS (<10):');
             foreach ($warnings as $warning) {
                 $this->line($warning);
             }
-            
+
             $this->newLine();
-            $this->info("Recommendation: Add more questions to topics with <10 questions for optimal adaptive testing.");
+            $this->info('Recommendation: Add more questions to topics with <10 questions for optimal adaptive testing.');
         }
     }
-    
+
     private function showHelp()
     {
         $this->info('NAME');
         $this->line('  diagnostic:list - List diagnostic assessments with statistics');
-        
+
         $this->newLine();
         $this->info('SYNOPSIS');
         $this->line('  php artisan diagnostic:list [options]');
-        
+
         $this->newLine();
         $this->info('DESCRIPTION');
         $this->line('  Lists recent diagnostic assessments with basic statistics including:');
         $this->line('  - User name, status, question count, score, and duration');
         $this->line('  - Summary statistics for completed diagnostics');
         $this->line('  - Identifies diagnostics with unusually high question counts (>80)');
-        
+
         $this->newLine();
         $this->info('OPTIONS');
         $this->line('  --user=<id>      Filter by user ID');
@@ -301,28 +311,28 @@ class ListDiagnostics extends Command
         $this->line('  --domain=<id>    Filter topics by domain ID or name (use with --topics)');
         $this->line('  --phase=<n>      Filter topics by phase (1-4) (use with --topics)');
         $this->line('  -h, --help       Display this help message');
-        
+
         $this->newLine();
         $this->info('EXAMPLES');
         $this->line('  # List 10 most recent diagnostics');
         $this->line('  php artisan diagnostic:list');
-        
+
         $this->newLine();
         $this->line('  # List completed diagnostics for user ID 5');
         $this->line('  php artisan diagnostic:list --user=5 --status=completed');
-        
+
         $this->newLine();
         $this->line('  # Show last 20 diagnostics');
         $this->line('  php artisan diagnostic:list --recent=20');
-        
+
         $this->newLine();
         $this->line('  # Show all topics and question counts');
         $this->line('  php artisan diagnostic:list --topics');
-        
+
         $this->newLine();
         $this->line('  # Show topics for a specific domain');
         $this->line('  php artisan diagnostic:list --topics --domain="General Security"');
-        
+
         $this->newLine();
         $this->line('  # Show topics for Phase 1');
         $this->line('  php artisan diagnostic:list --topics --phase=1');

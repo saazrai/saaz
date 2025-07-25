@@ -8,7 +8,8 @@ use OwenIt\Auditing\Contracts\Auditable;
 
 class DiagnosticResponse extends BaseModel implements Auditable
 {
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable, SoftDeletes;
+
     protected $fillable = [
         'diagnostic_id',
         'diagnostic_item_id',

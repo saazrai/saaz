@@ -8,8 +8,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
         $tempDataKey = "temp_registration_data_{$request->email}";
         $tempData = Cache::get($tempDataKey);
 
-        if (!$tempData || !isset($tempData['email_verified']) || !$tempData['email_verified']) {
+        if (! $tempData || ! isset($tempData['email_verified']) || ! $tempData['email_verified']) {
             throw ValidationException::withMessages([
                 'email' => ['Email verification is required. Please complete the verification process.'],
             ]);

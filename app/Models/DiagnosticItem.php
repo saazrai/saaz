@@ -51,5 +51,4 @@ class DiagnosticItem extends BaseModel
     {
         return $this->belongsTo(QuestionType::class, 'type_id');
     }
-
 }

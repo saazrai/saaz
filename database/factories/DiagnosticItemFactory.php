@@ -20,7 +20,7 @@ class DiagnosticItemFactory extends Factory
             'topic_id' => \App\Models\DiagnosticTopic::factory(),
             'type_id' => 1, // Default to MCQ (Multiple Choice Question)
             'dimension' => $this->faker->randomElement(['Technical', 'Managerial']),
-            'content' => $this->faker->sentence() . '?',
+            'content' => $this->faker->sentence().'?',
             'options' => [
                 'A' => $this->faker->sentence(),
                 'B' => $this->faker->sentence(),

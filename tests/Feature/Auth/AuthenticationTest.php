@@ -35,7 +35,7 @@ test('users can not authenticate with invalid password', function () {
 
 test('users can logout', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,

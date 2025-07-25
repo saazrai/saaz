@@ -7,11 +7,11 @@ $domains = [
         'dimension' => 'Managerial',
         'topics' => [
             'Compliance Requirements',
-            'Contracts', 
+            'Contracts',
             'Industry Specific Regulations',
             'Intellectual Property',
-            'Investigation Types'
-        ]
+            'Investigation Types',
+        ],
     ],
     4 => [
         'name' => 'Privacy',
@@ -21,8 +21,8 @@ $domains = [
             'Privacy Principles',
             'Data Subject Rights',
             'Privacy Governance',
-            'Privacy Protection'
-        ]
+            'Privacy Protection',
+        ],
     ],
     5 => [
         'name' => 'Risk Management',
@@ -32,8 +32,8 @@ $domains = [
             'Risk Identification',
             'Risk Assessment',
             'Risk Response & Treatment',
-            'Risk Monitoring & Reporting'
-        ]
+            'Risk Monitoring & Reporting',
+        ],
     ],
     6 => [
         'name' => 'Security Audits & Assessments',
@@ -43,8 +43,8 @@ $domains = [
             'Evidence Gathering',
             'Control Assessment',
             'Testing Methodologies & Approaches',
-            'Security Testing'
-        ]
+            'Security Testing',
+        ],
     ],
     7 => [
         'name' => 'Threat & Vulnerability Management',
@@ -54,8 +54,8 @@ $domains = [
             'TTPs',
             'Vulnerability Management',
             'Vulnerability Assessment',
-            'Malware'
-        ]
+            'Malware',
+        ],
     ],
     8 => [
         'name' => 'Cryptography & Key Management',
@@ -65,8 +65,8 @@ $domains = [
             'Cryptographic Applications',
             'Public Key Infrastructure (PKI)',
             'Key Management',
-            'Cryptanalysis'
-        ]
+            'Cryptanalysis',
+        ],
     ],
     9 => [
         'name' => 'Data Governance',
@@ -76,8 +76,8 @@ $domains = [
             'Data Lifecycle Management',
             'Data Retention & Archival',
             'Data Sanitization',
-            'Data Security Controls'
-        ]
+            'Data Security Controls',
+        ],
     ],
     10 => [
         'name' => 'Identity and Access Management (IAM)',
@@ -87,8 +87,8 @@ $domains = [
             'Authentication',
             'Authorization',
             'Accounting (Auditing)',
-            'Federation & Advanced IAM'
-        ]
+            'Federation & Advanced IAM',
+        ],
     ],
     11 => [
         'name' => 'Network Concepts',
@@ -98,8 +98,8 @@ $domains = [
             'TCP/IP Protocols',
             'Network Appliances',
             'Network Services',
-            'Communication Protocols'
-        ]
+            'Communication Protocols',
+        ],
     ],
     12 => [
         'name' => 'Network Security',
@@ -109,8 +109,8 @@ $domains = [
             'Network Attacks',
             'Network Segmentation',
             'Wireless Security',
-            'Network Diagnostic Tools'
-        ]
+            'Network Diagnostic Tools',
+        ],
     ],
     13 => [
         'name' => 'Application Security',
@@ -120,8 +120,8 @@ $domains = [
             'Development Models',
             'Application Vulnerabilities',
             'Security Testing',
-            'Secure Coding'
-        ]
+            'Secure Coding',
+        ],
     ],
     14 => [
         'name' => 'Cloud Security',
@@ -131,8 +131,8 @@ $domains = [
             'Cloud Models',
             'Cloud Governance',
             'Cloud Security Controls',
-            'Cloud Infrastructure Security'
-        ]
+            'Cloud Infrastructure Security',
+        ],
     ],
     15 => [
         'name' => 'Endpoint, Mobile & IoT Security',
@@ -142,8 +142,8 @@ $domains = [
             'Device Security',
             'Mobile Security',
             'IoT Security',
-            'OT Security'
-        ]
+            'OT Security',
+        ],
     ],
     16 => [
         'name' => 'Security Awareness & Human Factors',
@@ -153,8 +153,8 @@ $domains = [
             'Security Awareness & Training',
             'Human Resource Security',
             'Personnel Safety',
-            'Personnel Security Controls'
-        ]
+            'Personnel Security Controls',
+        ],
     ],
     17 => [
         'name' => 'Physical & Environmental Security',
@@ -164,8 +164,8 @@ $domains = [
             'Fire',
             'Power',
             'Site Design',
-            'Environmental Controls'
-        ]
+            'Environmental Controls',
+        ],
     ],
     18 => [
         'name' => 'Security Operations & Monitoring',
@@ -175,8 +175,8 @@ $domains = [
             'Log Management',
             'Detection',
             'Response',
-            'Monitoring'
-        ]
+            'Monitoring',
+        ],
     ],
     19 => [
         'name' => 'Incident Management',
@@ -186,8 +186,8 @@ $domains = [
             'Detection, Triage & Analysis',
             'Containment',
             'Eradication & Recovery',
-            'Post-Incident Activity'
-        ]
+            'Post-Incident Activity',
+        ],
     ],
     20 => [
         'name' => 'Business Continuity & Disaster Recovery',
@@ -197,17 +197,18 @@ $domains = [
             'Business Continuity Planning',
             'Disaster Recovery',
             'Recovery Strategy',
-            'Testing'
-        ]
-    ]
+            'Testing',
+        ],
+    ],
 ];
 
 // Generate sample questions for each domain
-function generateQuestions($domainNum, $domainName, $dimension, $topics) {
+function generateQuestions($domainNum, $domainName, $dimension, $topics)
+{
     $questions = [];
     $bloomCounts = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0];
     $targetDistribution = [1 => 7, 2 => 10, 3 => 16, 4 => 10, 5 => 5, 6 => 5];
-    
+
     // Generate 10 questions per topic (50 total)
     foreach ($topics as $topicIdx => $topic) {
         for ($i = 0; $i < 10; $i++) {
@@ -220,7 +221,7 @@ function generateQuestions($domainNum, $domainName, $dimension, $topics) {
                 }
             }
             $bloomCounts[$bloomLevel]++;
-            
+
             // Set difficulty based on bloom level
             if ($bloomLevel <= 2) {
                 $difficulty = 'easy';
@@ -235,37 +236,37 @@ function generateQuestions($domainNum, $domainName, $dimension, $topics) {
                 $difficulty = 'expert';
                 $irtB = rand(10, 20) / 10; // 1.0 to 2.0
             }
-            
+
             $questions[] = [
                 'topic' => $topic,
                 'subtopic' => "Subtopic for $topic",
-                'question' => "Sample question for $topic in $domainName (Q" . (count($questions) + 1) . ")?",
+                'question' => "Sample question for $topic in $domainName (Q".(count($questions) + 1).')?',
                 'options' => [
                     'Option A - First choice',
                     'Option B - Second choice',
                     'Option C - Third choice',
-                    'Option D - Fourth choice'
+                    'Option D - Fourth choice',
                 ],
                 'correct_answer' => chr(65 + rand(0, 3)), // Random A-D
                 'bloom_level' => $bloomLevel,
                 'difficulty' => $difficulty,
                 'irt_a' => rand(8, 18) / 10, // 0.8 to 1.8
                 'irt_b' => $irtB,
-                'irt_c' => 0.2
+                'irt_c' => 0.2,
             ];
         }
     }
-    
+
     return $questions;
 }
 
 // Generate seeders for each domain
 foreach ($domains as $domainNum => $domainInfo) {
-    $className = "D{$domainNum}" . str_replace(['&', ',', ' ', '-'], '', $domainInfo['name']) . "Seeder";
+    $className = "D{$domainNum}".str_replace(['&', ',', ' ', '-'], '', $domainInfo['name']).'Seeder';
     $fileName = "/Users/saaz/Library/Mobile Documents/com~apple~CloudDocs/Sites/saaz/database/seeders/Diagnostics/{$className}.php";
-    
+
     $questions = generateQuestions($domainNum, $domainInfo['name'], $domainInfo['dimension'], $domainInfo['topics']);
-    
+
     // Generate PHP array code for questions
     $questionsCode = "[\n";
     foreach ($questions as $q) {
@@ -286,8 +287,8 @@ foreach ($domains as $domainNum => $domainInfo) {
         $questionsCode .= "                'irt_c' => {$q['irt_c']}\n";
         $questionsCode .= "            ],\n";
     }
-    $questionsCode .= "        ]";
-    
+    $questionsCode .= '        ]';
+
     $content = <<<PHP
 <?php
 
@@ -378,7 +379,7 @@ class {$className} extends Seeder
     }
 }
 PHP;
-    
+
     file_put_contents($fileName, $content);
     echo "Created: $fileName\n";
 }

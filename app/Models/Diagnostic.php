@@ -9,7 +9,8 @@ use OwenIt\Auditing\Contracts\Auditable;
 
 class Diagnostic extends BaseModel implements Auditable
 {
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable, SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'status',
@@ -35,7 +36,7 @@ class Diagnostic extends BaseModel implements Auditable
         if ($this->total_duration_seconds) {
             return (int) round($this->total_duration_seconds / 60);
         }
-        
+
         return null;
     }
 
@@ -67,7 +68,7 @@ class Diagnostic extends BaseModel implements Auditable
         if (empty($this->target_phases)) {
             return DiagnosticPhase::query()->active()->ordered();
         }
-        
+
         return DiagnosticPhase::whereIn('id', $this->target_phases)->ordered();
     }
 
@@ -77,15 +78,15 @@ class Diagnostic extends BaseModel implements Auditable
      */
     public function isPhaseCompleted(int $phaseId): bool
     {
-        if (!$this->phase) {
+        if (! $this->phase) {
             return false;
         }
-        
+
         $requestedPhase = DiagnosticPhase::find($phaseId);
-        if (!$requestedPhase) {
+        if (! $requestedPhase) {
             return false;
         }
-        
+
         return $requestedPhase->order_sequence < $this->phase->order_sequence;
     }
 
@@ -95,6 +96,7 @@ class Diagnostic extends BaseModel implements Auditable
     public function getPhaseProgress(int $phaseId): array
     {
         $progress = $this->domain_progress ?? [];
+
         return $progress[$phaseId] ?? [
             'domains_completed' => 0,
             'questions_answered' => 0,

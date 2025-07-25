@@ -8,6 +8,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class DiagnosticProfile extends BaseModel implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
+
     protected $fillable = [
         'user_id',
         'domain_id',
@@ -25,7 +26,7 @@ class DiagnosticProfile extends BaseModel implements Auditable
         'first_assessed_at',
         'last_assessed_at',
     ];
-    
+
     protected $casts = [
         'proficiency' => 'decimal:2',
         'confidence' => 'decimal:2',
@@ -36,26 +37,26 @@ class DiagnosticProfile extends BaseModel implements Auditable
         'first_assessed_at' => 'datetime',
         'last_assessed_at' => 'datetime',
     ];
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function domain(): BelongsTo
     {
         return $this->belongsTo(DiagnosticDomain::class, 'domain_id');
     }
-    
+
     /**
      * Get the days since last assessment
      */
     public function getDaysSinceLastAssessmentAttribute(): ?int
     {
-        if (!$this->last_assessed_at) {
+        if (! $this->last_assessed_at) {
             return null;
         }
-        
+
         return $this->last_assessed_at->diffInDays(now());
     }
 

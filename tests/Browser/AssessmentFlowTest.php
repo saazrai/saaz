@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\User;
 use App\Models\Diagnostic;
 use App\Models\DiagnosticDomain;
 use App\Models\DiagnosticItem;
 use App\Models\DiagnosticPhase;
-use App\Models\DiagnosticTopic;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 
@@ -16,26 +15,26 @@ beforeEach(function () {
         'email' => 'test@example.com',
         'password' => bcrypt('password'),
     ]);
-    
+
     // Create test data
     $this->phase1 = DiagnosticPhase::factory()->create([
         'order_sequence' => 1,
         'name' => 'Foundation & Governance',
     ]);
-    
+
     $this->domains = DiagnosticDomain::factory()->count(3)->create([
         'phase_id' => $this->phase1->id,
     ]);
-    
+
     // Seed question types first (required for diagnostic items)
     $this->seed(\Database\Seeders\QuestionTypesSeeder::class);
-    
+
     // Create topics for each domain, then questions for each topic
     foreach ($this->domains as $domain) {
         $topics = \App\Models\DiagnosticTopic::factory()->count(2)->create([
             'domain_id' => $domain->id,
         ]);
-        
+
         foreach ($topics as $topic) {
             DiagnosticItem::factory()->count(3)->create([
                 'topic_id' => $topic->id,

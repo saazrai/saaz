@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DiagnosticDomain extends BaseModel
 {
     protected $fillable = [
-        'name', 
+        'name',
         'description',
         'phase_id',
         'phase_order',
@@ -22,7 +22,7 @@ class DiagnosticDomain extends BaseModel
         'min_bloom_level',
         'max_bloom_level',
         'learning_objectives',
-        'prerequisites'
+        'prerequisites',
     ];
 
     protected $casts = [
@@ -123,7 +123,7 @@ class DiagnosticDomain extends BaseModel
      */
     public function getCategoryDisplayName(): string
     {
-        return match($this->category) {
+        return match ($this->category) {
             'foundational' => 'Foundational',
             'technical' => 'Technical',
             'managerial' => 'Managerial',
@@ -136,7 +136,7 @@ class DiagnosticDomain extends BaseModel
      */
     public function hasPrerequisites(): bool
     {
-        return !empty($this->prerequisites);
+        return ! empty($this->prerequisites);
     }
 
     /**
@@ -144,7 +144,7 @@ class DiagnosticDomain extends BaseModel
      */
     public function getPrerequisiteDomains()
     {
-        if (!$this->hasPrerequisites()) {
+        if (! $this->hasPrerequisites()) {
             return collect();
         }
 

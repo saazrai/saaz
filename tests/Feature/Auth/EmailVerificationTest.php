@@ -9,7 +9,7 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('email verification screen can be rendered', function () {
     $user = User::factory()->unverified()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -35,7 +35,7 @@ test('email verification screen can be rendered', function () {
 
 test('email can be verified', function () {
     $user = User::factory()->unverified()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -66,7 +66,7 @@ test('email can be verified', function () {
 
     Event::assertDispatched(Verified::class);
     $this->assertTrue($user->fresh()->hasVerifiedEmail());
-    $response->assertRedirect(route('dashboard', absolute: false) . '?verified=1');
+    $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
 });
 
 test('email is not verified with invalid hash', function () {

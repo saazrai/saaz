@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index(Request $request): Response
     {
         $user = auth()->user();
-        
+
         // Get user's diagnostic results
         $diagnosticResults = Diagnostic::where('user_id', $user->id)
             ->where('status', 'completed')
@@ -31,10 +31,10 @@ class DashboardController extends Controller
                     'duration_minutes' => $diagnostic->getDurationMinutesAttribute(),
                 ];
             });
-        
+
         // Check if user has taken any diagnostic
         $diagnosticTaken = Diagnostic::where('user_id', $user->id)->exists();
-        
+
         // Calculate enterprise metrics
         $enterpriseMetrics = [
             'totalDiagnostics' => Diagnostic::where('user_id', $user->id)
@@ -48,19 +48,19 @@ class DashboardController extends Controller
                 ->latest()
                 ->value('updated_at')?->diffForHumans() ?? 'N/A',
         ];
-        
+
         // Format average score
         $enterpriseMetrics['averageScore'] = round($enterpriseMetrics['averageScore'], 1);
-        
+
         // Recent activity
         $recentActivity = [];
-        
+
         // Add diagnostic activities
         $recentDiagnostics = Diagnostic::where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
-            
+
         foreach ($recentDiagnostics as $diagnostic) {
             if ($diagnostic->status === 'completed') {
                 $recentActivity[] = [
@@ -73,12 +73,12 @@ class DashboardController extends Controller
                 $recentActivity[] = [
                     'icon' => '📝',
                     'title' => 'Started SecureStart™ Assessment',
-                    'description' => "In progress",
+                    'description' => 'In progress',
                     'date' => $diagnostic->created_at,
                 ];
             }
         }
-        
+
         // Add user registration activity
         $recentActivity[] = [
             'icon' => '👤',
@@ -86,12 +86,12 @@ class DashboardController extends Controller
             'description' => 'Welcome to SecureStart™',
             'date' => $user->created_at,
         ];
-        
+
         // Sort activities by date
-        usort($recentActivity, function($a, $b) {
+        usort($recentActivity, function ($a, $b) {
             return $b['date']->timestamp - $a['date']->timestamp;
         });
-        
+
         // Compliance status
         $complianceStatus = [
             'status' => 'Active',
@@ -99,7 +99,7 @@ class DashboardController extends Controller
             'sox' => true,
             'hipaa' => true,
         ];
-        
+
         return Inertia::render('Dashboard', [
             'diagnosticResults' => $diagnosticResults,
             'recentActivity' => array_slice($recentActivity, 0, 5),

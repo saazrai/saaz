@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DiagnosticEvent extends BaseModel
 {
     use Prunable;
+
     protected $fillable = [
         'event_type',
         'user_id',
@@ -23,7 +24,7 @@ class DiagnosticEvent extends BaseModel
         'priority',
         'expires_at',
     ];
-    
+
     protected $casts = [
         'payload' => 'array',
         'processed' => 'boolean',
@@ -31,22 +32,22 @@ class DiagnosticEvent extends BaseModel
         'processed_at' => 'datetime',
         'expires_at' => 'datetime',
     ];
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function diagnostic(): BelongsTo
     {
         return $this->belongsTo(Diagnostic::class);
     }
-    
+
     public function domain(): BelongsTo
     {
         return $this->belongsTo(DiagnosticDomain::class, 'domain_id');
     }
-    
+
     /**
      * Scope for pending events
      */
@@ -56,10 +57,10 @@ class DiagnosticEvent extends BaseModel
             ->where('failed', false)
             ->where(function ($q) {
                 $q->whereNull('expires_at')
-                  ->orWhere('expires_at', '>', now());
+                    ->orWhere('expires_at', '>', now());
             });
     }
-    
+
     /**
      * Scope for high priority events
      */
@@ -67,7 +68,7 @@ class DiagnosticEvent extends BaseModel
     {
         return $query->where('priority', 'high');
     }
-    
+
     /**
      * Get the prunable model query.
      * Remove events that are processed and older than 90 days

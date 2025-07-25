@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use OwenIt\Auditing\Models\Audit;
-use Carbon\Carbon;
 
 class CleanupAuditLogs extends Command
 {
@@ -31,64 +31,66 @@ class CleanupAuditLogs extends Command
     {
         $days = (int) $this->option('days');
         $dryRun = $this->option('dry-run');
-        
+
         $cutoffDate = Carbon::now()->subDays($days);
-        
+
         $this->info("Cleaning up audit logs older than {$days} days (before {$cutoffDate->format('Y-m-d H:i:s')})");
-        
+
         if ($dryRun) {
             $this->warn('DRY RUN MODE - No records will be deleted');
         }
-        
+
         // Count records to be deleted
         $count = Audit::where('created_at', '<', $cutoffDate)->count();
-        
+
         if ($count === 0) {
             $this->info('No audit logs found to clean up.');
+
             return 0;
         }
-        
+
         $this->info("Found {$count} audit records to clean up.");
-        
-        if (!$dryRun) {
-            if (!$this->confirm("Are you sure you want to delete {$count} audit records?")) {
+
+        if (! $dryRun) {
+            if (! $this->confirm("Are you sure you want to delete {$count} audit records?")) {
                 $this->info('Cleanup cancelled.');
+
                 return 0;
             }
-            
+
             $this->info('Deleting audit records...');
-            
+
             // Delete in chunks to avoid memory issues
             $deleted = 0;
             $chunkSize = 1000;
-            
+
             while (true) {
                 $chunk = Audit::where('created_at', '<', $cutoffDate)
                     ->limit($chunkSize)
                     ->get();
-                
+
                 if ($chunk->isEmpty()) {
                     break;
                 }
-                
+
                 $chunkCount = $chunk->count();
                 $chunk->each->delete();
-                
+
                 $deleted += $chunkCount;
                 $this->info("Deleted {$chunkCount} records (Total: {$deleted}/{$count})");
-                
+
                 // Small delay to prevent overwhelming the database
                 usleep(100000); // 0.1 second
             }
-            
+
             $this->info("Successfully deleted {$deleted} audit records.");
         } else {
             $this->table(['Model', 'Count'], $this->getBreakdownByModel($cutoffDate));
         }
-        
+
         return 0;
     }
-    
+
     /**
      * Get breakdown of audit records by model type
      */
@@ -99,7 +101,7 @@ class CleanupAuditLogs extends Command
             ->groupBy('auditable_type')
             ->orderBy('count', 'desc')
             ->get();
-        
+
         return $breakdown->map(function ($item) {
             return [
                 'model' => class_basename($item->auditable_type),

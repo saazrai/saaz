@@ -1,17 +1,17 @@
 <?php
 
+use App\Models\DiagnosticDomain;
 use App\Models\DiagnosticProfile;
 use App\Models\User;
-use App\Models\DiagnosticDomain;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 test('can create diagnostic profile with required fields', function () {
     $user = User::factory()->create();
     $domain = DiagnosticDomain::factory()->create();
-    
+
     $profile = DiagnosticProfile::factory()->create([
         'user_id' => $user->id,
         'domain_id' => $domain->id,
@@ -102,7 +102,7 @@ test('casts datetime fields correctly', function () {
 });
 
 test('diagnostic profile audit includes important fields', function () {
-    $profile = new DiagnosticProfile();
+    $profile = new DiagnosticProfile;
 
     $auditInclude = $profile->getAuditInclude();
 
@@ -132,7 +132,7 @@ test('tracks question statistics', function () {
 
     expect($profile->questions_answered)->toBe(20);
     expect($profile->questions_correct)->toBe(15);
-    
+
     // Can calculate accuracy
     $accuracy = $profile->questions_correct / $profile->questions_answered;
     expect($accuracy)->toBe(0.75);

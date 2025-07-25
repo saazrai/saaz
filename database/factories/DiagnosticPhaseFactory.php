@@ -19,7 +19,7 @@ class DiagnosticPhaseFactory extends Factory
         return [
             'name' => $this->faker->randomElement([
                 'Foundation & Governance',
-                'Risk & Compliance', 
+                'Risk & Compliance',
                 'Operations & Incident Response',
                 'Advanced Security & Development',
             ]),

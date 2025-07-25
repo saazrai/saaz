@@ -16,7 +16,7 @@ class DiagnosticTestResult extends BaseModel
         'question_count',
         'correct_count',
         'time_taken',
-        'completed_at'
+        'completed_at',
     ];
 
     protected $casts = [
@@ -27,14 +27,14 @@ class DiagnosticTestResult extends BaseModel
         'question_count' => 'integer',
         'correct_count' => 'integer',
         'time_taken' => 'integer',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    
+
     /**
      * Get the recommended difficulty level based on score
      */

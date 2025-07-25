@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\DiagnosticPhase;
 use App\Models\DiagnosticDomain;
+use App\Models\DiagnosticPhase;
 use Illuminate\Database\Seeder;
 
 class DiagnosticPhasesSeeder extends Seeder
@@ -24,7 +24,7 @@ class DiagnosticPhasesSeeder extends Seeder
                 'completion_criteria' => [
                     'min_domains_completed' => 4,
                     'min_questions_per_domain' => 3,
-                    'min_overall_score' => 60
+                    'min_overall_score' => 60,
                 ],
                 'color' => 'blue',
                 'icon' => 'shield',
@@ -39,7 +39,7 @@ class DiagnosticPhasesSeeder extends Seeder
                 'completion_criteria' => [
                     'min_domains_completed' => 4,
                     'min_questions_per_domain' => 3,
-                    'min_overall_score' => 65
+                    'min_overall_score' => 65,
                 ],
                 'color' => 'purple',
                 'icon' => 'cog',
@@ -54,7 +54,7 @@ class DiagnosticPhasesSeeder extends Seeder
                 'completion_criteria' => [
                     'min_domains_completed' => 4,
                     'min_questions_per_domain' => 3,
-                    'min_overall_score' => 70
+                    'min_overall_score' => 70,
                 ],
                 'color' => 'green',
                 'icon' => 'server',
@@ -69,7 +69,7 @@ class DiagnosticPhasesSeeder extends Seeder
                 'completion_criteria' => [
                     'min_domains_completed' => 4,
                     'min_questions_per_domain' => 3,
-                    'min_overall_score' => 75
+                    'min_overall_score' => 75,
                 ],
                 'color' => 'orange',
                 'icon' => 'bell',
@@ -119,13 +119,13 @@ class DiagnosticPhasesSeeder extends Seeder
 
         // Update domains with phase assignments
         $phases = DiagnosticPhase::all()->keyBy('order_sequence');
-        
+
         foreach ($domainPhaseMapping as $phaseOrder => $domainNames) {
             $phase = $phases[$phaseOrder];
-            
+
             foreach ($domainNames as $order => $domainName) {
                 $domain = DiagnosticDomain::where('name', $domainName)->first();
-                
+
                 if ($domain) {
                     $domain->update([
                         'phase_id' => $phase->id,

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Legal;
 
 use App\Http\Controllers\Controller;
-use App\Models\PrivacyConsent;
 use App\Services\DataAnonymizationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -255,7 +254,8 @@ class PrivacyController extends Controller
                 'user_id' => $user->id,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error getting consent status: ' . $e->getMessage());
+            \Log::error('Error getting consent status: '.$e->getMessage());
+
             return response()->json([
                 'error' => 'Failed to get consent status',
                 'consent_given' => false,
@@ -285,7 +285,7 @@ class PrivacyController extends Controller
         ]);
 
         // For unauthenticated users, return success (they handle consent via localStorage)
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Cookie consent saved locally for anonymous user',
@@ -305,7 +305,7 @@ class PrivacyController extends Controller
 
         // For authenticated users, save to database
         $user = auth()->user();
-        
+
         // Map cookie preferences to GDPR consent structure
         $consentPreferences = [
             'strictly_necessary' => $validated['necessary_cookies'],
@@ -412,7 +412,7 @@ class PrivacyController extends Controller
 
         // Redirect to intended URL or dashboard
         $intendedUrl = session()->pull('url.intended', route('dashboard'));
-        
+
         return redirect($intendedUrl)
             ->with('success', 'Thank you for accepting our privacy policy.');
     }

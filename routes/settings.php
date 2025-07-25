@@ -11,7 +11,7 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('settings.profile');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('settings.profile.update');
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('settings.profile.destroy');
-    
+
     // Add profile.edit alias for compatibility
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');

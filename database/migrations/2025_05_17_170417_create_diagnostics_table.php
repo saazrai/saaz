@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Create tables for the diagnostic assessment system.
-     * 
+     *
      * This migration creates the core diagnostic testing infrastructure:
      * - diagnostics: Main diagnostic test sessions
      * - diagnostic_domains: High-level knowledge areas (e.g., Security, Cloud Computing)
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('color', 20)->nullable()->comment('UI color for phase display');
             $table->string('icon', 50)->nullable()->comment('Icon for phase display');
             $table->timestamps();
-            
+
             $table->index('order_sequence');
             $table->index('is_active');
         });
@@ -41,10 +41,10 @@ return new class extends Migration
         Schema::create('diagnostics', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            
+
             // Session management
             $table->enum('status', ['in_progress', 'paused', 'completed'])->default('in_progress');
-            
+
             // Progress tracking
             // Removed 2025-07-14: total_questions column was redundant for adaptive testing
             // $table->integer('total_questions')->default(1000)->comment('Total questions in full assessment (50 per domain x 20 domains)');
@@ -52,10 +52,9 @@ return new class extends Migration
                 ->comment('Total duration of diagnostic session in seconds');
             $table->decimal('score', 5, 2)->nullable()
                 ->comment('Final score as percentage (0.00-100.00)');
-            
+
             // Phase tracking for 4-phase system - simplified
             $table->foreignId('phase_id')->nullable()->constrained('diagnostic_phases')->comment('Current phase reference');
-            
 
             // CAT-IRT integration columns
             $table->decimal('ability', 8, 4)->nullable()
@@ -64,7 +63,7 @@ return new class extends Migration
                 ->comment('Standard error of ability estimate for CAT termination');
             $table->jsonb('adaptive_state')->nullable()
                 ->comment('Adaptive testing state for resuming sessions');
-            
+
             $table->timestamp('completed_at')->nullable()->comment('When the diagnostic was completed');
             $table->timestamps();
             $table->softDeletes();
@@ -86,29 +85,29 @@ return new class extends Migration
             $table->integer('phase_order')->nullable()->comment('Order within the phase (1-5)');
             $table->string('name');
             $table->text('description')->nullable();
-            
+
             // Display and organization
             $table->integer('priority_order')->nullable()->comment('Display order in UI');
             $table->enum('category', ['foundational', 'technical', 'managerial'])->nullable()
                 ->comment('Domain categorization for learning paths');
             $table->string('code', 20)->nullable()->comment('Short code for domain (e.g., SRM, IAM)');
-            
+
             // Visualization
             $table->string('color', 20)->nullable()->comment('UI color for charts and reports');
             $table->string('icon', 50)->nullable()->comment('Icon identifier for UI display');
-            
+
             // Configuration
             $table->boolean('is_active')->default(true);
             $table->tinyInteger('min_bloom_level')->default(1)->comment('Minimum Bloom\'s taxonomy level');
             $table->tinyInteger('max_bloom_level')->default(6)->comment('Maximum Bloom\'s taxonomy level');
-            
+
             // Learning metadata
             $table->text('learning_objectives')->nullable();
             $table->jsonb('prerequisites')->nullable()->comment('Required knowledge before this domain');
-            
+
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Indexes
             $table->index('priority_order');
             $table->index('category');
@@ -125,7 +124,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Index for domain-based queries
             $table->index('domain_id');
         });
@@ -139,7 +138,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(1)->comment('Display order within topic');
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Index for topic-based queries
             $table->index(['topic_id', 'sort_order']);
         });
@@ -147,14 +146,14 @@ return new class extends Migration
         // Individual diagnostic questions with IRT parameters
         Schema::create('diagnostic_items', function (Blueprint $table) {
             $table->id();
-            //$table->foreignId('topic_id')->constrained('diagnostic_topics')->onDelete('cascade');
+            // $table->foreignId('topic_id')->constrained('diagnostic_topics')->onDelete('cascade');
             $table->foreignId('subtopic_id')->nullable()->constrained('diagnostic_subtopics')->onDelete('cascade'); // Added 2025-07-22: Granular subtopic mapping
             $table->foreignId('type_id')->nullable()->constrained('question_types')->onDelete('set null');
-            
+
             // Question categorization
             $table->enum('dimension', ['Technical', 'Managerial'])
                 ->comment('Question focus: Technical=hands-on skills, Managerial=leadership/strategy');
-            
+
             // Question content
             $table->text('content')->comment('The question text/prompt');
             $table->jsonb('options')->nullable()
@@ -165,7 +164,7 @@ return new class extends Migration
                 ->comment('Explanations for each option as JSON object');
             $table->jsonb('settings')->nullable()
                 ->comment('Question-specific configuration (time limits, hints, etc.)');
-            
+
             // Difficulty and cognitive level (V1 Enhanced: simplified structure)
             $table->integer('difficulty_level')->default(3)->comment('1-6 for difficulty levels');
             $table->integer('bloom_level')->default(3)->comment('1-6 for Bloom\'s taxonomy levels');
@@ -189,7 +188,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('diagnostic_id')->constrained('diagnostics')->onDelete('cascade');
             $table->foreignId('diagnostic_item_id')->constrained('diagnostic_items')->onDelete('cascade');
-            
+
             // Response data
             $table->jsonb('user_answer')->nullable()
                 ->comment('User response as JSON to support multiple answer types');

@@ -51,7 +51,7 @@ class SocialAuthController extends Controller
 
         if ($user) {
             // Update social provider info if not already set
-            if ($provider === 'google' && !$user->google_id) {
+            if ($provider === 'google' && ! $user->google_id) {
                 $user->update([
                     'google_id' => $socialUser->getId(),
                     'email_verified_at' => $user->email_verified_at ?? now(),

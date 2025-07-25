@@ -1,12 +1,10 @@
 <?php
 
-use App\Models\User;
 use App\Models\Diagnostic;
 use App\Models\DiagnosticDomain;
 use App\Models\DiagnosticItem;
 use App\Models\DiagnosticPhase;
-use App\Models\DiagnosticTopic;
-use App\Models\DiagnosticResponse;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -29,26 +27,26 @@ beforeEach(function () {
         'ip_address' => '127.0.0.1',
         'user_agent' => 'TestAgent',
     ]);
-    
+
     // Seed question types first (required for diagnostic items)
     $this->seed(\Database\Seeders\QuestionTypesSeeder::class);
-    
+
     // Create phases and domains
     $this->phase1 = DiagnosticPhase::factory()->create([
         'order_sequence' => 1,
         'name' => 'Foundation & Governance',
     ]);
-    
+
     $this->domains = DiagnosticDomain::factory()->count(5)->create([
         'phase_id' => $this->phase1->id,
     ]);
-    
+
     // Create topics for each domain, then questions for each topic
     foreach ($this->domains as $domain) {
         $topics = \App\Models\DiagnosticTopic::factory()->count(2)->create([
             'domain_id' => $domain->id,
         ]);
-        
+
         foreach ($topics as $topic) {
             DiagnosticItem::factory()->count(5)->create([
                 'topic_id' => $topic->id,
@@ -120,7 +118,7 @@ test('diagnostic assessment shows questions', function () {
     $domain = \App\Models\DiagnosticDomain::factory()->create(['phase_id' => $phase->id, 'is_active' => true]);
     $topic = \App\Models\DiagnosticTopic::factory()->create(['domain_id' => $domain->id]);
     $item = \App\Models\DiagnosticItem::factory()->create(['topic_id' => $topic->id, 'status' => 'published', 'bloom_level' => 3]);
-    
+
     $diagnostic = Diagnostic::factory()->create([
         'user_id' => $this->user->id,
         'status' => 'in_progress',
@@ -229,10 +227,10 @@ test('prevents starting new diagnostic when one is in progress', function () {
         ]);
 
     $response->assertStatus(302);
-    
+
     // Should redirect to the existing diagnostic instead of creating a new one
     $response->assertRedirect(route('assessments.diagnostics.show', $existingDiagnostic));
-    
+
     // Should only have one diagnostic
     expect(Diagnostic::where('user_id', $this->user->id)->count())->toBe(1);
 });
@@ -242,7 +240,7 @@ test('can resume incomplete diagnostic', function () {
     $domain = \App\Models\DiagnosticDomain::factory()->create(['phase_id' => $phase->id, 'is_active' => true]);
     $topic = \App\Models\DiagnosticTopic::factory()->create(['domain_id' => $domain->id]);
     $item = \App\Models\DiagnosticItem::factory()->create(['topic_id' => $topic->id, 'status' => 'published', 'bloom_level' => 3]);
-    
+
     $diagnostic = Diagnostic::factory()->create([
         'user_id' => $this->user->id,
         'status' => 'in_progress',

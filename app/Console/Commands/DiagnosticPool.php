@@ -21,7 +21,7 @@ class DiagnosticPool extends Command
         $phaseId = $this->option('phase');
         $showAll = false;
 
-        $this->info("=== QUESTION POOL STATISTICS ===");
+        $this->info('=== QUESTION POOL STATISTICS ===');
         $this->newLine();
 
         // Determine which domains to show
@@ -32,13 +32,14 @@ class DiagnosticPool extends Command
             $diagnostic = Diagnostic::with(['responses.diagnosticItem.subtopic.topic.domain'])
                 ->find($diagnosticId);
 
-            if (!$diagnostic) {
+            if (! $diagnostic) {
                 $this->error("Diagnostic with ID {$diagnosticId} not found.");
+
                 return 1;
             }
 
             $this->info("Showing pool statistics for domains used in Diagnostic #{$diagnosticId}");
-            
+
             // Get unique domains from diagnostic
             $domainNames = $diagnostic->responses()
                 ->with('diagnosticItem.subtopic.topic.domain')
@@ -48,21 +49,22 @@ class DiagnosticPool extends Command
                 ->unique();
 
             $domains = DiagnosticDomain::whereIn('name', $domainNames)->get();
-            
+
         } elseif ($phaseId) {
             // Show domains from specific phase
             $this->info("Showing pool statistics for Phase {$phaseId}");
             $domains = DiagnosticDomain::where('phase_id', $phaseId)->where('is_active', true)->get();
-            
+
         } else {
             // Default: show all domains
-            $this->info("Showing pool statistics for all 20 domains");
+            $this->info('Showing pool statistics for all 20 domains');
             $domains = DiagnosticDomain::where('is_active', true)->orderBy('phase_id')->orderBy('phase_order')->get();
             $showAll = true; // Set flag to group by phase
         }
 
         if ($domains->isEmpty()) {
-            $this->warn("No domains found.");
+            $this->warn('No domains found.');
+
             return 0;
         }
 
@@ -72,31 +74,31 @@ class DiagnosticPool extends Command
 
         foreach ($domains as $domain) {
             $bloomDistribution = [];
-            
+
             // Get question count for each bloom level
             for ($level = 1; $level <= 6; $level++) {
                 $count = DiagnosticItem::where('status', 'published')
                     ->where('bloom_level', $level)
-                    ->whereHas('subtopic.topic.domain', function($query) use ($domain) {
+                    ->whereHas('subtopic.topic.domain', function ($query) use ($domain) {
                         $query->where('id', $domain->id);
                     })
                     ->count();
-                    
+
                 if ($count > 0) {
                     $bloomDistribution[$level] = $count;
                 }
             }
-            
+
             // Calculate total questions in pool
             $totalInPool = array_sum($bloomDistribution);
             $totalQuestions += $totalInPool;
-            
+
             $poolStats[] = [
                 'id' => $domain->id,
                 'domain' => $domain->name,
                 'phase' => $domain->phase_id,
                 'total_pool' => $totalInPool,
-                'distribution' => $bloomDistribution
+                'distribution' => $bloomDistribution,
             ];
         }
 
@@ -109,10 +111,10 @@ class DiagnosticPool extends Command
 
         // Summary
         $this->newLine();
-        $this->info("SUMMARY:");
-        $this->line("Total domains: " . count($poolStats));
-        $this->line("Total questions: " . $totalQuestions);
-        $this->line("Average per domain: " . round($totalQuestions / count($poolStats), 1));
+        $this->info('SUMMARY:');
+        $this->line('Total domains: '.count($poolStats));
+        $this->line('Total questions: '.$totalQuestions);
+        $this->line('Average per domain: '.round($totalQuestions / count($poolStats), 1));
 
         // Show warnings
         $this->showWarnings($poolStats);
@@ -124,8 +126,9 @@ class DiagnosticPool extends Command
     {
         $this->table(
             ['ID', 'Domain', 'Total', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'Status'],
-            array_map(function($stat) {
+            array_map(function ($stat) {
                 $status = $this->getPoolStatus($stat);
+
                 return [
                     $stat['id'],
                     substr($stat['domain'], 0, 30),
@@ -136,7 +139,7 @@ class DiagnosticPool extends Command
                     $this->formatCount($stat['distribution'][4] ?? 0),
                     $this->formatCount($stat['distribution'][5] ?? 0),
                     $this->formatCount($stat['distribution'][6] ?? 0),
-                    $status
+                    $status,
                 ];
             }, $poolStats)
         );
@@ -150,7 +153,7 @@ class DiagnosticPool extends Command
         foreach ($phases as $phaseId => $phaseStats) {
             // Handle NULL phase_id (unassigned domains)
             if ($phaseId === null || $phaseId === '') {
-                $this->info("Unassigned Domains (No Phase)");
+                $this->info('Unassigned Domains (No Phase)');
             } else {
                 $phase = \App\Models\DiagnosticPhase::find($phaseId);
                 if ($phase) {
@@ -159,11 +162,12 @@ class DiagnosticPool extends Command
                     $this->info("Phase {$phaseId}: Unknown Phase");
                 }
             }
-            
+
             $this->table(
                 ['ID', 'Domain', 'Total', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'Status'],
-                array_map(function($stat) {
+                array_map(function ($stat) {
                     $status = $this->getPoolStatus($stat);
+
                     return [
                         $stat['id'],
                         substr($stat['domain'], 0, 30),
@@ -174,20 +178,27 @@ class DiagnosticPool extends Command
                         $this->formatCount($stat['distribution'][4] ?? 0),
                         $this->formatCount($stat['distribution'][5] ?? 0),
                         $this->formatCount($stat['distribution'][6] ?? 0),
-                        $status
+                        $status,
                     ];
                 }, $phaseStats->toArray())
             );
-            
+
             $this->newLine();
         }
     }
 
     private function formatCount($count)
     {
-        if ($count == 0) return '-';
-        if ($count < 10) return "<fg=red>{$count}</>";
-        if ($count < 15) return "<fg=yellow>{$count}</>";
+        if ($count == 0) {
+            return '-';
+        }
+        if ($count < 10) {
+            return "<fg=red>{$count}</>";
+        }
+        if ($count < 15) {
+            return "<fg=yellow>{$count}</>";
+        }
+
         return "<fg=green>{$count}</>";
     }
 
@@ -212,18 +223,18 @@ class DiagnosticPool extends Command
         } elseif ($stat['total_pool'] < 30) {
             return '<fg=yellow>⚠️ Small Pool</>';
         }
-        
+
         return '<fg=green>✓ Good</>';
     }
 
     private function showWarnings($poolStats)
     {
         $warnings = [];
-        
+
         foreach ($poolStats as $stat) {
             $lowLevels = [];
             $missingLevels = [];
-            
+
             for ($level = 1; $level <= 6; $level++) {
                 $count = $stat['distribution'][$level] ?? 0;
                 if ($count == 0) {
@@ -232,29 +243,29 @@ class DiagnosticPool extends Command
                     $lowLevels[] = "L{$level}({$count})";
                 }
             }
-            
+
             $issues = [];
-            if (!empty($missingLevels)) {
-                $issues[] = "Missing: " . implode(', ', $missingLevels);
+            if (! empty($missingLevels)) {
+                $issues[] = 'Missing: '.implode(', ', $missingLevels);
             }
-            if (!empty($lowLevels)) {
-                $issues[] = "Low (<10): " . implode(', ', $lowLevels);
+            if (! empty($lowLevels)) {
+                $issues[] = 'Low (<10): '.implode(', ', $lowLevels);
             }
-            
-            if (!empty($issues)) {
-                $warnings[] = "⚠️  {$stat['domain']}: " . implode(' | ', $issues);
+
+            if (! empty($issues)) {
+                $warnings[] = "⚠️  {$stat['domain']}: ".implode(' | ', $issues);
             }
         }
-        
-        if (!empty($warnings)) {
+
+        if (! empty($warnings)) {
             $this->newLine();
-            $this->warn("DOMAINS WITH INSUFFICIENT QUESTIONS:");
+            $this->warn('DOMAINS WITH INSUFFICIENT QUESTIONS:');
             foreach ($warnings as $warning) {
                 $this->line($warning);
             }
-            
+
             $this->newLine();
-            $this->info("Recommendation: Add more questions to levels with <15 questions for optimal adaptive testing.");
+            $this->info('Recommendation: Add more questions to levels with <15 questions for optimal adaptive testing.');
         }
     }
 }

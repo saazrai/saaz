@@ -5,13 +5,13 @@ namespace Database\Seeders\Diagnostics;
 class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
 {
     protected string $domainName = 'Security Awareness & Human Factors';
-    
+
     protected function getQuestions(): array
     {
         return [
             // Topic 1: Social Engineering (10 questions)
             // Bloom Distribution: L1:0, L2:2, L3:4, L4:2, L5:2
-            
+
             // Item 1 - L3 - Apply
             [
                 'subtopic' => 'Social Engineering',
@@ -20,14 +20,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Testing the company\'s technical security systems and firewalls',
                     'Attempting to manipulate people to bypass security controls and gain unauthorized access',
                     'Conducting penetration testing of network infrastructure',
-                    'Performing routine security compliance audits'
+                    'Performing routine security compliance audits',
                 ],
                 'correct_options' => ['Attempting to manipulate people to bypass security controls and gain unauthorized access'],
                 'justifications' => [
                     'Incorrect - These incidents target human behavior, not technical systems',
                     'Correct - All three scenarios manipulate people to circumvent security controls through deception',
                     'Incorrect - This is social manipulation, not network penetration testing',
-                    'Incorrect - These are attack attempts, not legitimate audit activities'
+                    'Incorrect - These are attack attempts, not legitimate audit activities',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -35,9 +35,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.0,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 2 - L2 - Understand
             [
                 'subtopic' => 'Social Engineering',
@@ -46,14 +46,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Pretexting uses only electronic communication methods',
                     'Pretexting involves creating a fabricated scenario to engage victims',
                     'Pretexting requires physical access to target facilities',
-                    'Pretexting only targets high-level executives'
+                    'Pretexting only targets high-level executives',
                 ],
                 'correct_options' => ['Pretexting involves creating a fabricated scenario to engage victims'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Pretexting involves creating a fabricated scenario to engage victims',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -61,9 +61,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.5,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 3 - L2 - Understand
             [
                 'subtopic' => 'Social Engineering',
@@ -72,14 +72,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'USB devices are expensive and appear valuable',
                     'People\'s curiosity and desire for free items make them likely to use unknown devices',
                     'USB devices can only target Windows operating systems',
-                    'Removable media is required for all malware installations'
+                    'Removable media is required for all malware installations',
                 ],
                 'correct_options' => ['People\'s curiosity and desire for free items make them likely to use unknown devices'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - People\'s curiosity and desire for free items make them likely to use unknown devices',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -87,9 +87,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 4 - L3 - Apply
             [
                 'subtopic' => 'Social Engineering',
@@ -98,14 +98,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Provide the password immediately to resolve the system issue',
                     'Refuse to give the password and verify the request through official channels',
                     'Give a partial password to help while maintaining some security',
-                    'Ask the caller to prove their identity by telling them their current password'
+                    'Ask the caller to prove their identity by telling them their current password',
                 ],
                 'correct_options' => ['Refuse to give the password and verify the request through official channels'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Refuse to give the password and verify the request through official channels',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -113,9 +113,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.1,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 5 - L3 - Apply
             [
                 'subtopic' => 'Social Engineering',
@@ -124,14 +124,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Immediately terminate employees who fail security tests',
                     'Use incidents as learning opportunities and provide additional training',
                     'Ignore the incidents to avoid embarrassing employees',
-                    'Reduce the affected employees\' access privileges permanently'
+                    'Reduce the affected employees\' access privileges permanently',
                 ],
                 'correct_options' => ['Use incidents as learning opportunities and provide additional training'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Use incidents as learning opportunities and provide additional training',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -139,9 +139,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.3,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 6 - L3 - Apply
             [
                 'subtopic' => 'Social Engineering',
@@ -150,14 +150,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Send monthly newsletters about phishing threats',
                     'Conduct simulated phishing exercises with immediate feedback and training',
                     'Require employees to read security policies annually',
-                    'Block all external emails to prevent phishing attempts'
+                    'Block all external emails to prevent phishing attempts',
                 ],
                 'correct_options' => ['Conduct simulated phishing exercises with immediate feedback and training'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Conduct simulated phishing exercises with immediate feedback and training',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -165,9 +165,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.5,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 7 - L4 - Analyze
             [
                 'subtopic' => 'Social Engineering',
@@ -176,14 +176,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Social engineering attacks are faster than technical attacks',
                     'Humans are often the weakest link and bypass technical security controls',
                     'Social engineering requires less skill than technical attacks',
-                    'Technical security controls are always ineffective against any attack'
+                    'Technical security controls are always ineffective against any attack',
                 ],
                 'correct_options' => ['Humans are often the weakest link and bypass technical security controls'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Humans are often the weakest link and bypass technical security controls',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -191,9 +191,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 8 - L4 - Analyze
             [
                 'subtopic' => 'Social Engineering',
@@ -202,14 +202,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Technology cannot prevent social engineering attacks',
                     'Human cognitive biases and trust tendencies are difficult to override completely',
                     'Social engineering attacks are too sophisticated for most people',
-                    'Security awareness training is too expensive for most organizations'
+                    'Security awareness training is too expensive for most organizations',
                 ],
                 'correct_options' => ['Human cognitive biases and trust tendencies are difficult to override completely'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Human cognitive biases and trust tendencies are difficult to override completely',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -217,9 +217,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 9 - L5 - Evaluate
             [
                 'subtopic' => 'Social Engineering',
@@ -228,14 +228,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Ineffective approach that creates paranoia among employees',
                     'Effective strategy that empowers employees and creates collective security responsibility',
                     'Only works for technical employees who understand security',
-                    'Creates too much overhead and slows business operations'
+                    'Creates too much overhead and slows business operations',
                 ],
                 'correct_options' => ['Effective strategy that empowers employees and creates collective security responsibility'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Effective strategy that empowers employees and creates collective security responsibility',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -243,9 +243,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.3,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 10 - L5 - Evaluate
             [
                 'subtopic' => 'Social Engineering',
@@ -254,14 +254,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Centralized training is always more effective and consistent',
                     'Security champions can provide peer influence and contextual training but need proper support',
                     'Security champions create security risks by distributing responsibility',
-                    'Both approaches are equally effective in all organizational contexts'
+                    'Both approaches are equally effective in all organizational contexts',
                 ],
                 'correct_options' => ['Security champions can provide peer influence and contextual training but need proper support'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Security champions can provide peer influence and contextual training but need proper support',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -269,12 +269,12 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Topic 2: Security Awareness & Training (10 questions)
             // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
-            
+
             // Item 11 - L1 - Remember
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -283,14 +283,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Teaching employees advanced cybersecurity technical skills',
                     'Changing employee behavior and building security-conscious culture',
                     'Replacing the need for technical security controls',
-                    'Ensuring legal compliance with training requirements only'
+                    'Ensuring legal compliance with training requirements only',
                 ],
                 'correct_options' => ['Changing employee behavior and building security-conscious culture'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Changing employee behavior and building security-conscious culture',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -298,9 +298,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.3,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 12 - L2 - Understand
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -309,14 +309,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Role-specific training is less expensive to implement',
                     'Employees can relate training content to their actual job responsibilities and risks',
                     'Generic training covers more security topics comprehensively',
-                    'Role-specific training requires less time from employees'
+                    'Role-specific training requires less time from employees',
                 ],
                 'correct_options' => ['Employees can relate training content to their actual job responsibilities and risks'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Employees can relate training content to their actual job responsibilities and risks',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -324,9 +324,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 13 - L2 - Understand
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -335,14 +335,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Annual training is more comprehensive and effective',
                     'Continuous training maintains awareness and adapts to emerging threats',
                     'Both approaches are equally effective for all organizations',
-                    'Training frequency has no impact on security behavior'
+                    'Training frequency has no impact on security behavior',
                 ],
                 'correct_options' => ['Continuous training maintains awareness and adapts to emerging threats'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Continuous training maintains awareness and adapts to emerging threats',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -350,9 +350,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.1,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 14 - L3 - Apply
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -361,14 +361,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Provide identical security training to all staff members',
                     'Develop role-specific training that addresses each group\'s unique security risks and workflows',
                     'Only train administrative staff since they handle most data',
-                    'Focus exclusively on compliance requirements and regulations'
+                    'Focus exclusively on compliance requirements and regulations',
                 ],
                 'correct_options' => ['Develop role-specific training that addresses each group\'s unique security risks and workflows'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Develop role-specific training that addresses each group\'s unique security risks and workflows',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -376,9 +376,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 15 - L3 - Apply
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -387,14 +387,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Count the number of employees who attended training sessions',
                     'Use metrics like phishing simulation results, security incident reduction, and behavioral assessments',
                     'Measure only the cost savings from reduced security incidents',
-                    'Rely solely on employee satisfaction surveys about training content'
+                    'Rely solely on employee satisfaction surveys about training content',
                 ],
                 'correct_options' => ['Use metrics like phishing simulation results, security incident reduction, and behavioral assessments'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Use metrics like phishing simulation results, security incident reduction, and behavioral assessments',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -402,9 +402,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 16 - L3 - Apply
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -413,14 +413,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Wait until employees can attend in-person training sessions',
                     'Use interactive online platforms with tracking and personalized learning paths',
                     'Send security policies via email and require acknowledgment',
-                    'Conduct one-time virtual meetings with all remote employees'
+                    'Conduct one-time virtual meetings with all remote employees',
                 ],
                 'correct_options' => ['Use interactive online platforms with tracking and personalized learning paths'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Use interactive online platforms with tracking and personalized learning paths',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -428,9 +428,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 17 - L4 - Analyze
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -439,14 +439,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'The overall duration of the training sessions',
                     'The number of times the training is repeated annually',
                     'The qualifications and certifications of the training instructors',
-                    'The content being tailored to the target audience'
+                    'The content being tailored to the target audience',
                 ],
                 'correct_options' => ['The content being tailored to the target audience'],
                 'justifications' => [
                     'Incorrect - Training duration alone does not ensure effectiveness; overly long sessions can reduce engagement while very short sessions may lack depth',
                     'Incorrect - Frequency is important but not the most critical factor; poorly designed training repeated frequently is still ineffective',
                     'Incorrect - While instructor qualifications matter, the most qualified instructor cannot make irrelevant content effective for the specific audience',
-                    'Correct - Tailoring content to the target audience is most important because relevant, role-specific training that addresses actual job responsibilities and risks ensures higher engagement and practical application'
+                    'Correct - Tailoring content to the target audience is most important because relevant, role-specific training that addresses actual job responsibilities and risks ensures higher engagement and practical application',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 3,
@@ -454,9 +454,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 18 - L4 - Analyze
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -465,14 +465,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Comprehensive training is always more engaging for employees',
                     'Detailed content can overwhelm employees while brief content may miss critical topics',
                     'Employee engagement is not important for security training effectiveness',
-                    'Security training should focus only on compliance requirements'
+                    'Security training should focus only on compliance requirements',
                 ],
                 'correct_options' => ['Detailed content can overwhelm employees while brief content may miss critical topics'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Detailed content can overwhelm employees while brief content may miss critical topics',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -480,9 +480,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.1,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 19 - L5 - Evaluate
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -491,14 +491,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Gamification always reduces the seriousness of security training',
                     'Can increase engagement and retention but must balance fun with learning objectives',
                     'Gamification is only effective for younger employees',
-                    'Competition elements create security risks through oversharing'
+                    'Competition elements create security risks through oversharing',
                 ],
                 'correct_options' => ['Can increase engagement and retention but must balance fun with learning objectives'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Can increase engagement and retention but must balance fun with learning objectives',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -506,9 +506,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.4,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 20 - L5 - Evaluate
             [
                 'subtopic' => 'Security Awareness & Training',
@@ -517,14 +517,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Using real incidents creates fear and reduces employee morale',
                     'Real incidents provide relevant context but require careful presentation to avoid blame',
                     'Generic examples are always more effective than organization-specific cases',
-                    'Security incidents should never be discussed in training programs'
+                    'Security incidents should never be discussed in training programs',
                 ],
                 'correct_options' => ['Real incidents provide relevant context but require careful presentation to avoid blame'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Real incidents provide relevant context but require careful presentation to avoid blame',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -532,12 +532,12 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.3,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Topic 3: Human Resource Security (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 21 - L2 - Understand
             [
                 'subtopic' => 'Human Resource Security',
@@ -546,14 +546,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'To determine an applicant\'s technical skills',
                     'To verify credentials, identify potential risks and assess trustworthiness',
                     'To predict future job performance',
-                    'To evaluate cultural fit within the organization'
+                    'To evaluate cultural fit within the organization',
                 ],
                 'correct_options' => ['To verify credentials, identify potential risks and assess trustworthiness'],
                 'justifications' => [
                     'Incorrect - Technical skills assessment is typically handled through interviews, testing, and portfolio reviews rather than background checks',
                     'Correct - Background checks verify credentials, identify potential security risks (criminal history, financial issues, references), and assess overall trustworthiness for access to organizational assets',
                     'Incorrect - Job performance prediction relies on interviews, references, and past performance evaluations rather than security-focused background investigations',
-                    'Incorrect - Cultural fit evaluation is primarily addressed through interviews and team interactions, not through background security screening processes'
+                    'Incorrect - Cultural fit evaluation is primarily addressed through interviews and team interactions, not through background security screening processes',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -561,9 +561,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.6,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 22 - L1 - Remember
             [
                 'subtopic' => 'Human Resource Security',
@@ -572,14 +572,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Only technical security requirements for IT positions',
                     'Security responsibilities and requirements relevant to the specific role',
                     'Generic security policies that apply to all employees',
-                    'Legal disclaimers about security monitoring'
+                    'Legal disclaimers about security monitoring',
                 ],
                 'correct_options' => ['Security responsibilities and requirements relevant to the specific role'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Security responsibilities and requirements relevant to the specific role',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -587,9 +587,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 23 - L2 - Understand
             [
                 'subtopic' => 'Human Resource Security',
@@ -598,14 +598,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Privileged positions require higher salaries and compensation',
                     'Higher access levels create greater potential security risks requiring additional verification',
                     'Privileged employees work in more secure physical locations',
-                    'Security screening is identical for all positions regardless of access level'
+                    'Security screening is identical for all positions regardless of access level',
                 ],
                 'correct_options' => ['Higher access levels create greater potential security risks requiring additional verification'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Higher access levels create greater potential security risks requiring additional verification',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -613,9 +613,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.5,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 24 - L2 - Understand
             [
                 'subtopic' => 'Human Resource Security',
@@ -624,14 +624,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'They eliminate all insider threats from employees',
                     'They establish legal obligations for confidentiality and acceptable behavior',
                     'They replace the need for technical security controls',
-                    'They only apply to senior management positions'
+                    'They only apply to senior management positions',
                 ],
                 'correct_options' => ['They establish legal obligations for confidentiality and acceptable behavior'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - They establish legal obligations for confidentiality and acceptable behavior',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -639,9 +639,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 25 - L3 - Apply
             [
                 'subtopic' => 'Human Resource Security',
@@ -650,14 +650,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Use the same basic screening process for all technical positions',
                     'Implement enhanced background checks including financial history and reference verification',
                     'Only require technical certifications and skip background screening',
-                    'Rely on the candidate\'s previous employer recommendations only'
+                    'Rely on the candidate\'s previous employer recommendations only',
                 ],
                 'correct_options' => ['Implement enhanced background checks including financial history and reference verification'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Implement enhanced background checks including financial history and reference verification',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -665,9 +665,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 26 - L3 - Apply
             [
                 'subtopic' => 'Human Resource Security',
@@ -676,14 +676,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Granting them the maximum possible access for flexibility',
                     'Provisioning access based on the principle of least privilege',
                     'Allowing them to self-provision all necessary accounts',
-                    'Using shared generic accounts'
+                    'Using shared generic accounts',
                 ],
                 'correct_options' => ['Provisioning access based on the principle of least privilege'],
                 'justifications' => [
                     'Incorrect - Maximum access creates unnecessary security risks and violates the principle of least privilege; employees should only receive access needed for their specific role',
                     'Correct - Provisioning access based on the principle of least privilege ensures new employees receive only the minimum access necessary to perform their job functions, reducing security risks and maintaining proper access controls',
                     'Incorrect - Self-provisioning allows employees to grant themselves inappropriate access levels and bypasses proper authorization controls and approval processes',
-                    'Incorrect - Shared generic accounts eliminate accountability, make auditing impossible, and create security vulnerabilities as multiple people use the same credentials'
+                    'Incorrect - Shared generic accounts eliminate accountability, make auditing impossible, and create security vulnerabilities as multiple people use the same credentials',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 2,
@@ -691,9 +691,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 27 - L3 - Apply
             [
                 'subtopic' => 'Human Resource Security',
@@ -702,14 +702,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Re-screen all employees annually regardless of role or risk',
                     'Implement risk-based re-screening based on position sensitivity and time intervals',
                     'Only re-screen employees after security incidents occur',
-                    'Never re-screen employees after initial hiring'
+                    'Never re-screen employees after initial hiring',
                 ],
                 'correct_options' => ['Implement risk-based re-screening based on position sensitivity and time intervals'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Implement risk-based re-screening based on position sensitivity and time intervals',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -717,9 +717,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 28 - L4 - Analyze
             [
                 'subtopic' => 'Human Resource Security',
@@ -728,14 +728,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Remote work eliminates all human resource security risks',
                     'Remote work requires adaptation of screening, monitoring, and access controls',
                     'Traditional HR security controls work identically for remote employees',
-                    'Remote employees require less security oversight than office workers'
+                    'Remote employees require less security oversight than office workers',
                 ],
                 'correct_options' => ['Remote work requires adaptation of screening, monitoring, and access controls'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Remote work requires adaptation of screening, monitoring, and access controls',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -743,9 +743,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 29 - L4 - Analyze
             [
                 'subtopic' => 'Human Resource Security',
@@ -754,14 +754,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Privacy rights are not relevant in employment security screening',
                     'Organizations must comply with privacy laws while obtaining necessary security information',
                     'Security screening always takes precedence over privacy considerations',
-                    'Employee privacy and security screening never conflict'
+                    'Employee privacy and security screening never conflict',
                 ],
                 'correct_options' => ['Organizations must comply with privacy laws while obtaining necessary security information'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Organizations must comply with privacy laws while obtaining necessary security information',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -769,9 +769,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 30 - L5 - Evaluate
             [
                 'subtopic' => 'Human Resource Security',
@@ -780,14 +780,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Continuous monitoring is necessary for all employees in all industries',
                     'Must balance legitimate security needs with privacy rights and legal compliance',
                     'Social media monitoring eliminates all insider threat risks',
-                    'Online monitoring should never be implemented by organizations'
+                    'Online monitoring should never be implemented by organizations',
                 ],
                 'correct_options' => ['Must balance legitimate security needs with privacy rights and legal compliance'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Must balance legitimate security needs with privacy rights and legal compliance',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -795,12 +795,12 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Topic 4: Personnel Safety (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 31 - L2 - Understand
             [
                 'subtopic' => 'Personnel Safety',
@@ -809,14 +809,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'A physical security measure designed to protect personnel from external threats',
                     'A legal defense that can be invoked when an individual is forced to engage in unlawful activities under coercion',
                     'A risk management technique used to assess and mitigate potential threats to personnel safety',
-                    'A psychological evaluation process to identify individuals susceptible to manipulation or coercion'
+                    'A psychological evaluation process to identify individuals susceptible to manipulation or coercion',
                 ],
                 'correct_options' => ['A legal defense that can be invoked when an individual is forced to engage in unlawful activities under coercion'],
                 'justifications' => [
                     'Incorrect - Physical security measures protect against threats but duress specifically refers to psychological pressure or coercion forcing someone to act against their will',
                     'Correct - Duress is a legal concept where an individual is compelled to commit an act (including potentially unlawful activities) due to immediate threat of harm, coercion, or pressure from another party',
                     'Incorrect - While duress situations may be considered in risk management, duress itself is not a risk management technique but rather a condition of coercion',
-                    'Incorrect - Psychological evaluations may identify vulnerability to coercion, but duress refers to the actual state of being under coercive pressure, not the evaluation process'
+                    'Incorrect - Psychological evaluations may identify vulnerability to coercion, but duress refers to the actual state of being under coercive pressure, not the evaluation process',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -824,9 +824,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.6,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 32 - L1 - Remember
             [
                 'subtopic' => 'Personnel Safety',
@@ -835,14 +835,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Handle the situation independently without involving others',
                     'Report concerns immediately to security, management, or designated safety personnel',
                     'Wait to see if the threat escalates before taking action',
-                    'Only report threats if they involve physical violence'
+                    'Only report threats if they involve physical violence',
                 ],
                 'correct_options' => ['Report concerns immediately to security, management, or designated safety personnel'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Report concerns immediately to security, management, or designated safety personnel',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -850,9 +850,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.3,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 33 - L2 - Understand
             [
                 'subtopic' => 'Personnel Safety',
@@ -861,14 +861,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'It improves job performance and productivity metrics',
                     'It helps individuals recognize and respond to potential threats or dangerous situations',
                     'It reduces the need for physical security measures',
-                    'It eliminates all workplace safety risks'
+                    'It eliminates all workplace safety risks',
                 ],
                 'correct_options' => ['It helps individuals recognize and respond to potential threats or dangerous situations'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - It helps individuals recognize and respond to potential threats or dangerous situations',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -876,9 +876,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 34 - L2 - Understand
             [
                 'subtopic' => 'Personnel Safety',
@@ -887,14 +887,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'They focus only on external threats to the organization',
                     'They address both prevention and response to internal and external violence threats',
                     'They replace the need for physical security controls',
-                    'They only apply to high-risk industries like healthcare'
+                    'They only apply to high-risk industries like healthcare',
                 ],
                 'correct_options' => ['They address both prevention and response to internal and external violence threats'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - They address both prevention and response to internal and external violence threats',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -902,9 +902,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.1,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 35 - L3 - Apply
             [
                 'subtopic' => 'Personnel Safety',
@@ -913,14 +913,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Prohibit all travel to any international locations',
                     'Develop comprehensive travel security protocols including threat assessments and emergency procedures',
                     'Only allow senior executives to travel internationally',
-                    'Rely on hotel security and local law enforcement only'
+                    'Rely on hotel security and local law enforcement only',
                 ],
                 'correct_options' => ['Develop comprehensive travel security protocols including threat assessments and emergency procedures'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Develop comprehensive travel security protocols including threat assessments and emergency procedures',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -928,9 +928,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 36 - L3 - Apply
             [
                 'subtopic' => 'Personnel Safety',
@@ -939,14 +939,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Ignore the behavior unless violence actually occurs',
                     'Address concerns through appropriate channels like HR, employee assistance programs, or security',
                     'Immediately terminate the employee to eliminate risk',
-                    'Assign other employees to monitor the individual continuously'
+                    'Assign other employees to monitor the individual continuously',
                 ],
                 'correct_options' => ['Address concerns through appropriate channels like HR, employee assistance programs, or security'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Address concerns through appropriate channels like HR, employee assistance programs, or security',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -954,9 +954,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 37 - L2 - Understand
             [
                 'subtopic' => 'Personnel Safety',
@@ -965,14 +965,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Restoring systems to full functionality',
                     'Containing the incident and preventing further damage',
                     'Protecting human life and safety',
-                    'Notifying external regulators'
+                    'Notifying external regulators',
                 ],
                 'correct_options' => ['Protecting human life and safety'],
                 'justifications' => [
                     'Incorrect - System restoration is important but comes after ensuring human safety; systems can be rebuilt but lives cannot be replaced',
                     'Incorrect - Incident containment is critical but secondary to life safety; containment efforts should not endanger personnel',
                     'Correct - Protecting human life and safety is always the first priority in emergency response protocols, as human life is irreplaceable and takes precedence over all other considerations',
-                    'Incorrect - Regulatory notifications are important for compliance but come much later in the response process after life safety and immediate threats are addressed'
+                    'Incorrect - Regulatory notifications are important for compliance but come much later in the response process after life safety and immediate threats are addressed',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 1,
@@ -980,9 +980,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.0,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 38 - L4 - Analyze
             [
                 'subtopic' => 'Personnel Safety',
@@ -991,14 +991,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Physical and psychological safety are completely separate issues',
                     'Both types of safety affect employee well-being and can impact security risks',
                     'Psychological safety is not relevant to security programs',
-                    'Physical safety measures automatically address psychological concerns'
+                    'Physical safety measures automatically address psychological concerns',
                 ],
                 'correct_options' => ['Both types of safety affect employee well-being and can impact security risks'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Both types of safety affect employee well-being and can impact security risks',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -1006,9 +1006,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.9,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 39 - L4 - Analyze
             [
                 'subtopic' => 'Personnel Safety',
@@ -1017,14 +1017,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Security measures always improve work environments',
                     'Excessive security can create fear while insufficient security creates risk',
                     'Work environment quality is not related to personnel safety',
-                    'Personnel safety programs focus only on compliance requirements'
+                    'Personnel safety programs focus only on compliance requirements',
                 ],
                 'correct_options' => ['Excessive security can create fear while insufficient security creates risk'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Excessive security can create fear while insufficient security creates risk',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -1032,9 +1032,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.1,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 40 - L5 - Evaluate
             [
                 'subtopic' => 'Personnel Safety',
@@ -1043,14 +1043,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Anonymous reporting systems are always ineffective and should be eliminated',
                     'Low utilization may indicate trust issues, lack of awareness, or fear of retaliation requiring cultural changes',
                     'Employees prefer to handle all safety issues independently',
-                    'Anonymous systems work only in certain industries'
+                    'Anonymous systems work only in certain industries',
                 ],
                 'correct_options' => ['Low utilization may indicate trust issues, lack of awareness, or fear of retaliation requiring cultural changes'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Low utilization may indicate trust issues, lack of awareness, or fear of retaliation requiring cultural changes',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -1058,12 +1058,12 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.4,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Topic 5: Personnel Security Controls (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 41 - L1 - Remember
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1072,14 +1072,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Giving employees the minimum salary and benefits',
                     'Granting individuals only the minimum access necessary to perform their job functions',
                     'Hiring the smallest number of employees possible',
-                    'Providing the least expensive security training'
+                    'Providing the least expensive security training',
                 ],
                 'correct_options' => ['Granting individuals only the minimum access necessary to perform their job functions'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Granting individuals only the minimum access necessary to perform their job functions',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -1087,9 +1087,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 42 - L1 - Remember
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1098,14 +1098,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Access rights should remain unchanged to avoid disruption',
                     'Access should be reviewed and adjusted to match new role requirements',
                     'All access should be removed and the employee should reapply',
-                    'Access changes should only be made during annual reviews'
+                    'Access changes should only be made during annual reviews',
                 ],
                 'correct_options' => ['Access should be reviewed and adjusted to match new role requirements'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Access should be reviewed and adjusted to match new role requirements',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -1113,9 +1113,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 43 - L3 - Apply
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1124,14 +1124,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'A developer writes code and then tests their own code for quality assurance',
                     'A user creates a report based on data they did not enter',
                     'An accountant prepares financial statements and a different accountant reviews them',
-                    'A network engineer configures a firewall, and a different engineer audits the configuration'
+                    'A network engineer configures a firewall, and a different engineer audits the configuration',
                 ],
                 'correct_options' => ['A developer writes code and then tests their own code for quality assurance'],
                 'justifications' => [
                     'Correct - This violates separation of duties as the same person both creates and validates the work, eliminating independent verification and increasing risk of undetected errors or malicious code',
                     'Incorrect - This demonstrates proper separation of duties where the person creating reports is different from those entering the underlying data, providing independent verification',
                     'Incorrect - This exemplifies proper separation of duties with different individuals handling preparation and review functions, ensuring independent oversight',
-                    'Incorrect - This shows correct separation of duties implementation where configuration and audit functions are performed by different engineers, maintaining independent verification'
+                    'Incorrect - This shows correct separation of duties implementation where configuration and audit functions are performed by different engineers, maintaining independent verification',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 2,
@@ -1139,9 +1139,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.3,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 44 - L2 - Understand
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1150,14 +1150,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'To prevent the risk of collusion among employees',
                     'To limit user access to only the information necessary for their tasks',
                     'To restrict users to the minimum level of access required for their roles',
-                    'To prevent errors or fraudulent activities in high-risk transactions'
+                    'To prevent errors or fraudulent activities in high-risk transactions',
                 ],
                 'correct_options' => ['To prevent errors or fraudulent activities in high-risk transactions'],
                 'justifications' => [
                     'Incorrect - While SoD may reduce some collusion risks, it actually requires multiple people to be involved, and the primary purpose is preventing single-person control over critical processes',
                     'Incorrect - This describes data access controls and need-to-know principles, not separation of duties which focuses on dividing critical process steps among different individuals',
                     'Incorrect - This describes the principle of least privilege, which limits access rights, whereas SoD divides workflow responsibilities among multiple people',
-                    'Correct - The primary purpose of segregation of duties is to prevent errors and fraudulent activities by ensuring no single individual has complete control over high-risk transactions or critical processes'
+                    'Correct - The primary purpose of segregation of duties is to prevent errors and fraudulent activities by ensuring no single individual has complete control over high-risk transactions or critical processes',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -1165,9 +1165,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.5,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 45 - L3 - Apply
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1176,14 +1176,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Allow any trained employee to process transfers independently',
                     'Implement dual authorization, transaction limits, and mandatory vacation policies',
                     'Only require additional training for wire transfer processing',
-                    'Use only technical controls like software restrictions'
+                    'Use only technical controls like software restrictions',
                 ],
                 'correct_options' => ['Implement dual authorization, transaction limits, and mandatory vacation policies'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Implement dual authorization, transaction limits, and mandatory vacation policies',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -1191,9 +1191,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 46 - L3 - Apply
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1202,14 +1202,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Give these employees access to all systems they might need',
                     'Carefully define access based on specific job functions and implement clear approval processes',
                     'Restrict these employees to single-department access only',
-                    'Allow department managers to grant access without coordination'
+                    'Allow department managers to grant access without coordination',
                 ],
                 'correct_options' => ['Carefully define access based on specific job functions and implement clear approval processes'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Carefully define access based on specific job functions and implement clear approval processes',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -1217,9 +1217,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 47 - L2 - Understand
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1228,14 +1228,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Mandatory access control',
                     'Principle of least privilege',
                     'Discretionary access control',
-                    'Mandatory job rotation'
+                    'Mandatory job rotation',
                 ],
                 'correct_options' => ['Mandatory job rotation'],
                 'justifications' => [
                     'Incorrect - Mandatory access control (MAC) restricts access based on security classifications but does not specifically address collusion between authorized users',
                     'Incorrect - Principle of least privilege limits access to minimum necessary permissions but does not prevent authorized users from colluding within their granted access',
                     'Incorrect - Discretionary access control allows data owners to control access but does not address collusion risks between authorized users',
-                    'Correct - Mandatory job rotation specifically prevents collusion by regularly moving personnel between positions, disrupting long-term relationships and schemes that require sustained cooperation'
+                    'Correct - Mandatory job rotation specifically prevents collusion by regularly moving personnel between positions, disrupting long-term relationships and schemes that require sustained cooperation',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -1243,9 +1243,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.1,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 48 - L2 - Understand
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1254,14 +1254,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'allow cross-training for development',
                     'help preserve employee morale',
                     'detect improper or illegal employee acts',
-                    'provide a competitive employee benefit'
+                    'provide a competitive employee benefit',
                 ],
                 'correct_options' => ['detect improper or illegal employee acts'],
                 'justifications' => [
                     'Incorrect - While cross-training may be a secondary benefit, the primary security control purpose is detection of unauthorized activities that require continuous presence to conceal',
                     'Incorrect - Employee morale improvement is a potential side benefit but not the primary security control objective of mandatory vacations and rotations',
                     'Correct - The primary control purpose is to detect improper or illegal activities by forcing employees away from their positions, revealing unauthorized acts that require their continuous presence to conceal',
-                    'Incorrect - Competitive benefits are HR considerations, not the primary security control purpose of mandatory vacations and job rotations'
+                    'Incorrect - Competitive benefits are HR considerations, not the primary security control purpose of mandatory vacations and job rotations',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -1269,9 +1269,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 49 - L4 - Analyze
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1280,14 +1280,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Security controls always improve operational efficiency',
                     'Extensive controls can impede productivity while insufficient controls create risks',
                     'Operational efficiency is not important for security programs',
-                    'Personnel controls have no impact on business operations'
+                    'Personnel controls have no impact on business operations',
                 ],
                 'correct_options' => ['Extensive controls can impede productivity while insufficient controls create risks'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Extensive controls can impede productivity while insufficient controls create risks',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -1295,9 +1295,9 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'type_id' => 1,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 50 - L5 - Evaluate
             [
                 'subtopic' => 'Personnel Security Controls',
@@ -1306,14 +1306,14 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                     'Extensive monitoring is always necessary regardless of employee concerns',
                     'Must balance legitimate security needs with privacy rights and maintain employee trust',
                     'Employee privacy should never be considered in security programs',
-                    'Monitoring technology eliminates the need for other personnel controls'
+                    'Monitoring technology eliminates the need for other personnel controls',
                 ],
                 'correct_options' => ['Must balance legitimate security needs with privacy rights and maintain employee trust'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Must balance legitimate security needs with privacy rights and maintain employee trust',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'bloom_level' => 5,
                 'difficulty_level' => 5,
@@ -1321,8 +1321,8 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
                 'type_id' => 1,
-                'status' => 'published'
-            ]
+                'status' => 'published',
+            ],
         ];
     }
 }

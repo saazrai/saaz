@@ -18,7 +18,7 @@ class DiagnosticResponseFactory extends Factory
     {
         $isCorrect = $this->faker->boolean(70);
         $correctAnswer = $this->faker->randomElement(['A', 'B', 'C', 'D']);
-        
+
         return [
             'diagnostic_id' => \App\Models\Diagnostic::factory(),
             'diagnostic_item_id' => $this->faker->numberBetween(1, 100),

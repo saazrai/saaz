@@ -84,7 +84,7 @@ test('user password is hidden in serialization', function () {
 });
 
 test('user fillable fields are correct', function () {
-    $user = new User();
+    $user = new User;
 
     expect($user->getFillable())->toBe([
         'name',
@@ -98,7 +98,7 @@ test('user fillable fields are correct', function () {
 });
 
 test('user audit excludes sensitive fields', function () {
-    $user = new User();
+    $user = new User;
 
     expect($user->getAuditExclude())->toContain('password');
     expect($user->getAuditExclude())->toContain('remember_token');

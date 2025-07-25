@@ -89,6 +89,7 @@ class DiagnosticPhase extends Model
     public function isCompleteForDiagnostic(Diagnostic $diagnostic): bool
     {
         $completedPhases = $diagnostic->phases_completed ?? [];
+
         return in_array($this->id, $completedPhases);
     }
 
@@ -98,6 +99,7 @@ class DiagnosticPhase extends Model
     public function getProgressForDiagnostic(Diagnostic $diagnostic): array
     {
         $phaseProgress = $diagnostic->phase_progress ?? [];
+
         return $phaseProgress[$this->id] ?? [
             'domains_completed' => 0,
             'total_domains' => $this->target_domains,

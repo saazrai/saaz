@@ -5,13 +5,13 @@ namespace Database\Seeders\Diagnostics;
 class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
 {
     protected string $domainName = 'Security Audits & Assessments';
-    
+
     protected function getQuestions(): array
     {
         return [
             // Topic 1: Audit Fundamentals (10 questions)
             // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
-            
+
             // Item 1 - L1 - Remember
             [
                 'topic' => 'Audit Fundamentals',
@@ -21,14 +21,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Fieldwork',
                     'Reporting',
                     'Planning',
-                    'Follow-up'
+                    'Follow-up',
                 ],
                 'correct_options' => ['Planning'],
                 'justifications' => [
                     'Incorrect - Fieldwork is the execution phase where evidence is gathered',
                     'Incorrect - Reporting phase communicates findings after fieldwork is complete',
                     'Correct - Planning phase establishes objectives, determines scope, and allocates resources before audit execution',
-                    'Incorrect - Follow-up phase occurs after reporting to verify remediation'
+                    'Incorrect - Follow-up phase occurs after reporting to verify remediation',
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -36,10 +36,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.5,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 2 - L2 - Understand
             [
                 'topic' => 'Audit Fundamentals',
@@ -52,17 +52,17 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Planning establishes audit objectives, scope, and methodology',
                     'Fieldwork involves evidence gathering and control testing',
                     'Reporting communicates findings and recommendations to stakeholders',
-                    'Follow-up verifies remediation of identified issues'
+                    'Follow-up verifies remediation of identified issues',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
                 'irt_a' => 1.0,
                 'irt_b' => -0.8,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
 
             ],
-            
+
             // Item 3 - L2 - Understand
             [
                 'topic' => 'Audit Fundamentals',
@@ -72,14 +72,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Internal auditors provide a more cost-effective auditing solution.',
                     'Internal auditors are more likely to align with management\'s objectives.',
                     'Internal auditors can conduct audits more frequently with fewer restrictions.',
-                    'Internal auditors have a deeper understanding of the organization\'s processes and risks.'
+                    'Internal auditors have a deeper understanding of the organization\'s processes and risks.',
                 ],
                 'correct_options' => ['Internal auditors have a deeper understanding of the organization\'s processes and risks.'],
                 'justifications' => [
                     'Incorrect - While cost may be lower, this is not the most significant advantage for audit quality',
                     'Incorrect - Alignment with management objectives can compromise independence and objectivity',
                     'Incorrect - Frequency and fewer restrictions are operational benefits but not the most significant advantage',
-                    'Correct - Deep organizational knowledge enables more targeted and effective risk assessment and control evaluation'
+                    'Correct - Deep organizational knowledge enables more targeted and effective risk assessment and control evaluation',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -87,10 +87,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.6,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 4 - L3 - Apply
             [
                 'topic' => 'Audit Fundamentals',
@@ -100,14 +100,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'The personal preferences of the audit team',
                     'The availability of advanced audit software',
                     'The risks associated with the areas to be audited',
-                    'The amount of time spent on previous audits'
+                    'The amount of time spent on previous audits',
                 ],
                 'correct_options' => ['The risks associated with the areas to be audited'],
                 'justifications' => [
                     'Incorrect - Personal preferences should not drive audit scope determination',
                     'Incorrect - While tools are helpful, they should not be the primary driver of scope',
                     'Correct - Risk assessment is fundamental to determining what areas require audit attention and resources',
-                    'Incorrect - Previous time spent is historical data but not a primary consideration for current scope'
+                    'Incorrect - Previous time spent is historical data but not a primary consideration for current scope',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -115,10 +115,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.1,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 5 - L3 - Apply
             [
                 'topic' => 'Audit Fundamentals',
@@ -128,14 +128,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'To guarantee that no fraud will occur within the organization',
                     'To allocate audit resources to areas with the highest potential risks',
                     'To minimize the time spent on the audit fieldwork',
-                    'To eliminate the need for follow-up activities'
+                    'To eliminate the need for follow-up activities',
                 ],
                 'correct_options' => ['To allocate audit resources to areas with the highest potential risks'],
                 'justifications' => [
                     'Incorrect - No audit approach can guarantee prevention of all fraud',
                     'Correct - Risk-based auditing focuses resources on areas of highest risk to maximize audit effectiveness',
                     'Incorrect - Time reduction is a potential benefit but not the primary purpose',
-                    'Incorrect - Follow-up activities remain necessary regardless of audit approach'
+                    'Incorrect - Follow-up activities remain necessary regardless of audit approach',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -143,10 +143,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.3,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 6 - L3 - Apply
             [
                 'topic' => 'Audit Fundamentals',
@@ -156,14 +156,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Reporting',
                     'Follow-up',
                     'Fieldwork',
-                    'Planning'
+                    'Planning',
                 ],
                 'correct_options' => ['Fieldwork'],
                 'justifications' => [
                     'Incorrect - Reporting phase has defined scope based on completed fieldwork',
                     'Incorrect - Follow-up phase focuses on remediation verification of known issues',
                     'Correct - Fieldwork phase is when auditors discover actual conditions and may uncover unexpected issues requiring expanded testing',
-                    'Incorrect - Planning phase sets initial scope but actual discoveries happen during fieldwork'
+                    'Incorrect - Planning phase sets initial scope but actual discoveries happen during fieldwork',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -171,10 +171,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.5,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 7 - L4 - Analyze
             [
                 'topic' => 'Audit Fundamentals',
@@ -184,14 +184,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'The assessor holds relevant industry certifications.',
                     'The assessor has extensive knowledge of the organization\'s business.',
                     'The assessor maintains independence and objectivity.',
-                    'The assessor has prior experience with similar assessments.'
+                    'The assessor has prior experience with similar assessments.',
                 ],
                 'correct_options' => ['The assessor maintains independence and objectivity.'],
                 'justifications' => [
                     'Incorrect - While certifications demonstrate competency, they can be supplemented by other qualifications',
                     'Incorrect - Business knowledge is valuable but can be acquired during the assessment process',
                     'Correct - Independence and objectivity are fundamental to audit credibility; without them, findings may be biased or influenced by conflicts of interest',
-                    'Incorrect - Experience is important but can be gained, and independence remains the critical foundation'
+                    'Incorrect - Experience is important but can be gained, and independence remains the critical foundation',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -199,10 +199,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 10 - L4 - Analyze
             [
                 'topic' => 'Audit Fundamentals',
@@ -212,7 +212,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'DevOps environments are inherently more secure',
                     'Rapid change cycles make traditional point-in-time assessments less relevant',
                     'DevOps tools are too complex for auditors to understand',
-                    'DevOps environments don\'t require security controls'
+                    'DevOps environments don\'t require security controls',
                 ],
                 'correct_options' => ['Rapid change cycles make traditional point-in-time assessments less relevant'],
                 'justifications' => [
@@ -227,10 +227,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 8 - L5 - Evaluate
             [
                 'topic' => 'Audit Fundamentals',
@@ -240,7 +240,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Annual audits are sufficient for all organizations',
                     'Audit approach may be too infrequent and compliance-focused rather than risk-based',
                     'More audits would not prevent security incidents',
-                    'The organization should eliminate audits and focus on monitoring'
+                    'The organization should eliminate audits and focus on monitoring',
                 ],
                 'correct_options' => ['Audit approach may be too infrequent and compliance-focused rather than risk-based'],
                 'justifications' => [
@@ -255,10 +255,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.3,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 9 - L5 - Evaluate
             [
                 'topic' => 'Audit Fundamentals',
@@ -268,7 +268,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Continuity improves audit quality and efficiency',
                     'May lead to familiarity threats and reduced independence over time',
                     'Same auditors always provide better insights',
-                    'Auditor rotation is unnecessary for internal audits'
+                    'Auditor rotation is unnecessary for internal audits',
                 ],
                 'correct_options' => ['May lead to familiarity threats and reduced independence over time'],
                 'justifications' => [
@@ -283,13 +283,13 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Topic 2: Evidence Gathering (10 questions)
             // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
-            
+
             // Item 11 - L3 - Apply
             [
                 'topic' => 'Evidence Gathering',
@@ -299,14 +299,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Management\'s written assertion that security procedures are followed.',
                     'A walk-through of the data center while explicitly observing the security personnel\'s actions (or inactions) over a period.',
                     'An interview with the Head of Security confirming the monitoring schedule.',
-                    'A review of the access logs which show regular entry and exit without correlating to personnel shifts.'
+                    'A review of the access logs which show regular entry and exit without correlating to personnel shifts.',
                 ],
                 'correct_options' => ['A walk-through of the data center while explicitly observing the security personnel\'s actions (or inactions) over a period.'],
                 'justifications' => [
                     'Incorrect - Management assertions are less reliable than direct observation',
                     'Correct - Direct observation provides the most persuasive evidence of actual control operation',
                     'Incorrect - Interviews provide less reliable evidence than direct observation',
-                    'Incorrect - Access logs alone don\'t confirm personnel monitoring activities'
+                    'Incorrect - Access logs alone don\'t confirm personnel monitoring activities',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -314,10 +314,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.1,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 12 - L2 - Understand
             [
                 'topic' => 'Evidence Gathering',
@@ -327,7 +327,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Corroboration is only required for external audits',
                     'Multiple sources of evidence increase reliability and reduce bias',
                     'Corroborating evidence is always more expensive to obtain',
-                    'Single sources of evidence are always sufficient'
+                    'Single sources of evidence are always sufficient',
                 ],
                 'correct_options' => ['Multiple sources of evidence increase reliability and reduce bias'],
                 'justifications' => [
@@ -342,10 +342,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 13 - L2 - Understand
             [
                 'topic' => 'Evidence Gathering',
@@ -355,7 +355,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Relevance and reliability are identical concepts',
                     'Relevance relates to audit objectives while reliability relates to evidence quality',
                     'Reliability is more important than relevance in all cases',
-                    'Relevance only applies to compliance audits'
+                    'Relevance only applies to compliance audits',
                 ],
                 'correct_options' => ['Relevance relates to audit objectives while reliability relates to evidence quality'],
                 'justifications' => [
@@ -370,10 +370,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.1,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 14 - L3 - Apply
             [
                 'topic' => 'Evidence Gathering',
@@ -383,14 +383,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'An auditor asking an accounts payable clerk to describe the invoice processing procedure.',
                     'An auditor visually inspecting fixed assets on the factory floor to confirm their existence.',
                     'An auditor recalculating the depreciation expense on a sample of assets using the company\'s stated depreciation method and asset records.',
-                    'An auditor using data analytics to identify unusual patterns in expense reports.'
+                    'An auditor using data analytics to identify unusual patterns in expense reports.',
                 ],
                 'correct_options' => ['An auditor recalculating the depreciation expense on a sample of assets using the company\'s stated depreciation method and asset records.'],
                 'justifications' => [
                     'Incorrect - This is inquiry, not re-performance',
                     'Incorrect - This is observation, not re-performance',
                     'Correct - Re-performance involves independently executing procedures or controls to verify results',
-                    'Incorrect - This is analytical procedures, not re-performance'
+                    'Incorrect - This is analytical procedures, not re-performance',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -398,10 +398,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 15 - L3 - Apply
             [
                 'topic' => 'Evidence Gathering',
@@ -411,7 +411,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Skip testing if evidence is not directly accessible',
                     'Work with the organization to obtain evidence through proper channels and attestations',
                     'Only accept third-party auditor reports without additional validation',
-                    'Assume controls are ineffective if evidence cannot be accessed'
+                    'Assume controls are ineffective if evidence cannot be accessed',
                 ],
                 'correct_options' => ['Work with the organization to obtain evidence through proper channels and attestations'],
                 'justifications' => [
@@ -426,10 +426,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 16 - L3 - Apply
             [
                 'topic' => 'Evidence Gathering',
@@ -439,7 +439,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Always accept management explanations without question',
                     'Investigate further and gather additional evidence to resolve discrepancies',
                     'Ignore contradictory evidence if management objects',
-                    'Report findings without additional investigation'
+                    'Report findings without additional investigation',
                 ],
                 'correct_options' => ['Investigate further and gather additional evidence to resolve discrepancies'],
                 'justifications' => [
@@ -454,10 +454,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 17 - L4 - Analyze
             [
                 'topic' => 'Evidence Gathering',
@@ -467,7 +467,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Automated collection is always superior to manual methods',
                     'Automation reduces human bias but may miss context or have configuration errors',
                     'Manual collection is always more accurate than automation',
-                    'There are no significant differences between automated and manual collection'
+                    'There are no significant differences between automated and manual collection',
                 ],
                 'correct_options' => ['Automation reduces human bias but may miss context or have configuration errors'],
                 'justifications' => [
@@ -482,10 +482,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.9,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 18 - L4 - Analyze
             [
                 'topic' => 'Evidence Gathering',
@@ -495,7 +495,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Security by design practices are always well-documented',
                     'Design decisions and rationale may not be captured in traditional audit trails',
                     'Security by design evidence is too technical for auditors',
-                    'Security by design practices don\'t require evidence'
+                    'Security by design practices don\'t require evidence',
                 ],
                 'correct_options' => ['Design decisions and rationale may not be captured in traditional audit trails'],
                 'justifications' => [
@@ -510,10 +510,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.1,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 19 - L5 - Evaluate
             [
                 'topic' => 'Evidence Gathering',
@@ -523,7 +523,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Screenshots and reports provide sufficient evidence for all audit purposes',
                     'This approach may lack independence and verifiability compared to direct observation',
                     'Client-provided evidence is always more reliable than direct access',
-                    'The format of evidence doesn\'t impact audit quality'
+                    'The format of evidence doesn\'t impact audit quality',
                 ],
                 'correct_options' => ['This approach may lack independence and verifiability compared to direct observation'],
                 'justifications' => [
@@ -538,10 +538,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.4,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 20 - L5 - Evaluate
             [
                 'topic' => 'Evidence Gathering',
@@ -551,7 +551,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'SOC 2 reports provide complete coverage for all security requirements',
                     'SOC 2 reports are valuable but may not cover all relevant controls or provide current status',
                     'Third-party reports eliminate the need for any additional audit procedures',
-                    'SOC 2 reports are not relevant for security audits'
+                    'SOC 2 reports are not relevant for security audits',
                 ],
                 'correct_options' => ['SOC 2 reports are valuable but may not cover all relevant controls or provide current status'],
                 'justifications' => [
@@ -566,13 +566,13 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.3,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Topic 3: Control Assessment (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 21 - L1 - Remember
             [
                 'topic' => 'Control Assessment',
@@ -582,7 +582,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Administrative, technical, and physical controls',
                     'Preventive, detective, and corrective controls',
                     'Manual, automated, and hybrid controls',
-                    'Both A and B are correct classification systems'
+                    'Both A and B are correct classification systems',
                 ],
                 'correct_options' => ['Both A and B are correct classification systems'],
                 'justifications' => [
@@ -597,10 +597,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 22 - L1 - Remember
             [
                 'topic' => 'Control Assessment',
@@ -610,7 +610,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'A control that replaces all other security measures',
                     'An alternative control that provides equivalent protection when primary controls cannot be implemented',
                     'A control that only works during business hours',
-                    'A control that costs less than standard implementations'
+                    'A control that costs less than standard implementations',
                 ],
                 'correct_options' => ['An alternative control that provides equivalent protection when primary controls cannot be implemented'],
                 'justifications' => [
@@ -625,10 +625,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 23 - L2 - Understand
             [
                 'topic' => 'Control Assessment',
@@ -638,14 +638,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'The number of controls implemented across business units',
                     'How well the control meets its intended objective',
                     'Whether the control is automated or manual',
-                    'The financial cost of implementing the control'
+                    'The financial cost of implementing the control',
                 ],
                 'correct_options' => ['How well the control meets its intended objective'],
                 'justifications' => [
                     'Incorrect - Quantity of controls does not indicate effectiveness of individual controls',
                     'Correct - Control effectiveness is measured by how well it achieves its intended security objective',
                     'Incorrect - Implementation method (automated vs manual) does not determine effectiveness',
-                    'Incorrect - Cost is a business consideration but not a measure of control effectiveness'
+                    'Incorrect - Cost is a business consideration but not a measure of control effectiveness',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -653,10 +653,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.5,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 24 - L2 - Understand
             [
                 'topic' => 'Control Assessment',
@@ -666,14 +666,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'To meet regulatory requirements',
                     'To meet due care requirements',
                     'To ensure that control objectives are met',
-                    'To achieve compliance with standard policy'
+                    'To achieve compliance with standard policy',
                 ],
                 'correct_options' => ['To ensure that control objectives are met'],
                 'justifications' => [
                     'Incorrect - Regulatory compliance is important but secondary to ensuring actual control effectiveness',
                     'Incorrect - Due care is a legal concept but the primary purpose is verifying control performance',
                     'Correct - The fundamental purpose of control testing is to verify that controls are achieving their intended security objectives',
-                    'Incorrect - Policy compliance is important but subordinate to ensuring controls actually work as intended'
+                    'Incorrect - Policy compliance is important but subordinate to ensuring controls actually work as intended',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -681,10 +681,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 25 - L3 - Apply
             [
                 'topic' => 'Control Assessment',
@@ -694,7 +694,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Review configuration settings only',
                     'Test detection capabilities using controlled scenarios and review alert handling',
                     'Interview the monitoring team about their procedures',
-                    'Check that monitoring software is installed and running'
+                    'Check that monitoring software is installed and running',
                 ],
                 'correct_options' => ['Test detection capabilities using controlled scenarios and review alert handling'],
                 'justifications' => [
@@ -709,10 +709,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 26 - L3 - Apply
             [
                 'topic' => 'Control Assessment',
@@ -722,7 +722,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Review DLP policy configurations only',
                     'Test detection accuracy with various data types and transmission methods',
                     'Verify DLP software installation across endpoints',
-                    'Interview users about DLP training received'
+                    'Interview users about DLP training received',
                 ],
                 'correct_options' => ['Test detection accuracy with various data types and transmission methods'],
                 'justifications' => [
@@ -737,10 +737,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 27 - L3 - Apply
             [
                 'topic' => 'Control Assessment',
@@ -750,7 +750,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Only assess customer-controlled configurations',
                     'Evaluate both customer responsibilities and cloud provider attestations',
                     'Assume cloud provider controls are always effective',
-                    'Only rely on cloud provider security documentation'
+                    'Only rely on cloud provider security documentation',
                 ],
                 'correct_options' => ['Evaluate both customer responsibilities and cloud provider attestations'],
                 'justifications' => [
@@ -765,10 +765,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 28 - L4 - Analyze
             [
                 'topic' => 'Control Assessment',
@@ -778,14 +778,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'designed to minimize risks',
                     'implemented as designed',
                     'operating as intended',
-                    'producing the desired results'
+                    'producing the desired results',
                 ],
                 'correct_options' => ['producing the desired results'],
                 'justifications' => [
                     'Incorrect - Good design is important but meaningless if it doesn\'t achieve security objectives',
                     'Incorrect - Proper implementation is necessary but insufficient if the results are ineffective',
                     'Incorrect - Operating as intended is valuable but the ultimate measure is actual effectiveness',
-                    'Correct - The most important consideration is whether controls actually achieve their security objectives and produce desired risk reduction'
+                    'Correct - The most important consideration is whether controls actually achieve their security objectives and produce desired risk reduction',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -793,10 +793,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 29 - L4 - Analyze
             [
                 'topic' => 'Control Assessment',
@@ -806,7 +806,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Defense in depth strategies are always perfectly effective',
                     'Complex interdependencies make it difficult to assess overall effectiveness and identify single points of failure',
                     'Defense in depth strategies are easier to assess than single controls',
-                    'All controls in defense in depth must fail simultaneously'
+                    'All controls in defense in depth must fail simultaneously',
                 ],
                 'correct_options' => ['Complex interdependencies make it difficult to assess overall effectiveness and identify single points of failure'],
                 'justifications' => [
@@ -821,10 +821,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 30 - L5 - Evaluate
             [
                 'topic' => 'Control Assessment',
@@ -834,7 +834,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Logging controls are effective if logs are properly collected',
                     'Control effectiveness requires both proper collection and analysis; unused logs provide limited security value',
                     'Log volume always indicates better security',
-                    'Manual log review is the only valid assessment approach'
+                    'Manual log review is the only valid assessment approach',
                 ],
                 'correct_options' => ['Control effectiveness requires both proper collection and analysis; unused logs provide limited security value'],
                 'justifications' => [
@@ -849,13 +849,13 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Topic 4: Testing Methodologies & Approaches (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 31 - L2 - Understand
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -865,14 +865,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'It better simulates a real-world attacker',
                     'It requires no knowledge of the system',
                     'It helps detect logic flaws and insecure code paths early in development',
-                    'It reduces bias by hiding system details from testers'
+                    'It reduces bias by hiding system details from testers',
                 ],
                 'correct_options' => ['It helps detect logic flaws and insecure code paths early in development'],
                 'justifications' => [
                     'Incorrect - Black-box testing better simulates real-world attackers with no internal knowledge',
                     'Incorrect - White-box testing requires extensive system knowledge, not no knowledge',
                     'Correct - White-box testing\'s access to source code and system internals enables early detection of logic flaws and insecure code paths',
-                    'Incorrect - White-box testing exposes system details to testers, which can introduce bias'
+                    'Incorrect - White-box testing exposes system details to testers, which can introduce bias',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -880,10 +880,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.6,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 32 - L1 - Remember
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -893,7 +893,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Testing every transaction or item in a population',
                     'Selecting a representative subset of items for testing',
                     'Only testing items that appear suspicious',
-                    'Testing items randomly without any methodology'
+                    'Testing items randomly without any methodology',
                 ],
                 'correct_options' => ['Selecting a representative subset of items for testing'],
                 'justifications' => [
@@ -908,10 +908,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.1,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 33 - L2 - Understand
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -921,14 +921,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Non-sampling risk',
                     'Risk of incorrect acceptance (Type II error)',
                     'Risk of incorrect rejection (Type I error)',
-                    'Detection risk'
+                    'Detection risk',
                 ],
                 'correct_options' => ['Risk of incorrect acceptance (Type II error)'],
                 'justifications' => [
                     'Incorrect - Non-sampling risk relates to factors other than sampling',
                     'Correct - Type II error occurs when the auditor concludes controls are effective when they are not',
                     'Incorrect - Type I error is rejecting effective controls',
-                    'Incorrect - Detection risk is broader and includes both sampling and non-sampling risks'
+                    'Incorrect - Detection risk is broader and includes both sampling and non-sampling risks',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -936,10 +936,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 34 - L2 - Understand
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -949,14 +949,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Attribute Sampling',
                     'Stratified Sampling',
                     'Stop-or-Go Sampling',
-                    'Discovery Sampling'
+                    'Discovery Sampling',
                 ],
                 'correct_options' => ['Discovery Sampling'],
                 'justifications' => [
                     'Incorrect - Attribute sampling estimates deviation rates, not exception discovery',
                     'Incorrect - Stratified sampling divides populations but doesn\'t focus on exception discovery',
                     'Incorrect - Stop-or-Go sampling adjusts sample sizes but isn\'t designed for exception discovery',
-                    'Correct - Discovery sampling is specifically designed to detect at least one occurrence of a critical exception'
+                    'Correct - Discovery sampling is specifically designed to detect at least one occurrence of a critical exception',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -964,10 +964,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.1,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 35 - L3 - Apply
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -977,14 +977,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'The auditor is willing to accept a higher risk of incorrect acceptance.',
                     'The inherent risk of the process is reassessed as very low.',
                     'The results of the initial sample provide strong evidence that the actual deviation rate is significantly lower than the tolerable rate.',
-                    'The audit budget for that area has been exhausted.'
+                    'The audit budget for that area has been exhausted.',
                 ],
                 'correct_options' => ['The results of the initial sample provide strong evidence that the actual deviation rate is significantly lower than the tolerable rate.'],
                 'justifications' => [
                     'Incorrect - Risk tolerance should not change mid-sampling',
                     'Incorrect - Inherent risk assessment is separate from sampling methodology',
                     'Correct - Stop-or-Go sampling allows early termination when results strongly suggest low deviation rates',
-                    'Incorrect - Budget constraints should not drive sampling decisions'
+                    'Incorrect - Budget constraints should not drive sampling decisions',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -992,10 +992,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 36 - L3 - Apply
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -1005,7 +1005,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Proceed with all planned tests regardless of business impact',
                     'Use read-only testing methods and coordinate disruptive tests during maintenance windows',
                     'Skip all testing to avoid any risk of disruption',
-                    'Only test during peak business hours for realistic results'
+                    'Only test during peak business hours for realistic results',
                 ],
                 'correct_options' => ['Use read-only testing methods and coordinate disruptive tests during maintenance windows'],
                 'justifications' => [
@@ -1020,10 +1020,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 37 - L3 - Apply
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -1033,7 +1033,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Review written procedures and interview staff only',
                     'Conduct tabletop exercises and simulated incident scenarios',
                     'Wait for actual incidents to test response effectiveness',
-                    'Only test technical detection capabilities'
+                    'Only test technical detection capabilities',
                 ],
                 'correct_options' => ['Conduct tabletop exercises and simulated incident scenarios'],
                 'justifications' => [
@@ -1048,10 +1048,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 38 - L4 - Analyze
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -1061,14 +1061,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Test components based on how recently they were developed',
                     'Focus on components with the highest business value and known vulnerabilities',
                     'Test all modules equally regardless of their exposure or importance',
-                    'Randomly select components to avoid bias'
+                    'Randomly select components to avoid bias',
                 ],
                 'correct_options' => ['Focus on components with the highest business value and known vulnerabilities'],
                 'justifications' => [
                     'Incorrect - Development timeline alone does not indicate risk level',
                     'Correct - Risk-based testing prioritizes resources on high-value assets with known vulnerabilities to maximize impact',
                     'Incorrect - Equal testing ignores risk levels and wastes limited resources',
-                    'Incorrect - Random selection does not consider risk factors or business impact'
+                    'Incorrect - Random selection does not consider risk factors or business impact',
                 ],
                 'bloom_level' => 4,
                 'difficulty_level' => 4,
@@ -1076,10 +1076,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 39 - L4 - Analyze
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -1089,7 +1089,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Point-in-time testing is always sufficient for all environments',
                     'Rapid changes may render test results obsolete quickly, missing emerging vulnerabilities',
                     'Point-in-time testing is more expensive than continuous testing',
-                    'Dynamic environments don\'t require security testing'
+                    'Dynamic environments don\'t require security testing',
                 ],
                 'correct_options' => ['Rapid changes may render test results obsolete quickly, missing emerging vulnerabilities'],
                 'justifications' => [
@@ -1104,10 +1104,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 40 - L5 - Evaluate
             [
                 'topic' => 'Testing Methodologies & Approaches',
@@ -1117,7 +1117,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Vendor tools with default settings provide comprehensive coverage',
                     'May miss organization-specific risks and produce false negatives due to lack of customization',
                     'Default configurations are always optimal for all environments',
-                    'Vendor tools eliminate the need for manual testing'
+                    'Vendor tools eliminate the need for manual testing',
                 ],
                 'correct_options' => ['May miss organization-specific risks and produce false negatives due to lack of customization'],
                 'justifications' => [
@@ -1132,13 +1132,13 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.4,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Topic 5: Security Testing (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 41 - L1 - Remember
             [
                 'topic' => 'Security Testing',
@@ -1148,7 +1148,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'A compliance audit of security policies',
                     'Simulated cyber attacks to identify vulnerabilities',
                     'Installation of security monitoring tools',
-                    'Training employees about security threats'
+                    'Training employees about security threats',
                 ],
                 'correct_options' => ['Simulated cyber attacks to identify vulnerabilities'],
                 'justifications' => [
@@ -1163,10 +1163,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.5,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 42 - L1 - Remember
             [
                 'topic' => 'Security Testing',
@@ -1176,7 +1176,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Only network topology information',
                     'Known security weaknesses in systems and applications',
                     'Employee security awareness levels',
-                    'Physical security camera locations'
+                    'Physical security camera locations',
                 ],
                 'correct_options' => ['Known security weaknesses in systems and applications'],
                 'justifications' => [
@@ -1191,10 +1191,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -1.3,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 43 - L2 - Understand
             [
                 'topic' => 'Security Testing',
@@ -1204,14 +1204,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Black-box testing',
                     'White-box testing',
                     'Gray-box testing',
-                    'Acceptance testing'
+                    'Acceptance testing',
                 ],
                 'correct_options' => ['Gray-box testing'],
                 'justifications' => [
                     'Incorrect - Black-box testing provides no internal knowledge or access',
                     'Incorrect - White-box testing provides full internal access including source code',
                     'Correct - Gray-box testing provides limited internal knowledge (account access and API documentation) without full system access',
-                    'Incorrect - Acceptance testing validates business requirements, not security methodology'
+                    'Incorrect - Acceptance testing validates business requirements, not security methodology',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -1219,10 +1219,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.5,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 44 - L2 - Understand
             [
                 'topic' => 'Security Testing',
@@ -1232,14 +1232,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'To meet regulatory requirements',
                     'To meet due care requirements',
                     'To ensure that control objectives are met',
-                    'To achieve compliance with standard policy'
+                    'To achieve compliance with standard policy',
                 ],
                 'correct_options' => ['To ensure that control objectives are met'],
                 'justifications' => [
                     'Incorrect - Regulatory compliance is important but secondary to ensuring actual control effectiveness',
                     'Incorrect - Due care is a legal concept but the primary purpose is verifying control performance',
                     'Correct - The fundamental purpose of control testing is to verify that controls are achieving their intended security objectives',
-                    'Incorrect - Policy compliance is important but subordinate to ensuring controls actually work as intended'
+                    'Incorrect - Policy compliance is important but subordinate to ensuring controls actually work as intended',
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 2,
@@ -1247,10 +1247,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => -0.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 45 - L3 - Apply
             [
                 'topic' => 'Security Testing',
@@ -1260,14 +1260,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Clearly defined scope of the test',
                     'Management\'s formal authorization for the test',
                     'Signed Non-Disclosure Agreement (NDA)',
-                    'Documented rules of engagement'
+                    'Documented rules of engagement',
                 ],
                 'correct_options' => ['Management\'s formal authorization for the test'],
                 'justifications' => [
                     'Incorrect - Scope definition is important but meaningless without proper authorization',
                     'Correct - Formal authorization is the foundational legal requirement that legitimizes all penetration testing activities',
                     'Incorrect - NDAs protect confidentiality but don\'t authorize testing activities',
-                    'Incorrect - Rules of engagement are crucial but follow from and depend on proper authorization'
+                    'Incorrect - Rules of engagement are crucial but follow from and depend on proper authorization',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -1275,10 +1275,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 46 - L3 - Apply
             [
                 'topic' => 'Security Testing',
@@ -1288,7 +1288,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Publicly disclose all findings immediately',
                     'Follow responsible disclosure practices and work with the organization on remediation',
                     'Exploit vulnerabilities to demonstrate business impact',
-                    'Only report vulnerabilities that can be easily fixed'
+                    'Only report vulnerabilities that can be easily fixed',
                 ],
                 'correct_options' => ['Follow responsible disclosure practices and work with the organization on remediation'],
                 'justifications' => [
@@ -1303,10 +1303,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 47 - L3 - Apply
             [
                 'topic' => 'Security Testing',
@@ -1316,14 +1316,14 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Reduction in financial impact on the annual report',
                     'Measurable reduction in likelihood, impact or both',
                     'Readjustment of risk appetite to meet residual risk',
-                    'Increased efficiency over the appropriate processes'
+                    'Increased efficiency over the appropriate processes',
                 ],
                 'correct_options' => ['Measurable reduction in likelihood, impact or both'],
                 'justifications' => [
                     'Incorrect - Financial impact reduction is an outcome but not the direct measure of control effectiveness',
                     'Correct - Control effectiveness is best measured by quantifiable reduction in risk likelihood, impact, or both',
                     'Incorrect - Risk appetite adjustment is a management decision, not a measure of control effectiveness',
-                    'Incorrect - Process efficiency is a benefit but not the primary measure of risk control effectiveness'
+                    'Incorrect - Process efficiency is a benefit but not the primary measure of risk control effectiveness',
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
@@ -1331,10 +1331,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 48 - L4 - Analyze
             [
                 'topic' => 'Security Testing',
@@ -1344,7 +1344,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Red team exercises and penetration tests are identical',
                     'Red team exercises simulate persistent attackers and test detection/response capabilities over time',
                     'Red team exercises are always less thorough than penetration tests',
-                    'Red team exercises only focus on physical security'
+                    'Red team exercises only focus on physical security',
                 ],
                 'correct_options' => ['Red team exercises simulate persistent attackers and test detection/response capabilities over time'],
                 'justifications' => [
@@ -1359,10 +1359,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 49 - L4 - Analyze
             [
                 'topic' => 'Security Testing',
@@ -1372,7 +1372,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Signature-based scanners are always completely accurate',
                     'They may miss zero-day vulnerabilities and custom applications not in signature databases',
                     'Signature-based scanning is too expensive for most organizations',
-                    'They only work on legacy systems'
+                    'They only work on legacy systems',
                 ],
                 'correct_options' => ['They may miss zero-day vulnerabilities and custom applications not in signature databases'],
                 'justifications' => [
@@ -1387,10 +1387,10 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
-            
+
             // Item 50 - L5 - Evaluate
             [
                 'topic' => 'Security Testing',
@@ -1400,7 +1400,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Vulnerability scanning is always sufficient for security assurance',
                     'Penetration testing validates actual exploitability and identifies business logic flaws not found by scanning',
                     'Penetration testing is only necessary for compliance requirements',
-                    'Fixing scan results eliminates all security risks'
+                    'Fixing scan results eliminates all security risks',
                 ],
                 'correct_options' => ['Penetration testing validates actual exploitability and identifies business logic flaws not found by scanning'],
                 'justifications' => [
@@ -1415,7 +1415,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
                 'status' => 'published',
-                'type_id' => 1
+                'type_id' => 1,
 
             ],
         ];

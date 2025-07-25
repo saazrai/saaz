@@ -1,12 +1,12 @@
 <?php
 
 use App\Models\Diagnostic;
-use App\Models\User;
+use App\Models\DiagnosticDomain;
+use App\Models\DiagnosticItem;
 use App\Models\DiagnosticPhase;
 use App\Models\DiagnosticResponse;
-use App\Models\DiagnosticDomain;
 use App\Models\DiagnosticTopic;
-use App\Models\DiagnosticItem;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     // Seed question types (required for diagnostic items)
     $this->seed(\Database\Seeders\QuestionTypesSeeder::class);
-    
+
     // Create test hierarchy for diagnostic responses
     $this->domain = DiagnosticDomain::factory()->create();
     $this->topic = DiagnosticTopic::factory()->create(['domain_id' => $this->domain->id]);
@@ -23,7 +23,7 @@ beforeEach(function () {
 
 test('can create diagnostic with required fields', function () {
     $user = User::factory()->create();
-    
+
     $diagnostic = Diagnostic::factory()->create([
         'user_id' => $user->id,
         'status' => 'in_progress',
@@ -121,7 +121,7 @@ test('diagnostic casts arrays correctly', function () {
 });
 
 test('diagnostic audit includes important fields', function () {
-    $diagnostic = new Diagnostic();
+    $diagnostic = new Diagnostic;
     $auditInclude = $diagnostic->getAuditInclude();
     expect($auditInclude)->toContain('status');
     expect($auditInclude)->toContain('score');

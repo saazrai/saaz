@@ -20,8 +20,8 @@ class AuditController extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('auditable_type', 'like', "%{$search}%")
-                          ->orWhere('event', 'like', "%{$search}%")
-                          ->orWhere('ip_address', 'like', "%{$search}%");
+                        ->orWhere('event', 'like', "%{$search}%")
+                        ->orWhere('ip_address', 'like', "%{$search}%");
                 });
             })
             ->when($request->event, function ($query, $event) {
@@ -133,16 +133,16 @@ class AuditController extends Controller
      */
     protected function exportCsv($audits)
     {
-        $filename = 'audit_logs_' . now()->format('Y-m-d_H-i-s') . '.csv';
-        
+        $filename = 'audit_logs_'.now()->format('Y-m-d_H-i-s').'.csv';
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ];
 
-        $callback = function() use ($audits) {
+        $callback = function () use ($audits) {
             $file = fopen('php://output', 'w');
-            
+
             // CSV Headers
             fputcsv($file, [
                 'ID',
@@ -189,8 +189,8 @@ class AuditController extends Controller
      */
     protected function exportJson($audits)
     {
-        $filename = 'audit_logs_' . now()->format('Y-m-d_H-i-s') . '.json';
-        
+        $filename = 'audit_logs_'.now()->format('Y-m-d_H-i-s').'.json';
+
         $headers = [
             'Content-Type' => 'application/json',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",

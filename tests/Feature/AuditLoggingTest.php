@@ -1,15 +1,13 @@
 <?php
 
-use App\Models\User;
 use App\Models\Diagnostic;
-use App\Models\DiagnosticProfile;
-use App\Models\DiagnosticResponse;
 use App\Models\DiagnosticDomain;
-use App\Models\DiagnosticTopic;
 use App\Models\DiagnosticItem;
-use OwenIt\Auditing\Models\Audit;
+use App\Models\DiagnosticTopic;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use OwenIt\Auditing\Models\Audit;
 
 uses(RefreshDatabase::class);
 
@@ -31,10 +29,10 @@ beforeEach(function () {
         'ip_address' => '127.0.0.1',
         'user_agent' => 'TestAgent',
     ]);
-    
+
     // Seed question types (required for diagnostic items)
     $this->seed(\Database\Seeders\QuestionTypesSeeder::class);
-    
+
     // Create test hierarchy for diagnostic responses
     $this->domain = DiagnosticDomain::factory()->create();
     $this->topic = DiagnosticTopic::factory()->create(['domain_id' => $this->domain->id]);
@@ -121,7 +119,7 @@ test('user factory creation triggers audit and dumps audits', function () {
 test('database connection debug', function () {
     $db = DB::connection()->getDatabaseName();
     $auditConn = config('audit.drivers.database.connection');
-    dump('DB connection: ' . $db);
-    dump('Audit config connection: ' . ($auditConn ?? 'null'));
+    dump('DB connection: '.$db);
+    dump('Audit config connection: '.($auditConn ?? 'null'));
     expect($db)->not->toBeNull();
 });

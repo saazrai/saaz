@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use App\Models\Diagnostic;
-use App\Models\DiagnosticResponse;
 use App\Models\DiagnosticItem;
+use App\Models\DiagnosticResponse;
+use App\Models\User;
 use App\Services\AdaptiveDiagnosticService;
 use Illuminate\Console\Command;
 
@@ -31,7 +31,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 4, 'correct' => true],
                 ['level' => 5, 'correct' => true],
                 ['level' => 5, 'correct' => true],
-            ]
+            ],
         ],
         2 => [
             'name' => 'Straight Beginner Path',
@@ -45,7 +45,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 1, 'correct' => false],
                 ['level' => 1, 'correct' => false],
                 ['level' => 1, 'correct' => false],
-            ]
+            ],
         ],
         3 => [
             'name' => 'L3 Attempt to L2+',
@@ -57,7 +57,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 3, 'correct' => false],
                 ['level' => 2, 'correct' => true],
                 ['level' => 2, 'correct' => false],
-            ]
+            ],
         ],
         4 => [
             'name' => 'Standard Advancement',
@@ -73,7 +73,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 5, 'correct' => true],
                 ['level' => 5, 'correct' => false],
                 ['level' => 5, 'correct' => true],
-            ]
+            ],
         ],
         5 => [
             'name' => 'Quick Drop',
@@ -88,7 +88,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 1, 'correct' => true],
                 ['level' => 1, 'correct' => false],
                 ['level' => 1, 'correct' => true],
-            ]
+            ],
         ],
         6 => [
             'name' => 'Recovery Pattern',
@@ -103,7 +103,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 3, 'correct' => true],
                 ['level' => 3, 'correct' => true],
                 ['level' => 3, 'correct' => false],
-            ]
+            ],
         ],
         7 => [
             'name' => 'Plateau at L2',
@@ -116,7 +116,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 2, 'correct' => false],
                 ['level' => 2, 'correct' => true],
                 ['level' => 2, 'correct' => false],
-            ]
+            ],
         ],
         8 => [
             'name' => 'L4 Ceiling Found',
@@ -128,7 +128,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 4, 'correct' => false],
                 ['level' => 4, 'correct' => true],
                 ['level' => 4, 'correct' => false],
-            ]
+            ],
         ],
         9 => [
             'name' => 'Near Miss Expert',
@@ -142,7 +142,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 5, 'correct' => true],
                 ['level' => 5, 'correct' => false],
                 ['level' => 5, 'correct' => false],
-            ]
+            ],
         ],
         10 => [
             'name' => 'L1 Plus Level',
@@ -157,7 +157,7 @@ class DiagnosticTestCase extends Command
                 ['level' => 1, 'correct' => true],
                 ['level' => 2, 'correct' => false],
                 ['level' => 2, 'correct' => false],
-            ]
+            ],
         ],
     ];
 
@@ -165,28 +165,32 @@ class DiagnosticTestCase extends Command
     {
         if ($this->option('list')) {
             $this->listTestCases();
+
             return 0;
         }
 
         $caseNumber = $this->option('case');
-        if (!$caseNumber) {
+        if (! $caseNumber) {
             $this->error('Please specify a test case number with --case=N (1-10)');
             $this->info('Use --list to see all available test cases');
+
             return 1;
         }
 
-        if (!isset($this->testCases[$caseNumber])) {
+        if (! isset($this->testCases[$caseNumber])) {
             $this->error("Invalid test case number: $caseNumber");
             $this->info('Valid test cases are 1-10. Use --list to see details.');
+
             return 1;
         }
 
         $testCase = $this->testCases[$caseNumber];
         $userId = $this->option('user') ?? 1;
-        
+
         $user = User::find($userId);
-        if (!$user) {
+        if (! $user) {
             $this->error('User not found');
+
             return 1;
         }
 
@@ -224,14 +228,14 @@ class DiagnosticTestCase extends Command
 
     private function startDiagnostic(User $user): Diagnostic
     {
-        $adaptiveService = new AdaptiveDiagnosticService();
+        $adaptiveService = new AdaptiveDiagnosticService;
         $initialState = $adaptiveService->initializeTest();
-        
+
         $diagnostic = Diagnostic::create([
             'user_id' => $user->id,
             'status' => 'in_progress',
             'phase_id' => 1,
-            'adaptive_state' => json_encode($initialState)
+            'adaptive_state' => json_encode($initialState),
         ]);
 
         // Get first question from first domain
@@ -241,8 +245,8 @@ class DiagnosticTestCase extends Command
 
         if ($firstDomain) {
             $firstQuestion = DiagnosticItem::whereHas('topic', function ($query) use ($firstDomain) {
-                    $query->where('domain_id', $firstDomain->id);
-                })
+                $query->where('domain_id', $firstDomain->id);
+            })
                 ->where('bloom_level', 3)
                 ->inRandomOrder()
                 ->first();
@@ -263,20 +267,20 @@ class DiagnosticTestCase extends Command
 
     private function executeTestSequence(Diagnostic $diagnostic, array $sequence)
     {
-        $adaptiveService = new AdaptiveDiagnosticService();
+        $adaptiveService = new AdaptiveDiagnosticService;
         $questionCount = 0;
         $targetDomainId = null;
 
         foreach ($sequence as $step) {
             $questionCount++;
-            
+
             // Get current unanswered question
             $currentResponse = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
                 ->whereNull('user_answer')
                 ->with(['diagnosticItem.topic.domain'])
                 ->first();
 
-            if (!$currentResponse) {
+            if (! $currentResponse) {
                 $this->warn("No unanswered question found at step $questionCount");
                 break;
             }
@@ -284,14 +288,14 @@ class DiagnosticTestCase extends Command
             $item = $currentResponse->diagnosticItem;
             $actualLevel = $item->bloom_level;
             $expectedLevel = $step['level'];
-            
+
             // Track the domain we're testing
-            if (!$targetDomainId) {
+            if (! $targetDomainId) {
                 $targetDomainId = $item->topic->domain->id;
                 $this->info("Testing Domain: {$item->topic->domain->name}");
                 $this->newLine();
             }
-            
+
             // Verify we're at the expected level
             if ($actualLevel !== $expectedLevel) {
                 $this->comment("Note: Expected L{$expectedLevel}, got L{$actualLevel} (may be due to question availability)");
@@ -308,10 +312,10 @@ class DiagnosticTestCase extends Command
 
             // Refresh diagnostic
             $diagnostic->refresh();
-            
+
             // Check if we're still testing the same domain
             if ($item->topic->domain->id !== $targetDomainId) {
-                $this->comment("Domain switched - test pattern may not complete as expected");
+                $this->comment('Domain switched - test pattern may not complete as expected');
                 break;
             }
         }
@@ -322,12 +326,12 @@ class DiagnosticTestCase extends Command
         $item = $response->diagnosticItem;
         $correctAnswers = $item->correct_options ?? [];
         $options = $item->options ?? [];
-        
+
         if ($shouldBeCorrect) {
             $selectedAnswer = $correctAnswers;
         } else {
             $wrongOptions = array_values(array_diff(array_keys($options), $correctAnswers));
-            $selectedAnswer = !empty($wrongOptions) ? [$wrongOptions[0]] : [0];
+            $selectedAnswer = ! empty($wrongOptions) ? [$wrongOptions[0]] : [0];
         }
 
         // Update response
@@ -338,10 +342,10 @@ class DiagnosticTestCase extends Command
         ]);
 
         // Update adaptive state
-        $adaptiveService = new AdaptiveDiagnosticService();
+        $adaptiveService = new AdaptiveDiagnosticService;
         $adaptiveState = json_decode($diagnostic->adaptive_state, true);
         $adaptiveState = $adaptiveService->processAnswer($adaptiveState, $item, $shouldBeCorrect);
-        
+
         // Check if complete
         $totalAnswered = $diagnostic->responses()->whereNotNull('user_answer')->count();
         $isComplete = $adaptiveService->isTestComplete($adaptiveState, $totalAnswered);
@@ -349,16 +353,16 @@ class DiagnosticTestCase extends Command
         if ($isComplete) {
             $correctCount = $diagnostic->responses()->where('is_correct', true)->count();
             $score = $totalAnswered > 0 ? round(($correctCount / $totalAnswered) * 100, 2) : 0;
-            
+
             $diagnostic->update([
                 'status' => 'completed',
                 'completed_at' => now(),
                 'score' => $score,
-                'adaptive_state' => json_encode($adaptiveState)
+                'adaptive_state' => json_encode($adaptiveState),
             ]);
         } else {
             $diagnostic->update(['adaptive_state' => json_encode($adaptiveState)]);
-            
+
             // Generate next question
             $existingQuestionIds = $diagnostic->responses()->pluck('diagnostic_item_id')->toArray();
             $nextQuestion = $adaptiveService->selectNextQuestion(
@@ -366,13 +370,13 @@ class DiagnosticTestCase extends Command
                 $existingQuestionIds,
                 $diagnostic->phase_id
             );
-            
+
             if ($nextQuestion) {
                 if (isset($nextQuestion['last_tested_domain'])) {
                     $adaptiveState['last_tested_domain'] = $nextQuestion['last_tested_domain'];
                     $diagnostic->update(['adaptive_state' => json_encode($adaptiveState)]);
                 }
-                
+
                 DiagnosticResponse::create([
                     'diagnostic_id' => $diagnostic->id,
                     'diagnostic_item_id' => $nextQuestion['question_id'],
@@ -388,30 +392,30 @@ class DiagnosticTestCase extends Command
     {
         $this->newLine();
         $this->info('🏁 Test Complete!');
-        
+
         // Get the domain used for testing
         $responses = $diagnostic->responses()
             ->with('diagnosticItem.topic.domain')
             ->get();
-        
+
         $domainId = $responses->first()->diagnosticItem->topic->domain->id ?? null;
-        
+
         if ($domainId) {
-            $adaptiveService = new AdaptiveDiagnosticService();
+            $adaptiveService = new AdaptiveDiagnosticService;
             $finalState = json_decode($diagnostic->adaptive_state, true);
             $proficiencyLevel = $adaptiveService->calculateFinalProficiencyLevel($domainId, $finalState);
             $label = $adaptiveService->getProficiencyLabel($proficiencyLevel);
-            
+
             $this->info("Final Proficiency: {$proficiencyLevel} - {$label}");
-            
+
             // Show bloom progression
             if (isset($finalState['domain_bloom_history'][$domainId])) {
                 $bloomHistory = $finalState['domain_bloom_history'][$domainId];
                 $answerHistory = $finalState['domain_history'][$domainId];
-                
+
                 $progression = '';
                 $currentLevel = null;
-                
+
                 foreach ($bloomHistory as $index => $level) {
                     if ($currentLevel !== $level) {
                         if ($progression) {
@@ -422,11 +426,11 @@ class DiagnosticTestCase extends Command
                     }
                     $progression .= $answerHistory[$index] ? '✓' : '✗';
                 }
-                
+
                 $this->info("Actual Pattern: {$progression}");
             }
         }
-        
+
         $this->newLine();
         $this->info('Run full analysis with:');
         $this->line("php artisan diagnostic:analyze {$diagnostic->id}");

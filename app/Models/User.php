@@ -97,7 +97,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             ->latest()
             ->first();
 
-        if (!$latestConsent) {
+        if (! $latestConsent) {
             return [
                 'consent_given' => false,
                 'consent_date' => null,
@@ -111,7 +111,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         }
 
         $preferences = $latestConsent->consent_preferences ?? [];
-        
+
         return [
             'consent_given' => $latestConsent->is_consent_given && ($preferences['cookie_consent_given'] ?? false),
             'consent_date' => $preferences['cookie_consent_date'] ?? $latestConsent->consent_given_at,
@@ -135,13 +135,13 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             ->first();
 
         // No consent record = needs consent
-        if (!$latestConsent) {
+        if (! $latestConsent) {
             return true;
         }
 
         // Check if cookie consent specifically was given
         $preferences = $latestConsent->consent_preferences ?? [];
-        if (!($preferences['cookie_consent_given'] ?? false)) {
+        if (! ($preferences['cookie_consent_given'] ?? false)) {
             return true;
         }
 

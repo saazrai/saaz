@@ -36,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Exclude cookie consent routes from CSRF verification
         $middleware->validateCsrfTokens(except: [
             'legal/privacy/cookie-consent',
-            'legal/privacy/cookie-consent-status'
+            'legal/privacy/cookie-consent-status',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -24,7 +24,7 @@ class DiagnosticTestScenario extends Command
     public function handle()
     {
         $scenario = $this->argument('scenario');
-        
+
         switch ($scenario) {
             case 'l5-regression':
                 $this->testL5Regression();
@@ -40,6 +40,7 @@ class DiagnosticTestScenario extends Command
                 break;
             default:
                 $this->error("Unknown scenario: {$scenario}");
+
                 return 1;
         }
 
@@ -54,20 +55,20 @@ class DiagnosticTestScenario extends Command
 
         $state = $this->service->initializeTest();
         $domainId = 2; // Information Security Governance
-        
+
         // Get questions
         $l3Questions = DiagnosticItem::where('bloom_level', 3)
-            ->whereHas('topic', fn($q) => $q->where('domain_id', $domainId))
+            ->whereHas('topic', fn ($q) => $q->where('domain_id', $domainId))
             ->where('status', 'published')
             ->take(2)->get();
-            
+
         $l4Questions = DiagnosticItem::where('bloom_level', 4)
-            ->whereHas('topic', fn($q) => $q->where('domain_id', $domainId))
+            ->whereHas('topic', fn ($q) => $q->where('domain_id', $domainId))
             ->where('status', 'published')
             ->take(2)->get();
-            
+
         $l5Questions = DiagnosticItem::where('bloom_level', 5)
-            ->whereHas('topic', fn($q) => $q->where('domain_id', $domainId))
+            ->whereHas('topic', fn ($q) => $q->where('domain_id', $domainId))
             ->where('status', 'published')
             ->take(2)->get();
 
@@ -93,7 +94,7 @@ class DiagnosticTestScenario extends Command
         $this->info('Expected: Regression from L5 to L4');
         $actualLevel = $state['domain_bloom_levels'][$domainId] ?? 'unknown';
         $this->info("Actual: Level {$actualLevel}");
-        
+
         if ($actualLevel == 4) {
             $this->info('✅ PASS: Correct regression behavior');
         } else {
@@ -109,7 +110,7 @@ class DiagnosticTestScenario extends Command
 
         $state = $this->service->initializeTest();
         $domainId = 2; // Information Security Governance
-        
+
         // Simulate the exact progression: 3✓ → 3✓ → 4✓ → 4✓ → 5✗ → 5✗
         $questions = [
             ['level' => 3, 'correct' => true],
@@ -122,13 +123,14 @@ class DiagnosticTestScenario extends Command
 
         foreach ($questions as $i => $q) {
             $item = DiagnosticItem::where('bloom_level', $q['level'])
-                ->whereHas('topic', fn($query) => $query->where('domain_id', $domainId))
+                ->whereHas('topic', fn ($query) => $query->where('domain_id', $domainId))
                 ->where('status', 'published')
                 ->skip($i % 2) // Get different questions
                 ->first();
-                
-            if (!$item) {
+
+            if (! $item) {
                 $this->error("No L{$q['level']} question available");
+
                 continue;
             }
 
@@ -139,7 +141,7 @@ class DiagnosticTestScenario extends Command
         $this->newLine();
         $finalLevel = $state['domain_bloom_levels'][$domainId] ?? 'unknown';
         $this->info("Final adaptive level: L{$finalLevel}");
-        
+
         // Check if ceiling was found
         if (isset($state['domain_ceiling_found'][$domainId])) {
             $this->info("Ceiling found at: L{$state['domain_ceiling_found'][$domainId]}");
@@ -153,18 +155,18 @@ class DiagnosticTestScenario extends Command
 
         $state = $this->service->initializeTest();
         $existingIds = [];
-        
+
         // Test various scenarios
         $scenarios = [
             'Empty state (first question)',
             'After L3 success',
             'At L4 ready for L5',
-            'At L5 needing confirmation'
+            'At L5 needing confirmation',
         ];
 
         foreach ($scenarios as $i => $scenario) {
             $this->info("Scenario {$i}: {$scenario}");
-            
+
             // Adjust state for scenario
             switch ($i) {
                 case 1: // After L3 success
@@ -184,16 +186,16 @@ class DiagnosticTestScenario extends Command
                     $state['domain_attempt_questions'][3] = [5 => 1];
                     break;
             }
-            
+
             $result = $this->service->selectNextQuestion($state, $existingIds, 1);
-            
-            if ($result && !isset($result['stop_domain'])) {
+
+            if ($result && ! isset($result['stop_domain'])) {
                 $this->line("  Selected: Domain {$result['domain_id']}, Target L{$result['target_bloom_level']}");
                 $existingIds[] = $result['question_id'];
             } else {
-                $this->line("  No question selected");
+                $this->line('  No question selected');
             }
-            
+
             $this->newLine();
         }
     }
@@ -203,9 +205,9 @@ class DiagnosticTestScenario extends Command
         $adaptiveLevel = $state['domain_bloom_levels'][$domainId] ?? 3;
         $symbol = $correct ? '✓' : '✗';
         $attemptQuestions = $state['domain_attempt_questions'][$domainId][$adaptiveLevel] ?? 0;
-        
+
         $this->line("Q{$questionNum}: {$questionLevel} {$symbol} → Adaptive L{$adaptiveLevel} (attempt: {$attemptQuestions})");
-        
+
         // Show if level changed
         if ($questionNum > 1) {
             $history = $state['domain_bloom_history'][$domainId] ?? [];
@@ -218,7 +220,7 @@ class DiagnosticTestScenario extends Command
             }
         }
     }
-    
+
     private function testUncertainZone()
     {
         $this->info('🧪 Testing Uncertain Zone Scenario');
@@ -227,13 +229,13 @@ class DiagnosticTestScenario extends Command
 
         $state = $this->service->initializeTest();
         $domainId = 3; // Legal, Regulatory & Compliance
-        
+
         // L3: 2/2 correct → advance to L4
         $l3Questions = DiagnosticItem::where('bloom_level', 3)
-            ->whereHas('topic', fn($q) => $q->where('domain_id', $domainId))
+            ->whereHas('topic', fn ($q) => $q->where('domain_id', $domainId))
             ->where('status', 'published')
             ->take(2)->get();
-            
+
         foreach ($l3Questions as $i => $item) {
             $state = $this->service->processAnswer($state, $item, true);
             $this->showState($state, $domainId, $i + 1, 'L3', true);
@@ -241,40 +243,40 @@ class DiagnosticTestScenario extends Command
 
         // L4: 1/2 (50%) - uncertain zone
         $l4Questions = DiagnosticItem::where('bloom_level', 4)
-            ->whereHas('topic', fn($q) => $q->where('domain_id', $domainId))
+            ->whereHas('topic', fn ($q) => $q->where('domain_id', $domainId))
             ->where('status', 'published')
             ->take(3)->get();
-            
+
         // First L4: correct
         $state = $this->service->processAnswer($state, $l4Questions[0], true);
         $this->showState($state, $domainId, 3, 'L4', true);
-        
+
         // Second L4: incorrect (now 50%)
         $state = $this->service->processAnswer($state, $l4Questions[1], false);
         $this->showState($state, $domainId, 4, 'L4', false);
-        
+
         $this->newLine();
         $this->info('Performance at L4: 50% (1/2) - Uncertain Zone');
-        
+
         // Check if domain should continue
         $questionsInDomain = 4;
         $shouldContinue = $this->service->shouldContinueDomain($domainId, $questionsInDomain, $state);
-        
-        $this->info("Should continue testing? " . ($shouldContinue ? 'YES' : 'NO'));
-        
+
+        $this->info('Should continue testing? '.($shouldContinue ? 'YES' : 'NO'));
+
         if ($shouldContinue) {
             $this->info('✅ PASS: Domain correctly continues testing in uncertain zone');
-            
+
             // Test the 3rd question
             $state = $this->service->processAnswer($state, $l4Questions[2], true);
             $this->showState($state, $domainId, 5, 'L4', true);
-            
+
             $this->info('After 3rd question: Performance = 66.7% (2/3)');
             $finalLevel = $state['domain_bloom_levels'][$domainId] ?? 'unknown';
-            
+
             if ($finalLevel == 4) {
                 $this->info('✅ Domain stays at L4 (needs >66.67% to advance)');
-            } else if ($finalLevel == 5) {
+            } elseif ($finalLevel == 5) {
                 $this->info('✅ Domain advances to L5 (achieved 66.7% ≥ 66.67%)');
             }
         } else {

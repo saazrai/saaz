@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use OwenIt\Auditing\Contracts\Auditable;
-
 trait AuditableModel
 {
     use \OwenIt\Auditing\Auditable;
@@ -12,7 +10,9 @@ trait AuditableModel
      * Default audit configuration for SecureStart™ models
      */
     protected $auditTimestamps = false;
+
     protected $auditStrict = true;
+
     protected $auditThreshold = 1000;
 
     /**
@@ -73,13 +73,15 @@ trait AuditableModel
         if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             $parts = explode('.', $ipAddress);
             $parts[3] = 'xxx';
+
             return implode('.', $parts);
         }
 
         if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $parts = explode(':', $ipAddress);
+
             // Keep first 4 parts for IPv6
-            return implode(':', array_slice($parts, 0, 4)) . ':xxxx:xxxx:xxxx:xxxx';
+            return implode(':', array_slice($parts, 0, 4)).':xxxx:xxxx:xxxx:xxxx';
         }
 
         return 'xxx.xxx.xxx.xxx';

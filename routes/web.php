@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Assessments\DiagnosticController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Legal\PrivacyController;
-use App\Http\Controllers\Assessments\DiagnosticController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,7 +18,7 @@ Route::get('dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 // Static pages
-Route::get('/about', fn() => Inertia::render('About'))->name('info.about');
+Route::get('/about', fn () => Inertia::render('About'))->name('info.about');
 
 // Public sample diagnostic (no auth required)
 Route::get('/diagnostics/sample', [DiagnosticController::class, 'sample'])->name('assessments.diagnostics.sample');
@@ -41,7 +41,7 @@ Route::prefix('legal/privacy')->middleware(['web'])->group(function () {
 Route::prefix('diagnostics')->name('assessments.diagnostics.')->group(function () {
     // Public routes (no auth required)
     Route::get('/', [DiagnosticController::class, 'index'])->name('index');
-    
+
     // Protected routes (require authentication)
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/results', [DiagnosticController::class, 'allResults'])->name('all-results');

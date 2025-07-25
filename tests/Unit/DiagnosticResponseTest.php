@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\DiagnosticResponse;
 use App\Models\Diagnostic;
-use App\Models\DiagnosticItem;
 use App\Models\DiagnosticDomain;
+use App\Models\DiagnosticItem;
+use App\Models\DiagnosticResponse;
 use App\Models\DiagnosticTopic;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     // Seed question types (required for diagnostic items)
     $this->seed(\Database\Seeders\QuestionTypesSeeder::class);
-    
+
     // Create test hierarchy for diagnostic responses
     $this->domain = DiagnosticDomain::factory()->create();
     $this->topic = DiagnosticTopic::factory()->create(['domain_id' => $this->domain->id]);
@@ -21,7 +21,7 @@ beforeEach(function () {
 
 test('can create diagnostic response with required fields', function () {
     $diagnostic = Diagnostic::factory()->create();
-    
+
     $response = DiagnosticResponse::factory()->create([
         'diagnostic_id' => $diagnostic->id,
         'diagnostic_item_id' => $this->item->id,
@@ -96,7 +96,7 @@ test('tracks response time accurately', function () {
 });
 
 test('diagnostic response audit includes all fields', function () {
-    $response = new DiagnosticResponse();
+    $response = new DiagnosticResponse;
 
     $auditInclude = $response->getAuditInclude();
 
