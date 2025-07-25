@@ -5,6 +5,7 @@ use App\Models\DiagnosticDomain;
 use App\Models\DiagnosticItem;
 use App\Models\DiagnosticProfile;
 use App\Models\DiagnosticResponse;
+use App\Models\DiagnosticSubtopic;
 use App\Models\DiagnosticTopic;
 use App\Models\User;
 use App\Services\AdaptiveDiagnosticService;
@@ -42,13 +43,18 @@ beforeEach(function () {
         'domain_id' => $this->domain->id,
     ]);
 
+    // Create subtopic for the topic
+    $this->subtopic = DiagnosticSubtopic::factory()->create([
+        'topic_id' => $this->topic->id,
+    ]);
+
     // Create questions at different Bloom levels
     $this->bloomLevels = [
-        1 => DiagnosticItem::factory()->count(7)->create(['topic_id' => $this->topic->id, 'bloom_level' => 1]),
-        2 => DiagnosticItem::factory()->count(10)->create(['topic_id' => $this->topic->id, 'bloom_level' => 2]),
-        3 => DiagnosticItem::factory()->count(16)->create(['topic_id' => $this->topic->id, 'bloom_level' => 3]),
-        4 => DiagnosticItem::factory()->count(10)->create(['topic_id' => $this->topic->id, 'bloom_level' => 4]),
-        5 => DiagnosticItem::factory()->count(7)->create(['topic_id' => $this->topic->id, 'bloom_level' => 5]),
+        1 => DiagnosticItem::factory()->count(7)->create(['subtopic_id' => $this->subtopic->id, 'bloom_level' => 1]),
+        2 => DiagnosticItem::factory()->count(10)->create(['subtopic_id' => $this->subtopic->id, 'bloom_level' => 2]),
+        3 => DiagnosticItem::factory()->count(16)->create(['subtopic_id' => $this->subtopic->id, 'bloom_level' => 3]),
+        4 => DiagnosticItem::factory()->count(10)->create(['subtopic_id' => $this->subtopic->id, 'bloom_level' => 4]),
+        5 => DiagnosticItem::factory()->count(7)->create(['subtopic_id' => $this->subtopic->id, 'bloom_level' => 5]),
     ];
 
     $this->service = new AdaptiveDiagnosticService;
