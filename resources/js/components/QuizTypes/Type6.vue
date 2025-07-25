@@ -13,15 +13,20 @@
                 v-html="renderedQuestion">
             </div>
             
-            <div class="relative inline-block mx-6">
+            <div class="overflow-x-auto mx-6">
+                <div class="relative inline-block">
                 <!-- Image with white background outline -->
                 <img 
                     v-if="imageUrl"
                     :src="imageUrl" 
-                    class="max-w-full h-auto block mx-auto"
+                    class="block mx-auto"
                     :style="{ 
                         boxShadow: isThemeDark ? '0 0 0 8px white, 0 0 0 10px rgba(0,0,0,0.1)' : 'none',
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        width: 'auto',
+                        height: 'auto',
+                        maxWidth: 'none',
+                        maxHeight: 'none'
                     }"
                 />
                 <div v-else :class="[
@@ -67,6 +72,7 @@
                         </span>
                     </div>
                 </template>
+                </div>
             </div>
         </div>
         

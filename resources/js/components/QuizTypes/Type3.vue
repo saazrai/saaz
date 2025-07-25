@@ -6,11 +6,11 @@
                 : 'bg-white border-gray-200'
          ]">
         <div class="px-2 py-8 lg:p-8">
-            <h4 class="text-lg font-bold mb-10 px-6"
+            <h4 class="text-lg mb-10 px-6"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'">
-                <b>{{ question.content }}</b>
+                {{ question.content }}
             </h4>
             <div class="question-options flex flex-col md:flex-row gap-6 px-6">
                 <div class="flex-1">

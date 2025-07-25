@@ -14,6 +14,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    showOverlay: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emit = defineEmits(['close']);
@@ -84,6 +88,7 @@ const maxWidthClass = computed(() => {
             scroll-region
         >
             <Transition
+                v-if="showOverlay"
                 enter-active-class="ease-out duration-300"
                 enter-from-class="opacity-0"
                 enter-to-class="opacity-100"

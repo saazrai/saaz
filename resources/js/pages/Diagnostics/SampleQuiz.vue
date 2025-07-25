@@ -121,7 +121,7 @@
 
                 <!-- Question Metadata Section -->
                 <div :class="[
-                    'backdrop-blur-md rounded-2xl w-full lg:w-2/6 p-6 border',
+                    'hidden xl:block backdrop-blur-md rounded-2xl w-full xl:w-2/6 p-6 border',
                     isDark
                         ? 'bg-gray-800 border-gray-700 shadow-xl'
                         : 'bg-white border-gray-200 shadow-xs'
@@ -564,8 +564,11 @@
             </div>
         </div>
 
+        <!-- Full Page Overlay for Results -->
+        <div v-if="showResults" class="fixed inset-0 bg-black/50 dark:bg-black/60 z-40"></div>
+        
         <!-- Results Modal -->
-        <Modal :show="showResults" @close="closeResults" :max-width="'2xl'">
+        <Modal :show="showResults" @close="closeResults" :max-width="'2xl'" :show-overlay="false">
             <div class="p-6">
                 <h2 :class="[
                     'text-2xl font-bold mb-4',
@@ -1355,36 +1358,25 @@ export default {
                 },
                 {
                     id: 10,
-                    type_id: 5, // Matching
-                    question_type: { id: 5, name: 'Matching', code: 'matching' },
-                    content: "Match each characteristic with the appropriate risk assessment type:",
-                    options: {
-                        items: [
-                            "Uses High/Medium/Low ratings",
-                            "Calculates Annual Loss Expectancy",
-                            "Requires less time and resources",
-                            "Provides monetary values"
-                        ],
-                        responses: [
-                            "Qualitative Assessment",
-                            "Quantitative Assessment"
-                        ]
-                    },
-                    correct_options: {
-                        "Uses High/Medium/Low ratings": "Qualitative Assessment",
-                        "Calculates Annual Loss Expectancy": "Quantitative Assessment",
-                        "Requires less time and resources": "Qualitative Assessment",
-                        "Provides monetary values": "Quantitative Assessment"
-                    },
-                    justifications: {
-                        "Uses High/Medium/Low ratings": "Qualitative assessments use descriptive scales rather than numerical values.",
-                        "Calculates Annual Loss Expectancy": "ALE (SLE × ARO) is a quantitative calculation that produces monetary values.",
-                        "Requires less time and resources": "Qualitative assessments are faster and simpler to conduct than quantitative ones.",
-                        "Provides monetary values": "Quantitative assessments express risk in financial terms and dollar amounts."
-                    },
-                    domain: "Risk Management",
-                    topic: "Risk Assessment",
-                    difficulty: "Easy",
+                    type_id: 1, // Single choice
+                    question_type: { id: 1, name: 'Single Choice', code: 'single_choice' },
+                    content: "An EU citizen is traveling in the United States and requires medical attention. During the visit, a U.S.-based hospital collects the individual's personal and medical data for treatment purposes.\n\nWhich of the following statements is TRUE regarding the hospital's data protection obligations?",
+                    options: [
+                        "The U.S. hospital must comply with the EU GDPR because the patient is an EU citizen.",
+                        "The U.S. hospital must adhere to both GDPR and HIPAA due to the dual nature of the data (EU citizenship and medical information).",
+                        "The U.S. hospital must comply with HIPAA, not GDPR, as the data processing occurs in the U.S. for domestic healthcare purposes.",
+                        "The U.S. hospital can share the data with third parties without consent since the patient is a foreign national."
+                    ],
+                    correct_options: ["The U.S. hospital must comply with HIPAA, not GDPR, as the data processing occurs in the U.S. for domestic healthcare purposes."],
+                    justifications: [
+                        "GDPR does not automatically apply to U.S.-based organizations solely because the data belongs to an EU citizen. GDPR applies when data is processed within the EU or by entities targeting EU residents, which is not the case here.",
+                        "While HIPAA governs medical data in the U.S., GDPR does not apply to data processed domestically in the U.S., even if the individual is an EU citizen.",
+                        "HIPAA governs healthcare data protection within the U.S., and since the data processing occurs locally for healthcare purposes, GDPR does not apply.",
+                        "HIPAA strictly prohibits sharing patient data without consent or legal justification, regardless of nationality."
+                    ],
+                    domain: "Legal, Regulatory & Compliance",
+                    topic: "Data Protection Laws",
+                    difficulty: "Medium",
                     bloom: "Understand",
                     dimension: "Managerial"
                 }
@@ -1582,6 +1574,9 @@ export default {
 
                 // Reset inactivity timer
                 this.resetInactivityTimer();
+
+                // Reset scroll position to top of page
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } finally {
                 // Reset submitting flag after a short delay to ensure UI updates
                 setTimeout(() => {
@@ -1691,6 +1686,8 @@ export default {
                 if (this.userAnswers[this.currentQuestionIndex]) {
                     this.selectedOptions = this.userAnswers[this.currentQuestionIndex].selectedOptions;
                 }
+                // Reset scroll position to top of page
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         },
         goToPreviousQuestion() {
@@ -1728,6 +1725,8 @@ export default {
                 if (this.userAnswers[this.currentQuestionIndex]) {
                     this.selectedOptions = this.userAnswers[this.currentQuestionIndex].selectedOptions;
                 }
+                // Reset scroll position to top of page
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         },
         restartQuiz() {

@@ -6,16 +6,16 @@
                 : 'bg-white border-gray-200'
          ]">
         <div class="px-2 py-8 lg:p-8">
-            <h4 class="text-lg font-bold mb-10 px-6"
+            <h4 class="text-lg mb-10 px-6"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'">
-                <b v-html="question.content"></b>
+                {{ question.content }}
             </h4>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 px-6">
+            <div class="flex flex-col md:flex-row gap-6 px-6">
                 <!-- Source Items (Left Side) -->
-                <div>
+                <div class="flex-1">
                     <h3 class="mb-4 font-semibold text-sm uppercase tracking-wider"
                         :class="isThemeDark 
                             ? 'text-gray-400' 
@@ -59,7 +59,7 @@
                 </div>
                 
                 <!-- Drop Zone (Right Side) -->
-                <div>
+                <div class="flex-1">
                     <h3 class="mb-4 font-semibold text-sm uppercase tracking-wider"
                         :class="isThemeDark 
                             ? 'text-gray-400' 
