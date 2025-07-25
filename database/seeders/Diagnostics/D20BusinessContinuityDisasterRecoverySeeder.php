@@ -5,13 +5,13 @@ namespace Database\Seeders\Diagnostics;
 class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
 {
     protected string $domainName = 'Business Continuity & Disaster Recovery';
-    
+
     protected function getQuestions(): array
     {
         return [
             // Topic 1: Business Impact Analysis (BIA) (10 questions)
             // Bloom Distribution: L1:0, L2:2, L3:4, L4:2, L5:2
-            
+
             // Item 1 - L3 - Apply
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -20,14 +20,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Protect all systems equally since they are all important to the organization',
                     'Prioritize order processing system due to its critical revenue impact, then assess other systems based on business disruption severity',
                     'Focus only on the newest and most expensive system infrastructure',
-                    'Protect systems in alphabetical order to ensure fair treatment'
+                    'Protect systems in alphabetical order to ensure fair treatment',
                 ],
                 'correct_options' => ['Prioritize order processing system due to its critical revenue impact, then assess other systems based on business disruption severity'],
                 'justifications' => [
                     'Incorrect - Equal protection ignores varying business criticality and impact levels',
                     'Correct - BIA identifies critical processes by business impact, prioritizing resources based on disruption severity',
                     'Incorrect - Technical criteria should not override business impact assessment',
-                    'Incorrect - Arbitrary ordering ignores business impact analysis methodology'
+                    'Incorrect - Arbitrary ordering ignores business impact analysis methodology',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -35,9 +35,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.3,
                 'irt_b' => 0.0,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 2 - L2 - Understand
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -46,14 +46,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'MTD and RTO are identical concepts with no meaningful difference',
                     'MTD is the absolute maximum time before severe consequences, while RTO is the target recovery time',
                     'MTD applies only to IT systems, while RTO applies to business processes',
-                    'MTD is always shorter than RTO for critical systems'
+                    'MTD is always shorter than RTO for critical systems',
                 ],
                 'correct_options' => ['MTD is the absolute maximum time before severe consequences, while RTO is the target recovery time'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - MTD is the absolute maximum time before severe consequences, while RTO is the target recovery time',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
@@ -61,9 +61,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.2,
                 'irt_b' => -0.5,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 3 - L2 - Understand
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -72,14 +72,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Stakeholders provide the most cost-effective solutions',
                     'Business process owners understand operational dependencies and impact better than technical teams',
                     'Stakeholder involvement reduces the time required for analysis',
-                    'Stakeholders always provide accurate technical specifications'
+                    'Stakeholders always provide accurate technical specifications',
                 ],
                 'correct_options' => ['Business process owners understand operational dependencies and impact better than technical teams'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Business process owners understand operational dependencies and impact better than technical teams',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
@@ -87,9 +87,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.3,
                 'irt_b' => -0.2,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 4 - L3 - Apply
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -98,14 +98,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Recover systems in order of implementation cost',
                     'Prioritize based on criticality ratings and impact on patient safety',
                     'Focus on the most technically complex systems first',
-                    'Recover all systems simultaneously regardless of priority'
+                    'Recover all systems simultaneously regardless of priority',
                 ],
                 'correct_options' => ['Prioritize based on criticality ratings and impact on patient safety'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Prioritize based on criticality ratings and impact on patient safety',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -113,9 +113,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.4,
                 'irt_b' => 0.1,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 5 - L3 - Apply
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -124,14 +124,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Set RPO based on industry average to minimize costs',
                     'Analyze financial impact of data loss and regulatory requirements to determine acceptable loss',
                     'Use the same RPO for all systems to simplify management',
-                    'Set RPO to zero for all financial data regardless of cost'
+                    'Set RPO to zero for all financial data regardless of cost',
                 ],
                 'correct_options' => ['Analyze financial impact of data loss and regulatory requirements to determine acceptable loss'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Analyze financial impact of data loss and regulatory requirements to determine acceptable loss',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -139,9 +139,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.5,
                 'irt_b' => 0.3,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 6 - L3 - Apply
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -150,14 +150,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Use estimates based on similar organizations in the industry',
                     'Calculate direct costs, indirect costs, and intangible impacts specific to the organization',
                     'Focus only on immediate revenue loss without considering other factors',
-                    'Apply a standard percentage across all business processes'
+                    'Apply a standard percentage across all business processes',
                 ],
                 'correct_options' => ['Calculate direct costs, indirect costs, and intangible impacts specific to the organization'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Calculate direct costs, indirect costs, and intangible impacts specific to the organization',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -165,9 +165,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.4,
                 'irt_b' => 0.5,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 7 - L4 - Analyze
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -176,14 +176,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Interdependency mapping requires expensive specialized software',
                     'Complex interconnections between processes, systems, and suppliers are difficult to identify and document completely',
                     'Interdependency mapping only works for manufacturing organizations',
-                    'Legal restrictions prevent complete interdependency analysis'
+                    'Legal restrictions prevent complete interdependency analysis',
                 ],
                 'correct_options' => ['Complex interconnections between processes, systems, and suppliers are difficult to identify and document completely'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Complex interconnections between processes, systems, and suppliers are difficult to identify and document completely',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 4,
@@ -191,9 +191,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.7,
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 8 - L4 - Analyze
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -202,14 +202,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Cloud environments are inherently more reliable than on-premises',
                     'Shared infrastructure and multi-tenancy create complex dependency relationships',
                     'Cloud providers handle all business impact analysis automatically',
-                    'Distributed processes have identical impact characteristics as centralized ones'
+                    'Distributed processes have identical impact characteristics as centralized ones',
                 ],
                 'correct_options' => ['Shared infrastructure and multi-tenancy create complex dependency relationships'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Shared infrastructure and multi-tenancy create complex dependency relationships',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 4,
@@ -217,9 +217,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.8,
                 'irt_b' => 1.0,
                 'irt_c' => 0.20,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 9 - L5 - Evaluate
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -228,14 +228,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'This is a realistic finding that demonstrates comprehensive business operations',
                     'This suggests insufficient analysis or stakeholder bias, as true priorities should emerge from proper BIA',
                     'Equal criticality is the preferred outcome for business continuity planning',
-                    'This finding eliminates the need for priority-based recovery strategies'
+                    'This finding eliminates the need for priority-based recovery strategies',
                 ],
                 'correct_options' => ['This suggests insufficient analysis or stakeholder bias, as true priorities should emerge from proper BIA'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - This suggests insufficient analysis or stakeholder bias, as true priorities should emerge from proper BIA',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 5,
@@ -243,9 +243,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.9,
                 'irt_b' => 1.3,
                 'irt_c' => 0.15,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 10 - L5 - Evaluate
             [
                 'subtopic' => 'Business Impact Analysis (BIA)',
@@ -254,14 +254,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Automated tools always provide more accurate results than manual analysis',
                     'Effective BIA requires both automated data collection and human judgment for context and validation',
                     'Manual processes are always superior for understanding business relationships',
-                    'The choice between automated and manual approaches has no impact on BIA quality'
+                    'The choice between automated and manual approaches has no impact on BIA quality',
                 ],
                 'correct_options' => ['Effective BIA requires both automated data collection and human judgment for context and validation'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Effective BIA requires both automated data collection and human judgment for context and validation',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 5,
@@ -269,12 +269,12 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 2.0,
                 'irt_b' => 1.5,
                 'irt_c' => 0.15,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Topic 2: Business Continuity Planning (10 questions)
             // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
-            
+
             // Item 11 - L1 - Remember
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -283,14 +283,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Only technical recovery procedures and contact lists',
                     'Risk assessment, business impact analysis, recovery strategies, and response procedures',
                     'Budget planning and resource allocation documents',
-                    'Employee training materials and performance metrics'
+                    'Employee training materials and performance metrics',
                 ],
                 'correct_options' => ['Risk assessment, business impact analysis, recovery strategies, and response procedures'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Risk assessment, business impact analysis, recovery strategies, and response procedures',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 1,
@@ -298,9 +298,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 0.9,
                 'irt_b' => -1.3,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 12 - L2 - Understand
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -309,14 +309,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Business continuity and disaster recovery are identical concepts',
                     'Business continuity focuses on maintaining operations while disaster recovery focuses on restoring systems',
                     'Business continuity is only for large enterprises, disaster recovery is for small businesses',
-                    'Business continuity is less expensive than disaster recovery planning'
+                    'Business continuity is less expensive than disaster recovery planning',
                 ],
                 'correct_options' => ['Business continuity focuses on maintaining operations while disaster recovery focuses on restoring systems'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Business continuity focuses on maintaining operations while disaster recovery focuses on restoring systems',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
@@ -324,9 +324,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.2,
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 13 - L2 - Understand
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -335,14 +335,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Senior management has the most technical expertise',
                     'Leadership provides resources, authority, and organizational commitment necessary for success',
                     'Senior management is required by law to oversee continuity planning',
-                    'Leadership support reduces the cost of business continuity initiatives'
+                    'Leadership support reduces the cost of business continuity initiatives',
                 ],
                 'correct_options' => ['Leadership provides resources, authority, and organizational commitment necessary for success'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Leadership provides resources, authority, and organizational commitment necessary for success',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
@@ -350,9 +350,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.4,
                 'irt_b' => -0.1,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 14 - L3 - Apply
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -361,14 +361,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Send all employees home until the facility is rebuilt',
                     'Implement predetermined alternate work arrangements and remote operations procedures',
                     'Permanently close operations and liquidate the business',
-                    'Wait for insurance settlements before making workforce decisions'
+                    'Wait for insurance settlements before making workforce decisions',
                 ],
                 'correct_options' => ['Implement predetermined alternate work arrangements and remote operations procedures'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Implement predetermined alternate work arrangements and remote operations procedures',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -376,9 +376,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.5,
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 15 - L3 - Apply
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -387,14 +387,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Keep business continuity and risk management completely separate',
                     'Align BCP strategies with identified risks and risk appetite to ensure consistent approach',
                     'Only focus on business continuity for risks that cannot be prevented',
-                    'Use identical procedures for both risk management and business continuity'
+                    'Use identical procedures for both risk management and business continuity',
                 ],
                 'correct_options' => ['Align BCP strategies with identified risks and risk appetite to ensure consistent approach'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Align BCP strategies with identified risks and risk appetite to ensure consistent approach',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -402,9 +402,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.4,
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 16 - L3 - Apply
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -413,14 +413,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Use only email communication to maintain written records',
                     'Establish multiple communication channels with clear escalation procedures and stakeholder matrices',
                     'Rely on social media platforms for all emergency communication',
-                    'Designate a single person to handle all crisis communications'
+                    'Designate a single person to handle all crisis communications',
                 ],
                 'correct_options' => ['Establish multiple communication channels with clear escalation procedures and stakeholder matrices'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Establish multiple communication channels with clear escalation procedures and stakeholder matrices',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -428,9 +428,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.6,
                 'irt_b' => 0.6,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 17 - L4 - Analyze
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -439,14 +439,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Business continuity plans are inherently flawed concepts',
                     'Plans often lack realistic testing, assume ideal conditions, or fail to account for human factors under stress',
                     'Disruptions are always more severe than anticipated',
-                    'Technology failures make all business continuity plans ineffective'
+                    'Technology failures make all business continuity plans ineffective',
                 ],
                 'correct_options' => ['Plans often lack realistic testing, assume ideal conditions, or fail to account for human factors under stress'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Plans often lack realistic testing, assume ideal conditions, or fail to account for human factors under stress',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 4,
@@ -454,9 +454,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.7,
                 'irt_b' => 0.9,
                 'irt_c' => 0.20,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 18 - L4 - Analyze
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -465,14 +465,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Business environments never change rapidly enough to affect plans',
                     'Dynamic business processes, technology changes, and organizational evolution require continuous plan updates',
                     'Static plans are always preferable to dynamic ones',
-                    'Plan relevance is not important for business continuity effectiveness'
+                    'Plan relevance is not important for business continuity effectiveness',
                 ],
                 'correct_options' => ['Dynamic business processes, technology changes, and organizational evolution require continuous plan updates'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Dynamic business processes, technology changes, and organizational evolution require continuous plan updates',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 4,
@@ -480,9 +480,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.8,
                 'irt_b' => 1.1,
                 'irt_c' => 0.20,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 19 - L5 - Evaluate
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -491,14 +491,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Standardized plans always provide the best business continuity outcomes',
                     'While consistency has benefits, plans must account for local regulations, culture, and risk profiles',
                     'Identical plans eliminate all coordination challenges during global incidents',
-                    'Local variations in business continuity plans create unnecessary complexity'
+                    'Local variations in business continuity plans create unnecessary complexity',
                 ],
                 'correct_options' => ['While consistency has benefits, plans must account for local regulations, culture, and risk profiles'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - While consistency has benefits, plans must account for local regulations, culture, and risk profiles',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 5,
@@ -506,9 +506,9 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.9,
                 'irt_b' => 1.4,
                 'irt_c' => 0.15,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Item 20 - L5 - Evaluate
             [
                 'subtopic' => 'Business Continuity Planning',
@@ -517,14 +517,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Comprehensive planning always reduces organizational agility',
                     'Effective planning provides structure while enabling adaptive responses to novel situations',
                     'Organizational agility eliminates the need for formal business continuity planning',
-                    'Planning and agility are mutually exclusive organizational capabilities'
+                    'Planning and agility are mutually exclusive organizational capabilities',
                 ],
                 'correct_options' => ['Effective planning provides structure while enabling adaptive responses to novel situations'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Effective planning provides structure while enabling adaptive responses to novel situations',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 5,
@@ -532,28 +532,28 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 2.0,
                 'irt_b' => 1.3,
                 'irt_c' => 0.15,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
+
             // Topic 3: Disaster Recovery Planning (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 21 - L1 - Remember
             [
                 'subtopic' => 'Disaster Recovery',
-                'question' => 'What is the primary objective of a Disaster Recovery Plan (DRP)?',
+                'question' => 'When is a disaster considered to be officially over?',
                 'options' => [
-                    'Preventing all possible disasters from occurring',
-                    'Restoring critical IT systems and data after a disruptive event',
-                    'Reducing insurance premiums and liability costs',
-                    'Improving overall system performance and efficiency'
+                    'When the danger has passed and the disaster has been contained',
+                    'When the organization\'s processes are up and running at the alternate site',
+                    'When all business operations at the original site have returned to normal',
+                    'When all employees have been reimbursed for their expenses',
                 ],
-                'correct_options' => ['Restoring critical IT systems and data after a disruptive event'],
+                'correct_options' => ['When all business operations at the original site have returned to normal'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Restoring critical IT systems and data after a disruptive event',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This indicates the immediate threat is over but recovery may still be ongoing',
+                    'Incorrect - Operating at alternate site is part of recovery, not the end of disaster',
+                    'Correct - A disaster is officially over when normal operations are fully restored at the original site',
+                    'Incorrect - Employee reimbursement is administrative and not the defining end of a disaster',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 1,
@@ -561,314 +561,207 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 0.8,
                 'irt_b' => -1.4,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 22 - L1 - Remember
+
+            // Item 22 - L2 - Understand
             [
                 'subtopic' => 'Disaster Recovery',
-                'question' => 'What does RTO stand for in disaster recovery planning?',
+                'question' => 'Which of the following BEST differentiates recovery from restoration in the context of disaster management?',
                 'options' => [
-                    'Recovery Time Objective',
-                    'Real-Time Operations',
-                    'Risk Transfer Option',
-                    'Resource Technology Optimization'
+                    'Recovery focuses on repairing IT infrastructure, while restoration involves restoring services',
+                    'Recovery involves returning all systems to their pre-disaster state, while restoration focuses on resuming business operations',
+                    'Recovery focuses on resuming essential operations, while restoration involves returning to full operational capability',
+                    'Recovery and restoration are the same, as both focus on the immediate return to normal operations',
                 ],
-                'correct_options' => ['Recovery Time Objective'],
+                'correct_options' => ['Recovery focuses on resuming essential operations, while restoration involves returning to full operational capability'],
                 'justifications' => [
-                    'Correct - Recovery Time Objective',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 1,
-                'difficulty_level' => 1,
-                'irt_a' => 0.9,
-                'irt_b' => -1.2,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 23 - L2 - Understand
-            [
-                'subtopic' => 'Disaster Recovery',
-                'question' => 'How do hot sites, warm sites, and cold sites differ in disaster recovery strategies?',
-                'options' => [
-                    'They refer to different geographic locations for backup facilities',
-                    'They represent different levels of readiness and recovery speed capabilities',
-                    'They indicate different temperature control requirements for equipment',
-                    'They describe different types of natural disaster scenarios'
-                ],
-                'correct_options' => ['They represent different levels of readiness and recovery speed capabilities'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - They represent different levels of readiness and recovery speed capabilities',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This oversimplifies the distinction and focuses only on technical aspects',
+                    'Incorrect - This reverses the typical sequence and scope of recovery vs restoration',
+                    'Correct - Recovery focuses on resuming essential operations, while restoration involves returning to full operational capability',
+                    'Incorrect - Recovery and restoration are distinct phases with different objectives and scope',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'irt_a' => 1.2,
-                'irt_b' => -0.5,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.8,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 24 - L2 - Understand
+
+            // Item 23 - L4 - Analyze
             [
                 'subtopic' => 'Disaster Recovery',
-                'question' => 'Why is regular backup testing critical for effective disaster recovery?',
+                'question' => 'Which of the following is the MOST important risk an enterprise must consider when developing a disaster recovery plan?',
                 'options' => [
-                    'Testing reduces storage costs for backup systems',
-                    'Testing validates backup integrity and recovery procedures before they are needed',
-                    'Testing is required by law for all organizations',
-                    'Testing improves backup performance and speed'
+                    'Budgets have not yet been finalized',
+                    'A business impact analysis has not been conducted',
+                    'No risk strategy has been established',
+                    'All employees have not attended disaster recovery training',
                 ],
-                'correct_options' => ['Testing validates backup integrity and recovery procedures before they are needed'],
+                'correct_options' => ['A business impact analysis has not been conducted'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Testing validates backup integrity and recovery procedures before they are needed',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - While budgets are important, they follow after understanding business impact priorities',
+                    'Correct - Without BIA, the organization cannot identify critical processes, dependencies, and recovery priorities essential for effective DR planning',
+                    'Incorrect - Risk strategy is important but BIA provides the foundation for understanding what needs protection',
+                    'Incorrect - Training is crucial but secondary to having a sound plan based on proper impact analysis',
                 ],
                 'type_id' => 1,
-                'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'irt_a' => 1.3,
-                'irt_b' => -0.2,
-                'irt_c' => 0.25,
-                'status' => 'published'
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.6,
+                'irt_b' => 0.7,
+                'irt_c' => 0.20,
+                'status' => 'published',
             ],
-            
-            // Item 25 - L3 - Apply
+
+            // Item 24 - L3 - Apply
             [
                 'subtopic' => 'Disaster Recovery',
-                'question' => 'An e-commerce company requires 99.9% uptime and cannot tolerate more than 15 minutes of downtime. What disaster recovery approach should they implement?',
+                'question' => 'What is the PRIMARY factor to be taken into account when designing a backup strategy that will be consistent with a disaster recovery strategy?',
                 'options' => [
-                    'Weekly tape backups with cold site recovery',
-                    'Real-time replication with hot site failover capabilities',
-                    'Monthly backup with manual recovery procedures',
-                    'Cloud storage only without redundant systems'
+                    'Volume of sensitive data',
+                    'Recovery point objective',
+                    'Recovery time objective',
+                    'Interruption window',
                 ],
-                'correct_options' => ['Real-time replication with hot site failover capabilities'],
+                'correct_options' => ['Recovery point objective'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Real-time replication with hot site failover capabilities',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - While data sensitivity affects backup security, RPO determines backup frequency and strategy',
+                    'Correct - RPO defines acceptable data loss, directly determining backup frequency and strategy design',
+                    'Incorrect - RTO affects recovery speed but RPO determines the backup strategy itself',
+                    'Incorrect - Interruption window is important for scheduling but RPO drives the fundamental backup approach',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'irt_a' => 1.4,
-                'irt_b' => 0.2,
+                'irt_b' => 0.1,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 26 - L3 - Apply
+
+            // Item 25 - L4 - Analyze
             [
                 'subtopic' => 'Disaster Recovery',
-                'question' => 'How should an organization prioritize system recovery when multiple systems fail simultaneously?',
+                'question' => 'Which of the following factors is MOST important when selecting a disaster recovery (DR) site?',
                 'options' => [
-                    'Recover systems in order of implementation cost',
-                    'Use business impact analysis to prioritize based on criticality and dependencies',
-                    'Recover the most complex systems first',
-                    'Attempt to recover all systems simultaneously'
+                    'Recovery Time Objective (RTO)',
+                    'Recovery Point Objective (RPO)',
+                    'Mean Time to Repair (MTTR)',
+                    'Available budget',
                 ],
-                'correct_options' => ['Use business impact analysis to prioritize based on criticality and dependencies'],
+                'correct_options' => ['Recovery Time Objective (RTO)'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Use business impact analysis to prioritize based on criticality and dependencies',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Correct - RTO determines site readiness level needed (hot, warm, cold) and directly drives site selection criteria',
+                    'Incorrect - RPO affects backup strategy but RTO determines the type and capability of DR site required',
+                    'Incorrect - MTTR is important for maintenance planning but not the primary factor for site selection',
+                    'Incorrect - Budget constrains options but RTO requirements should drive the selection within budget limits',
                 ],
                 'type_id' => 1,
-                'bloom_level' => 3,
-                'difficulty_level' => 3,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
                 'irt_a' => 1.5,
-                'irt_b' => 0.4,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 27 - L3 - Apply
-            [
-                'subtopic' => 'Disaster Recovery',
-                'question' => 'What is the most effective approach for implementing disaster recovery in a multi-cloud environment?',
-                'options' => [
-                    'Use only one cloud provider to simplify recovery procedures',
-                    'Implement cross-cloud replication with automated failover and consistent recovery procedures',
-                    'Rely on cloud providers to handle all disaster recovery automatically',
-                    'Avoid cloud environments for critical systems requiring disaster recovery'
-                ],
-                'correct_options' => ['Implement cross-cloud replication with automated failover and consistent recovery procedures'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Implement cross-cloud replication with automated failover and consistent recovery procedures',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 3,
-                'difficulty_level' => 3,
-                'irt_a' => 1.6,
-                'irt_b' => 0.6,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 28 - L4 - Analyze
-            [
-                'subtopic' => 'Disaster Recovery',
-                'question' => 'Analyze why traditional disaster recovery approaches may be inadequate for modern distributed and microservices architectures.',
-                'options' => [
-                    'Distributed systems never experience failures',
-                    'Complex interdependencies and stateless services require different recovery strategies than monolithic systems',
-                    'Traditional approaches work better for distributed systems',
-                    'Microservices eliminate the need for disaster recovery planning'
-                ],
-                'correct_options' => ['Complex interdependencies and stateless services require different recovery strategies than monolithic systems'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Complex interdependencies and stateless services require different recovery strategies than monolithic systems',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.7,
-                'irt_b' => 0.8,
+                'irt_b' => 0.5,
                 'irt_c' => 0.20,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 29 - L4 - Analyze
+
+            // Item 26 - L1 - Remember
             [
                 'subtopic' => 'Disaster Recovery',
-                'question' => 'What is the fundamental challenge in achieving consistent RPOs across globally distributed data centers?',
+                'question' => 'An offsite information processing facility with electrical wiring, air conditioning and flooring, but no computer or communications equipment, is a:',
                 'options' => [
-                    'Global data centers always have identical network characteristics',
-                    'Network latency, bandwidth limitations, and regulatory requirements create synchronization challenges',
-                    'Time zone differences prevent effective disaster recovery',
-                    'Global consistency is not important for disaster recovery'
+                    'cold site',
+                    'warm site',
+                    'hot site',
+                    'mirror site',
                 ],
-                'correct_options' => ['Network latency, bandwidth limitations, and regulatory requirements create synchronization challenges'],
+                'correct_options' => ['cold site'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Network latency, bandwidth limitations, and regulatory requirements create synchronization challenges',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.8,
-                'irt_b' => 1.0,
-                'irt_c' => 0.20,
-                'status' => 'published'
-            ],
-            
-            // Item 30 - L5 - Evaluate
-            [
-                'subtopic' => 'Disaster Recovery',
-                'question' => 'A company implements disaster recovery as a service (DRaaS) and considers their disaster recovery complete. Evaluate this approach.',
-                'options' => [
-                    'DRaaS provides complete disaster recovery with no additional requirements',
-                    'DRaaS provides infrastructure but requires integration with business processes and regular testing',
-                    'DRaaS is inappropriate for any business disaster recovery needs',
-                    'External DRaaS eliminates all disaster recovery risks'
-                ],
-                'correct_options' => ['DRaaS provides infrastructure but requires integration with business processes and regular testing'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - DRaaS provides infrastructure but requires integration with business processes and regular testing',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 5,
-                'difficulty_level' => 5,
-                'irt_a' => 1.9,
-                'irt_b' => 1.5,
-                'irt_c' => 0.15,
-                'status' => 'published'
-            ],
-            
-            // Topic 4: Crisis Management & Communication (10 questions)
-            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
-            // Item 31 - L1 - Remember
-            [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'What are the key elements of an effective crisis communication plan?',
-                'options' => [
-                    'Only internal employee communication procedures',
-                    'Stakeholder identification, communication channels, key messages, and spokesperson designation',
-                    'Social media monitoring and response capabilities',
-                    'Legal disclaimers and liability protection statements'
-                ],
-                'correct_options' => ['Stakeholder identification, communication channels, key messages, and spokesperson designation'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Stakeholder identification, communication channels, key messages, and spokesperson designation',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Correct - A cold site has basic infrastructure (power, HVAC, space) but no equipment or data',
+                    'Incorrect - A warm site includes some equipment and infrastructure, partially configured',
+                    'Incorrect - A hot site is fully operational with equipment, data, and ready for immediate use',
+                    'Incorrect - A mirror site is a real-time duplicate of the primary site with continuous data replication',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 1,
-                'difficulty_level' => 1,
-                'irt_a' => 0.8,
-                'irt_b' => -1.5,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -1.0,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 32 - L1 - Remember
+
+            // Item 27 - L1 - Remember
             [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'What is the primary role of a crisis management team?',
+                'subtopic' => 'Testing',
+                'question' => 'Which DRP testing method is least disruptive, involving a facilitated discussion of the plan\'s components and potential scenarios?',
                 'options' => [
-                    'To prevent all crises from occurring in the organization',
-                    'To coordinate response efforts and make critical decisions during emergencies',
-                    'To handle public relations and media management exclusively',
-                    'To investigate the root causes of incidents after they occur'
+                    'Tabletop exercise',
+                    'Simulation test',
+                    'Parallel test',
+                    'Full interruption test',
                 ],
-                'correct_options' => ['To coordinate response efforts and make critical decisions during emergencies'],
+                'correct_options' => ['Tabletop exercise'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - To coordinate response efforts and make critical decisions during emergencies',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Correct - Tabletop exercises are discussion-based with no system interaction, making them least disruptive',
+                    'Incorrect - Simulation tests involve actual system testing in non-production environments',
+                    'Incorrect - Parallel tests run recovery systems alongside production systems',
+                    'Incorrect - Full interruption tests shut down production systems, causing maximum disruption',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 1,
-                'difficulty_level' => 1,
-                'irt_a' => 0.9,
-                'irt_b' => -1.3,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.8,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 33 - L2 - Understand
+
+            // Item 28 - L2 - Understand
             [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'How does crisis communication differ during different phases of incident response?',
+                'subtopic' => 'Testing',
+                'question' => 'A "Walkthrough" test is best described as:',
                 'options' => [
-                    'Communication messages remain identical throughout all phases',
-                    'Messages evolve from initial alerts to status updates to recovery communications',
-                    'Crisis communication is only needed during the recovery phase',
-                    'Different phases require completely different communication teams'
+                    'A complete failover to a recovery site',
+                    'A step-by-step review of the DRP with key personnel',
+                    'Live systems running simultaneously',
+                    'A surprise drill for all staff',
                 ],
-                'correct_options' => ['Messages evolve from initial alerts to status updates to recovery communications'],
+                'correct_options' => ['A step-by-step review of the DRP with key personnel'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Messages evolve from initial alerts to status updates to recovery communications',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Complete failover describes a full interruption test, not a walkthrough',
+                    'Correct - A walkthrough is a structured review of procedures with responsible personnel',
+                    'Incorrect - Live systems running simultaneously describes a parallel test',
+                    'Incorrect - Surprise drills are unannounced tests, not walkthroughs which are planned reviews',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 29 - L2 - Understand
+            [
+                'subtopic' => 'Testing',
+                'question' => 'Which testing method involves activating parts of the DRP on actual systems in a non-production environment, without impacting live services?',
+                'options' => [
+                    'Full Interruption',
+                    'Parallel',
+                    'Simulation',
+                    'Walkthrough',
+                ],
+                'correct_options' => ['Simulation'],
+                'justifications' => [
+                    'Incorrect - Full interruption tests shut down production systems and impact live services',
+                    'Incorrect - Parallel tests run alongside production but may use production systems',
+                    'Correct - Simulation tests use non-production environments to test DRP components without affecting live services',
+                    'Incorrect - Walkthroughs are discussion-based and do not involve activating actual systems',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
@@ -876,51 +769,262 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.2,
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 34 - L2 - Understand
+
+            // Item 30 - L2 - Understand
             [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'Why is timing critical in crisis communication?',
+                'subtopic' => 'Testing',
+                'question' => 'The key characteristic of a "Parallel Test" is that:',
                 'options' => [
-                    'Timing only matters for legal compliance requirements',
-                    'Early and regular communication helps control narrative and reduces speculation',
-                    'Crisis communication should be delayed until all facts are known',
-                    'Timing has no impact on crisis communication effectiveness'
+                    'The primary site is shut down',
+                    'Recovery operations run concurrently with normal business operations',
+                    'It is only a theoretical discussion',
+                    'Only IT systems are involved',
                 ],
-                'correct_options' => ['Early and regular communication helps control narrative and reduces speculation'],
+                'correct_options' => ['Recovery operations run concurrently with normal business operations'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Early and regular communication helps control narrative and reduces speculation',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Shutting down the primary site describes a full interruption test',
+                    'Correct - Parallel tests run recovery systems alongside production without shutting down primary operations',
+                    'Incorrect - Theoretical discussions describe tabletop exercises or walkthroughs',
+                    'Incorrect - Parallel tests involve both IT systems and business processes, not just IT',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
                 'irt_a' => 1.3,
-                'irt_b' => -0.1,
+                'irt_b' => -0.2,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 35 - L3 - Apply
+
+            // Topic 4: Crisis Management & Communication (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+
+            // Item 31 - L4 - Analyze
             [
                 'subtopic' => 'Recovery Strategy',
-                'question' => 'A data breach exposes customer personal information at a retail company. How should they approach initial crisis communication?',
+                'question' => 'A ransomware attack is detected within your organization. After 45 minutes of investigation, it is found that three mission-critical systems are encrypted and backups appear potentially compromised. The incident response team is actively containing the threat. Which of the following is the BEST course of action at this point?',
                 'options' => [
-                    'Wait until the investigation is complete before any communication',
-                    'Immediately notify affected customers and stakeholders with known facts and remediation steps',
-                    'Only communicate with law enforcement and regulators',
-                    'Deny any security incident until proven otherwise'
+                    'Wait for two more hours to complete a full forensic analysis before declaring a disaster',
+                    'Notify law enforcement and defer internal action until legal approval is obtained',
+                    'Declare a disaster immediately based on initial impact assessment and activate the DRP',
+                    'Isolate the affected systems and continue monitoring before deciding whether to declare a disaster',
                 ],
-                'correct_options' => ['Immediately notify affected customers and stakeholders with known facts and remediation steps'],
+                'correct_options' => ['Declare a disaster immediately based on initial impact assessment and activate the DRP'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Immediately notify affected customers and stakeholders with known facts and remediation steps',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Waiting extends downtime when mission-critical systems are already compromised',
+                    'Incorrect - While law enforcement should be notified, internal recovery actions should not be delayed',
+                    'Correct - With mission-critical systems encrypted and backup integrity questioned, disaster declaration enables full recovery resources',
+                    'Incorrect - Systems are already isolated; further delay prevents recovery when disaster criteria are clearly met',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published',
+            ],
+
+            // Item 32 - L1 - Remember
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'A common method for backup verification is:',
+                'options' => [
+                    'Simply checking the file size',
+                    'Performing checksums or hash comparisons',
+                    'Running a virus scan on the backup',
+                    'Renaming the backup files',
+                ],
+                'correct_options' => ['Performing checksums or hash comparisons'],
+                'justifications' => [
+                    'Incorrect - File size alone does not verify data integrity or completeness',
+                    'Correct - Checksums and hash comparisons verify data integrity by detecting any changes or corruption',
+                    'Incorrect - Virus scans check for malware but do not verify backup data integrity',
+                    'Incorrect - Renaming files is not a verification method and provides no integrity checking',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -1.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 33 - L2 - Understand
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'Why are regular backup verification and restoration testing crucial?',
+                'options' => [
+                    'They speed up the backup process',
+                    'To ensure data is recoverable when needed',
+                    'They reduce the amount of data backed up',
+                    'They eliminate the need for offsite storage',
+                ],
+                'correct_options' => ['To ensure data is recoverable when needed'],
+                'justifications' => [
+                    'Incorrect - Verification and testing do not affect backup speed',
+                    'Correct - Testing ensures backups are valid and data can actually be restored during disasters',
+                    'Incorrect - Verification does not reduce backup data volume',
+                    'Incorrect - Testing does not eliminate the need for offsite backup storage',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 34 - L2 - Understand
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'To fully restore from an incremental backup scheme, you typically need:',
+                'options' => [
+                    'Only the latest incremental',
+                    'The last full backup plus all subsequent incrementals',
+                    'The last full backup and the latest differential',
+                    'Any single backup file',
+                ],
+                'correct_options' => ['The last full backup plus all subsequent incrementals'],
+                'justifications' => [
+                    'Incorrect - Latest incremental only contains changes since the previous backup, not complete data',
+                    'Correct - Incremental backups require the full backup plus all incremental backups in sequence to rebuild complete data',
+                    'Incorrect - This describes differential backup restoration, not incremental',
+                    'Incorrect - Single backup files cannot provide complete data restoration in incremental schemes',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.3,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 35 - L1 - Remember
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'A "differential backup" includes all data that has changed since the:',
+                'options' => [
+                    'Last incremental backup',
+                    'Last full backup',
+                    'Previous day',
+                    'System installation',
+                ],
+                'correct_options' => ['Last full backup'],
+                'justifications' => [
+                    'Incorrect - Differential backups are not based on incremental backups',
+                    'Correct - Differential backups capture all changes since the last full backup, regardless of when that occurred',
+                    'Incorrect - Differential backups are not time-based but reference the last full backup',
+                    'Incorrect - System installation is not the reference point for differential backups',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.9,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 36 - L1 - Remember
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'What does the 3-2-1 backup rule recommend?',
+                'options' => [
+                    'Keep three different types of backups daily',
+                    'Maintain three copies of data, on two different media types, with one offsite',
+                    'Use three backups per week, with two air-gapped, and one immutable',
+                    'Perform backups every three hours, with two snapshots and one mirror copy',
+                ],
+                'correct_options' => ['Maintain three copies of data, on two different media types, with one offsite'],
+                'justifications' => [
+                    'Incorrect - The rule is not about different types of backups but about copies and locations',
+                    'Correct - The 3-2-1 rule: 3 copies of data, 2 different media types, 1 offsite for protection',
+                    'Incorrect - This describes frequency and protection methods, not the 3-2-1 rule',
+                    'Incorrect - This describes backup frequency and methods, not the standard 3-2-1 rule',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 37 - L2 - Understand
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'In the Grandfather-Father-Son (GFS) backup rotation scheme, which backup typically represents the monthly full backup?',
+                'options' => [
+                    'Son',
+                    'Clone',
+                    'Grandfather',
+                    'Father',
+                ],
+                'correct_options' => ['Grandfather'],
+                'justifications' => [
+                    'Incorrect - Son represents daily backups in the GFS rotation scheme',
+                    'Incorrect - Clone is not part of the traditional GFS backup terminology',
+                    'Correct - Grandfather represents the monthly backup in the GFS rotation scheme',
+                    'Incorrect - Father represents weekly backups in the GFS rotation scheme',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 38 - L2 - Understand
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'What is the main advantage of incremental backups over differential backups?',
+                'options' => [
+                    'Faster full recovery time',
+                    'More frequent restore points',
+                    'Reduced backup storage and time',
+                    'Eliminates need for full backups',
+                ],
+                'correct_options' => ['Reduced backup storage and time'],
+                'justifications' => [
+                    'Incorrect - Incremental backups actually require longer recovery time due to multiple restore steps',
+                    'Incorrect - Both incremental and differential can provide frequent restore points',
+                    'Correct - Incremental backups use less storage space and time by only backing up changes since last backup',
+                    'Incorrect - Both incremental and differential backups require periodic full backups as a baseline',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 39 - L3 - Apply
+            [
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'Which of the following metrics could include the statement "If the primary database is corrupted by an incident, the organization might lose 30 seconds of data at the recovery site"?',
+                'options' => [
+                    'Recovery time objective (RTO)',
+                    'Maximum tolerable downtime (MTD)',
+                    'Mean Time to Repair (MTTR)',
+                    'Recovery point objective (RPO)',
+                ],
+                'correct_options' => ['Recovery point objective (RPO)'],
+                'justifications' => [
+                    'Incorrect - RTO measures how long it takes to restore service, not data loss amount',
+                    'Incorrect - MTD measures maximum acceptable downtime, not data loss',
+                    'Incorrect - MTTR measures repair time, not data loss tolerance',
+                    'Correct - RPO defines acceptable data loss measured in time, such as losing 30 seconds of data',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -928,142 +1032,38 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.4,
                 'irt_b' => 0.2,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 36 - L3 - Apply
+
+            // Item 40 - L3 - Apply
             [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'How should an organization manage social media communication during a crisis?',
+                'subtopic' => 'Disaster Recovery',
+                'question' => 'Which of the following answers the question "How long can it take for our system to recover after we were notified of a business disruption?"',
                 'options' => [
-                    'Disable all social media accounts until the crisis is resolved',
-                    'Monitor social media closely and respond with consistent, accurate information',
-                    'Let the crisis escalate on social media without any organizational response',
-                    'Only use social media for positive news after the crisis ends'
+                    'Recovery time objective (RTO)',
+                    'Maximum tolerable downtime (MTD)',
+                    'Mean Time Between Failures (MTBF)',
+                    'Recovery point objective (RPO)',
                 ],
-                'correct_options' => ['Monitor social media closely and respond with consistent, accurate information'],
+                'correct_options' => ['Recovery time objective (RTO)'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Monitor social media closely and respond with consistent, accurate information',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Correct - RTO defines the target time for system recovery after a disruption is identified',
+                    'Incorrect - MTD is the absolute maximum downtime before severe consequences, not recovery time target',
+                    'Incorrect - MTBF measures reliability between failures, not recovery time after disruption',
+                    'Incorrect - RPO measures acceptable data loss, not recovery time duration',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
-                'irt_a' => 1.5,
-                'irt_b' => 0.4,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 37 - L3 - Apply
-            [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'What is the most effective approach for coordinating crisis communication across multiple locations and time zones?',
-                'options' => [
-                    'Let each location handle communication independently',
-                    'Establish centralized coordination with local implementation and cultural adaptation',
-                    'Use only digital communication to ensure consistency',
-                    'Delay all communication until business hours in each location'
-                ],
-                'correct_options' => ['Establish centralized coordination with local implementation and cultural adaptation'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Establish centralized coordination with local implementation and cultural adaptation',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 3,
-                'difficulty_level' => 3,
-                'irt_a' => 1.6,
-                'irt_b' => 0.6,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 38 - L4 - Analyze
-            [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'Analyze why many organizations struggle with maintaining credibility during crisis communication.',
-                'options' => [
-                    'Credibility is not important during crisis situations',
-                    'Inconsistent messages, delayed responses, or appearing to hide information damages trust',
-                    'Stakeholders never expect transparency during crises',
-                    'Technical complexity makes credible communication impossible'
-                ],
-                'correct_options' => ['Inconsistent messages, delayed responses, or appearing to hide information damages trust'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Inconsistent messages, delayed responses, or appearing to hide information damages trust',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.7,
-                'irt_b' => 0.9,
-                'irt_c' => 0.20,
-                'status' => 'published'
-            ],
-            
-            // Item 39 - L4 - Analyze
-            [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'What is the fundamental challenge in balancing transparency with legal and competitive considerations during crisis communication?',
-                'options' => [
-                    'Legal considerations always override transparency requirements',
-                    'Organizations must provide sufficient information to maintain trust while protecting legal interests',
-                    'Competitive considerations are irrelevant during crisis situations',
-                    'Transparency always increases legal liability'
-                ],
-                'correct_options' => ['Organizations must provide sufficient information to maintain trust while protecting legal interests'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Organizations must provide sufficient information to maintain trust while protecting legal interests',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.8,
-                'irt_b' => 1.1,
-                'irt_c' => 0.20,
-                'status' => 'published'
-            ],
-            
-            // Item 40 - L5 - Evaluate
-            [
-                'subtopic' => 'Recovery Strategy',
-                'question' => 'A multinational corporation uses identical crisis communication templates across all countries and cultures. Evaluate this approach.',
-                'options' => [
-                    'Identical templates ensure perfect consistency across all markets',
-                    'Templates provide structure but must be adapted for local culture, language, and regulatory requirements',
-                    'Cultural differences have no impact on crisis communication effectiveness',
-                    'Localized communication creates too much complexity to be practical'
-                ],
-                'correct_options' => ['Templates provide structure but must be adapted for local culture, language, and regulatory requirements'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Templates provide structure but must be adapted for local culture, language, and regulatory requirements',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 5,
-                'difficulty_level' => 5,
-                'irt_a' => 1.9,
-                'irt_b' => 1.4,
-                'irt_c' => 0.15,
-                'status' => 'published'
-            ],
-            
+
             // Topic 5: Testing, Training & Maintenance (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
-            
+
             // Item 41 - L1 - Remember
             [
                 'subtopic' => 'Testing',
@@ -1072,14 +1072,14 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                     'Only full-scale operational tests that shut down primary systems',
                     'Tabletop exercises, walkthroughs, simulation tests, and full operational tests',
                     'Annual compliance audits and regulatory inspections',
-                    'Employee surveys and management reviews'
+                    'Employee surveys and management reviews',
                 ],
                 'correct_options' => ['Tabletop exercises, walkthroughs, simulation tests, and full operational tests'],
                 'justifications' => [
                     'Incorrect - This option is not the best answer',
                     'Correct - Tabletop exercises, walkthroughs, simulation tests, and full operational tests',
                     'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - This option is not the best answer',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 1,
@@ -1087,129 +1087,207 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 0.8,
                 'irt_b' => -1.4,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 42 - L1 - Remember
+
+            // Item 42 - L3 - Apply
             [
                 'subtopic' => 'Testing',
-                'question' => 'What is the primary purpose of conducting tabletop exercises for business continuity?',
+                'question' => 'Which DRP testing method poses the highest risk of service disruption to the live environment?',
                 'options' => [
-                    'To test the actual technical recovery capabilities of systems',
-                    'To validate decision-making processes and communication procedures without operational impact',
-                    'To satisfy regulatory requirements for disaster recovery testing',
-                    'To reduce insurance premiums through demonstrated preparedness'
+                    'Tabletop exercise',
+                    'Simulation test',
+                    'Full Interruption Test',
+                    'Walkthrough',
                 ],
-                'correct_options' => ['To validate decision-making processes and communication procedures without operational impact'],
+                'correct_options' => ['Full Interruption Test'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - To validate decision-making processes and communication procedures without operational impact',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 1,
-                'difficulty_level' => 1,
-                'irt_a' => 0.9,
-                'irt_b' => -1.2,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 43 - L2 - Understand
-            [
-                'subtopic' => 'Testing',
-                'question' => 'How does progressive testing methodology improve business continuity preparedness?',
-                'options' => [
-                    'Progressive testing eliminates the need for comprehensive planning',
-                    'It builds confidence and identifies issues through increasingly complex test scenarios',
-                    'Progressive testing reduces costs by avoiding full-scale tests',
-                    'It ensures tests are only conducted during business hours'
-                ],
-                'correct_options' => ['It builds confidence and identifies issues through increasingly complex test scenarios'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - It builds confidence and identifies issues through increasingly complex test scenarios',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'irt_a' => 1.2,
-                'irt_b' => -0.5,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 44 - L2 - Understand
-            [
-                'subtopic' => 'Testing',
-                'question' => 'Why is role-specific training important for business continuity effectiveness?',
-                'options' => [
-                    'Role-specific training reduces overall training costs',
-                    'Individuals need targeted knowledge for their specific responsibilities during disruptions',
-                    'Generic training is always more effective than specialized training',
-                    'Role-specific training is only needed for senior management'
-                ],
-                'correct_options' => ['Individuals need targeted knowledge for their specific responsibilities during disruptions'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Individuals need targeted knowledge for their specific responsibilities during disruptions',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'irt_a' => 1.3,
-                'irt_b' => -0.2,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 45 - L3 - Apply
-            [
-                'subtopic' => 'Testing',
-                'question' => 'A financial services firm wants to test their trading system disaster recovery without impacting live operations. What testing approach should they use?',
-                'options' => [
-                    'Shut down production systems during market hours for full testing',
-                    'Conduct parallel testing using isolated test environments that mirror production',
-                    'Only perform paper-based reviews without any technical testing',
-                    'Wait for an actual disaster to validate recovery procedures'
-                ],
-                'correct_options' => ['Conduct parallel testing using isolated test environments that mirror production'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Conduct parallel testing using isolated test environments that mirror production',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Tabletop exercises are discussion-based with no system impact',
+                    'Incorrect - Simulation tests use non-production environments',
+                    'Correct - Full interruption tests shut down production systems, creating the highest risk of service disruption',
+                    'Incorrect - Walkthroughs are procedural reviews with no system interaction',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'irt_a' => 1.4,
-                'irt_b' => 0.2,
+                'irt_b' => 0.3,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 46 - L3 - Apply
+
+            // Item 43 - L2 - Understand
             [
                 'subtopic' => 'Testing',
-                'question' => 'How should an organization approach business continuity training for remote and distributed workforces?',
+                'question' => 'A primary benefit of a "Full Interruption Test" is its ability to:',
                 'options' => [
-                    'Only provide training to employees in main office locations',
-                    'Use virtual training platforms with interactive scenarios and regular practice sessions',
-                    'Assume remote workers do not need business continuity training',
-                    'Wait until all employees return to physical offices'
+                    'Minimize costs',
+                    'Validate the plan in a real-world scenario',
+                    'Keep all systems online',
+                    'Only involve a small team',
                 ],
-                'correct_options' => ['Use virtual training platforms with interactive scenarios and regular practice sessions'],
+                'correct_options' => ['Validate the plan in a real-world scenario'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Use virtual training platforms with interactive scenarios and regular practice sessions',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Full interruption tests are typically the most expensive testing method',
+                    'Correct - Full interruption tests provide the most realistic validation by actually shutting down production systems',
+                    'Incorrect - Full interruption tests specifically shut down systems, the opposite of keeping them online',
+                    'Incorrect - Full interruption tests typically require extensive team involvement due to their complexity',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.3,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 44 - L3 - Apply
+            [
+                'subtopic' => 'Testing',
+                'question' => 'When conducting a "Simulation Test," what is a common challenge?',
+                'options' => [
+                    'Lack of participant engagement',
+                    'Ensuring the test environment accurately mirrors production',
+                    'It\'s too costly for most organizations',
+                    'It always causes downtime',
+                ],
+                'correct_options' => ['Ensuring the test environment accurately mirrors production'],
+                'justifications' => [
+                    'Incorrect - Simulation tests typically have good engagement as they involve hands-on activities',
+                    'Correct - The main challenge is creating test environments that accurately represent production complexity and dependencies',
+                    'Incorrect - Simulation tests are generally cost-effective compared to full interruption tests',
+                    'Incorrect - Simulation tests specifically avoid downtime by using non-production environments',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 45 - L4 - Analyze
+            [
+                'subtopic' => 'Testing',
+                'question' => 'Different types of tests exist for testing the effectiveness of recovery plans. Which of the following choices would occur during a parallel test but not occur during a simulation test?',
+                'options' => [
+                    'The team members step through the individual recovery tasks',
+                    'The primary site operations are interrupted',
+                    'A fictitious scenario is used for the test',
+                    'The recovery site is brought to operational readiness',
+                ],
+                'correct_options' => ['The recovery site is brought to operational readiness'],
+                'justifications' => [
+                    'Incorrect - Both parallel and simulation tests involve stepping through recovery tasks',
+                    'Incorrect - Neither parallel nor simulation tests interrupt primary site operations',
+                    'Incorrect - Both test types can use fictitious scenarios',
+                    'Correct - Parallel tests bring the recovery site to full operational readiness alongside production, while simulation tests use non-production environments',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.6,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20,
+                'status' => 'published',
+            ],
+
+            // Item 46 - L1 - Remember
+            [
+                'subtopic' => 'Testing',
+                'question' => 'The "Lessons Learned" process typically begins:',
+                'options' => [
+                    'Before the DRP is written',
+                    'After a DRP test or actual incident',
+                    'Only when a new tool is implemented',
+                    'At the start of a new fiscal year',
+                ],
+                'correct_options' => ['After a DRP test or actual incident'],
+                'justifications' => [
+                    'Incorrect - Lessons learned require experience from testing or incidents to analyze',
+                    'Correct - Lessons learned sessions analyze what worked and what didn\'t after tests or actual events',
+                    'Incorrect - Lessons learned are not limited to new tool implementations',
+                    'Incorrect - Lessons learned are event-driven, not calendar-driven',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.9,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 47 - L2 - Understand
+            [
+                'subtopic' => 'Testing',
+                'question' => 'The goal of a "Lessons Learned" session is primarily:',
+                'options' => [
+                    'To close the incident quickly',
+                    'To improve future response capabilities',
+                    'To justify current practices',
+                    'To prove the plan was perfect',
+                ],
+                'correct_options' => ['To improve future response capabilities'],
+                'justifications' => [
+                    'Incorrect - Closing incidents quickly is not the purpose of lessons learned sessions',
+                    'Correct - The primary goal is to identify improvements and enhance future disaster response effectiveness',
+                    'Incorrect - Lessons learned should objectively analyze performance, not justify existing practices',
+                    'Incorrect - Lessons learned assume there are areas for improvement, not perfection',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.7,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 48 - L2 - Understand
+            [
+                'subtopic' => 'Testing',
+                'question' => '"Continuous Improvement" for DRP is best achieved through:',
+                'options' => [
+                    'Setting the plan once and never touching it',
+                    'Regular reviews, updates, and testing',
+                    'Only responding to actual disasters',
+                    'Automating all recovery steps',
+                ],
+                'correct_options' => ['Regular reviews, updates, and testing'],
+                'justifications' => [
+                    'Incorrect - Static plans become outdated and ineffective over time',
+                    'Correct - Continuous improvement requires ongoing assessment, updates, and validation through regular testing',
+                    'Incorrect - Waiting for disasters is reactive and misses opportunities for proactive improvement',
+                    'Incorrect - While automation helps, continuous improvement requires human analysis and planning updates',
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+            ],
+
+            // Item 49 - L3 - Apply
+            [
+                'subtopic' => 'Testing',
+                'question' => 'A key indicator of effective continuous improvement in DRP is:',
+                'options' => [
+                    'The plan remains unchanged for years',
+                    'Post-test reports consistently show the same issues',
+                    'RTO and RPO targets are consistently met or improved',
+                    'No one needs to read the plan',
+                ],
+                'correct_options' => ['RTO and RPO targets are consistently met or improved'],
+                'justifications' => [
+                    'Incorrect - Unchanged plans indicate lack of improvement and adaptation',
+                    'Incorrect - Recurring issues suggest continuous improvement is not working effectively',
+                    'Correct - Meeting or improving RTO/RPO targets demonstrates measurable improvement in recovery capabilities',
+                    'Incorrect - Team familiarity with the plan is important, but not reading it suggests poor engagement',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 3,
@@ -1217,51 +1295,25 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.5,
                 'irt_b' => 0.4,
                 'irt_c' => 0.25,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 47 - L3 - Apply
+
+            // Item 50 - L4 - Analyze
             [
                 'subtopic' => 'Testing',
-                'question' => 'What is the most effective approach for maintaining business continuity plan currency in rapidly changing organizations?',
+                'question' => 'Which of the following is the BEST indication that the disaster recovery plan (DRP) testing was successful?',
                 'options' => [
-                    'Update plans only when major disasters occur',
-                    'Implement scheduled reviews with trigger-based updates for significant organizational changes',
-                    'Completely rewrite plans annually regardless of changes',
-                    'Maintain static plans to ensure consistency'
+                    'The recovery time objective was maintained during testing',
+                    'The test report was shared with the senior management',
+                    'The business process owners were active participants during testing',
+                    'Systems were restored in the order of priority during testing',
                 ],
-                'correct_options' => ['Implement scheduled reviews with trigger-based updates for significant organizational changes'],
+                'correct_options' => ['The recovery time objective was maintained during testing'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Implement scheduled reviews with trigger-based updates for significant organizational changes',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 3,
-                'difficulty_level' => 3,
-                'irt_a' => 1.6,
-                'irt_b' => 0.6,
-                'irt_c' => 0.25,
-                'status' => 'published'
-            ],
-            
-            // Item 48 - L4 - Analyze
-            [
-                'subtopic' => 'Testing',
-                'question' => 'Analyze why many organizations struggle to conduct realistic business continuity tests without disrupting operations.',
-                'options' => [
-                    'Realistic testing always requires complete operational shutdown',
-                    'Balance between test realism and business impact requires careful planning and phased approaches',
-                    'Operational disruption is never acceptable for business continuity testing',
-                    'Realistic testing provides no additional value over theoretical exercises'
-                ],
-                'correct_options' => ['Balance between test realism and business impact requires careful planning and phased approaches'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Balance between test realism and business impact requires careful planning and phased approaches',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Correct - Meeting RTO demonstrates the plan can achieve its primary objective of timely recovery',
+                    'Incorrect - Sharing reports is good communication but doesn\'t indicate test success',
+                    'Incorrect - Stakeholder participation is important but doesn\'t measure recovery effectiveness',
+                    'Incorrect - Following priority order is good but doesn\'t guarantee meeting time objectives',
                 ],
                 'type_id' => 1,
                 'bloom_level' => 4,
@@ -1269,60 +1321,8 @@ class D20BusinessContinuityDisasterRecoverySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.7,
                 'irt_b' => 0.8,
                 'irt_c' => 0.20,
-                'status' => 'published'
+                'status' => 'published',
             ],
-            
-            // Item 49 - L4 - Analyze
-            [
-                'subtopic' => 'Testing',
-                'question' => 'What is the fundamental challenge in measuring the effectiveness of business continuity training programs?',
-                'options' => [
-                    'Training effectiveness cannot be measured quantitatively',
-                    'True effectiveness is only demonstrated during actual disruptions, requiring surrogate metrics',
-                    'All training programs have identical effectiveness',
-                    'Measuring effectiveness is not important for business continuity'
-                ],
-                'correct_options' => ['True effectiveness is only demonstrated during actual disruptions, requiring surrogate metrics'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - True effectiveness is only demonstrated during actual disruptions, requiring surrogate metrics',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.8,
-                'irt_b' => 1.0,
-                'irt_c' => 0.20,
-                'status' => 'published'
-            ],
-            
-            // Item 50 - L5 - Evaluate
-            [
-                'subtopic' => 'Testing',
-                'question' => 'An organization conducts annual business continuity tests that consistently pass with no issues identified. Evaluate the effectiveness of their testing program.',
-                'options' => [
-                    'Perfect test results indicate an excellent business continuity program',
-                    'Lack of findings may indicate insufficient test rigor or unrealistic scenarios',
-                    'Annual testing frequency is always sufficient for business continuity validation',
-                    'No issues found means testing can be reduced in frequency'
-                ],
-                'correct_options' => ['Lack of findings may indicate insufficient test rigor or unrealistic scenarios'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Lack of findings may indicate insufficient test rigor or unrealistic scenarios',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'type_id' => 1,
-                'bloom_level' => 5,
-                'difficulty_level' => 5,
-                'irt_a' => 1.9,
-                'irt_b' => 1.5,
-                'irt_c' => 0.15,
-                'status' => 'published'
-            ]
         ];
     }
 }

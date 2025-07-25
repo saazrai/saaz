@@ -7,7 +7,7 @@ uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('password can be updated', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -28,20 +28,20 @@ test('password can be updated', function () {
 
     $response = $this->actingAs($user)->put('/settings/password', [
         'current_password' => 'password',
-        'password' => 'new-password',
-        'password_confirmation' => 'new-password',
+        'password' => 'MyN3wS3cur3P@ss!',
+        'password_confirmation' => 'MyN3wS3cur3P@ss!',
     ]);
 
     $response
         ->assertSessionHasNoErrors()
         ->assertRedirect('/');
 
-    expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
+    expect(Hash::check('MyN3wS3cur3P@ss!', $user->refresh()->password))->toBeTrue();
 });
 
 test('correct password must be provided to update password', function () {
     $user = User::factory()->create();
-    
+
     // Create privacy consent for the user
     \App\Models\PrivacyConsent::create([
         'user_id' => $user->id,
@@ -62,8 +62,8 @@ test('correct password must be provided to update password', function () {
 
     $response = $this->actingAs($user)->put('/settings/password', [
         'current_password' => 'wrong-password',
-        'password' => 'new-password',
-        'password_confirmation' => 'new-password',
+        'password' => 'MyN3wS3cur3P@ss!',
+        'password_confirmation' => 'MyN3wS3cur3P@ss!',
     ]);
 
     $response
