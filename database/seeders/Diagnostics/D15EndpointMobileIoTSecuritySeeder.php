@@ -15,19 +15,19 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
             // Item 1 - L1 - Remember
             [
                 'subtopic' => 'Endpoint Security',
-                'question' => 'What is the primary difference between traditional antivirus and modern Endpoint Detection and Response (EDR) solutions?',
+                'question' => 'Which of the following best describes the core function of an Endpoint Detection and Response (EDR) solution?',
                 'options' => [
-                    'EDR is less expensive than traditional antivirus',
-                    'EDR provides behavioral analysis and threat hunting capabilities beyond signature-based detection',
-                    'Traditional antivirus works faster than EDR solutions',
-                    'EDR only works on mobile devices while antivirus works on computers'
+                    'Blocks all incoming network traffic',
+                    'Provides automated patching of operating systems',
+                    'Monitors endpoint activity and enables threat hunting',
+                    'Encrypts endpoint storage at rest'
                 ],
-                'correct_options' => ['EDR provides behavioral analysis and threat hunting capabilities beyond signature-based detection'],
+                'correct_options' => ['Monitors endpoint activity and enables threat hunting'],
                 'justifications' => [
-                    'EDR typically has higher initial costs than traditional antivirus solutions',
-                    'Correct - EDR provides behavioral analysis and threat hunting capabilities beyond signature-based detection',
-                    'EDR solutions often require more processing power than traditional antivirus',
-                    'EDR works on all types of endpoints, not just mobile devices'
+                    'Incorrect - Blocking network traffic is the function of firewalls, not EDR solutions',
+                    'Incorrect - Automated patching is typically handled by patch management systems, not EDR',
+                    'Correct - EDR solutions continuously monitor endpoint activity, collect telemetry data, and provide threat hunting capabilities to detect and respond to advanced threats',
+                    'Incorrect - Storage encryption is typically handled by full disk encryption solutions, not EDR'
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -35,92 +35,114 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 0.8,
                 'irt_b' => -1.5,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
             // Item 2 - L2 - Understand
             [
-                'subtopic' => 'Endpoint Security',
-                'question' => 'How does Zero Trust endpoint security differ from traditional perimeter-based security?',
+                'subtopic' => 'Mobile Security',
+                'question' => 'In a BYOD (Bring Your Own Device) policy, who is typically responsible for purchasing and maintaining the mobile device itself?',
                 'options' => [
-                    'Zero Trust is faster than perimeter-based security',
-                    'Zero Trust assumes no implicit trust and verifies every endpoint connection',
-                    'Zero Trust only applies to cloud environments',
-                    'Zero Trust eliminates the need for endpoint security software'
+                    'The organization',
+                    'The end-user',
+                    'A third-party vendor',
+                    'The mobile network provider'
                 ],
-                'correct_options' => ['Zero Trust assumes no implicit trust and verifies every endpoint connection'],
+                'correct_options' => ['The end-user'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Zero Trust assumes no implicit trust and verifies every endpoint connection',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - In BYOD policies, the organization does not purchase devices since employees bring their own personal devices',
+                    'Correct - BYOD (Bring Your Own Device) policies require employees to purchase and maintain their own personal devices for work use, shifting device ownership and maintenance responsibility to the end-user',
+                    'Incorrect - Third-party vendors are not responsible for device procurement in BYOD scenarios; they may provide services but not device ownership',
+                    'Incorrect - Mobile network providers offer connectivity services but are not responsible for device purchase or maintenance in BYOD policies'
                 ],
                 'bloom_level' => 2,
-                'difficulty_level' => 3,
+                'difficulty_level' => 1,
                 'type_id' => 1,
-                'irt_a' => 1.2,
-                'irt_b' => -0.5,
+                'irt_a' => 0.9,
+                'irt_b' => -1.0,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
             // Item 3 - L2 - Understand
             [
-                'subtopic' => 'Endpoint Security',
-                'question' => 'Why is application whitelisting more secure than blacklisting for endpoint protection?',
+                'subtopic' => 'Mobile Security',
+                'question' => 'Which solution focuses primarily on managing and securing mobile devices, including device configuration, security policies, and application deployment?',
                 'options' => [
-                    'Whitelisting is easier to manage than blacklisting',
-                    'Whitelisting prevents execution of unknown threats by default',
-                    'Whitelisting is faster than blacklisting',
-                    'Whitelisting works better with older operating systems'
+                    'Enterprise Mobility Management (EMM)',
+                    'Mobile Device Management (MDM)',
+                    'Mobile Application Management (MAM)',
+                    'Identity and Access Management (IAM)'
                 ],
-                'correct_options' => ['Whitelisting prevents execution of unknown threats by default'],
+                'correct_options' => ['Mobile Device Management (MDM)'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Whitelisting prevents execution of unknown threats by default',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - EMM is a broader platform that includes MDM, MAM, and additional enterprise mobility components, but MDM specifically focuses on device management',
+                    'Correct - Mobile Device Management (MDM) specifically focuses on managing and securing mobile devices, including device configuration, security policy enforcement, and application deployment capabilities',
+                    'Incorrect - MAM (Mobile Application Management) focuses specifically on applications rather than overall device management and configuration',
+                    'Incorrect - IAM manages user identities and access permissions but does not handle device configuration or mobile-specific security policies'
                 ],
                 'bloom_level' => 2,
-                'difficulty_level' => 3,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 1.3,
-                'irt_b' => -0.2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.8,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
             // Item 4 - L3 - Apply
             [
-                'subtopic' => 'Endpoint Security',
-                'question' => 'A financial services company needs to secure laptops for remote workers accessing sensitive customer data. What endpoint security approach would be most comprehensive?',
+                'subtopic' => 'Device Security',
+                'question' => 'When a device is lost or stolen, what is the most effective measure for preventing unauthorized access to the data on its internal storage?',
                 'options' => [
-                    'Install only traditional antivirus software',
-                    'Deploy EDR with full disk encryption, VPN, and application controls',
-                    'Rely on built-in operating system security features only',
-                    'Use only network-based security controls'
+                    'Setting a strong login password',
+                    'Full Disk Encryption',
+                    'Remotely wiping the device (if pre-configured)',
+                    'Using a screen lock'
                 ],
-                'correct_options' => ['Deploy EDR with full disk encryption, VPN, and application controls'],
+                'correct_options' => ['Full Disk Encryption'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Deploy EDR with full disk encryption, VPN, and application controls',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Strong passwords can be bypassed through physical access methods or by removing the storage device and accessing it directly',
+                    'Correct - Full Disk Encryption ensures that even if the device is physically compromised, the data remains unreadable without the encryption keys, providing the strongest protection for data at rest',
+                    'Incorrect - Remote wiping is effective but requires network connectivity and pre-configuration; if the device is offline or the thief acts quickly, wiping may not occur in time',
+                    'Incorrect - Screen locks provide basic protection but can be bypassed through various methods when an attacker has physical access to the device'
                 ],
                 'bloom_level' => 3,
-                'difficulty_level' => 3,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 1.4,
-                'irt_b' => 0.1,
+                'irt_a' => 1.1,
+                'irt_b' => -0.3,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 5 - L3 - Apply
+            // Item 5 - L2 - Understand
+            [
+                'subtopic' => 'Endpoint Security',
+                'question' => 'What security posture does application whitelisting enforce by default?',
+                'options' => [
+                    'Deny by default, permit by exception',
+                    'Permit by default, deny by exception',
+                    'Allow all applications for administrators',
+                    'Block only malicious websites'
+                ],
+                'correct_options' => ['Deny by default, permit by exception'],
+                'justifications' => [
+                    'Correct - Application whitelisting enforces a "deny by default, permit by exception" security posture, where only explicitly approved applications are allowed to execute, blocking all others by default',
+                    'Incorrect - This describes blacklisting, where most applications are allowed by default and only known bad applications are blocked',
+                    'Incorrect - Application whitelisting applies to all users regardless of privilege level; administrative users must also use approved applications',
+                    'Incorrect - Application whitelisting controls application execution, not website access; web filtering handles malicious website blocking'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'type_id' => 1,
+                'irt_a' => 1.0,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 6 - L3 - Apply
             [
                 'subtopic' => 'Endpoint Security',
                 'question' => 'How should an organization implement endpoint security for a mixed environment of Windows, macOS, and Linux systems?',
@@ -147,84 +169,81 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
                 'status' => 'published'
             ],
             
-            // Item 6 - L3 - Apply
+            // Item 6 - L2 - Understand
             [
                 'subtopic' => 'Endpoint Security',
-                'question' => 'What is the most effective approach for protecting endpoints against fileless malware attacks?',
+                'question' => 'What is a key limitation of application blacklisting compared to whitelisting?',
                 'options' => [
-                    'Increase signature database update frequency',
-                    'Implement behavior-based detection and memory protection controls',
-                    'Disable all PowerShell and scripting capabilities',
-                    'Use only hardware-based security solutions'
+                    'It prevents legitimate applications from running',
+                    'It allows all applications to run by default unless explicitly forbidden',
+                    'It is simpler to manage in large environments',
+                    'It is effective against zero-day malware'
                 ],
-                'correct_options' => ['Implement behavior-based detection and memory protection controls'],
+                'correct_options' => ['It allows all applications to run by default unless explicitly forbidden'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Implement behavior-based detection and memory protection controls',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Blacklisting typically allows legitimate applications to run; the issue is that it also allows unknown malicious applications',
+                    'Correct - Application blacklisting uses a "permit by default, deny by exception" approach, allowing all applications to execute unless specifically blocked, which means new or unknown malware can run freely',
+                    'Incorrect - Blacklisting is actually more complex to manage as it requires constant updates to block new threats, while whitelisting has a more stable approved application list',
+                    'Incorrect - Blacklisting is particularly ineffective against zero-day malware since these threats are unknown and not yet in the blacklist database'
                 ],
-                'bloom_level' => 3,
-                'difficulty_level' => 3,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 1.4,
-                'irt_b' => 0.5,
+                'irt_a' => 1.0,
+                'irt_b' => -0.4,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 7 - L4 - Analyze
+            // Item 7 - L3 - Apply
             [
                 'subtopic' => 'Endpoint Security',
-                'question' => 'Analyze why cloud-based endpoint security solutions may be more effective than on-premises solutions for detecting advanced threats.',
+                'question' => 'A company establishes a set of secure configurations for all its workstations and servers, including disabled unnecessary services, strong password policies, and firewall rules. This process is known as:',
                 'options' => [
-                    'Cloud solutions are always faster than on-premises solutions',
-                    'Cloud solutions leverage global threat intelligence and machine learning at scale',
-                    'Cloud solutions are less expensive than on-premises solutions',
-                    'Cloud solutions eliminate the need for local endpoint agents'
+                    'Patch Management',
+                    'Incident Response Planning',
+                    'Security Baselines and Hardening',
+                    'Vulnerability Scanning'
                 ],
-                'correct_options' => ['Cloud solutions leverage global threat intelligence and machine learning at scale'],
+                'correct_options' => ['Security Baselines and Hardening'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Cloud solutions leverage global threat intelligence and machine learning at scale',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Patch management focuses on updating software to fix vulnerabilities, not establishing secure configurations',
+                    'Incorrect - Incident response planning involves preparing for and responding to security incidents, not setting secure configurations',
+                    'Correct - Security baselines and hardening involve establishing secure configurations for systems, including disabling unnecessary services, implementing strong policies, and configuring security controls',
+                    'Incorrect - Vulnerability scanning identifies security weaknesses in systems but does not involve establishing secure configurations'
                 ],
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
+                'bloom_level' => 3,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 1.7,
-                'irt_b' => 0.8,
-                'irt_c' => 0.20,
-                'type_id' => 1,
+                'irt_a' => 1.1,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 8 - L4 - Analyze
             [
                 'subtopic' => 'Endpoint Security',
-                'question' => 'What is the fundamental challenge in securing endpoints in a BYOD (Bring Your Own Device) environment?',
+                'question' => 'Which security approach aims to unify and correlate security data across multiple security layers (endpoint, network, cloud, identity, email) to provide broader visibility and faster response?',
                 'options' => [
-                    'BYOD devices are inherently less secure than corporate devices',
-                    'Balancing employee privacy with corporate security requirements',
-                    'BYOD devices cannot run enterprise security software',
-                    'BYOD environments are too expensive to secure properly'
+                    'Endpoint Protection Platform (EPP)',
+                    'Endpoint Detection and Response (EDR)',
+                    'Extended Detection and Response (XDR)',
+                    'Security Information and Event Management (SIEM)'
                 ],
-                'correct_options' => ['Balancing employee privacy with corporate security requirements'],
+                'correct_options' => ['Extended Detection and Response (XDR)'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Balancing employee privacy with corporate security requirements',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - EPP provides traditional endpoint protection (antivirus, firewall, etc.) but is limited to endpoint security only',
+                    'Incorrect - EDR focuses specifically on endpoint detection and response capabilities, not cross-platform correlation',
+                    'Correct - Extended Detection and Response (XDR) unifies and correlates security data across multiple security layers including endpoints, networks, cloud, identity, and email to provide comprehensive visibility and coordinated response',
+                    'Incorrect - While SIEM collects and analyzes security events from multiple sources, XDR goes further by providing automated correlation and response capabilities across platforms'
                 ],
                 'bloom_level' => 4,
-                'difficulty_level' => 4,
+                'difficulty_level' => 3,
                 'type_id' => 1,
-                'irt_a' => 1.8,
-                'irt_b' => 1.0,
+                'irt_a' => 1.3,
+                'irt_b' => 0.5,
                 'irt_c' => 0.20,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
@@ -285,30 +304,29 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
             // Topic 2: Mobile Device Management (10 questions)
             // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
             
-            // Item 11 - L1 - Remember
+            // Item 11 - L2 - Understand
             [
                 'subtopic' => 'Mobile Security',
-                'question' => 'What is the primary difference between MDM (Mobile Device Management) and MAM (Mobile Application Management)?',
+                'question' => 'What is the primary method MDM solutions use to enforce security policies (e.g., password complexity, device encryption) on enrolled devices?',
                 'options' => [
-                    'MDM manages entire devices while MAM manages specific applications',
-                    'MDM is for iOS while MAM is for Android',
-                    'MDM is cheaper while MAM is more expensive',
-                    'MDM and MAM are identical technologies'
+                    'Physical device inspection',
+                    'Agent-based software and management profiles',
+                    'Direct access to the device\'s operating system kernel',
+                    'Network firewall rules'
                 ],
-                'correct_options' => ['MDM manages entire devices while MAM manages specific applications'],
+                'correct_options' => ['Agent-based software and management profiles'],
                 'justifications' => [
-                    'Correct - MDM manages entire devices while MAM manages specific applications',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Physical inspection cannot enforce real-time security policies or automated compliance',
+                    'Correct - MDM solutions deploy agent software and configuration profiles that integrate with the device OS to enforce security policies, monitor compliance, and manage device settings',
+                    'Incorrect - MDM solutions work through documented APIs and management frameworks, not direct kernel access',
+                    'Incorrect - Network firewall rules control network traffic but cannot enforce device-level policies like password complexity or encryption'
                 ],
-                'bloom_level' => 1,
-                'difficulty_level' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 0.9,
-                'irt_b' => -1.3,
+                'irt_a' => 1.1,
+                'irt_b' => -0.5,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
@@ -558,30 +576,29 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
             // Topic 3: IoT Device Security (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
             
-            // Item 21 - L1 - Remember
+            // Item 21 - L3 - Apply
             [
                 'subtopic' => 'IoT Security',
-                'question' => 'What is the primary security challenge with IoT devices?',
+                'question' => 'When decommissioning an IoT device that stored sensitive data, what is a crucial security step?',
                 'options' => [
-                    'IoT devices consume too much power',
-                    'Many IoT devices have weak authentication and are difficult to update',
-                    'IoT devices are too expensive to secure properly',
-                    'IoT devices only work with wireless networks'
+                    'Simply unplugging the device',
+                    'Securely erasing or sanitizing any stored data',
+                    'Giving the device to a new user',
+                    'Factory resetting without data erasure'
                 ],
-                'correct_options' => ['Many IoT devices have weak authentication and are difficult to update'],
+                'correct_options' => ['Securely erasing or sanitizing any stored data'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Many IoT devices have weak authentication and are difficult to update',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Simply unplugging leaves sensitive data intact and recoverable on the device storage',
+                    'Correct - Secure data erasure or sanitization ensures that sensitive information cannot be recovered from the device after decommissioning, preventing data breaches',
+                    'Incorrect - Transferring the device without proper data erasure exposes sensitive data to unauthorized parties',
+                    'Incorrect - Factory resets often do not completely erase data and can leave recoverable information on the storage media'
                 ],
-                'bloom_level' => 1,
-                'difficulty_level' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 0.8,
-                'irt_b' => -1.4,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
@@ -612,57 +629,55 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
                 'status' => 'published'
             ],
             
-            // Item 23 - L2 - Understand
+            // Item 23 - L3 - Apply
             [
                 'subtopic' => 'IoT Security',
-                'question' => 'How does network segmentation improve IoT security?',
+                'question' => 'A manufacturing plant installs numerous IoT sensors on its production line. To minimize the impact if one sensor is compromised, what network strategy should be employed?',
                 'options' => [
-                    'Segmentation improves IoT device performance',
-                    'Segmentation isolates IoT devices and limits potential attack spread',
-                    'Segmentation reduces the cost of IoT deployment',
-                    'Segmentation is only useful for wireless IoT devices'
+                    'Connect all sensors directly to the internet',
+                    'Place all sensors on the same flat network as critical corporate servers',
+                    'Implement strict network segmentation and micro-segmentation for IoT devices',
+                    'Use a single Wi-Fi network for all devices'
                 ],
-                'correct_options' => ['Segmentation isolates IoT devices and limits potential attack spread'],
+                'correct_options' => ['Implement strict network segmentation and micro-segmentation for IoT devices'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Segmentation isolates IoT devices and limits potential attack spread',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Direct internet connectivity exposes sensors to external threats and eliminates network controls',
+                    'Incorrect - Flat networks allow compromised IoT devices to potentially access critical corporate systems',
+                    'Correct - Network segmentation and micro-segmentation isolate IoT devices, limit lateral movement if compromised, and contain potential security breaches',
+                    'Incorrect - Single Wi-Fi networks create a flat topology that allows unrestricted communication between all connected devices'
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'type_id' => 1,
-                'irt_a' => 1.2,
-                'irt_b' => -0.5,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
             // Item 24 - L2 - Understand
             [
                 'subtopic' => 'IoT Security',
-                'question' => 'Why is certificate-based authentication particularly important for IoT devices?',
+                'question' => 'A common vulnerability in IoT devices due to constrained environments is:',
                 'options' => [
-                    'Certificates improve IoT device battery life',
-                    'Certificates provide device identity and secure communication without user interaction',
-                    'Certificates are required by IoT device manufacturers',
-                    'Certificates reduce IoT device manufacturing costs'
+                    'Over-provisioned memory',
+                    'Use of default or hardcoded credentials',
+                    'Excessive computing power',
+                    'Automated and frequent security updates'
                 ],
-                'correct_options' => ['Certificates provide device identity and secure communication without user interaction'],
+                'correct_options' => ['Use of default or hardcoded credentials'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Certificates provide device identity and secure communication without user interaction',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - IoT devices typically have limited memory, not over-provisioned memory',
+                    'Correct - Resource-constrained IoT devices often ship with default passwords or hardcoded credentials that are rarely changed, creating significant security vulnerabilities',
+                    'Incorrect - IoT devices are characterized by limited computing power, not excessive power',
+                    'Incorrect - IoT devices typically lack automated update mechanisms due to resource constraints and operational requirements'
                 ],
                 'bloom_level' => 2,
-                'difficulty_level' => 3,
+                'difficulty_level' => 2,
                 'type_id' => 1,
-                'irt_a' => 1.3,
-                'irt_b' => -0.2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
@@ -831,19 +846,19 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
             // Item 31 - L1 - Remember
             [
                 'subtopic' => 'OT Security',
-                'question' => 'What does SCADA stand for in industrial control systems?',
+                'question' => 'What does ICS stand for in the context of OT security?',
                 'options' => [
-                    'Supervisory Control and Data Acquisition',
-                    'Secure Communication and Data Analysis',
-                    'System Control and Database Administration',
-                    'Standard Compliance and Data Assessment'
+                    'Internet Computing Systems',
+                    'Industrial Control Systems',
+                    'Internal Communication Standards',
+                    'Integrated Computer Solutions'
                 ],
-                'correct_options' => ['Supervisory Control and Data Acquisition'],
+                'correct_options' => ['Industrial Control Systems'],
                 'justifications' => [
-                    'Correct - Supervisory Control and Data Acquisition',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Internet Computing Systems is not a standard term in OT security contexts',
+                    'Correct - ICS stands for Industrial Control Systems, which are computer-based systems that monitor and control industrial processes in sectors like manufacturing, energy, and utilities',
+                    'Incorrect - Internal Communication Standards is not what ICS represents in OT security',
+                    'Incorrect - Integrated Computer Solutions is not the correct definition of ICS in operational technology'
                 ],
                 'bloom_level' => 1,
                 'difficulty_level' => 1,
@@ -851,7 +866,6 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 0.8,
                 'irt_b' => -1.5,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
@@ -885,19 +899,19 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
             // Item 33 - L2 - Understand
             [
                 'subtopic' => 'OT Security',
-                'question' => 'Why is network segmentation particularly critical for industrial control systems?',
+                'question' => 'Why is "safety" often prioritized over "security" in critical OT environments like nuclear power plants?',
                 'options' => [
-                    'Segmentation improves system performance',
-                    'Segmentation protects critical industrial processes from cyber attacks',
-                    'Segmentation reduces power consumption',
-                    'Segmentation is only required for new industrial systems'
+                    'Security vulnerabilities are rare in OT',
+                    'A security breach could directly lead to physical harm',
+                    'OT systems do not store sensitive data',
+                    'Security is too expensive to implement'
                 ],
-                'correct_options' => ['Segmentation protects critical industrial processes from cyber attacks'],
+                'correct_options' => ['A security breach could directly lead to physical harm'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Segmentation protects critical industrial processes from cyber attacks',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Security vulnerabilities are actually common in OT environments due to legacy systems and operational constraints',
+                    'Correct - In critical infrastructure like nuclear plants, safety is prioritized because a security breach could cause catastrophic physical harm, environmental damage, or loss of life, making immediate safety the paramount concern',
+                    'Incorrect - OT systems often control processes that involve sensitive operational data and critical infrastructure information',
+                    'Incorrect - Cost is not the primary factor; the life-safety implications of OT systems make safety the top priority regardless of security implementation costs'
                 ],
                 'bloom_level' => 2,
                 'difficulty_level' => 3,
@@ -905,61 +919,58 @@ class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
                 'irt_a' => 1.2,
                 'irt_b' => -0.4,
                 'irt_c' => 0.25,
-                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 34 - L2 - Understand
+            // Item 34 - L3 - Apply
             [
                 'subtopic' => 'OT Security',
-                'question' => 'How do safety systems interact with security systems in industrial environments?',
+                'question' => 'A common attack vector for sophisticated threats targeting air-gapped OT networks is:',
                 'options' => [
-                    'Safety and security systems are completely independent',
-                    'Security controls must not interfere with safety system operations',
-                    'Safety systems are not important when security is implemented',
-                    'Security systems always override safety systems'
+                    'Direct internet access',
+                    'Removable media',
+                    'Wi-Fi hotspots',
+                    'Public cloud connections'
                 ],
-                'correct_options' => ['Security controls must not interfere with safety system operations'],
+                'correct_options' => ['Removable media'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Security controls must not interfere with safety system operations',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
-                ],
-                'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'type_id' => 1,
-                'irt_a' => 1.4,
-                'irt_b' => -0.1,
-                'irt_c' => 0.25,
-                'type_id' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 35 - L3 - Apply
-            [
-                'subtopic' => 'OT Security',
-                'question' => 'A power plant needs to upgrade its control systems while maintaining operational continuity. What security approach should they implement?',
-                'options' => [
-                    'Upgrade all systems simultaneously during a planned outage',
-                    'Implement phased upgrades with parallel security monitoring and backup systems',
-                    'Avoid upgrades to maintain system stability',
-                    'Only upgrade systems that have already experienced security incidents'
-                ],
-                'correct_options' => ['Implement phased upgrades with parallel security monitoring and backup systems'],
-                'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Implement phased upgrades with parallel security monitoring and backup systems',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Air-gapped networks are specifically isolated from direct internet access, making this vector impossible',
+                    'Correct - Removable media (USB drives, CDs, etc.) is the primary attack vector for air-gapped systems, as demonstrated by attacks like Stuxnet which used infected USB drives to bridge the air gap',
+                    'Incorrect - While Wi-Fi could be a concern, air-gapped networks typically disable all wireless communications',
+                    'Incorrect - Air-gapped networks are specifically designed to have no cloud connections or external network access'
                 ],
                 'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'type_id' => 1,
-                'irt_a' => 1.5,
-                'irt_b' => 0.2,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
                 'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 35 - L2 - Understand
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'In OT environments, there is often a tension between "safety" and "security." Which of the following statements best describes this priority?',
+                'options' => [
+                    'Security always takes precedence over safety',
+                    'Safety is generally the highest priority',
+                    'Security and safety are always perfectly aligned',
+                    'Neither safety nor security is a significant concern in OT'
+                ],
+                'correct_options' => ['Safety is generally the highest priority'],
+                'justifications' => [
+                    'Incorrect - Security measures that could interfere with safety operations are typically subordinated to safety requirements',
+                    'Correct - Safety is generally the highest priority in OT environments because the primary function is to protect human life and prevent physical harm, even if this means accepting some security risks',
+                    'Incorrect - There is often tension between safety and security requirements, as security measures may impact operational safety or response times',
+                    'Incorrect - Both safety and security are critical concerns in OT, but safety typically takes precedence when they conflict'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
                 'type_id' => 1,
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             

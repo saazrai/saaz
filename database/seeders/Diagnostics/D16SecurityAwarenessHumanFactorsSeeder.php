@@ -434,24 +434,24 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
             // Item 17 - L4 - Analyze
             [
                 'subtopic' => 'Security Awareness & Training',
-                'question' => 'Analyze why security awareness training programs often fail to change long-term employee behavior.',
+                'question' => 'Which of the following factors is MOST important for ensuring the effectiveness of security training within an organization?',
                 'options' => [
-                    'Employees are inherently resistant to all security measures',
-                    'Training lacks reinforcement, practical application, and integration with daily workflows',
-                    'Security awareness training is unnecessary with proper technical controls',
-                    'Most employees are too technically skilled to need awareness training'
+                    'The overall duration of the training sessions',
+                    'The number of times the training is repeated annually',
+                    'The qualifications and certifications of the training instructors',
+                    'The content being tailored to the target audience'
                 ],
-                'correct_options' => ['Training lacks reinforcement, practical application, and integration with daily workflows'],
+                'correct_options' => ['The content being tailored to the target audience'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Training lacks reinforcement, practical application, and integration with daily workflows',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Training duration alone does not ensure effectiveness; overly long sessions can reduce engagement while very short sessions may lack depth',
+                    'Incorrect - Frequency is important but not the most critical factor; poorly designed training repeated frequently is still ineffective',
+                    'Incorrect - While instructor qualifications matter, the most qualified instructor cannot make irrelevant content effective for the specific audience',
+                    'Correct - Tailoring content to the target audience is most important because relevant, role-specific training that addresses actual job responsibilities and risks ensures higher engagement and practical application'
                 ],
                 'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.7,
-                'irt_b' => 0.9,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => 0.2,
                 'irt_c' => 0.20,
                 'type_id' => 1,
                 'status' => 'published'
@@ -538,27 +538,27 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
             // Topic 3: Human Resource Security (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
             
-            // Item 21 - L1 - Remember
+            // Item 21 - L2 - Understand
             [
                 'subtopic' => 'Human Resource Security',
-                'question' => 'What is the primary purpose of background checks in human resource security?',
+                'question' => 'What is the primary purpose of pre-employment background checks from a security perspective?',
                 'options' => [
-                    'Verifying technical qualifications and certifications',
-                    'Assessing potential security risks and trustworthiness of candidates',
-                    'Determining salary and compensation levels',
-                    'Evaluating cultural fit with the organization'
+                    'To determine an applicant\'s technical skills',
+                    'To verify credentials, identify potential risks and assess trustworthiness',
+                    'To predict future job performance',
+                    'To evaluate cultural fit within the organization'
                 ],
-                'correct_options' => ['Assessing potential security risks and trustworthiness of candidates'],
+                'correct_options' => ['To verify credentials, identify potential risks and assess trustworthiness'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Assessing potential security risks and trustworthiness of candidates',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Technical skills assessment is typically handled through interviews, testing, and portfolio reviews rather than background checks',
+                    'Correct - Background checks verify credentials, identify potential security risks (criminal history, financial issues, references), and assess overall trustworthiness for access to organizational assets',
+                    'Incorrect - Job performance prediction relies on interviews, references, and past performance evaluations rather than security-focused background investigations',
+                    'Incorrect - Cultural fit evaluation is primarily addressed through interviews and team interactions, not through background security screening processes'
                 ],
-                'bloom_level' => 1,
-                'difficulty_level' => 1,
-                'irt_a' => 0.8,
-                'irt_b' => -1.4,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.6,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
@@ -671,24 +671,24 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
             // Item 26 - L3 - Apply
             [
                 'subtopic' => 'Human Resource Security',
-                'question' => 'How should an organization handle security responsibilities for temporary contractors and consultants?',
+                'question' => 'During onboarding, which of the following is most crucial for a new employee\'s access management?',
                 'options' => [
-                    'Assume contractors are pre-screened by their employers',
-                    'Apply appropriate security screening and require signed security agreements',
-                    'Grant contractors the same access as permanent employees',
-                    'Exclude contractors from all security requirements'
+                    'Granting them the maximum possible access for flexibility',
+                    'Provisioning access based on the principle of least privilege',
+                    'Allowing them to self-provision all necessary accounts',
+                    'Using shared generic accounts'
                 ],
-                'correct_options' => ['Apply appropriate security screening and require signed security agreements'],
+                'correct_options' => ['Provisioning access based on the principle of least privilege'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Apply appropriate security screening and require signed security agreements',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Maximum access creates unnecessary security risks and violates the principle of least privilege; employees should only receive access needed for their specific role',
+                    'Correct - Provisioning access based on the principle of least privilege ensures new employees receive only the minimum access necessary to perform their job functions, reducing security risks and maintaining proper access controls',
+                    'Incorrect - Self-provisioning allows employees to grant themselves inappropriate access levels and bypasses proper authorization controls and approval processes',
+                    'Incorrect - Shared generic accounts eliminate accountability, make auditing impossible, and create security vulnerabilities as multiple people use the same credentials'
                 ],
                 'bloom_level' => 3,
-                'difficulty_level' => 3,
-                'irt_a' => 1.5,
-                'irt_b' => 0.4,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.2,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
@@ -801,27 +801,27 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
             // Topic 4: Personnel Safety (10 questions)
             // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
             
-            // Item 31 - L1 - Remember
+            // Item 31 - L2 - Understand
             [
                 'subtopic' => 'Personnel Safety',
-                'question' => 'What is the primary focus of personnel safety in security contexts?',
+                'question' => 'Which of the following BEST describes the concept of duress in the context of addressing personnel safety and security concerns?',
                 'options' => [
-                    'Protecting employees from cybersecurity threats only',
-                    'Ensuring physical safety and well-being of personnel',
-                    'Managing employee performance and productivity',
-                    'Reducing operational costs and overhead'
+                    'A physical security measure designed to protect personnel from external threats',
+                    'A legal defense that can be invoked when an individual is forced to engage in unlawful activities under coercion',
+                    'A risk management technique used to assess and mitigate potential threats to personnel safety',
+                    'A psychological evaluation process to identify individuals susceptible to manipulation or coercion'
                 ],
-                'correct_options' => ['Ensuring physical safety and well-being of personnel'],
+                'correct_options' => ['A legal defense that can be invoked when an individual is forced to engage in unlawful activities under coercion'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Ensuring physical safety and well-being of personnel',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Physical security measures protect against threats but duress specifically refers to psychological pressure or coercion forcing someone to act against their will',
+                    'Correct - Duress is a legal concept where an individual is compelled to commit an act (including potentially unlawful activities) due to immediate threat of harm, coercion, or pressure from another party',
+                    'Incorrect - While duress situations may be considered in risk management, duress itself is not a risk management technique but rather a condition of coercion',
+                    'Incorrect - Psychological evaluations may identify vulnerability to coercion, but duress refers to the actual state of being under coercive pressure, not the evaluation process'
                 ],
-                'bloom_level' => 1,
-                'difficulty_level' => 1,
-                'irt_a' => 0.8,
-                'irt_b' => -1.5,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.6,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
@@ -957,27 +957,27 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'status' => 'published'
             ],
             
-            // Item 37 - L3 - Apply
+            // Item 37 - L2 - Understand
             [
                 'subtopic' => 'Personnel Safety',
-                'question' => 'What is the most effective approach for implementing emergency evacuation procedures that ensure personnel safety?',
+                'question' => 'In an emergency response protocol, the first priority is typically:',
                 'options' => [
-                    'Post evacuation maps in common areas and assume employees will follow them',
-                    'Conduct regular drills, provide clear procedures, and designate trained evacuation wardens',
-                    'Only train security personnel on evacuation procedures',
-                    'Rely on external emergency services to guide evacuations'
+                    'Restoring systems to full functionality',
+                    'Containing the incident and preventing further damage',
+                    'Protecting human life and safety',
+                    'Notifying external regulators'
                 ],
-                'correct_options' => ['Conduct regular drills, provide clear procedures, and designate trained evacuation wardens'],
+                'correct_options' => ['Protecting human life and safety'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Conduct regular drills, provide clear procedures, and designate trained evacuation wardens',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - System restoration is important but comes after ensuring human safety; systems can be rebuilt but lives cannot be replaced',
+                    'Incorrect - Incident containment is critical but secondary to life safety; containment efforts should not endanger personnel',
+                    'Correct - Protecting human life and safety is always the first priority in emergency response protocols, as human life is irreplaceable and takes precedence over all other considerations',
+                    'Incorrect - Regulatory notifications are important for compliance but come much later in the response process after life safety and immediate threats are addressed'
                 ],
-                'bloom_level' => 3,
-                'difficulty_level' => 3,
-                'irt_a' => 1.6,
-                'irt_b' => 0.6,
+                'bloom_level' => 2,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.0,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
@@ -1116,27 +1116,27 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'status' => 'published'
             ],
             
-            // Item 43 - L2 - Understand
+            // Item 43 - L3 - Apply
             [
                 'subtopic' => 'Personnel Security Controls',
-                'question' => 'Why is separation of duties important in personnel security controls?',
+                'question' => 'Which of these scenarios best exemplifies the violation of Separation of Duties?',
                 'options' => [
-                    'It reduces the workload for individual employees',
-                    'It prevents any single person from having complete control over critical processes',
-                    'It eliminates the need for supervision and management',
-                    'It increases operational efficiency and speed'
+                    'A developer writes code and then tests their own code for quality assurance',
+                    'A user creates a report based on data they did not enter',
+                    'An accountant prepares financial statements and a different accountant reviews them',
+                    'A network engineer configures a firewall, and a different engineer audits the configuration'
                 ],
-                'correct_options' => ['It prevents any single person from having complete control over critical processes'],
+                'correct_options' => ['A developer writes code and then tests their own code for quality assurance'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - It prevents any single person from having complete control over critical processes',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Correct - This violates separation of duties as the same person both creates and validates the work, eliminating independent verification and increasing risk of undetected errors or malicious code',
+                    'Incorrect - This demonstrates proper separation of duties where the person creating reports is different from those entering the underlying data, providing independent verification',
+                    'Incorrect - This exemplifies proper separation of duties with different individuals handling preparation and review functions, ensuring independent oversight',
+                    'Incorrect - This shows correct separation of duties implementation where configuration and audit functions are performed by different engineers, maintaining independent verification'
                 ],
-                'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'irt_a' => 1.2,
-                'irt_b' => -0.5,
+                'bloom_level' => 3,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.3,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
@@ -1145,24 +1145,24 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
             // Item 44 - L2 - Understand
             [
                 'subtopic' => 'Personnel Security Controls',
-                'question' => 'How do mandatory vacation policies contribute to personnel security controls?',
+                'question' => 'What is the PRIMARY reason for implementing segregation of duties (SoD) controls in an enterprise?',
                 'options' => [
-                    'They improve employee morale and job satisfaction',
-                    'They create opportunities to detect unauthorized activities that require continuous presence',
-                    'They reduce operational costs by limiting work hours',
-                    'They comply with labor law requirements only'
+                    'To prevent the risk of collusion among employees',
+                    'To limit user access to only the information necessary for their tasks',
+                    'To restrict users to the minimum level of access required for their roles',
+                    'To prevent errors or fraudulent activities in high-risk transactions'
                 ],
-                'correct_options' => ['They create opportunities to detect unauthorized activities that require continuous presence'],
+                'correct_options' => ['To prevent errors or fraudulent activities in high-risk transactions'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - They create opportunities to detect unauthorized activities that require continuous presence',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - While SoD may reduce some collusion risks, it actually requires multiple people to be involved, and the primary purpose is preventing single-person control over critical processes',
+                    'Incorrect - This describes data access controls and need-to-know principles, not separation of duties which focuses on dividing critical process steps among different individuals',
+                    'Incorrect - This describes the principle of least privilege, which limits access rights, whereas SoD divides workflow responsibilities among multiple people',
+                    'Correct - The primary purpose of segregation of duties is to prevent errors and fraudulent activities by ensuring no single individual has complete control over high-risk transactions or critical processes'
                 ],
                 'bloom_level' => 2,
-                'difficulty_level' => 3,
-                'irt_a' => 1.3,
-                'irt_b' => -0.2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.5,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
@@ -1220,54 +1220,54 @@ class D16SecurityAwarenessHumanFactorsSeeder extends BaseDiagnosticSeeder
                 'status' => 'published'
             ],
             
-            // Item 47 - L3 - Apply
+            // Item 47 - L2 - Understand
             [
                 'subtopic' => 'Personnel Security Controls',
-                'question' => 'What is the most effective approach for implementing job rotation as a personnel security control?',
+                'question' => 'What control focuses directly on preventing the risk of collusion?',
                 'options' => [
-                    'Rotate all employees randomly every month',
-                    'Strategically rotate personnel in sensitive positions with proper knowledge transfer',
-                    'Only rotate employees who request position changes',
-                    'Avoid job rotation to maintain operational expertise'
+                    'Mandatory access control',
+                    'Principle of least privilege',
+                    'Discretionary access control',
+                    'Mandatory job rotation'
                 ],
-                'correct_options' => ['Strategically rotate personnel in sensitive positions with proper knowledge transfer'],
+                'correct_options' => ['Mandatory job rotation'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Strategically rotate personnel in sensitive positions with proper knowledge transfer',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - Mandatory access control (MAC) restricts access based on security classifications but does not specifically address collusion between authorized users',
+                    'Incorrect - Principle of least privilege limits access to minimum necessary permissions but does not prevent authorized users from colluding within their granted access',
+                    'Incorrect - Discretionary access control allows data owners to control access but does not address collusion risks between authorized users',
+                    'Correct - Mandatory job rotation specifically prevents collusion by regularly moving personnel between positions, disrupting long-term relationships and schemes that require sustained cooperation'
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 2,
                 'difficulty_level' => 3,
-                'irt_a' => 1.6,
-                'irt_b' => 0.6,
+                'irt_a' => 1.2,
+                'irt_b' => -0.1,
                 'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 48 - L4 - Analyze
+            // Item 48 - L2 - Understand
             [
                 'subtopic' => 'Personnel Security Controls',
-                'question' => 'Analyze why traditional personnel security controls may be less effective in modern collaborative and agile work environments.',
+                'question' => 'The PRIMARY control purpose of required vacations or job rotations is to:',
                 'options' => [
-                    'Modern work environments eliminate all security risks',
-                    'Flexible work arrangements and cross-functional teams challenge rigid access controls',
-                    'Personnel security controls are not needed in collaborative environments',
-                    'Traditional controls work identically in all work environments'
+                    'allow cross-training for development',
+                    'help preserve employee morale',
+                    'detect improper or illegal employee acts',
+                    'provide a competitive employee benefit'
                 ],
-                'correct_options' => ['Flexible work arrangements and cross-functional teams challenge rigid access controls'],
+                'correct_options' => ['detect improper or illegal employee acts'],
                 'justifications' => [
-                    'Incorrect - This option is not the best answer',
-                    'Correct - Flexible work arrangements and cross-functional teams challenge rigid access controls',
-                    'Incorrect - This option is not the best answer',
-                    'Incorrect - This option is not the best answer'
+                    'Incorrect - While cross-training may be a secondary benefit, the primary security control purpose is detection of unauthorized activities that require continuous presence to conceal',
+                    'Incorrect - Employee morale improvement is a potential side benefit but not the primary security control objective of mandatory vacations and rotations',
+                    'Correct - The primary control purpose is to detect improper or illegal activities by forcing employees away from their positions, revealing unauthorized acts that require their continuous presence to conceal',
+                    'Incorrect - Competitive benefits are HR considerations, not the primary security control purpose of mandatory vacations and job rotations'
                 ],
-                'bloom_level' => 4,
-                'difficulty_level' => 4,
-                'irt_a' => 1.7,
-                'irt_b' => 0.8,
-                'irt_c' => 0.20,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
                 'type_id' => 1,
                 'status' => 'published'
             ],
