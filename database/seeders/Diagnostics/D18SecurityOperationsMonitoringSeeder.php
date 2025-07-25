@@ -2,1193 +2,1277 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-
-
-use Illuminate\Database\Seeder;
-
-class D18SecurityOperationsMonitoringSeeder extends Seeder
+class D18SecurityOperationsMonitoringSeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Security Operations & Monitoring';
+    
+    protected function getQuestions(): array
     {
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Security Operations');
-        })->pluck('id', 'name');
-        
-        
-        $items = [
-            // Security Operations Center (SOC) - Item 1
+        return [
+            // Topic 1: Security Operations Center (SOC) Operations (10 questions)
+            // Bloom Distribution: L1:0, L2:2, L3:4, L4:2, L5:2
+            
+            // Item 1 - L3 - Apply
             [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of a Security Operations Center (SOC)?',
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'Your organization experiences: (1) Multiple failed login attempts from foreign IPs, (2) Unusual data transfers at 3 AM, (3) Malware detected on 5 workstations. The IT team wants to handle these separately. How should a SOC approach these incidents?',
                 'options' => [
-                    'To develop security policies',
-                    'To provide centralized monitoring and incident response',
-                    'To conduct penetration testing',
-                    'To manage user access controls'
+                    'Treat each incident independently and assign to different team members',
+                    'Correlate events through continuous monitoring to identify potential coordinated attack patterns',
+                    'Focus only on the malware incident as it\'s the most visible threat',
+                    'Escalate all incidents immediately to external security consultants'
                 ],
-                'correct_options' => ['To provide centralized monitoring and incident response'],
+                'correct_options' => ['Correlate events through continuous monitoring to identify potential coordinated attack patterns'],
                 'justifications' => [
-                    'Policy development is typically done by governance teams',
-                    'Correct - SOC provides 24/7 monitoring and coordinated incident response',
-                    'Penetration testing is usually done by specialized teams',
-                    'Access control management is typically IAM responsibility'
+                    'Incorrect - Isolated treatment misses potential connections between related security events',
+                    'Correct - SOC\'s core function is correlating events to detect, analyze, and respond to coordinated threats',
+                    'Incorrect - Focusing on single incidents ignores the broader attack landscape and threat correlation',
+                    'Incorrect - Immediate escalation without analysis doesn\'t leverage SOC monitoring and detection capabilities'
                 ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 2 - L2 - Understand
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'How do Tier 1, Tier 2, and Tier 3 SOC analysts differ in their responsibilities?',
+                'options' => [
+                    'They work different shifts but have identical responsibilities',
+                    'Tier 1 handles initial triage, Tier 2 performs deeper analysis, Tier 3 focuses on advanced threats',
+                    'Tier 1 manages infrastructure, Tier 2 handles incidents, Tier 3 trains staff',
+                    'All tiers perform the same tasks with different security clearance levels'
+                ],
+                'correct_options' => ['Tier 1 handles initial triage, Tier 2 performs deeper analysis, Tier 3 focuses on advanced threats'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Tier 1 handles initial triage, Tier 2 performs deeper analysis, Tier 3 focuses on advanced threats',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 3 - L2 - Understand
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'Why is 24/7 operation critical for modern SOC effectiveness?',
+                'options' => [
+                    'To comply with regulatory requirements for business hours',
+                    'Cyber threats operate continuously and attacks can occur at any time',
+                    'To provide technical support to employees during off-hours',
+                    'To perform system maintenance during low-usage periods'
+                ],
+                'correct_options' => ['Cyber threats operate continuously and attacks can occur at any time'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Cyber threats operate continuously and attacks can occur at any time',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 4 - L3 - Apply
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'A financial services company is building a new SOC. What should be their first priority in establishing effective operations?',
+                'options' => [
+                    'Hiring the maximum number of security analysts possible',
+                    'Defining clear processes, playbooks, and escalation procedures',
+                    'Purchasing the most expensive security tools available',
+                    'Outsourcing all SOC operations to reduce costs'
+                ],
+                'correct_options' => ['Defining clear processes, playbooks, and escalation procedures'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Defining clear processes, playbooks, and escalation procedures',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 5 - L3 - Apply
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'How should a SOC handle the challenge of alert fatigue among analysts?',
+                'options' => [
+                    'Ignore low-priority alerts to focus only on critical incidents',
+                    'Implement alert tuning, automation, and contextual analysis to reduce false positives',
+                    'Hire more analysts to distribute the alert workload',
+                    'Disable automated alerting systems that generate too many notifications'
+                ],
+                'correct_options' => ['Implement alert tuning, automation, and contextual analysis to reduce false positives'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement alert tuning, automation, and contextual analysis to reduce false positives',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 6 - L3 - Apply
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'What is the most effective approach for a SOC to handle incident response during a major security breach?',
+                'options' => [
+                    'Immediately shut down all systems to prevent further damage',
+                    'Follow established incident response procedures with clear communication and documentation',
+                    'Wait for executive management approval before taking any action',
+                    'Focus only on technical remediation without involving other departments'
+                ],
+                'correct_options' => ['Follow established incident response procedures with clear communication and documentation'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Follow established incident response procedures with clear communication and documentation',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 7 - L4 - Analyze
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'Analyze why measuring mean time to detection (MTTD) and mean time to response (MTTR) is crucial for SOC performance.',
+                'options' => [
+                    'These metrics help justify SOC budget increases to management',
+                    'They provide quantifiable measures of SOC effectiveness and help identify improvement areas',
+                    'They are required by cybersecurity insurance policies',
+                    'These metrics eliminate the need for other SOC performance indicators'
+                ],
+                'correct_options' => ['They provide quantifiable measures of SOC effectiveness and help identify improvement areas'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - They provide quantifiable measures of SOC effectiveness and help identify improvement areas',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 8 - L4 - Analyze
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'What is the fundamental challenge in maintaining SOC analyst retention and expertise?',
+                'options' => [
+                    'SOC work requires no specialized skills or training',
+                    'High stress, repetitive tasks, and limited career progression create turnover challenges',
+                    'SOC analysts prefer to work independently without team collaboration',
+                    'SOC operations only require part-time staffing commitments'
+                ],
+                'correct_options' => ['High stress, repetitive tasks, and limited career progression create turnover challenges'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - High stress, repetitive tasks, and limited career progression create turnover challenges',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 9 - L5 - Evaluate
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'A company considers replacing their internal SOC with a managed security service provider (MSSP). Evaluate this decision.',
+                'options' => [
+                    'MSSPs always provide superior security outcomes at lower costs',
+                    'Decision should balance cost, control, expertise, and organizational risk tolerance',
+                    'Internal SOCs are always more effective than outsourced solutions',
+                    'This decision should be based solely on cost reduction opportunities'
+                ],
+                'correct_options' => ['Decision should balance cost, control, expertise, and organizational risk tolerance'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Decision should balance cost, control, expertise, and organizational risk tolerance',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Item 10 - L5 - Evaluate
+            [
+                'subtopic' => 'Security Operations Center (SOC)',
+                'question' => 'Assess the effectiveness of implementing artificial intelligence and machine learning in SOC operations.',
+                'options' => [
+                    'AI/ML completely eliminates the need for human analysts in SOCs',
+                    'AI/ML can enhance detection and reduce false positives but requires human oversight and expertise',
+                    'AI/ML is inappropriate for cybersecurity applications',
+                    'AI/ML should only be used for network monitoring, not security analysis'
+                ],
+                'correct_options' => ['AI/ML can enhance detection and reduce false positives but requires human oversight and expertise'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - AI/ML can enhance detection and reduce false positives but requires human oversight and expertise',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 2: Log Management & Analysis (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L1 - Remember
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'What is the primary purpose of centralized log management in security operations?',
+                'options' => [
+                    'Reducing storage costs for log data',
+                    'Aggregating, correlating, and analyzing log data from multiple sources for security insights',
+                    'Improving system performance by reducing log overhead',
+                    'Meeting compliance requirements for data retention'
+                ],
+                'correct_options' => ['Aggregating, correlating, and analyzing log data from multiple sources for security insights'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Aggregating, correlating, and analyzing log data from multiple sources for security insights',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
                 'difficulty_level' => 1,
-                'bloom_level' => 2,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
-
-            // Security Operations Center (SOC) - Item 2
+            
+            // Item 12 - L2 - Understand
             [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which SOC model provides the highest level of control and customization?',
+                'subtopic' => 'Log Management',
+                'question' => 'How does log normalization improve security analysis capabilities?',
                 'options' => [
-                    'Outsourced SOC',
-                    'In-house SOC',
-                    'Hybrid SOC',
-                    'Virtual SOC'
+                    'It reduces the storage space required for log data',
+                    'It standardizes log formats enabling consistent analysis across different systems',
+                    'It encrypts log data to protect sensitive information',
+                    'It automatically deletes old log entries to maintain performance'
                 ],
-                'correct_options' => ['In-house SOC'],
+                'correct_options' => ['It standardizes log formats enabling consistent analysis across different systems'],
                 'justifications' => [
-                    'Outsourced SOC provides less direct control',
-                    'Correct - In-house SOC offers maximum control and customization',
-                    'Hybrid SOC balances control with external expertise',
-                    'Virtual SOC is a service delivery model, not ownership model'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - It standardizes log formats enabling consistent analysis across different systems',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 13 - L2 - Understand
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'Why is log integrity critical for security investigations and compliance?',
+                'options' => [
+                    'Log integrity only affects system performance',
+                    'Tampered logs can hide malicious activity and invalidate forensic evidence',
+                    'Log integrity is only important for financial applications',
+                    'Integrity checks slow down log processing unnecessarily'
+                ],
+                'correct_options' => ['Tampered logs can hide malicious activity and invalidate forensic evidence'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Tampered logs can hide malicious activity and invalidate forensic evidence',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 14 - L3 - Apply
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'A healthcare organization needs to implement log management for HIPAA compliance. What approach should they prioritize?',
+                'options' => [
+                    'Store all logs locally without any centralization',
+                    'Implement encrypted log storage with access controls and audit trails',
+                    'Focus only on application logs and ignore system logs',
+                    'Use cloud storage without any security considerations'
+                ],
+                'correct_options' => ['Implement encrypted log storage with access controls and audit trails'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement encrypted log storage with access controls and audit trails',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
-
-            // Security Operations Center (SOC) - Item 3
+            
+            // Item 15 - L3 - Apply
             [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the typical career progression path in SOC operations?',
+                'subtopic' => 'Log Management',
+                'question' => 'How should an organization design log retention policies for optimal security and compliance?',
                 'options' => [
-                    'SOC Manager → SOC Analyst → Senior Analyst',
-                    'SOC Analyst → Senior Analyst → SOC Manager',
-                    'Senior Analyst → SOC Analyst → SOC Manager',
-                    'All roles have equal seniority'
+                    'Delete all logs immediately after generation to save storage',
+                    'Implement tiered retention based on log type, regulatory requirements, and investigation needs',
+                    'Keep all logs forever regardless of storage costs',
+                    'Only retain logs from security tools, not from business applications'
                 ],
-                'correct_options' => ['SOC Analyst → Senior Analyst → SOC Manager'],
+                'correct_options' => ['Implement tiered retention based on log type, regulatory requirements, and investigation needs'],
                 'justifications' => [
-                    'Manager position requires experience, not entry level',
-                    'Correct - Typical progression from analyst to senior to management',
-                    'Senior analyst is more experienced than entry-level analyst',
-                    'Roles have clear hierarchy based on experience and responsibility'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement tiered retention based on log type, regulatory requirements, and investigation needs',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
-
-            // Security Operations Center (SOC) - Item 4
+            
+            // Item 16 - L3 - Apply
             [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => 'SOC procedures should be documented and regularly updated.',
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'Correct - Documented procedures ensure consistency and enable continuous improvement',
-                    'Wrong - Undocumented procedures lead to inconsistent responses and knowledge loss'
+                'subtopic' => 'Log Management',
+                'question' => 'What is the most effective approach for analyzing logs during a suspected data breach?',
+                'options' => [
+                    'Manually review all logs from the past year',
+                    'Use timeline analysis and correlation to focus on relevant log entries',
+                    'Only examine logs from the day the breach was discovered',
+                    'Ignore logs and focus solely on network traffic analysis'
                 ],
+                'correct_options' => ['Use timeline analysis and correlation to focus on relevant log entries'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Use timeline analysis and correlation to focus on relevant log entries',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 17 - L4 - Analyze
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'Analyze why traditional signature-based log analysis is insufficient for detecting advanced persistent threats (APTs).',
+                'options' => [
+                    'Signature-based analysis is too expensive for most organizations',
+                    'APTs use novel techniques and living-off-the-land attacks that avoid known signatures',
+                    'Signature-based analysis requires too much processing power',
+                    'APTs only target systems that do not generate log data'
+                ],
+                'correct_options' => ['APTs use novel techniques and living-off-the-land attacks that avoid known signatures'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - APTs use novel techniques and living-off-the-land attacks that avoid known signatures',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 18 - L4 - Analyze
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'What is the fundamental challenge in achieving comprehensive log visibility in modern cloud and hybrid environments?',
+                'options' => [
+                    'Cloud environments do not generate log data',
+                    'Diverse platforms, ephemeral infrastructure, and complex access controls create visibility gaps',
+                    'Log management tools cannot operate in cloud environments',
+                    'Cloud providers prohibit log collection by customers'
+                ],
+                'correct_options' => ['Diverse platforms, ephemeral infrastructure, and complex access controls create visibility gaps'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Diverse platforms, ephemeral infrastructure, and complex access controls create visibility gaps',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'An organization implements real-time log analysis but experiences performance degradation. Evaluate the balance between real-time analysis and system performance.',
+                'options' => [
+                    'Real-time analysis should always take priority over system performance',
+                    'Organizations must balance detection speed with system impact through optimization and prioritization',
+                    'System performance is always more important than security monitoring',
+                    'Real-time analysis provides no security benefits over batch processing'
+                ],
+                'correct_options' => ['Organizations must balance detection speed with system impact through optimization and prioritization'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Organizations must balance detection speed with system impact through optimization and prioritization',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Item 20 - L5 - Evaluate
+            [
+                'subtopic' => 'Log Management',
+                'question' => 'Assess the effectiveness of using machine learning for anomaly detection in log analysis.',
+                'options' => [
+                    'Machine learning eliminates all false positives in log analysis',
+                    'ML can improve detection of unknown threats but requires tuning and human validation',
+                    'Machine learning is inappropriate for log analysis applications',
+                    'ML-based anomaly detection works perfectly without any configuration'
+                ],
+                'correct_options' => ['ML can improve detection of unknown threats but requires tuning and human validation'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - ML can improve detection of unknown threats but requires tuning and human validation',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 3: Threat Detection & Intelligence (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 21 - L1 - Remember
+            [
+                'subtopic' => 'Detection',
+                'question' => 'What is a false positive in the context of security threat detection?',
+                'options' => [
+                    'A legitimate security alert that indicates a real threat',
+                    'An alert that incorrectly identifies benign activity as malicious',
+                    'A failed attempt to detect any security threats',
+                    'An alert that is generated too late to be actionable'
+                ],
+                'correct_options' => ['An alert that incorrectly identifies benign activity as malicious'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - An alert that incorrectly identifies benign activity as malicious',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
                 'difficulty_level' => 1,
-                'bloom_level' => 2,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
-
-            // Security Operations Center (SOC) - Item 5
+            
+            // Item 22 - L1 - Remember
             [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which metric is most important for measuring SOC effectiveness?',
+                'subtopic' => 'Detection',
+                'question' => 'What does IOC stand for in cybersecurity threat intelligence?',
                 'options' => [
-                    'Number of alerts processed',
-                    'Mean Time to Detection (MTTD) and Mean Time to Response (MTTR)',
-                    'Number of SOC analysts',
-                    'Amount of security tools deployed'
+                    'Internet Operations Center',
+                    'Indicator of Compromise',
+                    'Integrated Operations Command',
+                    'Information Operations Coordinator'
                 ],
-                'correct_options' => ['Mean Time to Detection (MTTD) and Mean Time to Response (MTTR)'],
+                'correct_options' => ['Indicator of Compromise'],
                 'justifications' => [
-                    'Alert volume doesn\'t indicate quality or effectiveness',
-                    'Correct - MTTD/MTTR measures how quickly threats are identified and addressed',
-                    'Staff count doesn\'t measure effectiveness',
-                    'Tool quantity doesn\'t indicate operational effectiveness'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Indicator of Compromise',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Security Operations Center (SOC) - Item 6
-            [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange SOC implementation phases in correct order:',
-                'options' => [
-                    'Deploy technology',
-                    'Establish governance',
-                    'Train staff',
-                    'Define processes'
-                ],
-                'correct_options' => ['Establish governance', 'Define processes', 'Deploy technology', 'Train staff'],
-                'justifications' => [
-                    'Governance provides the foundation',
-                    'Processes guide operations',
-                    'Technology enables processes',
-                    'Training ensures effective use'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Security Operations Center (SOC) - Item 7
-            [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => 'SOC analysts should have both technical and communication skills.',
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'Correct - SOC analysts need technical expertise and communication skills for escalation and reporting',
-                    'Wrong - Communication skills are essential for effective incident response coordination'
-                ],
+                'bloom_level' => 1,
                 'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 23 - L2 - Understand
+            [
+                'subtopic' => 'Detection',
+                'question' => 'How does behavioral analysis improve threat detection compared to signature-based detection?',
+                'options' => [
+                    'Behavioral analysis is faster than signature-based detection',
+                    'Behavioral analysis can identify unknown threats by detecting unusual patterns and activities',
+                    'Behavioral analysis requires less computational resources',
+                    'Behavioral analysis eliminates all false positive alerts'
+                ],
+                'correct_options' => ['Behavioral analysis can identify unknown threats by detecting unusual patterns and activities'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Behavioral analysis can identify unknown threats by detecting unusual patterns and activities',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
-
-            // Security Operations Center (SOC) - Item 8
+            
+            // Item 24 - L2 - Understand
             [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the most critical factor for SOC workflow efficiency?',
+                'subtopic' => 'Detection',
+                'question' => 'Why is threat intelligence sharing important for improving organizational security posture?',
                 'options' => [
-                    'Having the most expensive tools',
-                    'Clearly defined procedures and playbooks',
-                    'Working only during business hours',
-                    'Having unlimited budget'
+                    'It reduces the cost of security tools and technologies',
+                    'Shared intelligence provides broader visibility into threat landscape and attack patterns',
+                    'It eliminates the need for internal threat detection capabilities',
+                    'Threat sharing is only required for government organizations'
                 ],
-                'correct_options' => ['Clearly defined procedures and playbooks'],
+                'correct_options' => ['Shared intelligence provides broader visibility into threat landscape and attack patterns'],
                 'justifications' => [
-                    'Expensive tools don\'t guarantee efficiency',
-                    'Correct - Clear procedures ensure consistent, efficient responses',
-                    '24/7 operations are typically required for SOC',
-                    'Budget is important but procedures drive efficiency'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Shared intelligence provides broader visibility into threat landscape and attack patterns',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Security Operations Center (SOC) - Item 9
-            [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which SOC tier typically handles initial alert triage?',
-                'options' => [
-                    'Tier 3 (Expert analysts)',
-                    'Tier 1 (Junior analysts)',
-                    'Tier 2 (Experienced analysts)',
-                    'SOC Manager'
-                ],
-                'correct_options' => ['Tier 1 (Junior analysts)'],
-                'justifications' => [
-                    'Tier 3 handles complex investigations',
-                    'Correct - Tier 1 performs initial triage and basic analysis',
-                    'Tier 2 handles escalated incidents',
-                    'SOC Manager provides oversight, not frontline triage'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Security Operations Center (SOC) - Item 10
-            [
-                'topic_id' => $topics['Security Operations Center (SOC)'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Match each SOC role with its primary responsibility:',
-                'options' => [
-                    'SOC Analyst',
-                    'SOC Manager',
-                    'Incident Commander',
-                    'Threat Hunter'
-                ],
-                'sub_options' => [
-                    'Proactive threat identification',
-                    'Alert triage and initial analysis',
-                    'SOC operations oversight',
-                    'Major incident coordination'
-                ],
-                'correct_options' => [
-                    'SOC Analyst → Alert triage and initial analysis',
-                    'SOC Manager → SOC operations oversight',
-                    'Incident Commander → Major incident coordination',
-                    'Threat Hunter → Proactive threat identification'
-                ],
-                'justifications' => [
-                    'SOC Analysts handle day-to-day monitoring',
-                    'SOC Manager oversees operations and staff',
-                    'Incident Commander leads major incident response',
-                    'Threat Hunter proactively searches for threats'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 11
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of centralized log collection?',
-                'options' => [
-                    'To reduce storage costs',
-                    'To enable comprehensive security monitoring and analysis',
-                    'To comply with audit requirements only',
-                    'To reduce network traffic'
-                ],
-                'correct_options' => ['To enable comprehensive security monitoring and analysis'],
-                'justifications' => [
-                    'Centralization may actually increase storage needs',
-                    'Correct - Centralized logs enable correlation and comprehensive analysis',
-                    'Compliance is a benefit but not the primary purpose',
-                    'Centralization typically increases network traffic'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 12
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which log sources are most critical for security monitoring?',
-                'options' => [
-                    'Only application logs',
-                    'Firewalls, endpoints, servers, and authentication systems',
-                    'Just network device logs',
-                    'Only database logs'
-                ],
-                'correct_options' => ['Firewalls, endpoints, servers, and authentication systems'],
-                'justifications' => [
-                    'Application logs alone provide limited security visibility',
-                    'Correct - Comprehensive log collection from multiple sources enables thorough monitoring',
-                    'Network logs alone miss host-based activity',
-                    'Database logs are important but insufficient alone'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 13
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary benefit of event correlation in SIEM systems?',
-                'options' => [
-                    'Reducing log storage requirements',
-                    'Identifying patterns and relationships across multiple log sources',
-                    'Eliminating the need for human analysts',
-                    'Increasing log collection speed'
-                ],
-                'correct_options' => ['Identifying patterns and relationships across multiple log sources'],
-                'justifications' => [
-                    'Correlation analysis may require additional processing and storage',
-                    'Correct - Correlation reveals attack patterns invisible in individual log sources',
-                    'Human analysis remains essential for complex threats',
-                    'Correlation focuses on analysis quality, not collection speed'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 14
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Log retention periods should be based solely on storage capacity.',
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'Wrong - Retention should consider legal, compliance, and investigative requirements',
-                    'Correct - Multiple factors including regulatory, legal, and business needs determine retention'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 15
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which factor is most important when designing log aggregation architecture?',
-                'options' => [
-                    'Minimizing costs',
-                    'Ensuring scalability and availability',
-                    'Using only open-source tools',
-                    'Collecting only critical logs'
-                ],
-                'correct_options' => ['Ensuring scalability and availability'],
-                'justifications' => [
-                    'Cost is important but not the primary design consideration',
-                    'Correct - Log infrastructure must handle volume and remain available for security operations',
-                    'Tool selection should be based on requirements, not licensing model',
-                    'Comprehensive log collection is needed for effective security monitoring'
-                ],
                 'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 25 - L3 - Apply
+            [
+                'subtopic' => 'Detection',
+                'question' => 'A manufacturing company discovers unusual network traffic to external IP addresses from their industrial control systems. How should they approach threat detection?',
+                'options' => [
+                    'Immediately block all external network traffic from control systems',
+                    'Analyze traffic patterns, correlate with threat intelligence, and investigate potential compromise',
+                    'Ignore the traffic since industrial systems are air-gapped',
+                    'Wait for additional alerts before taking any action'
+                ],
+                'correct_options' => ['Analyze traffic patterns, correlate with threat intelligence, and investigate potential compromise'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Analyze traffic patterns, correlate with threat intelligence, and investigate potential compromise',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 26 - L3 - Apply
+            [
+                'subtopic' => 'Detection',
+                'question' => 'How should an organization implement threat hunting to proactively identify advanced threats?',
+                'options' => [
+                    'Only hunt for threats when security incidents have already occurred',
+                    'Develop hypothesis-driven hunts based on threat intelligence and environmental knowledge',
+                    'Use automated tools exclusively without human analyst involvement',
+                    'Focus threat hunting only on perimeter network traffic'
+                ],
+                'correct_options' => ['Develop hypothesis-driven hunts based on threat intelligence and environmental knowledge'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Develop hypothesis-driven hunts based on threat intelligence and environmental knowledge',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 27 - L3 - Apply
+            [
+                'subtopic' => 'Detection',
+                'question' => 'What is the most effective approach for integrating external threat intelligence into internal detection systems?',
+                'options' => [
+                    'Manually review all threat intelligence reports daily',
+                    'Automate ingestion with contextual analysis and validation against organizational environment',
+                    'Only use free threat intelligence sources to reduce costs',
+                    'Apply all external IOCs without any filtering or validation'
+                ],
+                'correct_options' => ['Automate ingestion with contextual analysis and validation against organizational environment'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Automate ingestion with contextual analysis and validation against organizational environment',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 28 - L4 - Analyze
+            [
+                'subtopic' => 'Detection',
+                'question' => 'Analyze why attribution of cyber attacks is challenging and often unreliable for defensive decision-making.',
+                'options' => [
+                    'Attribution is always accurate with proper forensic analysis',
+                    'Attackers use false flags, shared tools, and proxy infrastructure to obscure true identity',
+                    'Attribution is only difficult for nation-state level attacks',
+                    'Attribution challenges only affect law enforcement, not defensive strategies'
+                ],
+                'correct_options' => ['Attackers use false flags, shared tools, and proxy infrastructure to obscure true identity'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Attackers use false flags, shared tools, and proxy infrastructure to obscure true identity',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
-
-            // Log Management - Item 16
+            
+            // Item 29 - L4 - Analyze
             [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 3,
-                'dimension' => 'Technical',
-                'content' => 'Arrange log management activities in recommended order:',
+                'subtopic' => 'Detection',
+                'question' => 'What is the fundamental limitation of relying solely on known IOCs for threat detection?',
                 'options' => [
-                    'Analyze and correlate',
-                    'Collect and aggregate',
-                    'Store and retain',
-                    'Normalize and parse'
+                    'IOCs are too expensive to collect and maintain',
+                    'Attackers can easily change IOCs while maintaining the same attack methods and objectives',
+                    'IOCs only work for network-based attacks, not endpoint attacks',
+                    'IOC-based detection requires specialized hardware'
                 ],
-                'correct_options' => ['Collect and aggregate', 'Normalize and parse', 'Store and retain', 'Analyze and correlate'],
+                'correct_options' => ['Attackers can easily change IOCs while maintaining the same attack methods and objectives'],
                 'justifications' => [
-                    'Collection is the first step',
-                    'Normalization prepares data for analysis',
-                    'Storage preserves data for analysis',
-                    'Analysis uses processed, stored data'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Attackers can easily change IOCs while maintaining the same attack methods and objectives',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 17
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Real-time log analysis is more important than log retention for security monitoring.',
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'Wrong - Both real-time analysis and retention are important for different purposes',
-                    'Correct - Real-time analysis detects active threats; retention enables investigation and compliance'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
-
-            // Log Management - Item 18
+            
+            // Item 30 - L5 - Evaluate
             [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the main challenge in log event correlation?',
+                'subtopic' => 'Detection',
+                'question' => 'A company implements multiple overlapping threat detection technologies but still experiences successful attacks. Evaluate their detection strategy.',
                 'options' => [
-                    'High storage costs',
-                    'Managing false positives while detecting true threats',
-                    'Limited log sources',
-                    'Slow network connections'
+                    'Multiple detection tools always guarantee perfect security',
+                    'Detection effectiveness requires integration, tuning, and skilled analysis rather than just tool quantity',
+                    'The company should eliminate all detection tools to reduce complexity',
+                    'Overlapping detection technologies are always counterproductive'
                 ],
-                'correct_options' => ['Managing false positives while detecting true threats'],
+                'correct_options' => ['Detection effectiveness requires integration, tuning, and skilled analysis rather than just tool quantity'],
                 'justifications' => [
-                    'Storage costs are manageable with proper architecture',
-                    'Correct - Balancing sensitivity to catch threats while minimizing false alerts',
-                    'Modern environments typically have abundant log sources',
-                    'Network speed is rarely the limiting factor'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Detection effectiveness requires integration, tuning, and skilled analysis rather than just tool quantity',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
-
-            // Log Management - Item 19
+            
+            // Topic 4: Incident Response & Forensics (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L1 - Remember
             [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Who should typically be responsible for log retention policy decisions?',
+                'subtopic' => 'Response',
+                'question' => 'What are the six phases of the NIST Incident Response lifecycle?',
                 'options' => [
-                    'IT operations team only',
-                    'Legal, compliance, and security teams collaboratively',
-                    'Individual system owners',
-                    'External auditors'
+                    'Prevention, Detection, Analysis, Containment, Recovery, Lessons Learned',
+                    'Preparation, Detection & Analysis, Containment Eradication & Recovery, Post-Incident Activity',
+                    'Identify, Protect, Detect, Respond, Recover, Monitor',
+                    'Plan, Assess, Implement, Monitor, Review, Improve'
                 ],
-                'correct_options' => ['Legal, compliance, and security teams collaboratively'],
+                'correct_options' => ['Preparation, Detection & Analysis, Containment Eradication & Recovery, Post-Incident Activity'],
                 'justifications' => [
-                    'IT operations implements but doesn\'t set policy',
-                    'Correct - Multiple stakeholder input ensures comprehensive policy',
-                    'Individual owners may not understand broader requirements',
-                    'Auditors review but don\'t set internal policies'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Preparation, Detection & Analysis, Containment Eradication & Recovery, Post-Incident Activity',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Log Management - Item 20
-            [
-                'topic_id' => $topics['Log Management'] ?? 2,
-                'type_id' => 5,
-                'dimension' => 'Technical',
-                'content' => 'Arrange log processing stages in correct order (first to last):',
-                'options' => [
-                    'Enrichment',
-                    'Collection',
-                    'Normalization',
-                    'Correlation',
-                    'Storage'
-                ],
-                'correct_options' => ['Collection', 'Normalization', 'Enrichment', 'Storage', 'Correlation'],
-                'justifications' => [
-                    'Collection gathers raw logs',
-                    'Normalization standardizes format',
-                    'Enrichment adds context',
-                    'Storage preserves processed logs',
-                    'Correlation analyzes stored data'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 21
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary difference between IDS and IPS?',
-                'options' => [
-                    'IDS monitors networks, IPS monitors hosts',
-                    'IDS detects and alerts, IPS detects and blocks',
-                    'IDS uses signatures, IPS uses behavior analysis',
-                    'There is no significant difference'
-                ],
-                'correct_options' => ['IDS detects and alerts, IPS detects and blocks'],
-                'justifications' => [
-                    'Both IDS and IPS can monitor networks or hosts',
-                    'Correct - Key difference is IPS takes active blocking action',
-                    'Both can use signatures and behavioral analysis',
-                    'The blocking capability is a significant operational difference'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 22
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which SIEM capability is most valuable for detecting advanced persistent threats (APTs)?',
-                'options' => [
-                    'Real-time dashboards',
-                    'Historical data analysis and correlation',
-                    'Automatic report generation',
-                    'User access controls'
-                ],
-                'correct_options' => ['Historical data analysis and correlation'],
-                'justifications' => [
-                    'Dashboards show current status but may miss subtle patterns',
-                    'Correct - APTs often use long-term, low-profile activities requiring historical analysis',
-                    'Reports summarize known information but don\'t detect new threats',
-                    'Access controls secure the SIEM but don\'t detect threats'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 23
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary advantage of UEBA over traditional signature-based detection?',
-                'options' => [
-                    'Lower cost of implementation',
-                    'Ability to detect unknown threats through behavioral anomalies',
-                    'Faster processing speed',
-                    'Simpler configuration requirements'
-                ],
-                'correct_options' => ['Ability to detect unknown threats through behavioral anomalies'],
-                'justifications' => [
-                    'UEBA implementation can be complex and costly',
-                    'Correct - UEBA detects previously unknown threats by identifying abnormal behavior',
-                    'Behavioral analysis typically requires more processing than signature matching',
-                    'UEBA often requires complex tuning and baseline establishment'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 24
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Network-based IDS can detect attacks that occur entirely within encrypted traffic.',
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'Wrong - Network IDS cannot inspect encrypted traffic content',
-                    'Correct - Encrypted traffic limits network IDS visibility to metadata and patterns'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 25
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which detection method is most effective against zero-day exploits?',
-                'options' => [
-                    'Signature-based detection',
-                    'Behavioral and anomaly-based detection',
-                    'Rule-based correlation',
-                    'Manual log review'
-                ],
-                'correct_options' => ['Behavioral and anomaly-based detection'],
-                'justifications' => [
-                    'Signatures don\'t exist for zero-day exploits',
-                    'Correct - Behavioral detection can identify anomalous activity patterns',
-                    'Rules are typically based on known attack patterns',
-                    'Manual review is too slow and limited for comprehensive detection'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 26
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Match each detection technology with its primary strength:',
-                'options' => [
-                    'IDS/IPS',
-                    'SIEM',
-                    'UEBA',
-                    'Network monitoring'
-                ],
-                'sub_options' => [
-                    'User behavior analysis',
-                    'Multi-source correlation',
-                    'Real-time blocking',
-                    'Traffic pattern analysis'
-                ],
-                'correct_options' => [
-                    'IDS/IPS → Real-time blocking',
-                    'SIEM → Multi-source correlation',
-                    'UEBA → User behavior analysis',
-                    'Network monitoring → Traffic pattern analysis'
-                ],
-                'justifications' => [
-                    'IPS provides active threat blocking',
-                    'SIEM excels at correlating diverse data sources',
-                    'UEBA specializes in behavioral analysis',
-                    'Network monitoring analyzes traffic patterns'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 27
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'SIEM systems require significant tuning to reduce false positives.',
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'Correct - SIEM tuning is critical for balancing detection sensitivity with manageable alert volumes',
-                    'Wrong - Untuned SIEM systems typically generate excessive false positives'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 28
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the most significant challenge in implementing UEBA?',
-                'options' => [
-                    'High licensing costs',
-                    'Establishing accurate behavioral baselines',
-                    'Integration with existing tools',
-                    'Training staff on new technology'
-                ],
-                'correct_options' => ['Establishing accurate behavioral baselines'],
-                'justifications' => [
-                    'Cost is a factor but not the most significant technical challenge',
-                    'Correct - UEBA effectiveness depends on accurate baseline establishment',
-                    'Integration challenges exist but baselines are more fundamental',
-                    'Training is important but baseline accuracy is more critical'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 29
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which deployment model provides the best network visibility for IDS?',
-                'options' => [
-                    'Inline deployment',
-                    'Mirror port (SPAN) deployment',
-                    'Network tap deployment',
-                    'Agent-based deployment'
-                ],
-                'correct_options' => ['Network tap deployment'],
-                'justifications' => [
-                    'Inline deployment provides blocking but may introduce latency',
-                    'Mirror ports may drop packets under high load',
-                    'Correct - Network taps provide complete, reliable traffic visibility',
-                    'Agent-based deployment is for host-based, not network detection'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Detection - Item 30
-            [
-                'topic_id' => $topics['Detection'] ?? 3,
-                'type_id' => 3,
-                'dimension' => 'Technical',
-                'content' => 'Arrange SIEM implementation phases in recommended order:',
-                'options' => [
-                    'Deploy use cases',
-                    'Configure log sources',
-                    'Tune correlation rules',
-                    'Install SIEM platform'
-                ],
-                'correct_options' => ['Install SIEM platform', 'Configure log sources', 'Deploy use cases', 'Tune correlation rules'],
-                'justifications' => [
-                    'Platform installation provides the foundation',
-                    'Log sources provide data for analysis',
-                    'Use cases define detection requirements',
-                    'Tuning optimizes performance and accuracy'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Response - Item 31
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of SOAR platforms?',
-                'options' => [
-                    'To replace security analysts',
-                    'To orchestrate and automate security response workflows',
-                    'To generate compliance reports',
-                    'To monitor network traffic'
-                ],
-                'correct_options' => ['To orchestrate and automate security response workflows'],
-                'justifications' => [
-                    'SOAR augments but doesn\'t replace human analysts',
-                    'Correct - SOAR automates repetitive tasks and orchestrates complex workflows',
-                    'Compliance reporting is a secondary capability',
-                    'Network monitoring is typically done by other tools'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Response - Item 32
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which type of incident response should be automated first in a SOAR implementation?',
-                'options' => [
-                    'Complex forensic analysis',
-                    'High-volume, low-risk alerts',
-                    'Executive-level incident notifications',
-                    'Legal and regulatory reporting'
-                ],
-                'correct_options' => ['High-volume, low-risk alerts'],
-                'justifications' => [
-                    'Complex forensics typically require human expertise',
-                    'Correct - Automating routine, low-risk responses provides immediate value',
-                    'Executive notifications often require human judgment',
-                    'Legal reporting typically requires review and approval'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Response - Item 33
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Incident response procedures should be fully automated without human oversight.',
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'Wrong - Human oversight ensures appropriate response to complex situations',
-                    'Correct - Automation should enhance human decision-making, not replace it entirely'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Response - Item 34
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the most important factor for successful threat response automation?',
-                'options' => [
-                    'Having the most advanced tools',
-                    'Well-defined playbooks and procedures',
-                    'Large security team',
-                    'Unlimited budget'
-                ],
-                'correct_options' => ['Well-defined playbooks and procedures'],
-                'justifications' => [
-                    'Advanced tools are helpful but procedures are more fundamental',
-                    'Correct - Clear procedures enable effective automation and consistent response',
-                    'Team size is less important than procedure clarity',
-                    'Budget is important but doesn\'t guarantee successful automation'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Response - Item 35
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which containment action can be most safely automated?',
-                'options' => [
-                    'Shutting down critical production systems',
-                    'Blocking known malicious IP addresses',
-                    'Disabling user accounts without verification',
-                    'Deleting suspected malware files'
-                ],
-                'correct_options' => ['Blocking known malicious IP addresses'],
-                'justifications' => [
-                    'Production system shutdown requires careful consideration',
-                    'Correct - IP blocking is reversible and typically low-risk',
-                    'Account disabling should include verification to prevent false positives',
-                    'File deletion should be done carefully to preserve evidence'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Response - Item 36
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 3,
-                'dimension' => 'Technical',
-                'content' => 'Arrange automated response actions in order of increasing risk:',
-                'options' => [
-                    'System isolation',
-                    'Alert generation',
-                    'Evidence collection',
-                    'Account disabling'
-                ],
-                'correct_options' => ['Alert generation', 'Evidence collection', 'Account disabling', 'System isolation'],
-                'justifications' => [
-                    'Alert generation has minimal operational impact',
-                    'Evidence collection is typically non-disruptive',
-                    'Account disabling affects user access',
-                    'System isolation has highest operational impact'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Response - Item 37
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'SOAR platforms can integrate with most security tools through APIs.',
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'Correct - Modern SOAR platforms typically offer extensive API integration capabilities',
-                    'Wrong - API integration is a core SOAR capability for tool orchestration'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Response - Item 38
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary benefit of incident response playbooks?',
-                'options' => [
-                    'Reducing staff training requirements',
-                    'Ensuring consistent and repeatable responses',
-                    'Eliminating the need for escalation',
-                    'Reducing tool licensing costs'
-                ],
-                'correct_options' => ['Ensuring consistent and repeatable responses'],
-                'justifications' => [
-                    'Training is still required to understand and execute playbooks',
-                    'Correct - Playbooks standardize responses for consistent outcomes',
-                    'Escalation may still be necessary for complex incidents',
-                    'Playbooks don\'t directly impact licensing costs'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Response - Item 39
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which metric best measures the effectiveness of automated threat response?',
-                'options' => [
-                    'Number of automated actions taken',
-                    'Reduction in mean time to containment (MTTC)',
-                    'Percentage of incidents that are fully automated',
-                    'Cost savings from automation'
-                ],
-                'correct_options' => ['Reduction in mean time to containment (MTTC)'],
-                'justifications' => [
-                    'Action count doesn\'t indicate effectiveness',
-                    'Correct - Faster containment reduces threat impact',
-                    'Full automation percentage doesn\'t measure effectiveness',
-                    'Cost savings are important but containment speed is more critical'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Response - Item 40
-            [
-                'topic_id' => $topics['Response'] ?? 4,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Match each response automation level with its appropriate use case:',
-                'options' => [
-                    'Full automation',
-                    'Semi-automation',
-                    'Manual with tools',
-                    'Fully manual'
-                ],
-                'sub_options' => [
-                    'Complex forensic investigation',
-                    'Routine malware blocking',
-                    'Incident escalation decisions',
-                    'Evidence collection'
-                ],
-                'correct_options' => [
-                    'Full automation → Routine malware blocking',
-                    'Semi-automation → Evidence collection',
-                    'Manual with tools → Incident escalation decisions',
-                    'Fully manual → Complex forensic investigation'
-                ],
-                'justifications' => [
-                    'Routine blocking can be safely automated',
-                    'Evidence collection benefits from automation with oversight',
-                    'Escalation decisions need human judgment with tool support',
-                    'Complex forensics require human expertise and judgment'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 41
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of real-time security monitoring?',
-                'options' => [
-                    'To generate compliance reports',
-                    'To detect and respond to threats as they occur',
-                    'To perform forensic analysis',
-                    'To manage user access controls'
-                ],
-                'correct_options' => ['To detect and respond to threats as they occur'],
-                'justifications' => [
-                    'Compliance reporting is typically not time-critical',
-                    'Correct - Real-time monitoring enables immediate threat detection and response',
-                    'Forensic analysis is typically performed after incident detection',
-                    'Access control management is usually not a real-time monitoring function'
-                ],
+                'bloom_level' => 1,
                 'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 32 - L1 - Remember
+            [
+                'subtopic' => 'Response',
+                'question' => 'What is the primary goal of evidence preservation in digital forensics?',
+                'options' => [
+                    'Reducing the time required for investigation',
+                    'Maintaining the integrity and chain of custody of digital evidence',
+                    'Improving system performance during investigations',
+                    'Minimizing storage costs for forensic data'
+                ],
+                'correct_options' => ['Maintaining the integrity and chain of custody of digital evidence'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Maintaining the integrity and chain of custody of digital evidence',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 33 - L2 - Understand
+            [
+                'subtopic' => 'Response',
+                'question' => 'Why is rapid containment critical in incident response, even before complete analysis?',
+                'options' => [
+                    'Containment reduces the cost of incident response',
+                    'Rapid containment limits damage spread and preserves evidence for analysis',
+                    'Containment eliminates the need for further investigation',
+                    'Rapid containment automatically resolves all security incidents'
+                ],
+                'correct_options' => ['Rapid containment limits damage spread and preserves evidence for analysis'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Rapid containment limits damage spread and preserves evidence for analysis',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 42
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which alerting strategy helps reduce alert fatigue in SOCs?',
-                'options' => [
-                    'Sending all alerts to all analysts',
-                    'Alert prioritization and intelligent routing',
-                    'Disabling low-priority alerts entirely',
-                    'Only alerting during business hours'
-                ],
-                'correct_options' => ['Alert prioritization and intelligent routing'],
-                'justifications' => [
-                    'Sending all alerts increases fatigue and reduces effectiveness',
-                    'Correct - Prioritization and routing ensure analysts focus on relevant, high-priority alerts',
-                    'Disabling alerts may miss legitimate threats',
-                    'Threats don\'t follow business hours'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 43
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which security metric is most valuable for executive reporting?',
-                'options' => [
-                    'Number of log entries processed',
-                    'Mean time to detect and respond to incidents',
-                    'Number of security tools deployed',
-                    'Percentage of alerts that are false positives'
-                ],
-                'correct_options' => ['Mean time to detect and respond to incidents'],
-                'justifications' => [
-                    'Log processing volume is an operational metric',
-                    'Correct - MTTD/MTTR demonstrates security program effectiveness to executives',
-                    'Tool count doesn\'t indicate effectiveness',
-                    'False positive rate is important operationally but less meaningful to executives'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 44
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Security dashboards should display only technical metrics.',
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'Wrong - Dashboards should include business-relevant metrics for different audiences',
-                    'Correct - Effective dashboards combine technical and business metrics for comprehensive visibility'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 45
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the most important characteristic of security monitoring alerts?',
-                'options' => [
-                    'High volume to catch everything',
-                    'Actionable information with clear next steps',
-                    'Detailed technical logs only',
-                    'Automated resolution without human input'
-                ],
-                'correct_options' => ['Actionable information with clear next steps'],
-                'justifications' => [
-                    'High volume often leads to alert fatigue and missed threats',
-                    'Correct - Actionable alerts enable effective response and reduce analyst confusion',
-                    'Technical details alone may not provide clear action guidance',
-                    'Not all alerts can or should be automatically resolved'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 46
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange security reporting activities in recommended order:',
-                'options' => [
-                    'Present findings',
-                    'Collect metrics',
-                    'Analyze trends',
-                    'Define KPIs'
-                ],
-                'correct_options' => ['Define KPIs', 'Collect metrics', 'Analyze trends', 'Present findings'],
-                'justifications' => [
-                    'KPIs define what to measure',
-                    'Metrics collection provides data',
-                    'Trend analysis reveals patterns',
-                    'Presentation communicates insights'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 47
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Performance monitoring of security tools is as important as security monitoring itself.',
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'Correct - Security tool performance directly impacts detection and response capability',
-                    'Wrong - Poor tool performance can create security blind spots'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-
-            // Monitoring - Item 48
-            [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary challenge in measuring security monitoring effectiveness?',
-                'options' => [
-                    'Lack of monitoring tools',
-                    'Defining meaningful metrics that reflect actual security posture',
-                    'Insufficient storage capacity',
-                    'Limited network bandwidth'
-                ],
-                'correct_options' => ['Defining meaningful metrics that reflect actual security posture'],
-                'justifications' => [
-                    'Monitoring tools are widely available',
-                    'Correct - Meaningful metrics are challenging to define but essential for effectiveness assessment',
-                    'Storage capacity is typically manageable',
-                    'Bandwidth is rarely the limiting factor'
-                ],
                 'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 34 - L2 - Understand
+            [
+                'subtopic' => 'Response',
+                'question' => 'How does memory forensics differ from disk forensics in incident investigation?',
+                'options' => [
+                    'Memory forensics is always easier than disk forensics',
+                    'Memory forensics captures volatile data and running processes, while disk forensics examines persistent storage',
+                    'Memory forensics only works on Windows systems',
+                    'There is no significant difference between memory and disk forensics'
+                ],
+                'correct_options' => ['Memory forensics captures volatile data and running processes, while disk forensics examines persistent storage'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Memory forensics captures volatile data and running processes, while disk forensics examines persistent storage',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 35 - L3 - Apply
+            [
+                'subtopic' => 'Response',
+                'question' => 'During a ransomware incident, what should be the immediate priority for the incident response team?',
+                'options' => [
+                    'Negotiate with attackers to minimize ransom demands',
+                    'Isolate affected systems and assess spread while preserving evidence',
+                    'Immediately restore all systems from the most recent backups',
+                    'Focus on identifying the attack vector before any containment'
+                ],
+                'correct_options' => ['Isolate affected systems and assess spread while preserving evidence'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Isolate affected systems and assess spread while preserving evidence',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 36 - L3 - Apply
+            [
+                'subtopic' => 'Response',
+                'question' => 'How should an organization handle communication during a major data breach incident?',
+                'options' => [
+                    'Maintain complete silence until the investigation is finished',
+                    'Implement coordinated internal and external communication following legal and regulatory requirements',
+                    'Immediately disclose all known details to the public',
+                    'Only communicate with law enforcement and ignore other stakeholders'
+                ],
+                'correct_options' => ['Implement coordinated internal and external communication following legal and regulatory requirements'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement coordinated internal and external communication following legal and regulatory requirements',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 37 - L3 - Apply
+            [
+                'subtopic' => 'Response',
+                'question' => 'What is the most critical factor when deciding whether to involve law enforcement in a cybersecurity incident?',
+                'options' => [
+                    'The potential media attention from the incident',
+                    'Severity of impact, legal requirements, and investigative needs',
+                    'The cost of external forensic investigation services',
+                    'Whether the attack originated from international sources'
+                ],
+                'correct_options' => ['Severity of impact, legal requirements, and investigative needs'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Severity of impact, legal requirements, and investigative needs',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 38 - L4 - Analyze
+            [
+                'subtopic' => 'Response',
+                'question' => 'Analyze why traditional backup and recovery strategies may be insufficient for ransomware incident response.',
+                'options' => [
+                    'Backups are too expensive for most organizations to maintain',
+                    'Ransomware may compromise backup systems and data integrity before encryption occurs',
+                    'Backup systems are incompatible with modern IT infrastructure',
+                    'Recovery from backups is always faster than paying ransom'
+                ],
+                'correct_options' => ['Ransomware may compromise backup systems and data integrity before encryption occurs'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Ransomware may compromise backup systems and data integrity before encryption occurs',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
-
-            // Monitoring - Item 49
+            
+            // Item 39 - L4 - Analyze
             [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How often should security monitoring effectiveness be formally reviewed?',
+                'subtopic' => 'Response',
+                'question' => 'What is the fundamental challenge in conducting forensic analysis of cloud-based incidents?',
                 'options' => [
-                    'Only when incidents occur',
-                    'Quarterly with annual comprehensive review',
-                    'Daily during shift changes',
-                    'Only during budget planning'
+                    'Cloud environments are inherently more secure than on-premises',
+                    'Ephemeral infrastructure, shared responsibility, and limited forensic access complicate investigation',
+                    'Cloud providers always handle all forensic analysis automatically',
+                    'Forensic tools cannot operate in cloud environments'
                 ],
-                'correct_options' => ['Quarterly with annual comprehensive review'],
+                'correct_options' => ['Ephemeral infrastructure, shared responsibility, and limited forensic access complicate investigation'],
                 'justifications' => [
-                    'Incident-driven reviews are reactive and insufficient',
-                    'Correct - Regular quarterly reviews with annual deep assessment ensure continuous improvement',
-                    'Daily reviews may be too frequent for strategic assessment',
-                    'Budget-driven reviews don\'t address operational effectiveness'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Ephemeral infrastructure, shared responsibility, and limited forensic access complicate investigation',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
-
-            // Monitoring - Item 50
+            
+            // Item 40 - L5 - Evaluate
             [
-                'topic_id' => $topics['Monitoring'] ?? 5,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Match each monitoring component with its primary purpose:',
+                'subtopic' => 'Response',
+                'question' => 'An organization\'s incident response plan prioritizes business continuity over forensic evidence preservation. Evaluate this approach.',
                 'options' => [
-                    'Real-time dashboards',
-                    'Alert management',
-                    'Trend analysis',
-                    'Performance metrics'
+                    'Business continuity should always take absolute priority over forensics',
+                    'Organizations must balance business needs with legal, regulatory, and security investigation requirements',
+                    'Forensic evidence should always take priority over business operations',
+                    'There is never any conflict between business continuity and forensic preservation'
                 ],
-                'sub_options' => [
-                    'Tool health monitoring',
-                    'Current threat status',
-                    'Alert prioritization',
-                    'Long-term pattern identification'
-                ],
-                'correct_options' => [
-                    'Real-time dashboards → Current threat status',
-                    'Alert management → Alert prioritization',
-                    'Trend analysis → Long-term pattern identification',
-                    'Performance metrics → Tool health monitoring'
-                ],
+                'correct_options' => ['Organizations must balance business needs with legal, regulatory, and security investigation requirements'],
                 'justifications' => [
-                    'Dashboards provide current situational awareness',
-                    'Alert management prioritizes and routes alerts',
-                    'Trend analysis identifies patterns over time',
-                    'Performance metrics monitor tool effectiveness'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Organizations must balance business needs with legal, regulatory, and security investigation requirements',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 5: Security Monitoring & Metrics (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L1 - Remember
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'What is a Security Information and Event Management (SIEM) system designed to provide?',
+                'options' => [
+                    'Network firewall protection and intrusion prevention',
+                    'Centralized collection, correlation, and analysis of security events and logs',
+                    'Antivirus scanning and malware removal capabilities',
+                    'User authentication and access control management'
+                ],
+                'correct_options' => ['Centralized collection, correlation, and analysis of security events and logs'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Centralized collection, correlation, and analysis of security events and logs',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 42 - L1 - Remember
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'What is the difference between a security metric and a security KPI?',
+                'options' => [
+                    'Metrics measure performance while KPIs are key performance indicators aligned with objectives',
+                    'Metrics and KPIs are identical terms with no distinction',
+                    'Metrics are only for technical teams while KPIs are for management',
+                    'Metrics are qualitative while KPIs are always quantitative'
+                ],
+                'correct_options' => ['Metrics measure performance while KPIs are key performance indicators aligned with objectives'],
+                'justifications' => [
+                    'Correct - Metrics measure performance while KPIs are key performance indicators aligned with objectives',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 43 - L2 - Understand
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'Why is baseline establishment critical for effective security monitoring?',
+                'options' => [
+                    'Baselines reduce the cost of monitoring infrastructure',
+                    'Baselines provide reference points for identifying anomalous behavior and deviations',
+                    'Baselines eliminate the need for real-time monitoring',
+                    'Baselines automatically prevent all security incidents'
+                ],
+                'correct_options' => ['Baselines provide reference points for identifying anomalous behavior and deviations'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Baselines provide reference points for identifying anomalous behavior and deviations',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 44 - L2 - Understand
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'How do leading indicators differ from lagging indicators in security metrics?',
+                'options' => [
+                    'Leading indicators are more expensive to measure than lagging indicators',
+                    'Leading indicators predict future security posture while lagging indicators measure past performance',
+                    'Leading indicators are only used by technical teams',
+                    'Leading indicators require more complex measurement tools'
+                ],
+                'correct_options' => ['Leading indicators predict future security posture while lagging indicators measure past performance'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Leading indicators predict future security posture while lagging indicators measure past performance',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 45 - L3 - Apply
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'A retail company wants to measure the effectiveness of their security awareness training program. What metrics should they track?',
+                'options' => [
+                    'Only the number of employees who completed training',
+                    'Training completion rates, phishing simulation results, and security incident reporting trends',
+                    'Just the cost per employee for training delivery',
+                    'Only the time spent in training sessions'
+                ],
+                'correct_options' => ['Training completion rates, phishing simulation results, and security incident reporting trends'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Training completion rates, phishing simulation results, and security incident reporting trends',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 46 - L3 - Apply
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'How should an organization implement continuous security monitoring in a DevOps environment?',
+                'options' => [
+                    'Only monitor production systems after deployment',
+                    'Integrate security monitoring throughout the CI/CD pipeline with automated feedback',
+                    'Perform monthly security reviews of all systems',
+                    'Only monitor traditional infrastructure, not containerized applications'
+                ],
+                'correct_options' => ['Integrate security monitoring throughout the CI/CD pipeline with automated feedback'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Integrate security monitoring throughout the CI/CD pipeline with automated feedback',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 47 - L3 - Apply
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'What is the most effective approach for presenting security metrics to executive leadership?',
+                'options' => [
+                    'Provide detailed technical logs and raw data',
+                    'Focus on business impact, risk reduction, and trend analysis with clear visualizations',
+                    'Only report metrics when security incidents occur',
+                    'Use complex statistical analysis without interpretation'
+                ],
+                'correct_options' => ['Focus on business impact, risk reduction, and trend analysis with clear visualizations'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Focus on business impact, risk reduction, and trend analysis with clear visualizations',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'Analyze why vanity metrics can be counterproductive for security program management.',
+                'options' => [
+                    'Vanity metrics are too expensive to collect',
+                    'They may look impressive but do not provide actionable insights for security improvement',
+                    'Vanity metrics require specialized tools to measure',
+                    'They are only appropriate for large organizations'
+                ],
+                'correct_options' => ['They may look impressive but do not provide actionable insights for security improvement'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - They may look impressive but do not provide actionable insights for security improvement',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 49 - L4 - Analyze
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'What is the fundamental challenge in correlating security events across hybrid cloud and on-premises environments?',
+                'options' => [
+                    'Hybrid environments do not generate security events',
+                    'Different platforms, time synchronization, and data formats create correlation complexity',
+                    'Correlation is only possible within single cloud providers',
+                    'On-premises systems cannot integrate with cloud monitoring'
+                ],
+                'correct_options' => ['Different platforms, time synchronization, and data formats create correlation complexity'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Different platforms, time synchronization, and data formats create correlation complexity',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 50 - L5 - Evaluate
+            [
+                'subtopic' => 'Monitoring',
+                'question' => 'An organization implements comprehensive security monitoring but struggles with alert fatigue and false positives. Assess their monitoring strategy.',
+                'options' => [
+                    'More monitoring always improves security effectiveness',
+                    'Effective monitoring requires balance between coverage and actionability through tuning and prioritization',
+                    'Organizations should eliminate all automated monitoring',
+                    'False positives indicate monitoring systems are working correctly'
+                ],
+                'correct_options' => ['Effective monitoring requires balance between coverage and actionability through tuning and prioritization'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Effective monitoring requires balance between coverage and actionability through tuning and prioritization',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ]
         ];
-
-        // Insert all diagnostic items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
     }
 }

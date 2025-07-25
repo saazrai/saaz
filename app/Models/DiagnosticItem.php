@@ -11,6 +11,7 @@ class DiagnosticItem extends BaseModel
 
     protected $fillable = [
         'topic_id',
+        'subtopic_id',
         'type_id',
         'dimension',
         'content',
@@ -39,6 +40,11 @@ class DiagnosticItem extends BaseModel
     public function topic(): BelongsTo
     {
         return $this->belongsTo(DiagnosticTopic::class, 'topic_id');
+    }
+
+    public function subtopic(): BelongsTo
+    {
+        return $this->belongsTo(DiagnosticSubtopic::class, 'subtopic_id');
     }
 
     public function type(): BelongsTo

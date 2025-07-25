@@ -130,10 +130,25 @@ return new class extends Migration
             $table->index('domain_id');
         });
 
+        // Added 2025-07-22: Subtopics within topics for granular question mapping
+        Schema::create('diagnostic_subtopics', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('topic_id')->constrained('diagnostic_topics')->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->integer('sort_order')->default(1)->comment('Display order within topic');
+            $table->timestamps();
+            $table->softDeletes();
+            
+            // Index for topic-based queries
+            $table->index(['topic_id', 'sort_order']);
+        });
+
         // Individual diagnostic questions with IRT parameters
         Schema::create('diagnostic_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('topic_id')->constrained('diagnostic_topics')->onDelete('cascade');
+            //$table->foreignId('topic_id')->constrained('diagnostic_topics')->onDelete('cascade');
+            $table->foreignId('subtopic_id')->nullable()->constrained('diagnostic_subtopics')->onDelete('cascade'); // Added 2025-07-22: Granular subtopic mapping
             $table->foreignId('type_id')->nullable()->constrained('question_types')->onDelete('set null');
             
             // Question categorization
@@ -165,7 +180,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Performance indexes for question selection
-            $table->index(['topic_id', 'status']);
+            $table->index(['subtopic_id', 'status']); // Added 2025-07-22: Subtopic-based queries
             $table->index(['difficulty_level', 'bloom_level']);
         });
 
@@ -198,6 +213,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('diagnostic_responses');
         Schema::dropIfExists('diagnostic_items');
+        Schema::dropIfExists('diagnostic_subtopics'); // Added 2025-07-22
         Schema::dropIfExists('diagnostic_topics');
         Schema::dropIfExists('diagnostic_domains');
         Schema::dropIfExists('diagnostics');

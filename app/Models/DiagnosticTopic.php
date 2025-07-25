@@ -18,4 +18,9 @@ class DiagnosticTopic extends BaseModel
     {
         return $this->hasMany(DiagnosticItem::class, 'topic_id');
     }
+
+    public function subtopics(): HasMany
+    {
+        return $this->hasMany(DiagnosticSubtopic::class, 'topic_id');
+    }
 }

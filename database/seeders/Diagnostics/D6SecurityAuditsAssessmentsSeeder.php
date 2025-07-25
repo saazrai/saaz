@@ -2,1262 +2,1422 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-
-
-use Illuminate\Database\Seeder;
-
-class D6SecurityAuditsAssessmentsSeeder extends Seeder
+class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Security Audits & Assessments';
+    
+    protected function getQuestions(): array
     {
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Security Audits & Assessments');
-        })->pluck('id', 'name');
-        
-        
-        $items = [
-            // Audit Life-Cycle Phases - Item 1
+        return [
+            // Topic 1: Audit Fundamentals (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 1 - L1 - Remember
             [
-                'topic_id' => $topics['Audit Life-Cycle Phases'] ?? 111,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the correct order of audit lifecycle phases?',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Lifecycle',
+                'question' => 'During which phase of the audit lifecycle are audit objectives defined, scope determined, and resources allocated?',
                 'options' => [
-                    'Fieldwork → Planning → Reporting → Follow-up',
-                    'Planning → Fieldwork → Reporting → Follow-up',
-                    'Reporting → Planning → Fieldwork → Follow-up',
-                    'Planning → Reporting → Fieldwork → Follow-up'
+                    'Fieldwork',
+                    'Reporting',
+                    'Planning',
+                    'Follow-up'
                 ],
-                'correct_options' => ['Planning → Fieldwork → Reporting → Follow-up'],
+                'correct_options' => ['Planning'],
                 'justifications' => [
-                    'Cannot conduct fieldwork without planning',
-                    'Correct - Planning establishes scope, fieldwork gathers evidence, reporting communicates findings, follow-up ensures remediation',
-                    'Cannot report before conducting the audit',
-                    'Fieldwork must precede reporting'
+                    'Incorrect - Fieldwork is the execution phase where evidence is gathered',
+                    'Incorrect - Reporting phase communicates findings after fieldwork is complete',
+                    'Correct - Planning phase establishes objectives, determines scope, and allocates resources before audit execution',
+                    'Incorrect - Follow-up phase occurs after reporting to verify remediation'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Security Audits Types - Item 2
+            // Item 2 - L2 - Understand
             [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary advantage of external security audits over internal audits?',
-                'options' => [
-                    'Lower cost',
-                    'Greater independence and objectivity',
-                    'Deeper knowledge of systems',
-                    'Faster completion time'
-                ],
-                'correct_options' => ['Greater independence and objectivity'],
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Lifecycle',
+                'question' => 'The security audit lifecycle follows a systematic approach to ensure comprehensive assessment. Drag & drop the audit phases in the correct chronological order from start to finish.',
+                'type_id' => 4, // DDO - Drag & Drop Order
+                'options' => ['Reporting', 'Follow-up', 'Planning', 'Fieldwork'], // Shuffled
+                'correct_options' => ['Planning', 'Fieldwork', 'Reporting', 'Follow-up'],
                 'justifications' => [
-                    'External audits typically cost more',
-                    'Correct - External auditors provide unbiased perspective without internal pressures',
-                    'Internal auditors know systems better',
-                    'External audits often take longer due to learning curve'
+                    'Planning establishes audit objectives, scope, and methodology',
+                    'Fieldwork involves evidence gathering and control testing',
+                    'Reporting communicates findings and recommendations to stakeholders',
+                    'Follow-up verifies remediation of identified issues'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Compliance vs Substantive Testing - Item 3
-            [
-                'topic_id' => $topics['Compliance vs Substantive Testing'] ?? 113,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each testing approach with its focus:',
-                'options' => [
-                    'items' => [
-                        'Verifying controls are in place and operating',
-                        'Detailed examination of transactions and balances',
-                        'Testing control design effectiveness',
-                        'Analyzing actual data for errors or fraud'
-                    ],
-                    'targets' => [
-                        'Compliance Testing',
-                        'Substantive Testing'
-                    ]
-                ],
-                'correct_options' => [
-                    'Verifying controls are in place and operating' => 'Compliance Testing',
-                    'Detailed examination of transactions and balances' => 'Substantive Testing',
-                    'Testing control design effectiveness' => 'Compliance Testing',
-                    'Analyzing actual data for errors or fraud' => 'Substantive Testing'
-                ],
-                'justifications' => [
-                    'Verifying controls are in place and operating' => 'Compliance testing focuses on control existence',
-                    'Detailed examination of transactions and balances' => 'Substantive testing examines actual data',
-                    'Testing control design effectiveness' => 'Control testing is compliance focused',
-                    'Analyzing actual data for errors or fraud' => 'Direct data testing is substantive'
-                ],
                 'difficulty_level' => 2,
-                'bloom_level' => 4,
+                'irt_a' => 1.0,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Evidence-Gathering Techniques - Item 4
+            // Item 3 - L2 - Understand
             [
-                'topic_id' => $topics['Evidence-Gathering Techniques'] ?? 114,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select valid evidence-gathering techniques for security audits:',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Types',
+                'question' => 'When conducting a security audit, what is the most significant advantage of using internal auditors instead of external auditors?',
                 'options' => [
-                    'Document review',
-                    'Guessing outcomes',
-                    'System observation',
-                    'Making assumptions',
-                    'Re-performance of controls',
-                    'Ignoring anomalies'
+                    'Internal auditors provide a more cost-effective auditing solution.',
+                    'Internal auditors are more likely to align with management\'s objectives.',
+                    'Internal auditors can conduct audits more frequently with fewer restrictions.',
+                    'Internal auditors have a deeper understanding of the organization\'s processes and risks.'
                 ],
-                'correct_options' => ['Document review', 'System observation', 'Re-performance of controls'],
+                'correct_options' => ['Internal auditors have a deeper understanding of the organization\'s processes and risks.'],
                 'justifications' => [
-                    'Documents provide evidence of policies and procedures',
-                    'Guessing is not evidence-based',
-                    'Direct observation validates actual practices',
-                    'Assumptions lack evidentiary value',
-                    'Re-performance confirms control effectiveness',
-                    'Anomalies must be investigated, not ignored'
+                    'Incorrect - While cost may be lower, this is not the most significant advantage for audit quality',
+                    'Incorrect - Alignment with management objectives can compromise independence and objectivity',
+                    'Incorrect - Frequency and fewer restrictions are operational benefits but not the most significant advantage',
+                    'Correct - Deep organizational knowledge enables more targeted and effective risk assessment and control evaluation'
                 ],
-                'difficulty_level' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 4 - L3 - Apply
+            [
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Planning',
+                'question' => 'When developing an audit scope, which of the following is a primary consideration for an auditor?',
+                'options' => [
+                    'The personal preferences of the audit team',
+                    'The availability of advanced audit software',
+                    'The risks associated with the areas to be audited',
+                    'The amount of time spent on previous audits'
+                ],
+                'correct_options' => ['The risks associated with the areas to be audited'],
+                'justifications' => [
+                    'Incorrect - Personal preferences should not drive audit scope determination',
+                    'Incorrect - While tools are helpful, they should not be the primary driver of scope',
+                    'Correct - Risk assessment is fundamental to determining what areas require audit attention and resources',
+                    'Incorrect - Previous time spent is historical data but not a primary consideration for current scope'
+                ],
                 'bloom_level' => 3,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Sampling Methods - Item 5
+            // Item 5 - L3 - Apply
             [
-                'topic_id' => $topics['Sampling Methods & Sampling Risk'] ?? 115,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which sampling method is most appropriate when looking for fraud or rare control failures?',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Risk-Based Audit Approaches',
+                'question' => 'What is the primary purpose of a risk-based audit approach?',
                 'options' => [
-                    'Random sampling',
-                    'Attribute sampling',
-                    'Discovery sampling',
-                    'Systematic sampling'
+                    'To guarantee that no fraud will occur within the organization',
+                    'To allocate audit resources to areas with the highest potential risks',
+                    'To minimize the time spent on the audit fieldwork',
+                    'To eliminate the need for follow-up activities'
                 ],
-                'correct_options' => ['Discovery sampling'],
+                'correct_options' => ['To allocate audit resources to areas with the highest potential risks'],
                 'justifications' => [
-                    'Random may miss rare events',
-                    'Attribute tests compliance rates',
-                    'Correct - Discovery sampling is designed to find at least one instance of rare events',
-                    'Systematic uses intervals, may miss patterns'
+                    'Incorrect - No audit approach can guarantee prevention of all fraud',
+                    'Correct - Risk-based auditing focuses resources on areas of highest risk to maximize audit effectiveness',
+                    'Incorrect - Time reduction is a potential benefit but not the primary purpose',
+                    'Incorrect - Follow-up activities remain necessary regardless of audit approach'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 3,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Gap Analysis - Item 6
+            // Item 6 - L3 - Apply
             [
-                'topic_id' => $topics['Gap Analysis'] ?? 116,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'In a security gap analysis, what are you comparing?',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Lifecycle',
+                'question' => 'During which audit lifecycle phase is the auditor most likely to encounter significant scope creep if unforeseen complexities arise?',
                 'options' => [
-                    'Last year\'s budget vs this year\'s budget',
-                    'Current state vs desired/required state',
-                    'Employee satisfaction scores',
-                    'Competitor security practices'
+                    'Reporting',
+                    'Follow-up',
+                    'Fieldwork',
+                    'Planning'
                 ],
-                'correct_options' => ['Current state vs desired/required state'],
+                'correct_options' => ['Fieldwork'],
                 'justifications' => [
-                    'Budget comparison is financial analysis',
-                    'Correct - Gap analysis identifies differences between where you are and where you need to be',
-                    'Employee satisfaction is HR metrics',
-                    'Competitive analysis is market research'
+                    'Incorrect - Reporting phase has defined scope based on completed fieldwork',
+                    'Incorrect - Follow-up phase focuses on remediation verification of known issues',
+                    'Correct - Fieldwork phase is when auditors discover actual conditions and may uncover unexpected issues requiring expanded testing',
+                    'Incorrect - Planning phase sets initial scope but actual discoveries happen during fieldwork'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Control Testing - Item 7
+            // Item 7 - L4 - Analyze
             [
-                'topic_id' => $topics['Control Design & Operating-Effectiveness Testing'] ?? 117,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** A well-designed control that is not operating effectively can still provide adequate security.',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Professional Standards',
+                'question' => 'When selecting an assessor for a critical evaluation (e.g., a high-stakes compliance audit or a comprehensive security assessment), which criterion, if compromised, would pose the greatest fundamental threat to the credibility and trustworthiness of the evaluation\'s findings?',
                 'options' => [
-                    'True',
-                    'False'
+                    'The assessor holds relevant industry certifications.',
+                    'The assessor has extensive knowledge of the organization\'s business.',
+                    'The assessor maintains independence and objectivity.',
+                    'The assessor has prior experience with similar assessments.'
                 ],
-                'correct_options' => ['False'],
+                'correct_options' => ['The assessor maintains independence and objectivity.'],
                 'justifications' => [
-                    'explanation' => 'Both design effectiveness AND operating effectiveness are required. A perfectly designed control provides no value if it\'s not functioning properly in practice.'
+                    'Incorrect - While certifications demonstrate competency, they can be supplemented by other qualifications',
+                    'Incorrect - Business knowledge is valuable but can be acquired during the assessment process',
+                    'Correct - Independence and objectivity are fundamental to audit credibility; without them, findings may be biased or influenced by conflicts of interest',
+                    'Incorrect - Experience is important but can be gained, and independence remains the critical foundation'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Continuous Control Monitoring - Item 8
-            [
-                'topic_id' => $topics['Continuous Control Monitoring (CCM)'] ?? 118,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary benefit of Continuous Control Monitoring (CCM) over periodic audits?',
-                'options' => [
-                    'Lower implementation cost',
-                    'Real-time detection of control failures',
-                    'Less technical expertise required',
-                    'Eliminates need for auditors'
-                ],
-                'correct_options' => ['Real-time detection of control failures'],
-                'justifications' => [
-                    'CCM typically requires significant initial investment',
-                    'Correct - CCM provides ongoing assurance rather than point-in-time',
-                    'CCM requires more technical expertise',
-                    'CCM supplements but doesn\'t replace audit functions'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 4,
-                'status' => 'published'
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Vulnerability Assessment - Item 9
+            // Item 10 - L4 - Analyze
             [
-                'topic_id' => $topics['Vulnerability Assessment & Management'] ?? 119,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'How does vulnerability assessment differ from penetration testing?',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Fundamentals',
+                'question' => 'What is the fundamental challenge in auditing DevOps and continuous deployment environments?',
                 'options' => [
-                    'They are the same thing',
-                    'VA identifies weaknesses; PT exploits them',
-                    'PT identifies weaknesses; VA exploits them',
-                    'VA is more invasive than PT'
+                    'DevOps environments are inherently more secure',
+                    'Rapid change cycles make traditional point-in-time assessments less relevant',
+                    'DevOps tools are too complex for auditors to understand',
+                    'DevOps environments don\'t require security controls'
                 ],
-                'correct_options' => ['VA identifies weaknesses; PT exploits them'],
+                'correct_options' => ['Rapid change cycles make traditional point-in-time assessments less relevant'],
                 'justifications' => [
-                    'Clear differences exist between them',
-                    'Correct - VA scans and reports vulnerabilities; PT attempts to exploit them',
-                    'This reverses their actual roles',
-                    'PT is more invasive as it attempts exploitation'
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Rapid change cycles make traditional point-in-time assessments less relevant',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 4,
-                'status' => 'published'
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Penetration Testing Types - Item 10
+            // Item 8 - L5 - Evaluate
             [
-                'topic_id' => $topics['Penetration Testing & Red/Purple Teaming'] ?? 120,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'In a "black box" penetration test, what information does the tester have?',
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Fundamentals',
+                'question' => 'An organization conducts annual compliance audits but experiences frequent security incidents. Evaluate the effectiveness of their audit approach.',
                 'options' => [
-                    'Full system documentation and credentials',
-                    'Partial system information',
-                    'Only publicly available information',
-                    'Source code access'
+                    'Annual audits are sufficient for all organizations',
+                    'Audit approach may be too infrequent and compliance-focused rather than risk-based',
+                    'More audits would not prevent security incidents',
+                    'The organization should eliminate audits and focus on monitoring'
                 ],
-                'correct_options' => ['Only publicly available information'],
+                'correct_options' => ['Audit approach may be too infrequent and compliance-focused rather than risk-based'],
                 'justifications' => [
-                    'This describes white box testing',
-                    'This describes gray box testing',
-                    'Correct - Black box simulates external attacker with no inside knowledge',
-                    'Source code access is white box testing'
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - Audit approach may be too infrequent and compliance-focused rather than risk-based',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This overstates the capability or scope',
                 ],
-                'difficulty_level' => 1,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 9 - L5 - Evaluate
+            [
+                'topic' => 'Audit Fundamentals',
+                'subtopic' => 'Audit Fundamentals',
+                'question' => 'Evaluate the practice of using the same auditors for multiple consecutive years without rotation.',
+                'options' => [
+                    'Continuity improves audit quality and efficiency',
+                    'May lead to familiarity threats and reduced independence over time',
+                    'Same auditors always provide better insights',
+                    'Auditor rotation is unnecessary for internal audits'
+                ],
+                'correct_options' => ['May lead to familiarity threats and reduced independence over time'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - May lead to familiarity threats and reduced independence over time',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Topic 2: Evidence Gathering (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L3 - Apply
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'An internal auditor is conducting an audit of the organization\'s physical security controls for its data center. During fieldwork, the auditor notices that several critical entry points are not consistently monitored by security personnel, despite documented procedures requiring continuous surveillance. The most persuasive and direct form of audit evidence for this observation would be:',
+                'options' => [
+                    'Management\'s written assertion that security procedures are followed.',
+                    'A walk-through of the data center while explicitly observing the security personnel\'s actions (or inactions) over a period.',
+                    'An interview with the Head of Security confirming the monitoring schedule.',
+                    'A review of the access logs which show regular entry and exit without correlating to personnel shifts.'
+                ],
+                'correct_options' => ['A walk-through of the data center while explicitly observing the security personnel\'s actions (or inactions) over a period.'],
+                'justifications' => [
+                    'Incorrect - Management assertions are less reliable than direct observation',
+                    'Correct - Direct observation provides the most persuasive evidence of actual control operation',
+                    'Incorrect - Interviews provide less reliable evidence than direct observation',
+                    'Incorrect - Access logs alone don\'t confirm personnel monitoring activities'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 12 - L2 - Understand
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'Why is corroborating evidence important in security audits?',
+                'options' => [
+                    'Corroboration is only required for external audits',
+                    'Multiple sources of evidence increase reliability and reduce bias',
+                    'Corroborating evidence is always more expensive to obtain',
+                    'Single sources of evidence are always sufficient'
+                ],
+                'correct_options' => ['Multiple sources of evidence increase reliability and reduce bias'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Multiple sources of evidence increase reliability and reduce bias',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 13 - L2 - Understand
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'How does the relevance of evidence differ from its reliability?',
+                'options' => [
+                    'Relevance and reliability are identical concepts',
+                    'Relevance relates to audit objectives while reliability relates to evidence quality',
+                    'Reliability is more important than relevance in all cases',
+                    'Relevance only applies to compliance audits'
+                ],
+                'correct_options' => ['Relevance relates to audit objectives while reliability relates to evidence quality'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Relevance relates to audit objectives while reliability relates to evidence quality',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 14 - L3 - Apply
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'Which of the following scenarios best illustrates the application of "re-performance" as an evidence-gathering technique?',
+                'options' => [
+                    'An auditor asking an accounts payable clerk to describe the invoice processing procedure.',
+                    'An auditor visually inspecting fixed assets on the factory floor to confirm their existence.',
+                    'An auditor recalculating the depreciation expense on a sample of assets using the company\'s stated depreciation method and asset records.',
+                    'An auditor using data analytics to identify unusual patterns in expense reports.'
+                ],
+                'correct_options' => ['An auditor recalculating the depreciation expense on a sample of assets using the company\'s stated depreciation method and asset records.'],
+                'justifications' => [
+                    'Incorrect - This is inquiry, not re-performance',
+                    'Incorrect - This is observation, not re-performance',
+                    'Correct - Re-performance involves independently executing procedures or controls to verify results',
+                    'Incorrect - This is analytical procedures, not re-performance'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 15 - L3 - Apply
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'How should you handle situations where key audit evidence is stored in a cloud service controlled by a third party?',
+                'options' => [
+                    'Skip testing if evidence is not directly accessible',
+                    'Work with the organization to obtain evidence through proper channels and attestations',
+                    'Only accept third-party auditor reports without additional validation',
+                    'Assume controls are ineffective if evidence cannot be accessed'
+                ],
+                'correct_options' => ['Work with the organization to obtain evidence through proper channels and attestations'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Work with the organization to obtain evidence through proper channels and attestations',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 16 - L3 - Apply
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'What is the most appropriate approach when audit evidence contradicts management assertions?',
+                'options' => [
+                    'Always accept management explanations without question',
+                    'Investigate further and gather additional evidence to resolve discrepancies',
+                    'Ignore contradictory evidence if management objects',
+                    'Report findings without additional investigation'
+                ],
+                'correct_options' => ['Investigate further and gather additional evidence to resolve discrepancies'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Investigate further and gather additional evidence to resolve discrepancies',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 17 - L4 - Analyze
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'Analyze why automated evidence collection may be both more reliable and more risky than manual collection.',
+                'options' => [
+                    'Automated collection is always superior to manual methods',
+                    'Automation reduces human bias but may miss context or have configuration errors',
+                    'Manual collection is always more accurate than automation',
+                    'There are no significant differences between automated and manual collection'
+                ],
+                'correct_options' => ['Automation reduces human bias but may miss context or have configuration errors'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Automation reduces human bias but may miss context or have configuration errors',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 18 - L4 - Analyze
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'What is the fundamental challenge in gathering evidence for "security by design" practices?',
+                'options' => [
+                    'Security by design practices are always well-documented',
+                    'Design decisions and rationale may not be captured in traditional audit trails',
+                    'Security by design evidence is too technical for auditors',
+                    'Security by design practices don\'t require evidence'
+                ],
+                'correct_options' => ['Design decisions and rationale may not be captured in traditional audit trails'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Design decisions and rationale may not be captured in traditional audit trails',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'An auditor relies primarily on screenshots and PDF reports provided by the client instead of direct system access. Evaluate this evidence gathering approach.',
+                'options' => [
+                    'Screenshots and reports provide sufficient evidence for all audit purposes',
+                    'This approach may lack independence and verifiability compared to direct observation',
+                    'Client-provided evidence is always more reliable than direct access',
+                    'The format of evidence doesn\'t impact audit quality'
+                ],
+                'correct_options' => ['This approach may lack independence and verifiability compared to direct observation'],
+                'justifications' => [
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - This approach may lack independence and verifiability compared to direct observation',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 20 - L5 - Evaluate
+            [
+                'topic' => 'Evidence Gathering',
+                'subtopic' => 'Evidence Gathering',
+                'question' => 'Evaluate the practice of accepting SOC 2 reports as primary evidence for all cloud service security controls without additional testing.',
+                'options' => [
+                    'SOC 2 reports provide complete coverage for all security requirements',
+                    'SOC 2 reports are valuable but may not cover all relevant controls or provide current status',
+                    'Third-party reports eliminate the need for any additional audit procedures',
+                    'SOC 2 reports are not relevant for security audits'
+                ],
+                'correct_options' => ['SOC 2 reports are valuable but may not cover all relevant controls or provide current status'],
+                'justifications' => [
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - SOC 2 reports are valuable but may not cover all relevant controls or provide current status',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Topic 3: Control Assessment (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 21 - L1 - Remember
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'What are the three main categories of security controls?',
+                'options' => [
+                    'Administrative, technical, and physical controls',
+                    'Preventive, detective, and corrective controls',
+                    'Manual, automated, and hybrid controls',
+                    'Both A and B are correct classification systems'
+                ],
+                'correct_options' => ['Both A and B are correct classification systems'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Both A and B are correct classification systems',
+                ],
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Red vs Purple Teams - Item 11
+            // Item 22 - L1 - Remember
             [
-                'topic_id' => $topics['Penetration Testing & Red/Purple Teaming'] ?? 120,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What distinguishes purple team exercises from red team exercises?',
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'What is a compensating control?',
                 'options' => [
-                    'Purple teams are more aggressive',
-                    'Purple teams collaborate with defenders',
-                    'Purple teams only test physical security',
-                    'Purple teams work independently'
+                    'A control that replaces all other security measures',
+                    'An alternative control that provides equivalent protection when primary controls cannot be implemented',
+                    'A control that only works during business hours',
+                    'A control that costs less than standard implementations'
                 ],
-                'correct_options' => ['Purple teams collaborate with defenders'],
+                'correct_options' => ['An alternative control that provides equivalent protection when primary controls cannot be implemented'],
                 'justifications' => [
-                    'Purple emphasizes collaboration, not aggression',
-                    'Correct - Purple teams combine red team (attackers) with blue team (defenders) for knowledge transfer',
-                    'Purple teams test all security aspects',
-                    'Collaboration is the key purple team characteristic'
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - An alternative control that provides equivalent protection when primary controls cannot be implemented',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // SOC Reports - Item 12
-            [
-                'topic_id' => $topics['Service Organization Control (SOC) Reports'] ?? 121,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each SOC report type with its primary purpose:',
-                'options' => [
-                    'items' => [
-                        'Financial reporting controls',
-                        'Security, availability, and privacy',
-                        'Public-facing trust report',
-                        'Customized criteria'
-                    ],
-                    'targets' => [
-                        'SOC 1',
-                        'SOC 2',
-                        'SOC 3',
-                        'SOC 2+'
-                    ]
-                ],
-                'correct_options' => [
-                    'Financial reporting controls' => 'SOC 1',
-                    'Security, availability, and privacy' => 'SOC 2',
-                    'Public-facing trust report' => 'SOC 3',
-                    'Customized criteria' => 'SOC 2+'
-                ],
-                'justifications' => [
-                    'Financial reporting controls' => 'SOC 1 focuses on controls affecting financial statements',
-                    'Security, availability, and privacy' => 'SOC 2 covers Trust Service Criteria',
-                    'Public-facing trust report' => 'SOC 3 is a seal for public confidence',
-                    'Customized criteria' => 'SOC 2+ adds client-specific requirements'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // ISO 27001 Audit - Item 13
+            // Item 23 - L2 - Understand
             [
-                'topic_id' => $topics['ISO 27001 Certification Audits'] ?? 122,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What type of audit must be passed to achieve ISO 27001 certification?',
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'One way to determine control effectiveness is by evaluating:',
                 'options' => [
-                    'Internal audit only',
-                    'Stage 1 and Stage 2 certification audits',
-                    'Self-assessment',
-                    'Vendor audit'
+                    'The number of controls implemented across business units',
+                    'How well the control meets its intended objective',
+                    'Whether the control is automated or manual',
+                    'The financial cost of implementing the control'
                 ],
-                'correct_options' => ['Stage 1 and Stage 2 certification audits'],
+                'correct_options' => ['How well the control meets its intended objective'],
                 'justifications' => [
-                    'Internal audits support but don\'t grant certification',
-                    'Correct - Stage 1 reviews documentation, Stage 2 verifies implementation',
-                    'Self-assessment isn\'t sufficient for certification',
-                    'Vendor audits are different from certification audits'
+                    'Incorrect - Quantity of controls does not indicate effectiveness of individual controls',
+                    'Correct - Control effectiveness is measured by how well it achieves its intended security objective',
+                    'Incorrect - Implementation method (automated vs manual) does not determine effectiveness',
+                    'Incorrect - Cost is a business consideration but not a measure of control effectiveness'
                 ],
+                'bloom_level' => 2,
                 'difficulty_level' => 2,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 24 - L2 - Understand
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'What is the MOST important reason for periodically testing controls?',
+                'options' => [
+                    'To meet regulatory requirements',
+                    'To meet due care requirements',
+                    'To ensure that control objectives are met',
+                    'To achieve compliance with standard policy'
+                ],
+                'correct_options' => ['To ensure that control objectives are met'],
+                'justifications' => [
+                    'Incorrect - Regulatory compliance is important but secondary to ensuring actual control effectiveness',
+                    'Incorrect - Due care is a legal concept but the primary purpose is verifying control performance',
+                    'Correct - The fundamental purpose of control testing is to verify that controls are achieving their intended security objectives',
+                    'Incorrect - Policy compliance is important but subordinate to ensuring controls actually work as intended'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 25 - L3 - Apply
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'How should you test the effectiveness of automated security monitoring controls?',
+                'options' => [
+                    'Review configuration settings only',
+                    'Test detection capabilities using controlled scenarios and review alert handling',
+                    'Interview the monitoring team about their procedures',
+                    'Check that monitoring software is installed and running'
+                ],
+                'correct_options' => ['Test detection capabilities using controlled scenarios and review alert handling'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Test detection capabilities using controlled scenarios and review alert handling',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 26 - L3 - Apply
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'When assessing data loss prevention (DLP) controls, what testing approach would provide the most comprehensive evaluation?',
+                'options' => [
+                    'Review DLP policy configurations only',
+                    'Test detection accuracy with various data types and transmission methods',
+                    'Verify DLP software installation across endpoints',
+                    'Interview users about DLP training received'
+                ],
+                'correct_options' => ['Test detection accuracy with various data types and transmission methods'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Test detection accuracy with various data types and transmission methods',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 27 - L3 - Apply
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'What is the most appropriate approach for assessing controls in a shared cloud environment?',
+                'options' => [
+                    'Only assess customer-controlled configurations',
+                    'Evaluate both customer responsibilities and cloud provider attestations',
+                    'Assume cloud provider controls are always effective',
+                    'Only rely on cloud provider security documentation'
+                ],
+                'correct_options' => ['Evaluate both customer responsibilities and cloud provider attestations'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Evaluate both customer responsibilities and cloud provider attestations',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 28 - L4 - Analyze
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'When assessing security controls, which of the following is the MOST important consideration? The controls are:',
+                'options' => [
+                    'designed to minimize risks',
+                    'implemented as designed',
+                    'operating as intended',
+                    'producing the desired results'
+                ],
+                'correct_options' => ['producing the desired results'],
+                'justifications' => [
+                    'Incorrect - Good design is important but meaningless if it doesn\'t achieve security objectives',
+                    'Incorrect - Proper implementation is necessary but insufficient if the results are ineffective',
+                    'Incorrect - Operating as intended is valuable but the ultimate measure is actual effectiveness',
+                    'Correct - The most important consideration is whether controls actually achieve their security objectives and produce desired risk reduction'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 29 - L4 - Analyze
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'What is the fundamental challenge in assessing the effectiveness of "defense in depth" security strategies?',
+                'options' => [
+                    'Defense in depth strategies are always perfectly effective',
+                    'Complex interdependencies make it difficult to assess overall effectiveness and identify single points of failure',
+                    'Defense in depth strategies are easier to assess than single controls',
+                    'All controls in defense in depth must fail simultaneously'
+                ],
+                'correct_options' => ['Complex interdependencies make it difficult to assess overall effectiveness and identify single points of failure'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Complex interdependencies make it difficult to assess overall effectiveness and identify single points of failure',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 30 - L5 - Evaluate
+            [
+                'topic' => 'Control Assessment',
+                'subtopic' => 'Control Assessment',
+                'question' => 'An organization implements extensive logging controls but rarely reviews logs due to volume. How should you evaluate the effectiveness of this control approach?',
+                'options' => [
+                    'Logging controls are effective if logs are properly collected',
+                    'Control effectiveness requires both proper collection and analysis; unused logs provide limited security value',
+                    'Log volume always indicates better security',
+                    'Manual log review is the only valid assessment approach'
+                ],
+                'correct_options' => ['Control effectiveness requires both proper collection and analysis; unused logs provide limited security value'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Control effectiveness requires both proper collection and analysis; unused logs provide limited security value',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Topic 4: Testing Methodologies & Approaches (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L2 - Understand
+            [
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'An organization is deciding between black-box and white-box testing for a new application. Which of the following BEST explains a key advantage of white-box testing over black-box testing?',
+                'options' => [
+                    'It better simulates a real-world attacker',
+                    'It requires no knowledge of the system',
+                    'It helps detect logic flaws and insecure code paths early in development',
+                    'It reduces bias by hiding system details from testers'
+                ],
+                'correct_options' => ['It helps detect logic flaws and insecure code paths early in development'],
+                'justifications' => [
+                    'Incorrect - Black-box testing better simulates real-world attackers with no internal knowledge',
+                    'Incorrect - White-box testing requires extensive system knowledge, not no knowledge',
+                    'Correct - White-box testing\'s access to source code and system internals enables early detection of logic flaws and insecure code paths',
+                    'Incorrect - White-box testing exposes system details to testers, which can introduce bias'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 32 - L1 - Remember
+            [
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'What is sampling in audit testing?',
+                'options' => [
+                    'Testing every transaction or item in a population',
+                    'Selecting a representative subset of items for testing',
+                    'Only testing items that appear suspicious',
+                    'Testing items randomly without any methodology'
+                ],
+                'correct_options' => ['Selecting a representative subset of items for testing'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Selecting a representative subset of items for testing',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Audit Planning - Item 14
-            [
-                'topic_id' => $topics['Audit Life-Cycle Phases'] ?? 111,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select essential elements of an audit plan:',
-                'options' => [
-                    'Audit objectives and scope',
-                    'Auditor vacation schedules',
-                    'Risk assessment results',
-                    'Office seating arrangements',
-                    'Resource requirements',
-                    'Lunch menu options'
-                ],
-                'correct_options' => ['Audit objectives and scope', 'Risk assessment results', 'Resource requirements'],
-                'justifications' => [
-                    'Objectives and scope define audit boundaries',
-                    'Personal schedules aren\'t audit plan elements',
-                    'Risk assessment guides audit focus',
-                    'Office logistics aren\'t audit planning',
-                    'Resources needed for audit execution',
-                    'Meal planning isn\'t audit planning'
-                ],
                 'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'irt_a' => 0.9,
+                'irt_b' => -1.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Audit Evidence Quality - Item 15
+            // Item 33 - L2 - Understand
             [
-                'topic_id' => $topics['Evidence-Gathering Techniques'] ?? 114,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which type of audit evidence is generally considered most reliable?',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'An internal auditor performs attribute sampling to test the effectiveness of a control designed to ensure that all expense reports over a certain threshold are approved by two managers. If the auditor concludes that the control is effective based on the sample, but in reality, the deviation rate in the population is unacceptably high, the auditor has incurred:',
                 'options' => [
-                    'Verbal confirmations from management',
-                    'Auditor\'s direct observation',
-                    'Copies of documents',
-                    'Management representations'
+                    'Non-sampling risk',
+                    'Risk of incorrect acceptance (Type II error)',
+                    'Risk of incorrect rejection (Type I error)',
+                    'Detection risk'
                 ],
-                'correct_options' => ['Auditor\'s direct observation'],
+                'correct_options' => ['Risk of incorrect acceptance (Type II error)'],
                 'justifications' => [
-                    'Verbal evidence is least reliable',
-                    'Correct - Direct observation by auditor is independent and verifiable',
-                    'Copies may be altered; originals preferred',
-                    'Management assertions require corroboration'
+                    'Incorrect - Non-sampling risk relates to factors other than sampling',
+                    'Correct - Type II error occurs when the auditor concludes controls are effective when they are not',
+                    'Incorrect - Type I error is rejecting effective controls',
+                    'Incorrect - Detection risk is broader and includes both sampling and non-sampling risks'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Computer-Assisted Audit Techniques - Item 16
-            [
-                'topic_id' => $topics['Evidence-Gathering Techniques'] ?? 114,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is a key advantage of using Computer-Assisted Audit Techniques (CAATs)?',
-                'options' => [
-                    'Eliminates need for audit judgment',
-                    'Ability to test 100% of transactions',
-                    'Reduces audit documentation requirements',
-                    'Removes need for control testing'
-                ],
-                'correct_options' => ['Ability to test 100% of transactions'],
-                'justifications' => [
-                    'Professional judgment still required',
-                    'Correct - CAATs enable complete population testing vs sampling',
-                    'Documentation requirements remain the same',
-                    'Control testing still necessary'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Stop-or-Go Sampling - Item 17
-            [
-                'topic_id' => $topics['Sampling Methods & Sampling Risk'] ?? 115,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When would stop-or-go sampling be most appropriate?',
-                'options' => [
-                    'When expecting high error rates',
-                    'When expecting low error rates',
-                    'For substantive testing only',
-                    'For financial audits only'
-                ],
-                'correct_options' => ['When expecting low error rates'],
-                'justifications' => [
-                    'Would require large samples with high errors',
-                    'Correct - Efficient when errors are rare; can stop early if none found',
-                    'Can be used for compliance testing too',
-                    'Applicable to various audit types'
-                ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Risk-Based Auditing - Item 18
+            // Item 34 - L2 - Understand
             [
-                'topic_id' => $topics['Audit Life-Cycle Phases'] ?? 111,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'In risk-based auditing, audit resources are primarily allocated to:',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'Which sampling method is most appropriate when an auditor is trying to identify the existence of at least one instance of a critical exception (e.g., fraud or an unauthorized transaction) within a very large population?',
                 'options' => [
-                    'Areas with the most employees',
-                    'Newest systems and processes',
-                    'Areas with highest risk',
-                    'Departments requesting audits'
+                    'Attribute Sampling',
+                    'Stratified Sampling',
+                    'Stop-or-Go Sampling',
+                    'Discovery Sampling'
                 ],
-                'correct_options' => ['Areas with highest risk'],
+                'correct_options' => ['Discovery Sampling'],
                 'justifications' => [
-                    'Employee count doesn\'t indicate risk',
-                    'New systems may be lower risk',
-                    'Correct - Risk-based approach focuses efforts where impact is greatest',
-                    'Requests don\'t determine risk levels'
+                    'Incorrect - Attribute sampling estimates deviation rates, not exception discovery',
+                    'Incorrect - Stratified sampling divides populations but doesn\'t focus on exception discovery',
+                    'Incorrect - Stop-or-Go sampling adjusts sample sizes but isn\'t designed for exception discovery',
+                    'Correct - Discovery sampling is specifically designed to detect at least one occurrence of a critical exception'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 2,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Audit Findings - Item 19
+            // Item 35 - L3 - Apply
             [
-                'topic_id' => $topics['Audit Life-Cycle Phases'] ?? 111,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select the essential components of a well-written audit finding:',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'An auditor uses "Stop-or-Go" (Sequential) sampling to test invoice approvals. The tolerable deviation rate is 5%. After testing a small initial sample, no deviations are found. Based on this, the auditor decides to significantly reduce the remaining sample size originally planned. This decision is permissible under Stop-or-Go sampling only if:',
                 'options' => [
-                    'Condition (what is)',
-                    'Auditor opinions',
-                    'Criteria (what should be)',
-                    'Personal preferences',
-                    'Effect (impact)',
-                    'Blame assignment'
+                    'The auditor is willing to accept a higher risk of incorrect acceptance.',
+                    'The inherent risk of the process is reassessed as very low.',
+                    'The results of the initial sample provide strong evidence that the actual deviation rate is significantly lower than the tolerable rate.',
+                    'The audit budget for that area has been exhausted.'
                 ],
-                'correct_options' => ['Condition (what is)', 'Criteria (what should be)', 'Effect (impact)'],
+                'correct_options' => ['The results of the initial sample provide strong evidence that the actual deviation rate is significantly lower than the tolerable rate.'],
                 'justifications' => [
-                    'Describes current state',
-                    'Findings should be factual, not opinion-based',
-                    'Standard or requirement being measured against',
-                    'Professional standards, not preferences',
-                    'Business impact of the gap',
-                    'Focus on issues, not blame'
+                    'Incorrect - Risk tolerance should not change mid-sampling',
+                    'Incorrect - Inherent risk assessment is separate from sampling methodology',
+                    'Correct - Stop-or-Go sampling allows early termination when results strongly suggest low deviation rates',
+                    'Incorrect - Budget constraints should not drive sampling decisions'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 3,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Audit Independence - Item 20
+            // Item 36 - L3 - Apply
             [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which situation would most compromise internal audit independence?',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'How should you approach testing in an environment where making configuration changes could disrupt business operations?',
                 'options' => [
-                    'Reporting to the audit committee',
-                    'Auditing areas previously managed by the auditor',
-                    'Having professional certifications',
-                    'Following audit standards'
+                    'Proceed with all planned tests regardless of business impact',
+                    'Use read-only testing methods and coordinate disruptive tests during maintenance windows',
+                    'Skip all testing to avoid any risk of disruption',
+                    'Only test during peak business hours for realistic results'
                 ],
-                'correct_options' => ['Auditing areas previously managed by the auditor'],
+                'correct_options' => ['Use read-only testing methods and coordinate disruptive tests during maintenance windows'],
                 'justifications' => [
-                    'Audit committee reporting enhances independence',
-                    'Correct - Self-review threat compromises objectivity',
-                    'Certifications enhance professionalism',
-                    'Standards support independence'
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - Use read-only testing methods and coordinate disruptive tests during maintenance windows',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This is too absolute or limiting',
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Vulnerability Scanning Frequency - Item 21
-            [
-                'topic_id' => $topics['Vulnerability Assessment & Management'] ?? 119,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'How often should critical systems undergo vulnerability scanning?',
-                'options' => [
-                    'Annually',
-                    'When convenient',
-                    'Monthly or more frequently',
-                    'Only after incidents'
-                ],
-                'correct_options' => ['Monthly or more frequently'],
-                'justifications' => [
-                    'Annual scanning misses too many vulnerabilities',
-                    'Security requires regular scheduling',
-                    'Correct - Critical systems need frequent scanning to catch new vulnerabilities',
-                    'Reactive approach is insufficient'
-                ],
-                'difficulty_level' => 1,
                 'bloom_level' => 3,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // False Positive Management - Item 22
+            // Item 37 - L3 - Apply
             [
-                'topic_id' => $topics['Vulnerability Assessment & Management'] ?? 119,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A vulnerability scanner reports 1000 high-risk findings, but investigation shows 950 are false positives. What should be done?',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'What is the most effective approach for testing incident response procedures?',
                 'options' => [
-                    'Ignore all future scanner results',
-                    'Tune the scanner to reduce false positives',
-                    'Only investigate critical findings',
-                    'Switch to manual testing only'
+                    'Review written procedures and interview staff only',
+                    'Conduct tabletop exercises and simulated incident scenarios',
+                    'Wait for actual incidents to test response effectiveness',
+                    'Only test technical detection capabilities'
                 ],
-                'correct_options' => ['Tune the scanner to reduce false positives'],
+                'correct_options' => ['Conduct tabletop exercises and simulated incident scenarios'],
                 'justifications' => [
-                    'Scanner still has value if properly configured',
-                    'Correct - Scanner tuning improves accuracy and reduces wasted effort',
-                    'Could miss real vulnerabilities',
-                    'Manual testing alone isn\'t scalable'
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Conduct tabletop exercises and simulated incident scenarios',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This is too absolute or limiting',
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Penetration Test Scope - Item 23
+            // Item 38 - L4 - Analyze
             [
-                'topic_id' => $topics['Penetration Testing & Red/Purple Teaming'] ?? 120,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which element is MOST critical to define in a penetration testing scope?',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'You are leading a cybersecurity audit and must allocate limited testing resources. How would you design a risk-based testing strategy?',
                 'options' => [
-                    'Tester dress code',
-                    'Systems explicitly out of scope',
-                    'Coffee break schedule',
-                    'Report font size'
+                    'Test components based on how recently they were developed',
+                    'Focus on components with the highest business value and known vulnerabilities',
+                    'Test all modules equally regardless of their exposure or importance',
+                    'Randomly select components to avoid bias'
                 ],
-                'correct_options' => ['Systems explicitly out of scope'],
+                'correct_options' => ['Focus on components with the highest business value and known vulnerabilities'],
                 'justifications' => [
-                    'Irrelevant to test execution',
-                    'Correct - Clear boundaries prevent testing critical systems that could cause outages',
-                    'Not a scope consideration',
-                    'Formatting is secondary to content'
+                    'Incorrect - Development timeline alone does not indicate risk level',
+                    'Correct - Risk-based testing prioritizes resources on high-value assets with known vulnerabilities to maximize impact',
+                    'Incorrect - Equal testing ignores risk levels and wastes limited resources',
+                    'Incorrect - Random selection does not consider risk factors or business impact'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 4,
-                'status' => 'published'
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Social Engineering Testing - Item 24
+            // Item 39 - L4 - Analyze
             [
-                'topic_id' => $topics['Penetration Testing & Red/Purple Teaming'] ?? 120,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => '**True or False:** Penetration tests should always include social engineering attacks to be comprehensive.',
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'What is the fundamental limitation of point-in-time testing in dynamic IT environments?',
                 'options' => [
-                    'True',
-                    'False'
+                    'Point-in-time testing is always sufficient for all environments',
+                    'Rapid changes may render test results obsolete quickly, missing emerging vulnerabilities',
+                    'Point-in-time testing is more expensive than continuous testing',
+                    'Dynamic environments don\'t require security testing'
                 ],
-                'correct_options' => ['False'],
+                'correct_options' => ['Rapid changes may render test results obsolete quickly, missing emerging vulnerabilities'],
                 'justifications' => [
-                    'explanation' => 'Social engineering tests require explicit authorization and careful planning due to potential impact on employees. They should only be included when specifically scoped and approved by management.'
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Rapid changes may render test results obsolete quickly, missing emerging vulnerabilities',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
                 ],
-                'difficulty_level' => 2,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 40 - L5 - Evaluate
+            [
+                'topic' => 'Testing Methodologies & Approaches',
+                'subtopic' => 'Testing Methodologies & Approaches',
+                'question' => 'An auditor uses only vendor-provided security scanning tools and accepts their default configurations. Evaluate this testing approach.',
+                'options' => [
+                    'Vendor tools with default settings provide comprehensive coverage',
+                    'May miss organization-specific risks and produce false negatives due to lack of customization',
+                    'Default configurations are always optimal for all environments',
+                    'Vendor tools eliminate the need for manual testing'
+                ],
+                'correct_options' => ['May miss organization-specific risks and produce false negatives due to lack of customization'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - May miss organization-specific risks and produce false negatives due to lack of customization',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This overstates the capability or scope',
+                ],
                 'bloom_level' => 5,
-                'status' => 'published'
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // SOC 2 Trust Services Criteria - Item 25
+            // Topic 5: Security Testing (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L1 - Remember
             [
-                'topic_id' => $topics['Service Organization Control (SOC) Reports'] ?? 121,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select the Trust Services Criteria categories for SOC 2 reports:',
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'What is penetration testing?',
                 'options' => [
-                    'Security',
-                    'Profitability',
-                    'Availability',
-                    'Market share',
-                    'Confidentiality',
-                    'Employee satisfaction'
+                    'A compliance audit of security policies',
+                    'Simulated cyber attacks to identify vulnerabilities',
+                    'Installation of security monitoring tools',
+                    'Training employees about security threats'
                 ],
-                'correct_options' => ['Security', 'Availability', 'Confidentiality'],
+                'correct_options' => ['Simulated cyber attacks to identify vulnerabilities'],
                 'justifications' => [
-                    'Security is a core TSC criterion',
-                    'Financial performance isn\'t a TSC',
-                    'Availability is a TSC criterion',
-                    'Market position isn\'t evaluated',
-                    'Confidentiality is a TSC criterion',
-                    'HR metrics aren\'t in scope'
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Simulated cyber attacks to identify vulnerabilities',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This option does not accurately describe the concept',
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Type I vs Type II Reports - Item 26
+            // Item 42 - L1 - Remember
             [
-                'topic_id' => $topics['Service Organization Control (SOC) Reports'] ?? 121,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the key difference between SOC 2 Type I and Type II reports?',
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'What does vulnerability scanning identify?',
                 'options' => [
-                    'Type I is more expensive',
-                    'Type II tests operating effectiveness over time',
-                    'Type I covers more criteria',
-                    'Type II is for public distribution'
+                    'Only network topology information',
+                    'Known security weaknesses in systems and applications',
+                    'Employee security awareness levels',
+                    'Physical security camera locations'
                 ],
-                'correct_options' => ['Type II tests operating effectiveness over time'],
+                'correct_options' => ['Known security weaknesses in systems and applications'],
                 'justifications' => [
-                    'Type II typically costs more due to extended testing',
-                    'Correct - Type I is point-in-time; Type II covers a period (usually 6-12 months)',
-                    'Both can cover same criteria',
-                    'Neither SOC 2 type is for public distribution'
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Known security weaknesses in systems and applications',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // ISO 27001 Requirements - Item 27
-            [
-                'topic_id' => $topics['ISO 27001 Certification Audits'] ?? 122,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which of the following is mandatory for ISO 27001 certification?',
-                'options' => [
-                    'Implementing all 114 controls',
-                    'Statement of Applicability (SoA)',
-                    'Zero security incidents',
-                    'Specific security technologies'
-                ],
-                'correct_options' => ['Statement of Applicability (SoA)'],
-                'justifications' => [
-                    'Can exclude non-applicable controls with justification',
-                    'Correct - SoA documents which controls apply and why others don\'t',
-                    'Incidents can occur; response matters',
-                    'ISO 27001 is technology-agnostic'
-                ],
-                'difficulty_level' => 3,
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Management Review - Item 28
+            // Item 43 - L2 - Understand
             [
-                'topic_id' => $topics['ISO 27001 Certification Audits'] ?? 122,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How often must management reviews be conducted for ISO 27001 compliance?',
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'A penetration tester is engaged to assess the security of an e-commerce platform. The tester is given a standard customer account login and access to documentation describing the system\'s public APIs. However, they do not have access to the underlying server infrastructure or source code. This approach is known as:',
                 'options' => [
-                    'Monthly',
-                    'At planned intervals',
-                    'Only when problems occur',
-                    'Every three years'
+                    'Black-box testing',
+                    'White-box testing',
+                    'Gray-box testing',
+                    'Acceptance testing'
                 ],
-                'correct_options' => ['At planned intervals'],
+                'correct_options' => ['Gray-box testing'],
                 'justifications' => [
-                    'Monthly may be excessive for some organizations',
-                    'Correct - ISO requires regular planned reviews, frequency depends on organization',
-                    'Reviews must be proactive, not reactive',
-                    'Three years is too infrequent'
+                    'Incorrect - Black-box testing provides no internal knowledge or access',
+                    'Incorrect - White-box testing provides full internal access including source code',
+                    'Correct - Gray-box testing provides limited internal knowledge (account access and API documentation) without full system access',
+                    'Incorrect - Acceptance testing validates business requirements, not security methodology'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Control Deficiency Severity - Item 29
+            // Item 44 - L2 - Understand
             [
-                'topic_id' => $topics['Control Design & Operating-Effectiveness Testing'] ?? 117,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A control deficiency that could result in material misstatement or significant security breach is classified as:',
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'What is the MOST important reason for periodically testing controls?',
                 'options' => [
-                    'Minor deficiency',
-                    'Significant deficiency',
-                    'Observation only',
-                    'Best practice gap'
+                    'To meet regulatory requirements',
+                    'To meet due care requirements',
+                    'To ensure that control objectives are met',
+                    'To achieve compliance with standard policy'
                 ],
-                'correct_options' => ['Significant deficiency'],
+                'correct_options' => ['To ensure that control objectives are met'],
                 'justifications' => [
-                    'Material impact indicates more than minor',
-                    'Correct - Significant deficiencies have potential for material impact',
-                    'Observations are typically lower risk',
-                    'Best practice gaps aren\'t necessarily deficiencies'
+                    'Incorrect - Regulatory compliance is important but secondary to ensuring actual control effectiveness',
+                    'Incorrect - Due care is a legal concept but the primary purpose is verifying control performance',
+                    'Correct - The fundamental purpose of control testing is to verify that controls are achieving their intended security objectives',
+                    'Incorrect - Policy compliance is important but subordinate to ensuring controls actually work as intended'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Continuous Monitoring Tools - Item 30
-            [
-                'topic_id' => $topics['Continuous Control Monitoring (CCM)'] ?? 118,
-                'type_id' => 3,
-                'dimension' => 'Technical',
-                'content' => 'Select appropriate tools/techniques for continuous control monitoring:',
-                'options' => [
-                    'Automated log analysis',
-                    'Annual questionnaires',
-                    'Real-time dashboards',
-                    'Quarterly meetings',
-                    'Exception reporting',
-                    'Five-year plans'
-                ],
-                'correct_options' => ['Automated log analysis', 'Real-time dashboards', 'Exception reporting'],
-                'justifications' => [
-                    'Automation enables continuous monitoring',
-                    'Annual reviews aren\'t continuous',
-                    'Real-time visibility supports CCM',
-                    'Quarterly isn\'t continuous',
-                    'Automated exception alerts enable rapid response',
-                    'Long-term planning isn\'t monitoring'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Audit Trail Requirements - Item 31
-            [
-                'topic_id' => $topics['Evidence-Gathering Techniques'] ?? 114,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What characteristic makes an audit trail most effective for security investigations?',
-                'options' => [
-                    'Ability to be modified by administrators',
-                    'Immutability and time-stamping',
-                    'Minimal detail to save space',
-                    'Retention for 30 days only'
-                ],
-                'correct_options' => ['Immutability and time-stamping'],
-                'justifications' => [
-                    'Modifiable logs lose evidentiary value',
-                    'Correct - Tamper-proof logs with timestamps provide reliable evidence',
-                    'Detailed logs aid investigations',
-                    'Longer retention often required'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Compensating Controls - Item 32
-            [
-                'topic_id' => $topics['Control Design & Operating-Effectiveness Testing'] ?? 117,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When are compensating controls typically implemented?',
-                'options' => [
-                    'To replace all existing controls',
-                    'When primary controls cannot be implemented',
-                    'Only in small organizations',
-                    'To eliminate audit requirements'
-                ],
-                'correct_options' => ['When primary controls cannot be implemented'],
-                'justifications' => [
-                    'Compensating controls supplement, not replace all controls',
-                    'Correct - Used when standard controls are not feasible but risk must be managed',
-                    'Applicable to any size organization',
-                    'Audit requirements remain regardless'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
+                'difficulty_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
             
-            // Integrated Auditing - Item 33
+            // Item 45 - L3 - Apply
             [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the main advantage of integrated auditing (combining IT and business process audits)?',
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'Prior to initiating any technical activities during a penetration test, which of the following prerequisites is most critical to establish legally permissible and ethically sound boundaries for the engagement?',
                 'options' => [
-                    'Reduced audit time',
-                    'Holistic view of risks and controls',
-                    'Lower costs',
-                    'Simplified reporting'
+                    'Clearly defined scope of the test',
+                    'Management\'s formal authorization for the test',
+                    'Signed Non-Disclosure Agreement (NDA)',
+                    'Documented rules of engagement'
                 ],
-                'correct_options' => ['Holistic view of risks and controls'],
+                'correct_options' => ['Management\'s formal authorization for the test'],
                 'justifications' => [
-                    'May actually take more time initially',
-                    'Correct - Integrated approach reveals interdependencies between IT and business',
-                    'May require more resources',
-                    'Reporting can be more complex'
+                    'Incorrect - Scope definition is important but meaningless without proper authorization',
+                    'Correct - Formal authorization is the foundational legal requirement that legitimizes all penetration testing activities',
+                    'Incorrect - NDAs protect confidentiality but don\'t authorize testing activities',
+                    'Incorrect - Rules of engagement are crucial but follow from and depend on proper authorization'
                 ],
+                'bloom_level' => 3,
                 'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 46 - L3 - Apply
+            [
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'How should you handle discovered vulnerabilities during a security assessment?',
+                'options' => [
+                    'Publicly disclose all findings immediately',
+                    'Follow responsible disclosure practices and work with the organization on remediation',
+                    'Exploit vulnerabilities to demonstrate business impact',
+                    'Only report vulnerabilities that can be easily fixed'
+                ],
+                'correct_options' => ['Follow responsible disclosure practices and work with the organization on remediation'],
+                'justifications' => [
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - Follow responsible disclosure practices and work with the organization on remediation',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 47 - L3 - Apply
+            [
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'An enterprise implemented a new control to mitigate a recurring risk event. Which of the following would BEST measure the effectiveness of the implemented control?',
+                'options' => [
+                    'Reduction in financial impact on the annual report',
+                    'Measurable reduction in likelihood, impact or both',
+                    'Readjustment of risk appetite to meet residual risk',
+                    'Increased efficiency over the appropriate processes'
+                ],
+                'correct_options' => ['Measurable reduction in likelihood, impact or both'],
+                'justifications' => [
+                    'Incorrect - Financial impact reduction is an outcome but not the direct measure of control effectiveness',
+                    'Correct - Control effectiveness is best measured by quantifiable reduction in risk likelihood, impact, or both',
+                    'Incorrect - Risk appetite adjustment is a management decision, not a measure of control effectiveness',
+                    'Incorrect - Process efficiency is a benefit but not the primary measure of risk control effectiveness'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'Analyze why red team exercises may provide different insights than traditional penetration testing.',
+                'options' => [
+                    'Red team exercises and penetration tests are identical',
+                    'Red team exercises simulate persistent attackers and test detection/response capabilities over time',
+                    'Red team exercises are always less thorough than penetration tests',
+                    'Red team exercises only focus on physical security'
+                ],
+                'correct_options' => ['Red team exercises simulate persistent attackers and test detection/response capabilities over time'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Red team exercises simulate persistent attackers and test detection/response capabilities over time',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 49 - L4 - Analyze
+            [
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'What is the fundamental limitation of signature-based vulnerability scanners in modern environments?',
+                'options' => [
+                    'Signature-based scanners are always completely accurate',
+                    'They may miss zero-day vulnerabilities and custom applications not in signature databases',
+                    'Signature-based scanning is too expensive for most organizations',
+                    'They only work on legacy systems'
+                ],
+                'correct_options' => ['They may miss zero-day vulnerabilities and custom applications not in signature databases'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - They may miss zero-day vulnerabilities and custom applications not in signature databases',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published',
+                'type_id' => 1
+
+            ],
+            
+            // Item 50 - L5 - Evaluate
+            [
+                'topic' => 'Security Testing',
+                'subtopic' => 'Security Testing',
+                'question' => 'An organization conducts quarterly vulnerability scans but argues that penetration testing is unnecessary because "we fix all the vulnerabilities found." Evaluate this position.',
+                'options' => [
+                    'Vulnerability scanning is always sufficient for security assurance',
+                    'Penetration testing validates actual exploitability and identifies business logic flaws not found by scanning',
+                    'Penetration testing is only necessary for compliance requirements',
+                    'Fixing scan results eliminates all security risks'
+                ],
+                'correct_options' => ['Penetration testing validates actual exploitability and identifies business logic flaws not found by scanning'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Penetration testing validates actual exploitability and identifies business logic flaws not found by scanning',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This overstates the capability or scope',
+                ],
                 'bloom_level' => 5,
-                'status' => 'published'
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published',
+                'type_id' => 1
+
             ],
-            
-            // Audit Automation Benefits - Item 34
-            [
-                'topic_id' => $topics['Evidence-Gathering Techniques'] ?? 114,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which task is LEAST suitable for audit automation?',
-                'options' => [
-                    'Transaction matching',
-                    'Professional judgment calls',
-                    'Data extraction',
-                    'Compliance checking'
-                ],
-                'correct_options' => ['Professional judgment calls'],
-                'justifications' => [
-                    'Easily automated with rules',
-                    'Correct - Human judgment cannot be automated',
-                    'Standard automation use case',
-                    'Rule-based checks are automatable'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Third-Party Assessments - Item 35
-            [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When relying on a vendor\'s SOC 2 report, what should you additionally review?',
-                'options' => [
-                    'The vendor\'s marketing materials',
-                    'Complementary user entity controls',
-                    'The vendor\'s profit margins',
-                    'Employee satisfaction surveys'
-                ],
-                'correct_options' => ['Complementary user entity controls'],
-                'justifications' => [
-                    'Marketing doesn\'t provide assurance',
-                    'Correct - CUECs identify controls you must implement for vendor controls to be effective',
-                    'Financial performance isn\'t security-relevant',
-                    'Employee satisfaction doesn\'t indicate security'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Security Metrics - Item 36
-            [
-                'topic_id' => $topics['Continuous Control Monitoring (CCM)'] ?? 118,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which metric best indicates the effectiveness of a vulnerability management program?',
-                'options' => [
-                    'Number of scans performed',
-                    'Mean time to remediate critical vulnerabilities',
-                    'Scanner license costs',
-                    'Number of security staff'
-                ],
-                'correct_options' => ['Mean time to remediate critical vulnerabilities'],
-                'justifications' => [
-                    'Activity doesn\'t equal effectiveness',
-                    'Correct - Remediation speed directly measures program effectiveness',
-                    'Cost doesn\'t indicate effectiveness',
-                    'Staffing levels don\'t guarantee results'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Audit Follow-up - Item 37
-            [
-                'topic_id' => $topics['Audit Life-Cycle Phases'] ?? 111,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of audit follow-up activities?',
-                'options' => [
-                    'To find more issues',
-                    'To verify remediation of findings',
-                    'To assign blame',
-                    'To reduce future audit scope'
-                ],
-                'correct_options' => ['To verify remediation of findings'],
-                'justifications' => [
-                    'Follow-up focuses on prior findings',
-                    'Correct - Ensures identified issues have been properly addressed',
-                    'Focus is remediation, not blame',
-                    'Scope determined by risk, not past findings'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Assessment vs Audit - Item 38
-            [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What distinguishes a security assessment from a security audit?',
-                'options' => [
-                    'Assessments are more formal and provide attestation',
-                    'Audits are informal reviews',
-                    'Assessments are consultative; audits provide independent opinion',
-                    'They are the same thing'
-                ],
-                'correct_options' => ['Assessments are consultative; audits provide independent opinion'],
-                'justifications' => [
-                    'Audits are more formal with attestation',
-                    'Audits follow formal standards',
-                    'Correct - Assessments advise on improvements; audits provide assurance',
-                    'Clear distinctions exist between them'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Zero-Day Testing - Item 39
-            [
-                'topic_id' => $topics['Vulnerability Assessment & Management'] ?? 119,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => '**True or False:** Vulnerability scanners can effectively detect zero-day vulnerabilities.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'Vulnerability scanners rely on known vulnerability databases and signatures. Zero-day vulnerabilities are by definition unknown and unpatched, so traditional scanners cannot detect them. Other techniques like behavior analysis or penetration testing may be needed.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Audit Program Development - Item 40
-            [
-                'topic_id' => $topics['Audit Life-Cycle Phases'] ?? 111,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What should drive the development of an organization\'s annual audit program?',
-                'options' => [
-                    'Available audit resources only',
-                    'Risk assessment results',
-                    'Department requests',
-                    'Previous year\'s program'
-                ],
-                'correct_options' => ['Risk assessment results'],
-                'justifications' => [
-                    'Resources are a constraint, not a driver',
-                    'Correct - Risk-based approach ensures focus on highest impact areas',
-                    'Requests don\'t necessarily reflect risk',
-                    'Risks change; programs must adapt'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Penetration Test Deliverables - Item 41
-            [
-                'topic_id' => $topics['Penetration Testing & Red/Purple Teaming'] ?? 120,
-                'type_id' => 3,
-                'dimension' => 'Technical',
-                'content' => 'Select essential components of a penetration test report:',
-                'options' => [
-                    'Executive summary',
-                    'Tester biographical details',
-                    'Technical findings with evidence',
-                    'Coffee consumption statistics',
-                    'Risk ratings and remediation advice',
-                    'Tester\'s personal opinions'
-                ],
-                'correct_options' => ['Executive summary', 'Technical findings with evidence', 'Risk ratings and remediation advice'],
-                'justifications' => [
-                    'Leadership needs high-level overview',
-                    'Tester background irrelevant to findings',
-                    'Evidence supports findings validity',
-                    'Irrelevant to security findings',
-                    'Guides prioritization and fixes',
-                    'Professional facts, not opinions'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Audit Quality Assurance - Item 42
-            [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which practice best ensures audit quality?',
-                'options' => [
-                    'Rushing to meet deadlines',
-                    'Independent review of audit work',
-                    'Minimizing documentation',
-                    'Avoiding difficult areas'
-                ],
-                'correct_options' => ['Independent review of audit work'],
-                'justifications' => [
-                    'Speed shouldn\'t compromise quality',
-                    'Correct - Peer review catches errors and ensures standards compliance',
-                    'Thorough documentation ensures quality',
-                    'Must audit based on risk, not ease'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Basic Security Audit Concepts - Item 43 (L1)
-            [
-                'topic_id' => $topics['Security Audits (Internal, External)'] ?? 112,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the definition of an audit trail in security contexts?',
-                'options' => [
-                    'A physical path through secure areas',
-                    'A chronological record of security events and activities',
-                    'A list of security policies',
-                    'A backup schedule'
-                ],
-                'correct_options' => ['A chronological record of security events and activities'],
-                'justifications' => [
-                    'Physical paths are not audit trails',
-                    'Correct - Audit trails provide chronological documentation for accountability',
-                    'Policies define requirements, not activities',
-                    'Backup schedules are operational, not audit records'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Vulnerability Assessment Application - Item 44 (L3)
-            [
-                'topic_id' => $topics['Vulnerability Assessment & Management'] ?? 119,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'When implementing a vulnerability management program, what should be the first priority after discovery?',
-                'options' => [
-                    'Documenting all findings in detail',
-                    'Risk assessment and prioritization',
-                    'Immediately patching everything',
-                    'Notifying all stakeholders'
-                ],
-                'correct_options' => ['Risk assessment and prioritization'],
-                'justifications' => [
-                    'Documentation is important but not the first priority',
-                    'Correct - Risk-based prioritization ensures critical vulnerabilities are addressed first',
-                    'Immediate patching without prioritization can disrupt operations',
-                    'Notification comes after understanding risk levels'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Risk-Based Testing Application - Item 45 (L3)
-            [
-                'topic_id' => $topics['Compliance vs Substantive Testing'] ?? 113,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How should audit testing procedures be modified when inherent risk is assessed as high?',
-                'options' => [
-                    'Reduce testing procedures to save time',
-                    'Increase extent and rigor of testing',
-                    'Switch to inquiry only',
-                    'Test only automated controls'
-                ],
-                'correct_options' => ['Increase extent and rigor of testing'],
-                'justifications' => [
-                    'High risk requires more, not less, testing',
-                    'Correct - Higher risk requires more extensive and detailed testing to provide adequate assurance',
-                    'Inquiry alone is insufficient for high-risk areas',
-                    'Both manual and automated controls should be tested'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Evidence Evaluation Application - Item 46 (L3)
-            [
-                'topic_id' => $topics['Evidence-Gathering Techniques'] ?? 114,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When applying evidence evaluation criteria, what makes evidence more persuasive?',
-                'options' => [
-                    'Obtained from management only',
-                    'Generated externally and obtained directly',
-                    'Verbal confirmations',
-                    'Photocopied documents'
-                ],
-                'correct_options' => ['Generated externally and obtained directly'],
-                'justifications' => [
-                    'Management-provided evidence has inherent bias',
-                    'Correct - External generation and direct receipt increases reliability and persuasiveness',
-                    'Verbal evidence is less reliable than documented',
-                    'Originals are more persuasive than copies'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Control Testing Implementation - Item 47 (L3)
-            [
-                'topic_id' => $topics['Control Design & Operating-Effectiveness Testing'] ?? 117,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'When implementing control testing for segregation of duties, what approach provides the strongest evidence?',
-                'options' => [
-                    'Review organizational charts only',
-                    'Test actual transaction processing through complete cycles',
-                    'Interview personnel about their duties',
-                    'Review job descriptions'
-                ],
-                'correct_options' => ['Test actual transaction processing through complete cycles'],
-                'justifications' => [
-                    'Charts show intended structure, not actual practice',
-                    'Correct - Transaction walk-throughs demonstrate actual segregation in practice',
-                    'Interviews reveal understanding but not actual performance',
-                    'Job descriptions show intent, not actual duties performed'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Assessment vs Penetration Testing Analysis - Item 48 (L4)
-            [
-                'topic_id' => $topics['Penetration Testing & Red/Purple Teaming'] ?? 120,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Analyze the scenario: A company wants to understand their security posture before a major system deployment. They need comprehensive coverage but cannot risk system disruption. What approach should they choose?',
-                'options' => [
-                    'Full penetration testing with exploitation',
-                    'Vulnerability assessment with limited safe testing',
-                    'Red team exercise',
-                    'Social engineering campaign'
-                ],
-                'correct_options' => ['Vulnerability assessment with limited safe testing'],
-                'justifications' => [
-                    'Full exploitation could disrupt pre-deployment systems',
-                    'Correct - VA provides comprehensive coverage without exploitation risks',
-                    'Red teams typically involve exploitation attempts',
-                    'Social engineering tests people, not technical systems'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Audit Sampling Risk Analysis - Item 49 (L4)
-            [
-                'topic_id' => $topics['Sampling Methods & Sampling Risk'] ?? 115,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze this situation: An auditor tests 50 items from a population of 10,000 and finds no exceptions. What sampling risk concerns should be considered?',
-                'options' => [
-                    'No risk - the sample proves the population is clean',
-                    'Risk that the population actually contains material exceptions',
-                    'Risk that the sample size was too large',
-                    'Risk that testing was too thorough'
-                ],
-                'correct_options' => ['Risk that the population actually contains material exceptions'],
-                'justifications' => [
-                    'Small samples cannot prove population characteristics',
-                    'Correct - Sampling risk means exceptions could exist in untested items',
-                    'Larger samples reduce risk, not increase it',
-                    'Thorough testing reduces rather than increases risk'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Continuous Monitoring Strategy Application - Item 50 (L3)
-            [
-                'topic_id' => $topics['Continuous Control Monitoring (CCM)'] ?? 118,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'When implementing continuous control monitoring for access controls, which approach would be most effective?',
-                'options' => [
-                    'Manual quarterly access reviews only',
-                    'Automated daily monitoring with exception reporting',
-                    'Annual penetration testing',
-                    'Relying on user self-reporting'
-                ],
-                'correct_options' => ['Automated daily monitoring with exception reporting'],
-                'justifications' => [
-                    'Quarterly reviews miss real-time access issues',
-                    'Correct - Automated monitoring provides continuous assurance with timely alerts',
-                    'Annual testing is insufficient for access control monitoring',
-                    'Self-reporting is unreliable and not comprehensive'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ]
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 6 (Security Audits & Assessments) diagnostic items seeded successfully!');
     }
 }

@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             QuestionTypesSeeder::class,         // Must come first - creates question types
             DiagnosticsSeeder::class,           // Creates domains and topics
+            DiagnosticSubtopicsSeeder::class,   // Creates subtopics for topics
             DiagnosticPhasesSeeder::class,      // Creates phases and links domains
             DiagnosticItemsSeeder::class,       // Creates questions for all domains
         ]);

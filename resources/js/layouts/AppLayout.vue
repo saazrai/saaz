@@ -145,9 +145,9 @@ watchEffect(() => {
                         <li><a :class="[
                             'transition-colors duration-300 p-2 rounded-md motion-reduce:transition-none',
                             isDark 
-                                ? 'hover:text-white hover:bg-gray-700' 
-                                : 'hover:text-brand-foreground hover:bg-brand-neutrals-100'
-                        ]" :href="route('assessments.diagnostics.index')">SecureStart™</a></li>
+                                ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
+                                : 'text-gray-900 hover:text-blue-600 hover:bg-gray-100'
+                        ]" :href="route('assessments.diagnostics.index')">SecureStart™ Diagnostics</a></li>
                     </ul>
                     <div class="col-start-3 hidden w-full justify-end gap-2 lg:flex items-center">
                         <!-- Dark Mode Toggle -->
@@ -315,7 +315,7 @@ watchEffect(() => {
             </button>
             
             <!-- Mobile menu items - V1 Enhanced only -->
-            <Link :href="route('assessments.diagnostics.index')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-700']" @click="showMobileMenu = false">SecureStart™</Link>
+            <Link :href="route('assessments.diagnostics.index')" :class="['block py-2 font-semibold', isDark ? 'text-gray-300' : 'text-gray-900']" @click="showMobileMenu = false">SecureStart™ Diagnostics</Link>
             
             <!-- User menu items (if authenticated) -->
             <template v-if="user">

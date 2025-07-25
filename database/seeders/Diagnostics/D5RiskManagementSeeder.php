@@ -2,1338 +2,1434 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-
-
-use Illuminate\Database\Seeder;
-
-class D5RiskManagementSeeder extends Seeder
+class D5RiskManagementSeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Risk Management';
+    
+    protected function getQuestions(): array
     {
-        // Clear existing items for this domain to prevent duplicates
-        DiagnosticItem::whereHas('topic.domain', function($query) {
-            $query->where('name', 'Risk Management');
-        })->forceDelete();
-        
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Risk Management');
-        })->pluck('id', 'name');
-        
-        
-        $items = [
-            // IT Risk Management Lifecycle - Item 1
+        return [
+            // Topic 1: Risk Management Fundamentals (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 1 - L1 - Remember
             [
-                'topic_id' => $topics['IT Risk Management Lifecycle'] ?? 100,
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Risk management lifecycle (Identify → Assess → Treat → Monitor)',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the correct sequence of the IT Risk Management Lifecycle?',
+                'question' => 'What is the definition of risk in information security?',
                 'options' => [
-                    'Assess → Identify → Monitor → Treat',
-                    'Identify → Assess → Treat → Monitor',
-                    'Monitor → Assess → Identify → Treat',
-                    'Treat → Identify → Assess → Monitor'
+                    'The potential for loss or damage when threats exploit vulnerabilities',
+                    'Any security control that fails to function properly',
+                    'The cost of implementing security measures',
+                    'The probability that a system will never fail'
                 ],
-                'correct_options' => ['Identify → Assess → Treat → Monitor'],
+                'correct_options' => ['The potential for loss or damage when threats exploit vulnerabilities'],
                 'justifications' => [
-                    'Cannot assess risks before identifying them',
-                    'Correct - First identify risks, assess their impact, treat them, then monitor effectiveness',
-                    'Monitoring comes after treatment, not before identification',
-                    'Treatment cannot occur before understanding the risks'
+                    'Correct - The potential for loss or damage when threats exploit vulnerabilities',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This is too absolute or limiting',
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Risk Identification - Item 2
-            [
-                'topic_id' => $topics['Risk Identification'] ?? 101,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select the appropriate inputs for risk identification:',
-                'options' => [
-                    'Threat intelligence reports',
-                    'Last year\'s profit margins',
-                    'Vulnerability scan results',
-                    'Employee vacation schedules',
-                    'Asset inventory',
-                    'Cafeteria menu'
-                ],
-                'correct_options' => ['Threat intelligence reports', 'Vulnerability scan results', 'Asset inventory'],
-                'justifications' => [
-                    'Threat intelligence identifies potential threats',
-                    'Profit margins are financial, not risk inputs',
-                    'Vulnerability scans reveal weaknesses',
-                    'Vacation schedules are HR matters',
-                    'Asset inventory shows what needs protection',
-                    'Cafeteria menus are irrelevant to risk'
-                ],
                 'difficulty_level' => 1,
-                'bloom_level' => 3,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Risk Assessment - Item 3
+            // Item 2 - L2 - Understand
             [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Vulnerability',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'In qualitative risk assessment, risk is typically calculated as:',
+                'question' => 'An unpatched software flaw in a widely used operating system that allows remote code execution is best categorized as a:',
                 'options' => [
-                    'Threat × Vulnerability × Asset Value',
-                    'Likelihood × Impact',
-                    'Cost × Benefit',
-                    'Exposure × Frequency'
+                    'Threat',
+                    'Vulnerability',
+                    'Risk',
+                    'Attack'
                 ],
-                'correct_options' => ['Likelihood × Impact'],
+                'correct_options' => ['Vulnerability'],
                 'justifications' => [
-                    'This is a more complex formula not typically used in qualitative assessment',
-                    'Correct - Qualitative risk assessment uses likelihood and impact ratings',
-                    'Cost-benefit is for risk treatment decisions',
-                    'This is more suited to quantitative assessment'
+                    'Incorrect - A threat is an actor or event that could exploit a weakness, not the weakness itself',
+                    'Correct - A vulnerability is a weakness or flaw that can be exploited, which accurately describes an unpatched software flaw',
+                    'Incorrect - Risk is the potential for loss when a threat exploits a vulnerability, not the flaw itself',
+                    'Incorrect - An attack is the actual exploitation attempt, not the underlying flaw'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Quantitative vs Qualitative - Item 4
+            // Item 3 - L2 - Understand
             [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each characteristic with the appropriate risk assessment type:',
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Risk governance structure and committees',
+                'type_id' => 1,
+                'question' => 'Who is ultimately accountable for approving the organization\'s risk appetite?',
                 'options' => [
-                    'items' => [
-                        'Uses High/Medium/Low ratings',
-                        'Calculates Annual Loss Expectancy',
-                        'Requires less time and resources',
-                        'Provides monetary values'
-                    ],
-                    'targets' => [
-                        'Qualitative Assessment',
-                        'Quantitative Assessment'
-                    ]
+                    'Chief Risk Officer (CRO)',
+                    'Chief Information Security Officer (CISO)',
+                    'Executive Management',
+                    'Board of Directors'
                 ],
-                'correct_options' => [
-                    'Uses High/Medium/Low ratings' => 'Qualitative Assessment',
-                    'Calculates Annual Loss Expectancy' => 'Quantitative Assessment',
-                    'Requires less time and resources' => 'Qualitative Assessment',
-                    'Provides monetary values' => 'Quantitative Assessment'
-                ],
+                'correct_options' => ['Board of Directors'],
                 'justifications' => [
-                    'Uses High/Medium/Low ratings' => 'Qualitative uses descriptive scales',
-                    'Calculates Annual Loss Expectancy' => 'ALE is a quantitative calculation',
-                    'Requires less time and resources' => 'Qualitative is faster and simpler',
-                    'Provides monetary values' => 'Quantitative expresses risk in financial terms'
+                    'Incorrect - The CRO advises and implements but doesn\'t have final approval authority',
+                    'Incorrect - The CISO manages security risks but doesn\'t approve overall organizational risk appetite',
+                    'Incorrect - Executive Management recommends and implements but final accountability rests higher',
+                    'Correct - The Board of Directors has ultimate fiduciary responsibility and accountability for approving organizational risk appetite'
                 ],
-                'difficulty_level' => 2,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 4 - L3 - Apply
+            [
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Threat',
+                'type_id' => 1,
+                'question' => 'A disgruntled former employee with valid system credentials, who intends to sabotage company data, represents which of the following?',
+                'options' => [
+                    'Vulnerability',
+                    'Opportunity',
+                    'Threat Agent',
+                    'Control Failure'
+                ],
+                'correct_options' => ['Threat Agent'],
+                'justifications' => [
+                    'Incorrect - A vulnerability is a weakness that can be exploited, not the actor who exploits it',
+                    'Incorrect - Opportunity refers to a circumstance that makes exploitation possible, not the actor',
+                    'Correct - A threat agent is an entity (person, group, or system) with the capability and intent to exploit vulnerabilities',
+                    'Incorrect - Control failure is when security measures don\'t work as intended, not the malicious actor'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 5 - L3 - Apply
+            [
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Threat',
+                'type_id' => 1,
+                'question' => 'Which of the following scenarios primarily describes a threat?',
+                'options' => [
+                    'A default password on a network router.',
+                    'An unencrypted database storing sensitive customer information.',
+                    'A natural disaster like an earthquake occurring in a data center region.',
+                    'Lack of regular security awareness training for employees.'
+                ],
+                'correct_options' => ['A natural disaster like an earthquake occurring in a data center region.'],
+                'justifications' => [
+                    'Incorrect - Default passwords are vulnerabilities (weaknesses) that can be exploited',
+                    'Incorrect - Unencrypted databases are vulnerabilities that expose data to potential compromise',
+                    'Correct - A natural disaster is a threat - an external event or circumstance that could cause harm by exploiting vulnerabilities',
+                    'Incorrect - Lack of training is a vulnerability that increases susceptibility to threats like phishing'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 6 - L3 - Apply
+            [
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Risk owner assignment',
+                'type_id' => 1,
+                'question' => 'A business unit head is reluctant to accept risk ownership for a legacy system. Which of the following BEST addresses this situation?',
+                'options' => [
+                    'Assign the risk to IT',
+                    'Escalate the issue to the compliance officer',
+                    'Conduct a risk communication session to clarify roles',
+                    'Transfer the risk to insurance'
+                ],
+                'correct_options' => ['Conduct a risk communication session to clarify roles'],
+                'justifications' => [
+                    'Incorrect - IT may manage the system but business units own the business risks',
+                    'Incorrect - Compliance officers enforce policies but don\'t resolve ownership disputes',
+                    'Correct - Clear communication about risk ownership responsibilities and the business impact helps stakeholders understand their role',
+                    'Incorrect - Insurance transfers financial impact but doesn\'t address the ownership responsibility'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 7 - L4 - Analyze
+            [
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Risk appetite, tolerance, and capacity definitions',
+                'type_id' => 1,
+                'question' => 'Which of the following is the MOST important factor when defining the risk appetite of an enterprise?',
+                'options' => [
+                    'The culture and predisposition of the organization toward risk taking',
+                    'The organization\'s capacity to absorb financial loss',
+                    'The level of risk remaining after existing controls',
+                    'The legal jurisdiction and type of business operations'
+                ],
+                'correct_options' => ['The culture and predisposition of the organization toward risk taking'],
+                'justifications' => [
+                    'Correct - Organizational culture fundamentally drives how much risk leadership and stakeholders are willing to accept',
+                    'Incorrect - Financial capacity is important but secondary to cultural willingness to take risks',
+                    'Incorrect - This describes residual risk, not a factor in defining appetite',
+                    'Incorrect - While compliance requirements influence decisions, culture determines the fundamental risk stance'
+                ],
                 'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
                 'status' => 'published'
+
             ],
             
-            // Risk Response - Item 5
+            // Item 8 - L4 - Analyze
             [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Risk management lifecycle (Identify → Assess → Treat → Monitor)',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization decides to purchase cyber insurance to address the risk of ransomware attacks. This is an example of:',
+                'question' => 'What is the fundamental problem with risk assessments that focus only on known threats?',
                 'options' => [
-                    'Risk avoidance',
-                    'Risk acceptance',
-                    'Risk transfer',
-                    'Risk mitigation'
+                    'Known threats are not dangerous',
+                    'Organizations face emerging and unknown threats that may not be identified',
+                    'Known threat assessments are too expensive',
+                    'Known threats change too frequently to assess'
                 ],
-                'correct_options' => ['Risk transfer'],
+                'correct_options' => ['Organizations face emerging and unknown threats that may not be identified'],
                 'justifications' => [
-                    'Avoidance would mean not using systems that could be attacked',
-                    'Acceptance would mean taking no action',
-                    'Correct - Insurance transfers financial impact to the insurer',
-                    'Mitigation would involve controls to reduce likelihood or impact'
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Organizations face emerging and unknown threats that may not be identified',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
                 'status' => 'published'
+
             ],
             
-            // Risk Treatment Options - Item 6
+            // Item 9 - L5 - Evaluate
             [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'A company faces a risk of data breach from an outdated system. Select all valid risk treatment options:',
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Residual risk calculation (risk after controls)',
+                'type_id' => 1,
+                'question' => 'An inherent risk has a likelihood rating of 5 and an impact rating of 4 (on a scale of 1–5). A control is implemented that is expected to reduce the likelihood by 60% and the impact by 25%. Using a simple multiplicative model (Residual Risk = Likelihood × Impact), what is the approximate residual risk rating after applying the control?',
                 'options' => [
-                    'Upgrade the system (Mitigate)',
-                    'Ignore the risk (Denial)',
-                    'Decommission the system (Avoid)',
-                    'Document and monitor (Accept)',
-                    'Outsource to secure provider (Transfer)',
-                    'Hope it doesn\'t happen (Wishful thinking)'
+                    'Likelihood: 2, Impact: 4 → Residual Risk: 8',
+                    'Likelihood: 2, Impact: 3 → Residual Risk: 6',
+                    'Likelihood: 3, Impact: 3 → Residual Risk: 9',
+                    'Likelihood: 3, Impact: 4 → Residual Risk: 12'
+                ],
+                'correct_options' => ['Likelihood: 2, Impact: 3 → Residual Risk: 6'],
+                'justifications' => [
+                    'Incorrect - Impact reduction not calculated (should be 4 × 0.75 = 3, not 4)',
+                    'Correct - Likelihood: 5 × 0.4 = 2; Impact: 4 × 0.75 = 3; Residual Risk: 2 × 3 = 6',
+                    'Incorrect - Likelihood reduction not calculated correctly (5 × 0.4 = 2, not 3)',
+                    'Incorrect - Neither reduction calculated correctly'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
+            
+            // Item 10 - L5 - Evaluate
+            [
+                'topic' => 'Risk Management Fundamentals',
+                'subtopic' => 'Risk management program establishment',
+                'type_id' => 1,
+                'question' => 'Evaluate the approach of using industry average breach costs for risk calculations in a specialized industry with unique data assets.',
+                'options' => [
+                    'Industry averages provide the most accurate estimates',
+                    'May significantly underestimate or overestimate actual risk exposure',
+                    'Industry averages are always conservative and safe to use',
+                    'Industry averages eliminate the need for custom assessment'
+                ],
+                'correct_options' => ['May significantly underestimate or overestimate actual risk exposure'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - May significantly underestimate or overestimate actual risk exposure',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
+            
+            // Topic 2: Risk Identification (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L1 - Remember
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk management frameworks (NIST RMF, ISO 31000, COSO ERM)',
+                'type_id' => 1,
+                'question' => 'An organization aims to adopt a globally recognized standard for risk management that provides a set of principles and guidelines for managing any type of risk effectively, adaptable to various contexts. Which framework is designed for this broad, non-sector-specific application?',
+                'options' => [
+                    'NIST SP 800-37',
+                    'ISO 31000',
+                    'PCI DSS',
+                    'COBIT 2019'
+                ],
+                'correct_options' => ['ISO 31000'],
+                'justifications' => [
+                    'Incorrect - NIST SP 800-37 is specifically focused on information security risk management for federal systems',
+                    'Correct - ISO 31000 provides universal risk management principles and guidelines applicable to any organization, sector, or risk type',
+                    'Incorrect - PCI DSS is specifically for payment card industry data security, not general risk management',
+                    'Incorrect - COBIT 2019 is focused on IT governance and management, not general risk management'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 12 - L2 - Understand
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk management frameworks (NIST RMF, ISO 31000, COSO ERM)',
+                'type_id' => 1,
+                'question' => 'When evaluating the primary differences between NIST RMF and ISO 31000, which of the following is the most accurate distinction?',
+                'options' => [
+                    'NIST RMF is purely quantitative, while ISO 31000 is qualitative.',
+                    'NIST RMF is highly prescriptive for information systems, while ISO 31000 is a generic, principles-based guideline.',
+                    'NIST RMF focuses only on cybersecurity, while ISO 31000 covers all types of risk.',
+                    'NIST RMF is for private sector only, while ISO 31000 is for public sector only.'
+                ],
+                'correct_options' => ['NIST RMF is highly prescriptive for information systems, while ISO 31000 is a generic, principles-based guideline.'],
+                'justifications' => [
+                    'Incorrect - Both frameworks support both quantitative and qualitative approaches',
+                    'Correct - NIST RMF provides detailed, prescriptive steps for federal information systems, while ISO 31000 offers flexible principles applicable to any risk type',
+                    'Incorrect - NIST RMF covers broader information security risks, not just cybersecurity',
+                    'Incorrect - Both frameworks are used across public and private sectors'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 13 - L2 - Understand
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Threat modeling (STRIDE)',
+                'type_id' => 5,
+                'question' => 'Match each STRIDE threat category with the security property it violates.',
+                'options' => [
+                    'items' => ['Spoofing', 'Tampering', 'Repudiation', 'Information Disclosure', 'Denial of Service', 'Elevation of Privilege'],
+                    'responses' => ['Authentication', 'Integrity', 'Non-repudiation', 'Confidentiality', 'Availability', 'Authorization']
                 ],
                 'correct_options' => [
-                    'Upgrade the system (Mitigate)',
-                    'Decommission the system (Avoid)',
-                    'Document and monitor (Accept)',
-                    'Outsource to secure provider (Transfer)'
+                    'Spoofing' => 'Authentication',
+                    'Tampering' => 'Integrity',
+                    'Repudiation' => 'Non-repudiation',
+                    'Information Disclosure' => 'Confidentiality',
+                    'Denial of Service' => 'Availability',
+                    'Elevation of Privilege' => 'Authorization'
                 ],
                 'justifications' => [
-                    'Upgrading reduces the vulnerability',
-                    'Denial is not a valid risk treatment',
-                    'Removing the system eliminates the risk',
-                    'Accepting with documentation is valid for low risks',
-                    'Outsourcing transfers risk to the provider',
-                    'Hope is not a risk management strategy'
+                    'Spoofing' => 'Spoofing attacks involve impersonating another entity, directly violating authentication mechanisms. Examples include forging email addresses, IP spoofing, or using stolen credentials.',
+                    'Tampering' => 'Tampering involves modifying data in transit or at rest without authorization, compromising data integrity. This includes altering files, modifying database records, or changing network packets.',
+                    'Repudiation' => 'Repudiation threats allow users to deny their actions, violating non-repudiation controls. Without proper logging and digital signatures, users can claim they didn\'t perform certain actions.',
+                    'Information Disclosure' => 'Information disclosure exposes sensitive data to unauthorized parties, violating confidentiality. This includes data breaches, inadvertent exposure of error messages, or side-channel attacks.',
+                    'Denial of Service' => 'DoS attacks make resources unavailable to legitimate users, violating availability. This includes flooding services, exhausting resources, or crashing systems.',
+                    'Elevation of Privilege' => 'Elevation of privilege allows users to perform unauthorized actions, violating authorization controls. This includes exploiting vulnerabilities to gain admin rights or bypassing access controls.'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Risk Monitoring - Item 7
-            [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Key Risk Indicators (KRIs) are used to:',
-                'options' => [
-                    'Calculate the exact cost of risks',
-                    'Provide early warning of increasing risk exposure',
-                    'Eliminate all organizational risks',
-                    'Replace the need for risk assessments'
-                ],
-                'correct_options' => ['Provide early warning of increasing risk exposure'],
-                'justifications' => [
-                    'KRIs are indicators, not cost calculators',
-                    'Correct - KRIs act as early warning signals for risk changes',
-                    'Complete risk elimination is impossible',
-                    'KRIs supplement but don\'t replace assessments'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Risk Appetite - Item 8
+            // Item 14 - L3 - Apply
             [
-                'topic_id' => $topics['Risk Appetite, Tolerance & Capacity'] ?? 105,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Risk appetite is the maximum amount of risk an organization can bear, while risk tolerance is the amount they are willing to accept.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'This is reversed. Risk appetite is the amount of risk an organization is willing to accept in pursuit of objectives. Risk capacity is the maximum amount they can bear without threatening their existence.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Risk Owner - Item 9
-            [
-                'topic_id' => $topics['Risk/Control Owner'] ?? 106,
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Threat modeling (STRIDE)',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Who should typically be assigned as a risk owner?',
+                'question' => 'The STRIDE threat modeling framework provides a systematic way to identify threats against a system. Which of the following activities is a key benefit of using a structured framework like STRIDE?',
                 'options' => [
-                    'The person who discovered the risk',
-                    'The most junior team member',
-                    'Someone with authority to manage the risk',
-                    'Always the Chief Risk Officer'
+                    'It automates the implementation of security controls.',
+                    'It ensures all identified threats are immediately mitigated.',
+                    'It provides a comprehensive checklist to ensure a broad range of potential threats are considered.',
+                    'It replaces the need for human security expertise.'
                 ],
-                'correct_options' => ['Someone with authority to manage the risk'],
+                'correct_options' => ['It provides a comprehensive checklist to ensure a broad range of potential threats are considered.'],
                 'justifications' => [
-                    'Discovery doesn\'t imply ownership capability',
-                    'Junior members typically lack necessary authority',
-                    'Correct - Risk owners need authority and resources to implement treatments',
-                    'CRO oversees but doesn\'t own every individual risk'
+                    'Incorrect - STRIDE helps identify threats but doesn\'t automate control implementation',
+                    'Incorrect - STRIDE identifies threats but doesn\'t guarantee immediate mitigation',
+                    'Correct - STRIDE provides a systematic approach with categories (Spoofing, Tampering, etc.) that act as a comprehensive checklist to avoid overlooking threat types',
+                    'Incorrect - STRIDE enhances but doesn\'t replace human expertise and judgment'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Risk Register - Item 10
+            // Item 15 - L3 - Apply
             [
-                'topic_id' => $topics['Risk Register'] ?? 107,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select the essential components of a risk register:',
-                'options' => [
-                    'Risk description',
-                    'Employee salaries',
-                    'Risk owner',
-                    'Lunch preferences',
-                    'Current controls',
-                    'Office layout'
-                ],
-                'correct_options' => ['Risk description', 'Risk owner', 'Current controls'],
-                'justifications' => [
-                    'Clear description is essential for understanding',
-                    'Salaries are HR data, not risk data',
-                    'Ownership is crucial for accountability',
-                    'Lunch preferences are irrelevant',
-                    'Existing controls show current state',
-                    'Office layout is facilities management'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Inherent vs Residual Risk - Item 11
-            [
-                'topic_id' => $topics['Inherent & Residual Risk'] ?? 108,
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk Identification',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A server has an inherent risk rating of "High" for unauthorized access. After implementing strong authentication and access controls, the risk is reduced to "Medium". The "Medium" rating represents:',
+                'question' => 'How should you adapt a standard risk assessment methodology for a small organization with limited resources?',
+                'options' => [
+                    'Use the full methodology without changes',
+                    'Focus on high-impact areas and simplify documentation requirements',
+                    'Skip risk assessment entirely due to resource constraints',
+                    'Only assess risks that competitors have experienced'
+                ],
+                'correct_options' => ['Focus on high-impact areas and simplify documentation requirements'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Focus on high-impact areas and simplify documentation requirements',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This is too absolute or limiting',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 16 - L3 - Apply
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk management lifecycle (Identify → Assess → Treat → Monitor)',
+                'type_id' => 1,
+                'question' => 'A new software development project is in its early stages. To proactively manage security risks, the project manager initiates a threat modeling session. The findings of this session will most directly inform which subsequent step in the risk management lifecycle?',
+                'options' => [
+                    'Monitoring existing controls',
+                    'Assessing the identified risks\' likelihood and impact',
+                    'Defining the organization\'s overall risk appetite',
+                    'Assigning ultimate risk capacity'
+                ],
+                'correct_options' => ['Assessing the identified risks\' likelihood and impact'],
+                'justifications' => [
+                    'Incorrect - Monitoring comes after controls are implemented, not after initial threat identification',
+                    'Correct - Threat modeling identifies potential threats, which then need to be assessed for likelihood and impact to prioritize risk treatment',
+                    'Incorrect - Risk appetite is typically defined at the organizational level before individual projects begin',
+                    'Incorrect - Risk capacity is an organizational concept, not a project-level activity following threat modeling'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 17 - L4 - Analyze
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk analysis methodologies',
+                'type_id' => 1,
+                'question' => 'Which of the following is the PRIMARY factor in deciding whether to perform a qualitative or quantitative risk analysis?',
+                'options' => [
+                    'Availability of accurate data',
+                    'Available budget for the analysis',
+                    'Time constraints assigned to the analysis',
+                    'Availability of risk analysis experts'
+                ],
+                'correct_options' => ['Availability of accurate data'],
+                'justifications' => [
+                    'Correct - Quantitative analysis relies heavily on numerical inputs such as asset value, incident frequency, and loss expectancy. Without accurate data, qualitative methods become the default',
+                    'Incorrect - Budget may influence scope, but method selection depends more on data availability',
+                    'Incorrect - Time constraints might influence depth, but qualitative methods can still be used when time is short only if data is unavailable',
+                    'Incorrect - While expertise is needed for both types, the deciding factor is the availability of reliable, quantifiable risk data'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 18 - L4 - Analyze
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk Identification',
+                'type_id' => 1,
+                'question' => 'What is the fundamental challenge in applying traditional risk methodologies to artificial intelligence and machine learning systems?',
+                'options' => [
+                    'AI systems are immune to traditional security risks',
+                    'Traditional methods may not account for algorithmic bias and model poisoning risks',
+                    'AI systems are too complex to assess',
+                    'Traditional methodologies work perfectly for AI systems'
+                ],
+                'correct_options' => ['Traditional methods may not account for algorithmic bias and model poisoning risks'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Traditional methods may not account for algorithmic bias and model poisoning risks',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk Identification',
+                'type_id' => 1,
+                'question' => 'An organization wants to use crowdsourced threat intelligence to enhance their risk assessment methodology. Evaluate this approach.',
+                'options' => [
+                    'Crowdsourced intelligence is always more accurate than internal assessment',
+                    'Can provide broader threat visibility but requires validation and contextualization',
+                    'Crowdsourced intelligence eliminates the need for internal risk assessment',
+                    'Crowdsourced intelligence is too unreliable to be useful'
+                ],
+                'correct_options' => ['Can provide broader threat visibility but requires validation and contextualization'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Can provide broader threat visibility but requires validation and contextualization',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
+            
+            // Item 20 - L5 - Evaluate
+            [
+                'topic' => 'Risk Identification',
+                'subtopic' => 'Risk Identification',
+                'type_id' => 1,
+                'question' => 'Evaluate the effectiveness of conducting annual risk assessments in rapidly changing technology environments.',
+                'options' => [
+                    'Annual assessments provide optimal coverage',
+                    'May be insufficient; continuous or more frequent assessments needed',
+                    'Annual assessments are too frequent for most organizations',
+                    'Assessment frequency has no impact on risk management effectiveness'
+                ],
+                'correct_options' => ['May be insufficient; continuous or more frequent assessments needed'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - May be insufficient; continuous or more frequent assessments needed',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
+            
+            // Topic 3: Risk Assessment (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 21 - L1 - Remember
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk response strategies (Avoid, Accept, Transfer, Mitigate)',
+                'type_id' => 1,
+                'question' => 'A software development team identifies a critical bug in a new feature just before release. Releasing with the bug could lead to significant financial losses and reputational damage. The team decides to delay the release and dedicate all resources to fixing the bug. Which risk response strategy is primarily being employed?',
+                'options' => [
+                    'Risk Transfer',
+                    'Risk Acceptance',
+                    'Risk Mitigation',
+                    'Risk Avoidance'
+                ],
+                'correct_options' => ['Risk Mitigation'],
+                'justifications' => [
+                    'Incorrect - Risk transfer involves shifting the risk to another party via insurance or outsourcing, which is not happening here',
+                    'Incorrect - Risk acceptance would mean releasing the feature despite the bug, accepting the consequences',
+                    'Correct - Risk mitigation fits perfectly: the team is reducing the risk by addressing the root cause (the bug) to lessen its potential impact',
+                    'Incorrect - Risk avoidance would imply canceling the feature entirely to eliminate the risk, not merely delaying release'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 22 - L3 - Apply
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk owner assignment',
+                'type_id' => 1,
+                'question' => 'Your organization is implementing a new payroll system. How should you determine the appropriate risk owner assignment strategy?',
+                'options' => [
+                    'Assign the Chief Security Officer as owner for all IT risks',
+                    'Assign the Application Developer who built the system',
+                    'Assign the HR Department Head who owns the business process',
+                    'Rotate ownership among all stakeholders quarterly'
+                ],
+                'correct_options' => ['Assign the HR Department Head who owns the business process'],
+                'justifications' => [
+                    'Security officers advise but business owners make risk decisions',
+                    'Developers build systems but don\'t own business processes',
+                    'Correct - Business process owners are best positioned to make risk decisions about their processes',
+                    'Risk ownership should be stable and based on business accountability'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 23 - L2 - Understand
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Inherent risk (risk before controls)',
+                'type_id' => 1,
+                'question' => 'An organization assesses a potential threat and chooses not to implement any controls, deciding the risk level is acceptable as-is. Which type of risk is being accepted?',
                 'options' => [
                     'Inherent risk',
                     'Residual risk',
-                    'Acceptable risk',
-                    'Transferred risk'
+                    'Control risk',
+                    'Accepted risk'
                 ],
-                'correct_options' => ['Residual risk'],
+                'correct_options' => ['Inherent risk'],
                 'justifications' => [
-                    'Inherent risk is before controls',
-                    'Correct - Residual risk is what remains after controls are applied',
-                    'Acceptable risk is a threshold, not a type',
-                    'Risk wasn\'t transferred to another party'
+                    'Correct - Inherent risk is the risk that exists before any controls are implemented, which is what the organization is accepting',
+                    'Incorrect - Residual risk is the risk remaining after controls are implemented, but no controls were applied here',
+                    'Incorrect - Control risk refers to the risk that controls may fail, not applicable when no controls are implemented',
+                    'Incorrect - While the risk is being accepted, "accepted risk" is not a formal risk type but rather a treatment decision'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Third-Party Risk - Item 12
-            [
-                'topic_id' => $topics['Third-Party & Supply-Chain Risk'] ?? 109,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A critical software vendor experiences a breach that exposes your customer data they were processing. This scenario represents:',
-                'options' => [
-                    'Internal risk',
-                    'Third-party risk',
-                    'Compliance risk only',
-                    'Reputational risk only'
-                ],
-                'correct_options' => ['Third-party risk'],
-                'justifications' => [
-                    'The risk originated from an external vendor',
-                    'Correct - This is a classic third-party risk materialization',
-                    'It includes but isn\'t limited to compliance risk',
-                    'It includes but isn\'t limited to reputational risk'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Risk Management Frameworks - Item 13
-            [
-                'topic_id' => $topics['Risk Management Frameworks'] ?? 110,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which risk management framework is specifically designed for US federal information systems?',
-                'options' => [
-                    'ISO 31000',
-                    'COSO ERM',
-                    'NIST RMF',
-                    'FAIR'
-                ],
-                'correct_options' => ['NIST RMF'],
-                'justifications' => [
-                    'ISO 31000 is a general international standard',
-                    'COSO focuses on enterprise risk management',
-                    'Correct - NIST Risk Management Framework is designed for federal systems',
-                    'FAIR focuses on cyber risk quantification'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Risk Calculation - Item 14
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'If a threat has a 20% chance of occurring annually and would cause $500,000 in damages, what is the Annual Loss Expectancy (ALE)?',
-                'options' => [
-                    '$20,000',
-                    '$100,000',
-                    '$500,000',
-                    '$2,500,000'
-                ],
-                'correct_options' => ['$100,000'],
-                'justifications' => [
-                    'Incorrect calculation',
-                    'Correct - ALE = Single Loss Expectancy × Annual Rate of Occurrence = $500,000 × 0.20',
-                    'This is the SLE, not considering probability',
-                    'This multiplies instead of using the percentage'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Risk Heat Map - Item 15
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'On a risk heat map, a risk plotted in the upper right corner indicates:',
-                'options' => [
-                    'Low likelihood, low impact',
-                    'High likelihood, low impact',
-                    'Low likelihood, high impact',
-                    'High likelihood, high impact'
-                ],
-                'correct_options' => ['High likelihood, high impact'],
-                'justifications' => [
-                    'This would be lower left corner',
-                    'This would be upper left corner',
-                    'This would be lower right corner',
-                    'Correct - Upper right represents high probability and high impact risks'
-                ],
-                'difficulty_level' => 1,
                 'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Risk Aggregation - Item 16
+            // Item 24 - L2 - Understand
             [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk response strategies (Avoid, Accept, Transfer, Mitigate)',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When multiple low-rated risks combine to create a significant threat, this is called:',
+                'question' => 'Which of the following BEST demonstrates a risk avoidance strategy in an enterprise security context?',
                 'options' => [
-                    'Risk multiplication',
-                    'Risk aggregation',
-                    'Risk deflation',
-                    'Risk isolation'
+                    'Proceeding with a mobile app launch despite identified privacy weaknesses.',
+                    'Purchasing liability insurance to address possible customer data breaches.',
+                    'Deciding not to adopt a new AI feature due to unresolved ethical and regulatory concerns.',
+                    'Adding logging and alerting to monitor unauthorized system access.'
                 ],
-                'correct_options' => ['Risk aggregation'],
+                'correct_options' => ['Deciding not to adopt a new AI feature due to unresolved ethical and regulatory concerns.'],
                 'justifications' => [
-                    'Not a standard risk management term',
-                    'Correct - Risk aggregation occurs when multiple small risks combine into larger exposure',
-                    'Deflation implies reduction, not combination',
-                    'Isolation separates risks, doesn\'t combine them'
+                    'Incorrect - This represents risk acceptance, not avoidance, as the organization proceeds despite known risks',
+                    'Incorrect - This represents risk transfer through insurance, not avoidance',
+                    'Correct - This demonstrates risk avoidance by eliminating the activity entirely due to unacceptable risks',
+                    'Incorrect - This represents risk mitigation through monitoring controls, not avoidance'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Control Effectiveness - Item 17
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A control that reduces risk likelihood from "Very Likely" to "Possible" has impacted the risk\'s:',
-                'options' => [
-                    'Impact only',
-                    'Likelihood only',
-                    'Both likelihood and impact',
-                    'Neither likelihood nor impact'
-                ],
-                'correct_options' => ['Likelihood only'],
-                'justifications' => [
-                    'The scenario describes likelihood change',
-                    'Correct - The control reduced probability of occurrence',
-                    'Only likelihood was mentioned as changing',
-                    'Clearly the likelihood changed'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Risk Tolerance Levels - Item 18
-            [
-                'topic_id' => $topics['Risk Appetite, Tolerance & Capacity'] ?? 105,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Match risk types with typical organizational tolerance levels:',
-                'options' => [
-                    'Life safety risks',
-                    'Innovation risks',
-                    'Compliance violations',
-                    'Market expansion risks',
-                    'Data breach risks',
-                    'New product development'
-                ],
-                'correct_options' => ['Life safety risks', 'Compliance violations', 'Data breach risks'],
-                'justifications' => [
-                    'Organizations have zero/low tolerance for safety risks',
-                    'Innovation requires accepting some risk',
-                    'Regulatory compliance typically has very low tolerance',
-                    'Business growth requires risk-taking',
-                    'Data breaches have severe consequences, low tolerance',
-                    'Product development inherently involves risk'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Emerging Risks - Item 19
-            [
-                'topic_id' => $topics['Risk Identification'] ?? 101,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which technique is most effective for identifying emerging risks that haven\'t occurred yet?',
-                'options' => [
-                    'Historical data analysis',
-                    'Incident report reviews',
-                    'Scenario planning and horizon scanning',
-                    'Last year\'s risk register'
-                ],
-                'correct_options' => ['Scenario planning and horizon scanning'],
-                'justifications' => [
-                    'Historical data won\'t show emerging risks',
-                    'Incidents are past events, not future risks',
-                    'Correct - These forward-looking techniques identify potential future risks',
-                    'Past registers miss new and emerging risks'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Risk Communication - Item 20
-            [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When reporting risks to the board of directors, which approach is most appropriate?',
-                'options' => [
-                    'Detailed technical vulnerability reports',
-                    'Executive dashboard with key risks and trends',
-                    'Complete risk register with all entries',
-                    'Only risks that have materialized'
-                ],
-                'correct_options' => ['Executive dashboard with key risks and trends'],
-                'justifications' => [
-                    'Too technical for board-level discussion',
-                    'Correct - Boards need high-level view with strategic implications',
-                    'Too detailed and operational for board',
-                    'Boards need to know potential risks too'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Supply Chain Risk - Item 21
-            [
-                'topic_id' => $topics['Third-Party & Supply-Chain Risk'] ?? 109,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'The SolarWinds attack, where malicious code was inserted into software updates affecting thousands of organizations, is an example of:',
-                'options' => [
-                    'Direct attack risk',
-                    'Supply chain risk',
-                    'Insider threat',
-                    'Natural disaster risk'
-                ],
-                'correct_options' => ['Supply chain risk'],
-                'justifications' => [
-                    'Attack came through trusted supplier',
-                    'Correct - Compromise of software supply chain affected downstream customers',
-                    'Not from internal employees',
-                    'This was a deliberate cyber attack'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Risk Assessment Methods - Item 22
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which risk assessment methodology uses predefined scenarios to evaluate potential impacts?',
-                'options' => [
-                    'OCTAVE (Operationally Critical Threat, Asset, and Vulnerability Evaluation)',
-                    'Scenario-based risk assessment',
-                    'FAIR (Factor Analysis of Information Risk)',
-                    'Bow-tie analysis'
-                ],
-                'correct_options' => ['Scenario-based risk assessment'],
-                'justifications' => [
-                    'OCTAVE focuses on organizational risk assessment',
-                    'Correct - Scenario-based assessment evaluates risks through predefined scenarios',
-                    'FAIR uses quantitative risk analysis factors',
-                    'Bow-tie visualizes risk causes and consequences'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Risk Treatment Cost-Benefit - Item 23
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A risk has an ALE of $50,000. A control costing $60,000 annually would eliminate the risk. What should the organization do?',
-                'options' => [
-                    'Implement the control immediately',
-                    'Look for more cost-effective alternatives',
-                    'Accept the risk without controls',
-                    'Transfer the risk regardless of cost'
-                ],
-                'correct_options' => ['Look for more cost-effective alternatives'],
-                'justifications' => [
-                    'Control costs more than the risk',
-                    'Correct - Control cost exceeds benefit; seek better options',
-                    'Some control may still be warranted',
-                    'Transfer costs should also be considered'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Risk Categories - Item 24
-            [
-                'topic_id' => $topics['Risk Identification'] ?? 101,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each risk example with its primary category:',
-                'options' => [
-                    'items' => [
-                        'Ransomware attack on systems',
-                        'New privacy regulation penalties',
-                        'Key employee resignation',
-                        'Competitor launching superior product'
-                    ],
-                    'targets' => [
-                        'Operational Risk',
-                        'Compliance Risk',
-                        'Strategic Risk',
-                        'Financial Risk'
-                    ]
-                ],
-                'correct_options' => [
-                    'Ransomware attack on systems' => 'Operational Risk',
-                    'New privacy regulation penalties' => 'Compliance Risk',
-                    'Key employee resignation' => 'Operational Risk',
-                    'Competitor launching superior product' => 'Strategic Risk'
-                ],
-                'justifications' => [
-                    'Ransomware attack on systems' => 'Disrupts operations and service delivery',
-                    'New privacy regulation penalties' => 'Regulatory compliance failure risk',
-                    'Key employee resignation' => 'Affects operational capability',
-                    'Competitor launching superior product' => 'Threatens market position and strategy'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Monte Carlo Simulation - Item 25
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Monte Carlo simulation in risk assessment is used to:',
-                'options' => [
-                    'Eliminate all uncertainty',
-                    'Model probability distributions of outcomes',
-                    'Guarantee specific results',
-                    'Replace expert judgment'
-                ],
-                'correct_options' => ['Model probability distributions of outcomes'],
-                'justifications' => [
-                    'Cannot eliminate uncertainty, only model it',
-                    'Correct - Monte Carlo runs many scenarios to show outcome probabilities',
-                    'Shows probabilities, not guarantees',
-                    'Supplements but doesn\'t replace judgment'
-                ],
                 'difficulty_level' => 3,
-                'bloom_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Risk Interdependencies - Item 26
+            // Item 25 - L3 - Apply
             [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk Assessment',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Two risks are considered to have positive correlation when:',
+                'question' => 'A security analyst identifies a potential data breach risk stemming from employees\' lack of security awareness training. In which of the following should this be recorded FIRST?',
                 'options' => [
-                    'They never occur together',
-                    'One occurring increases likelihood of the other',
-                    'They cancel each other out',
-                    'They have no relationship'
+                    'Incident log',
+                    'Risk register',
+                    'Problem log',
+                    'Disaster log'
                 ],
-                'correct_options' => ['One occurring increases likelihood of the other'],
+                'correct_options' => ['Risk register'],
                 'justifications' => [
-                    'This describes negative correlation',
-                    'Correct - Positive correlation means risks tend to occur together',
-                    'This would be risk mitigation',
-                    'This describes independence, not correlation'
+                    'Incorrect - Incident logs record actual security events that have occurred, not potential risks',
+                    'Correct - Risk register is the primary repository for documenting identified risks for tracking and management',
+                    'Incorrect - Problem logs typically track technical issues requiring resolution, not security risks',
+                    'Incorrect - Disaster logs document major incidents or disasters that have occurred, not potential risks'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Black Swan Events - Item 27
-            [
-                'topic_id' => $topics['Risk Identification'] ?? 101,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Black swan events are high-impact risks that are impossible to predict but obvious in hindsight.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'explanation' => 'Black swan events, as defined by Nassim Taleb, are characterized by: extreme rarity, severe impact, and retrospective (though not prospective) predictability. Examples include 9/11 or the 2008 financial crisis.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Risk vs Issue - Item 28
-            [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the key difference between a risk and an issue?',
-                'options' => [
-                    'Risks are more serious than issues',
-                    'Issues are potential events, risks have occurred',
-                    'Risks are potential events, issues have occurred',
-                    'There is no difference'
-                ],
-                'correct_options' => ['Risks are potential events, issues have occurred'],
-                'justifications' => [
-                    'Severity doesn\'t distinguish them',
-                    'This is backwards',
-                    'Correct - Risks may happen, issues are current problems',
-                    'Clear distinction exists in risk management'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Bow-Tie Analysis - Item 29
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'In bow-tie risk analysis, preventive controls are placed on which side of the risk event?',
-                'options' => [
-                    'Left side (before the event)',
-                    'Right side (after the event)',
-                    'Both sides equally',
-                    'Center (at the event)'
-                ],
-                'correct_options' => ['Left side (before the event)'],
-                'justifications' => [
-                    'Correct - Preventive controls on left prevent the event from occurring',
-                    'Right side has recovery/mitigation controls',
-                    'Controls are specifically positioned by type',
-                    'The center represents the risk event itself'
-                ],
-                'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
+
             ],
             
-            // Risk Culture - Item 30
+            // Item 26 - L3 - Apply
             [
-                'topic_id' => $topics['IT Risk Management Lifecycle'] ?? 100,
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Impact and likelihood determination',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which behavior indicates a mature risk culture in an organization?',
+                'question' => 'A vulnerability scan reveals an unpatched web server with open ports. What is the MOST appropriate next step for analysis?',
                 'options' => [
-                    'Hiding problems to avoid blame',
-                    'Taking excessive risks for rewards',
-                    'Open discussion of risks without fear',
-                    'Avoiding all risks completely'
+                    'Log the finding for future reference',
+                    'Accept the risk',
+                    'Determine exposure and exploitability',
+                    'Report the threat to management'
                 ],
-                'correct_options' => ['Open discussion of risks without fear'],
+                'correct_options' => ['Determine exposure and exploitability'],
                 'justifications' => [
-                    'Fear-based culture inhibits risk management',
-                    'Excessive risk-taking shows poor culture',
-                    'Correct - Psychological safety enables effective risk identification',
-                    'Zero risk tolerance is unrealistic and harmful'
+                    'Incorrect - Logging without analysis fails to assess the actual risk level',
+                    'Incorrect - Accepting risk before understanding its severity is premature',
+                    'Correct - Assessing exposure (who can reach it) and exploitability (how easily it can be compromised) is essential for proper risk evaluation',
+                    'Incorrect - This is a vulnerability, not a threat, and reporting should come after risk analysis'
                 ],
-                'difficulty_level' => 2,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 27 - L3 - Apply
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk response strategies (Avoid, Accept, Transfer, Mitigate)',
+                'type_id' => 1,
+                'question' => 'A company identifies a critical cyber risk related to a legacy system. Upgrading the system is extremely costly and disruptive. Maintaining the status quo is unacceptable due to potential data breaches. What would be the most strategic risk response, considering the options of Avoid, Accept, Transfer, and Mitigate, if the company decides to outsource the vulnerable function to a third-party provider who specializes in secure operations?',
+                'options' => [
+                    'Transfer, as the responsibility and potentially the financial impact of the risk are shifted to a third party.',
+                    'Avoidance, as the function is no longer performed internally.',
+                    'Acceptance, as the company acknowledges the risk but chooses not to act directly.',
+                    'Mitigation, as the third party\'s expertise reduces the likelihood and impact of the breach.'
+                ],
+                'correct_options' => ['Transfer, as the responsibility and potentially the financial impact of the risk are shifted to a third party.'],
+                'justifications' => [
+                    'Correct - Transferring risk involves shifting the burden of the risk to another party through outsourcing, making them responsible for its management and consequences',
+                    'Incorrect - The function is still being performed, just by a different party, so this is not avoidance',
+                    'Incorrect - The company is taking action by outsourcing, not accepting the risk as-is',
+                    'Incorrect - While the third party may provide better security, the primary strategy is transferring ownership and liability'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 28 - L4 - Analyze
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk appetite, tolerance, and capacity definitions',
+                'type_id' => 1,
+                'question' => 'A risk manager proposes three options to treat a critical application vulnerability: patch immediately, monitor closely, or shift operations to a backup system. What is the MOST important factor when selecting a treatment option?',
+                'options' => [
+                    'The opinion of the application developer',
+                    'The cost of implementing the control',
+                    'The alignment of the option with risk appetite',
+                    'The popularity of the method in industry benchmarks'
+                ],
+                'correct_options' => ['The alignment of the option with risk appetite'],
+                'justifications' => [
+                    'Incorrect - While technical input is valuable, it should not be the primary decision factor',
+                    'Incorrect - Cost is important but secondary to whether the treatment aligns with acceptable risk levels',
+                    'Correct - Risk treatment decisions must align with the organization\'s defined risk appetite to ensure consistent risk management',
+                    'Incorrect - Industry practices may inform but should not drive treatment selection'
+                ],
                 'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Cascading Risks - Item 31
-            [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A data center power failure leads to system outages, which cause transaction failures, resulting in customer dissatisfaction and revenue loss. This is an example of:',
-                'options' => [
-                    'Risk aggregation',
-                    'Cascading risks',
-                    'Risk correlation',
-                    'Risk mitigation'
-                ],
-                'correct_options' => ['Cascading risks'],
-                'justifications' => [
-                    'Aggregation combines separate risks',
-                    'Correct - One risk triggers a chain of subsequent risks',
-                    'Correlation is about risks occurring together',
-                    'This describes risk materialization, not mitigation'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // FAIR Model - Item 32
-            [
-                'topic_id' => $topics['Risk Management Frameworks'] ?? 110,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'The FAIR (Factor Analysis of Information Risk) model primarily focuses on:',
-                'options' => [
-                    'Qualitative risk descriptions',
-                    'Quantifying information risk in financial terms',
-                    'Compliance risk assessment',
-                    'Physical security risks'
-                ],
-                'correct_options' => ['Quantifying information risk in financial terms'],
-                'justifications' => [
-                    'FAIR emphasizes quantitative analysis',
-                    'Correct - FAIR provides a model for quantifying cyber risk financially',
-                    'FAIR is broader than just compliance',
-                    'FAIR focuses on information/cyber risk'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Risk Reporting Frequency - Item 33
-            [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How often should critical risks be reviewed and reported to senior management?',
-                'options' => [
-                    'Annually',
-                    'When incidents occur',
-                    'Monthly or quarterly',
-                    'Every 3-5 years'
-                ],
-                'correct_options' => ['Monthly or quarterly'],
-                'justifications' => [
-                    'Too infrequent for critical risks',
-                    'Reactive approach is insufficient',
-                    'Correct - Critical risks need regular monitoring and reporting',
-                    'Far too infrequent for any risks'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Vendor Risk Assessment - Item 34
-            [
-                'topic_id' => $topics['Third-Party & Supply-Chain Risk'] ?? 109,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select critical factors to assess in vendor risk management:',
-                'options' => [
-                    'Financial stability',
-                    'Office décor',
-                    'Security certifications',
-                    'Employee dress code',
-                    'Business continuity plans',
-                    'Cafeteria quality'
-                ],
-                'correct_options' => ['Financial stability', 'Security certifications', 'Business continuity plans'],
-                'justifications' => [
-                    'Financial health affects service continuity',
-                    'Décor is irrelevant to risk',
-                    'Certifications demonstrate security maturity',
-                    'Dress code doesn\'t impact risk',
-                    'BC plans ensure service resilience',
-                    'Food quality is not a risk factor'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Risk Matrix Limitations - Item 35
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is a key limitation of using 5x5 risk matrices?',
-                'options' => [
-                    'They are too complex to understand',
-                    'They can oversimplify complex risks',
-                    'They provide too much detail',
-                    'They only work for IT risks'
-                ],
-                'correct_options' => ['They can oversimplify complex risks'],
-                'justifications' => [
-                    '5x5 matrices are relatively simple',
-                    'Correct - Matrices may lose nuance and create false precision',
-                    'Matrices provide high-level views',
-                    'Risk matrices apply to all risk types'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Operational Risk Indicators - Item 36
-            [
-                'topic_id' => $topics['Risk Monitoring & Reporting'] ?? 104,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which metric would be a good Key Risk Indicator (KRI) for payment card data breach risk?',
-                'options' => [
-                    'Number of employees',
-                    'Failed PCI compliance scan findings',
-                    'Total revenue',
-                    'Office locations'
-                ],
-                'correct_options' => ['Failed PCI compliance scan findings'],
-                'justifications' => [
-                    'Employee count doesn\'t indicate PCI risk',
-                    'Correct - PCI scan failures directly indicate payment card security weaknesses',
-                    'Revenue doesn\'t measure security posture',
-                    'Geography doesn\'t indicate PCI compliance'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Risk Treatment Validation - Item 37
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'After implementing risk treatments, what is the next critical step?',
-                'options' => [
-                    'Close the risk in the register',
-                    'Celebrate successful implementation',
-                    'Test control effectiveness',
-                    'Move to the next risk'
-                ],
-                'correct_options' => ['Test control effectiveness'],
-                'justifications' => [
-                    'Risk remains until controls prove effective',
-                    'Premature without validation',
-                    'Correct - Must verify controls actually reduce risk as intended',
-                    'Skips critical validation step'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Cyber Insurance Considerations - Item 38
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization is considering cyber insurance. Which risk aspect does insurance NOT address?',
-                'options' => [
-                    'Financial losses from breaches',
-                    'Legal defense costs',
-                    'Likelihood of attacks occurring',
-                    'Business interruption costs'
-                ],
-                'correct_options' => ['Likelihood of attacks occurring'],
-                'justifications' => [
-                    'Insurance covers financial impacts',
-                    'Legal costs are typically covered',
-                    'Correct - Insurance transfers impact but doesn\'t prevent attacks',
-                    'BI coverage is common in cyber policies'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Concentration Risk - Item 39
-            [
-                'topic_id' => $topics['Third-Party & Supply-Chain Risk'] ?? 109,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization relies on a single cloud provider for all critical systems. This represents:',
-                'options' => [
-                    'Diversification risk',
-                    'Concentration risk',
-                    'Systemic risk',
-                    'Residual risk'
-                ],
-                'correct_options' => ['Concentration risk'],
-                'justifications' => [
-                    'Opposite - lack of diversification',
-                    'Correct - Over-reliance on single provider creates concentration risk',
-                    'Systemic affects entire market/system',
-                    'Residual is post-control risk level'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Risk Appetite Statement - Item 40
-            [
-                'topic_id' => $topics['Risk Appetite, Tolerance & Capacity'] ?? 105,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A well-written risk appetite statement should include:',
-                'options' => [
-                    'Technical vulnerability details',
-                    'Specific risk tolerance thresholds',
-                    'Individual employee names',
-                    'Competitor risk levels'
-                ],
-                'correct_options' => ['Specific risk tolerance thresholds'],
-                'justifications' => [
-                    'Too operational for appetite statements',
-                    'Correct - Clear thresholds guide risk-taking decisions',
-                    'Too specific and changeable',
-                    'Focus on own appetite, not competitors'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Scenario Analysis - Item 41
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When conducting scenario analysis for business continuity, which approach is most valuable?',
-                'options' => [
-                    'Only considering best-case scenarios',
-                    'Focusing on most likely scenarios and extremes',
-                    'Planning for every possible scenario',
-                    'Using last year\'s scenarios only'
-                ],
-                'correct_options' => ['Focusing on most likely scenarios and extremes'],
-                'justifications' => [
-                    'Ignores potential negative impacts',
-                    'Correct - Balance realistic scenarios with high-impact edge cases',
-                    'Impossible and resource-intensive',
-                    'Misses new and emerging threats'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Risk Financing - Item 42
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each risk financing method with its description:',
-                'options' => [
-                    'items' => [
-                        'Setting aside funds for potential losses',
-                        'Purchasing insurance policies',
-                        'Creating a subsidiary to self-insure',
-                        'Contractual risk transfer to vendors'
-                    ],
-                    'targets' => [
-                        'Risk retention/reserves',
-                        'Risk transfer',
-                        'Captive insurance',
-                        'Contractual transfer'
-                    ]
-                ],
-                'correct_options' => [
-                    'Setting aside funds for potential losses' => 'Risk retention/reserves',
-                    'Purchasing insurance policies' => 'Risk transfer',
-                    'Creating a subsidiary to self-insure' => 'Captive insurance',
-                    'Contractual risk transfer to vendors' => 'Contractual transfer'
-                ],
-                'justifications' => [
-                    'Setting aside funds for potential losses' => 'Self-funding through reserves',
-                    'Purchasing insurance policies' => 'Classic risk transfer mechanism',
-                    'Creating a subsidiary to self-insure' => 'Captive insurance company approach',
-                    'Contractual risk transfer to vendors' => 'Using contracts to shift liability'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Emerging Risk Management - Item 43
-            [
-                'topic_id' => $topics['Risk Identification'] ?? 101,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which emerging technology risk should organizations prioritize in 2024 and beyond?',
-                'options' => [
-                    'Y2K compliance',
-                    'AI and machine learning risks',
-                    'Dial-up internet security',
-                    'Floppy disk viruses'
-                ],
-                'correct_options' => ['AI and machine learning risks'],
-                'justifications' => [
-                    'Y2K was a past issue from 2000',
-                    'Correct - AI/ML presents new and evolving risks requiring attention',
-                    'Dial-up is largely obsolete',
-                    'Floppy disks are no longer in use'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Risk Quantification Challenge - Item 44
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When quantifying reputational risk from a data breach, what is the biggest challenge?',
-                'options' => [
-                    'Calculating direct costs',
-                    'Measuring intangible impacts',
-                    'Determining legal fees',
-                    'Counting affected records'
-                ],
-                'correct_options' => ['Measuring intangible impacts'],
-                'justifications' => [
-                    'Direct costs are relatively straightforward',
-                    'Correct - Reputation damage, customer trust loss are hard to quantify',
-                    'Legal fees can be estimated',
-                    'Record counts are factual data'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Control Risk Assessment - Item 45
-            [
-                'topic_id' => $topics['Risk/Control Owner'] ?? 106,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A control owner discovers their control is no longer effective due to technology changes. What is their primary responsibility?',
-                'options' => [
-                    'Hide the issue to avoid blame',
-                    'Wait for the next audit to reveal it',
-                    'Immediately escalate to risk owner',
-                    'Fix it without telling anyone'
-                ],
-                'correct_options' => ['Immediately escalate to risk owner'],
-                'justifications' => [
-                    'Transparency is essential in risk management',
-                    'Proactive response required, not reactive',
-                    'Correct - Risk owner must be informed to reassess risk and treatment',
-                    'Risk owner needs visibility for proper management'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Risk Management Definition - Item 46 (NEW - Level 1)
-            [
-                'topic_id' => $topics['IT Risk Management Lifecycle'] ?? 100,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Risk management is defined as:',
-                'options' => [
-                    'The elimination of all organizational risks',
-                    'Coordinated activities to direct and control risk',
-                    'The purchase of insurance policies',
-                    'Avoiding all uncertain situations'
-                ],
-                'correct_options' => ['Coordinated activities to direct and control risk'],
-                'justifications' => [
-                    'Complete risk elimination is impossible',
-                    'Correct - ISO 31000 definition of risk management',
-                    'Insurance is just one risk treatment option',
-                    'Some uncertainty is necessary for business'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Risk Appetite vs Risk Tolerance - Item 47 (NEW - Level 1)
-            [
-                'topic_id' => $topics['Risk Appetite, Tolerance & Capacity'] ?? 105,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the key difference between risk appetite and risk tolerance?',
-                'options' => [
-                    'Risk appetite is qualitative, risk tolerance is quantitative',
-                    'Risk appetite is for operational risks, risk tolerance is for strategic risks',
-                    'Risk appetite is the amount of risk willing to accept, risk tolerance is the variance allowed',
-                    'There is no difference - they are the same concept'
-                ],
-                'correct_options' => ['Risk appetite is the amount of risk willing to accept, risk tolerance is the variance allowed'],
-                'justifications' => [
-                    'Both can be expressed qualitatively or quantitatively',
-                    'Both apply to all types of risks, not specific categories',
-                    'Correct - Risk appetite is the broad amount of risk acceptable, while risk tolerance is the acceptable deviation from that level',
-                    'They are distinct but related concepts in risk management'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Risk Treatment Implementation - Item 48 (NEW - Level 3)
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Your organization faces ransomware risk with High likelihood and Critical impact. You have a $100,000 annual budget for this risk. Which combination would be most appropriate?',
-                'options' => [
-                    'Accept the risk and save the budget',
-                    'Implement backup systems ($40K) + endpoint protection ($35K) + security training ($15K)',
-                    'Purchase only cyber insurance ($80K)',
-                    'Avoid by disconnecting all systems from internet'
-                ],
-                'correct_options' => ['Implement backup systems ($40K) + endpoint protection ($35K) + security training ($15K)'],
-                'justifications' => [
-                    'High/Critical risks require action, not acceptance',
-                    'Correct - Multi-layered approach addresses prevention, protection, and recovery',
-                    'Insurance alone doesn\'t reduce likelihood',
-                    'Complete avoidance would eliminate business functionality'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Control Selection - Item 49 (NEW - Level 3)
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization wants to implement access controls for their database containing customer PII. Which control combination provides defense in depth?',
-                'options' => [
-                    'Strong passwords only',
-                    'Multi-factor authentication + role-based access + encryption + audit logging',
-                    'Physical security only',
-                    'Employee training only'
-                ],
-                'correct_options' => ['Multi-factor authentication + role-based access + encryption + audit logging'],
-                'justifications' => [
-                    'Single control is insufficient for critical data',
-                    'Correct - Multiple complementary controls provide layered protection',
-                    'Physical security doesn\'t address logical access',
-                    'Training alone cannot prevent all threats'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Vendor Assessment Application - Item 50 (NEW - Level 3)
-            [
-                'topic_id' => $topics['Third-Party & Supply-Chain Risk'] ?? 109,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A cloud provider storing your customer data reports a security incident affecting their infrastructure. What is your immediate priority?',
-                'options' => [
-                    'Terminate the contract immediately',
-                    'Assess impact on your data and customers',
-                    'Wait for more information',
-                    'Inform all customers immediately'
-                ],
-                'correct_options' => ['Assess impact on your data and customers'],
-                'justifications' => [
-                    'Premature without understanding the impact',
-                    'Correct - First determine scope and impact before taking action',
-                    'Time-sensitive situation requires immediate assessment',
-                    'Need facts before communicating to avoid misinformation'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Additional questions to reach perfect 7-10-16-10-7 distribution
-            // Need: +1 Level 1 and +1 Level 4
-            
-            // Item 51 - Level 1 (Remember)
-            [
-                'topic_id' => $topics['Risk Assessment'] ?? 102,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the formula for calculating risk?',
-                'options' => [
-                    'Risk = Threat + Vulnerability',
-                    'Risk = Impact × Likelihood',
-                    'Risk = Asset Value - Controls',
-                    'Risk = Threat × Asset Value'
-                ],
-                'correct_options' => ['Risk = Impact × Likelihood'],
-                'justifications' => [
-                    'This is addition, not the standard risk formula',
-                    'Correct - Risk is calculated as Impact multiplied by Likelihood',
-                    'This is not the standard risk calculation',
-                    'This doesn\'t include likelihood component'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 52 - Level 4 (Analyze)
-            [
-                'topic_id' => $topics['Risk Response & Treatment'] ?? 103,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Your organization faces a high-impact, low-likelihood risk that would cost $10M to prevent and $50M if it occurs. The annual probability is 5%. Analyzing the cost-benefit, what is the recommended approach?',
-                'options' => [
-                    'Accept the risk due to low probability',
-                    'Implement the $10M prevention as expected loss ($2.5M annually) exceeds prevention cost',
-                    'Transfer the risk through insurance',
-                    'Reduce the risk through partial controls'
-                ],
-                'correct_options' => ['Transfer the risk through insurance'],
-                'justifications' => [
-                    'High impact makes acceptance risky despite low probability',
-                    'Annual expected loss ($2.5M) is less than prevention cost ($10M)',
-                    'Correct - Insurance can transfer this high-impact, low-probability risk cost-effectively',
-                    'Partial controls may not adequately address the high impact'
-                ],
                 'difficulty_level' => 4,
-                'bloom_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
                 'status' => 'published'
+
             ],
             
+            // Item 29 - L4 - Analyze
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Risk response strategies (Avoid, Accept, Transfer, Mitigate)',
+                'type_id' => 1,
+                'question' => 'Which type of risk is most likely to be addressed through insurance as a risk response strategy?',
+                'options' => [
+                    'High likelihood and high impact',
+                    'Low likelihood and low impact',
+                    'High likelihood and low impact',
+                    'Low likelihood and high impact'
+                ],
+                'correct_options' => ['Low likelihood and high impact'],
+                'justifications' => [
+                    'Incorrect - High frequency, high impact risks are typically too expensive to insure and require mitigation',
+                    'Incorrect - Low frequency, low impact risks are typically accepted or managed operationally',
+                    'Incorrect - High frequency, low impact risks are better handled through operational controls',
+                    'Correct - Insurance is most cost-effective for catastrophic but rare events (low probability, high impact)'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 30 - L5 - Evaluate
+            [
+                'topic' => 'Risk Assessment',
+                'subtopic' => 'Cost-benefit analysis for controls',
+                'type_id' => 1,
+                'question' => 'A company decides to self-insure against cyber risks rather than purchase cyber liability insurance, citing "better control over resources." Evaluate this decision.',
+                'options' => [
+                    'Always preferable since self-insurance provides better control',
+                    'Risky approach that may expose organization to catastrophic losses',
+                    'Self-insurance is identical to risk acceptance',
+                    'Self-insurance eliminates all cyber risks'
+                ],
+                'correct_options' => ['Risky approach that may expose organization to catastrophic losses'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Risky approach that may expose organization to catastrophic losses',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
+            
+            // Topic 4: Risk Response & Treatment (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L1 - Remember
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Key Risk Indicators (KRIs) and metrics',
+                'type_id' => 1,
+                'question' => 'An organization tracks the number of unsuccessful login attempts per user per day and the percentage of outdated endpoint antivirus signatures. These are BEST categorized as:',
+                'options' => [
+                    'Key Performance Indicators (KPIs)',
+                    'Operational benchmarks',
+                    'Key Risk Indicators (KRIs)',
+                    'Control objectives'
+                ],
+                'correct_options' => ['Key Risk Indicators (KRIs)'],
+                'justifications' => [
+                    'Incorrect - KPIs measure performance against goals, not risk exposure',
+                    'Incorrect - Benchmarks are reference points for comparison, not risk metrics',
+                    'Correct - KRIs are metrics that provide early warning of increasing risk exposure, which both examples demonstrate',
+                    'Incorrect - Control objectives define what controls should achieve, not metrics'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 32 - L1 - Remember
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Continuous risk monitoring processes',
+                'type_id' => 1,
+                'question' => 'Which of the following BEST describes the purpose of continuous risk monitoring in an enterprise risk management program?',
+                'options' => [
+                    'To replace periodic risk assessments with real-time audits',
+                    'To ensure automatic incident response is always triggered',
+                    'To detect and evaluate changes in risk posture over time',
+                    'To update regulatory compliance documentation quarterly'
+                ],
+                'correct_options' => ['To detect and evaluate changes in risk posture over time'],
+                'justifications' => [
+                    'Incorrect - Continuous monitoring complements rather than replaces periodic assessments',
+                    'Incorrect - Monitoring detects changes but doesn\'t automatically trigger responses',
+                    'Correct - The primary purpose is to identify how risks evolve and change over time to inform decision-making',
+                    'Incorrect - Compliance documentation is a byproduct, not the primary purpose'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 33 - L2 - Understand
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Risk Response & Treatment',
+                'type_id' => 1,
+                'question' => 'Why are leading indicators more valuable than lagging indicators for risk monitoring?',
+                'options' => [
+                    'Leading indicators are easier to measure',
+                    'Leading indicators provide early warning before problems occur',
+                    'Lagging indicators are always inaccurate',
+                    'Leading indicators eliminate the need for incident response'
+                ],
+                'correct_options' => ['Leading indicators provide early warning before problems occur'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Leading indicators provide early warning before problems occur',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 34 - L2 - Understand
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Key Risk Indicators (KRIs) and metrics',
+                'type_id' => 1,
+                'question' => 'An organization wants to monitor the risk of data breaches. Which of the following would be the MOST effective Key Risk Indicator (KRI) to provide an early warning of increasing cyber risk exposure?',
+                'options' => [
+                    'Total number of successful data breaches in the past year.',
+                    'Employee satisfaction scores with IT security policies.',
+                    'Number of unpatched critical vulnerabilities detected across systems.',
+                    'Average time to recover from a data breach.'
+                ],
+                'correct_options' => ['Number of unpatched critical vulnerabilities detected across systems.'],
+                'justifications' => [
+                    'Incorrect - This is a lagging indicator showing past incidents, not early warning',
+                    'Incorrect - While relevant to security culture, this is too indirect for cyber risk',
+                    'Correct - Unpatched vulnerabilities are a leading indicator showing current exposure before breaches occur',
+                    'Incorrect - This measures response capability after incidents, not predictive risk'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 35 - L3 - Apply
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Continuous risk monitoring processes',
+                'type_id' => 1,
+                'question' => 'A project team implements daily stand-up meetings where team members briefly discuss potential blockers or emerging issues. Which aspect of continuous risk monitoring is this practice primarily addressing?',
+                'options' => [
+                    'Post-mortem analysis.',
+                    'Early warning signal identification.',
+                    'Formal risk documentation.',
+                    'Risk assessment frequency.'
+                ],
+                'correct_options' => ['Early warning signal identification.'],
+                'justifications' => [
+                    'Incorrect - Post-mortem analysis occurs after incidents, not during daily proactive discussions',
+                    'Correct - Daily stand-ups facilitate prompt identification of new or changing risks and potential issues, acting as early warning signals',
+                    'Incorrect - Stand-ups are informal communication mechanisms, not formal documentation processes',
+                    'Incorrect - This describes timing of assessments, not the identification mechanism'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 36 - L3 - Apply
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Key Risk Indicators (KRIs) and metrics',
+                'type_id' => 1,
+                'question' => 'A KRI for operational risk is defined as "Number of failed software deployments per month." If the threshold for this KRI is set at 3, and in the last three months, the numbers were 2, 4, and 5 respectively, what does this trend primarily indicate?',
+                'options' => [
+                    'A potential increase in operational risk related to software deployment stability, requiring investigation.',
+                    'The KRI is ineffective and should be replaced.',
+                    'The KRI threshold is too low and needs to be increased.',
+                    'The operational risk level is decreasing.'
+                ],
+                'correct_options' => ['A potential increase in operational risk related to software deployment stability, requiring investigation.'],
+                'justifications' => [
+                    'Correct - Consistently exceeding the KRI threshold indicates a negative trend in the monitored risk area, warranting immediate investigation and potential action',
+                    'Incorrect - The KRI is working as designed by detecting concerning trends',
+                    'Incorrect - Adjusting thresholds to avoid alerts defeats the purpose of early warning',
+                    'Incorrect - The increasing numbers clearly show rising, not decreasing, risk'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 37 - L3 - Apply
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Risk appetite, tolerance, and capacity definitions',
+                'type_id' => 1,
+                'question' => 'Which of the following best describes the primary advantage of establishing clear risk tolerance levels within a continuous risk monitoring process?',
+                'options' => [
+                    'It shifts all risk accountability from the risk owner to the monitoring team.',
+                    'It eliminates the need for any manual intervention in risk monitoring.',
+                    'It provides objective criteria for triggering alerts and prioritizing risk response actions.',
+                    'It automatically mitigates all risks that exceed the set thresholds.'
+                ],
+                'correct_options' => ['It provides objective criteria for triggering alerts and prioritizing risk response actions.'],
+                'justifications' => [
+                    'Incorrect - Risk ownership and accountability remain with designated owners regardless of monitoring',
+                    'Incorrect - Manual intervention is still required for analysis and response decisions',
+                    'Correct - Clear tolerance levels establish objective thresholds that guide when alerts should trigger and how to prioritize responses',
+                    'Incorrect - Monitoring detects threshold breaches but doesn\'t automatically implement mitigation'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.7,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 38 - L4 - Analyze
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Key Risk Indicators (KRIs) and metrics',
+                'type_id' => 1,
+                'question' => 'To measure the effectiveness of a new patch management control, which KRI would be most suitable for assessing the reduction in vulnerability exposure?',
+                'options' => [
+                    'Number of employee training sessions on cybersecurity best practices.',
+                    'Total number of security incidents reported in the past quarter.',
+                    'Cost of security software licenses purchased annually.',
+                    'Percentage of critical systems with overdue security patches.'
+                ],
+                'correct_options' => ['Percentage of critical systems with overdue security patches.'],
+                'justifications' => [
+                    'Incorrect - Training frequency doesn\'t directly measure patch management effectiveness',
+                    'Incorrect - Incident count is a lagging indicator that may have multiple causes beyond patching',
+                    'Incorrect - Software costs don\'t indicate control effectiveness',
+                    'Correct - This directly measures the control\'s objective: reducing exposure by minimizing unpatched systems'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 39 - L4 - Analyze
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Continuous risk monitoring processes',
+                'type_id' => 1,
+                'question' => 'During a review of the continuous risk monitoring process, it\'s identified that alerts are frequently triggered for minor, non-critical issues. What is the most effective action to improve the process\'s efficiency and focus?',
+                'options' => [
+                    'Adjusting KRI thresholds and alert logic to focus on material risks and reduce false positives.',
+                    'Assign more staff to manually review every single alert.',
+                    'Increase the number of monitoring tools used to capture more data.',
+                    'Disable all automated alerts to reduce false positives.'
+                ],
+                'correct_options' => ['Adjusting KRI thresholds and alert logic to focus on material risks and reduce false positives.'],
+                'justifications' => [
+                    'Correct - Refining thresholds and logic ensures that alerts are only triggered for truly significant events, improving the signal-to-noise ratio and efficiency',
+                    'Incorrect - Adding staff doesn\'t address the root cause of excessive non-critical alerts',
+                    'Incorrect - More tools and data would worsen the problem of excessive alerts',
+                    'Incorrect - Disabling alerts eliminates early warning capability entirely'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 40 - L5 - Evaluate
+            [
+                'topic' => 'Risk Response & Treatment',
+                'subtopic' => 'Risk Response & Treatment',
+                'type_id' => 1,
+                'question' => 'An organization implements AI-powered risk monitoring that provides excellent technical metrics but struggles with business context. Evaluate this approach.',
+                'options' => [
+                    'Technical metrics are sufficient for effective risk monitoring',
+                    'Requires integration of business context to make metrics actionable for decision-making',
+                    'AI-powered monitoring eliminates the need for human interpretation',
+                    'Business context is irrelevant to technical risk monitoring'
+                ],
+                'correct_options' => ['Requires integration of business context to make metrics actionable for decision-making'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Requires integration of business context to make metrics actionable for decision-making',
+                    'Incorrect - This overstates the capability or scope',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
+            
+            // Topic 5: Risk Monitoring & Reporting (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L1 - Remember
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'What is the primary purpose of risk reporting?',
+                'options' => [
+                    'To document all security activities',
+                    'To communicate risk status to support decision-making',
+                    'To satisfy audit requirements only',
+                    'To justify security budget increases'
+                ],
+                'correct_options' => ['To communicate risk status to support decision-making'],
+                'justifications' => [
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - To communicate risk status to support decision-making',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 42 - L1 - Remember
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'What information should be included in executive risk reports?',
+                'options' => [
+                    'Detailed technical vulnerability scans',
+                    'Business impact summaries and key risk trends',
+                    'Complete audit logs and system outputs',
+                    'Raw security metrics without interpretation'
+                ],
+                'correct_options' => ['Business impact summaries and key risk trends'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - Business impact summaries and key risk trends',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 43 - L2 - Understand
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'Why should risk reports be tailored to different audience levels?',
+                'options' => [
+                    'Different audiences have varying information needs and decision authority',
+                    'Tailoring reduces report preparation effort',
+                    'Technical audiences prefer business summaries',
+                    'All audiences need identical information'
+                ],
+                'correct_options' => ['Different audiences have varying information needs and decision authority'],
+                'justifications' => [
+                    'Correct - Different audiences have varying information needs and decision authority',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 44 - L2 - Understand
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Continuous risk monitoring processes',
+                'type_id' => 1,
+                'question' => 'How do risk dashboards enhance traditional risk reporting?',
+                'options' => [
+                    'Dashboards replace the need for detailed reports',
+                    'They provide real-time visibility and trend analysis',
+                    'Dashboards are only useful for technical audiences',
+                    'They eliminate the need for risk assessment'
+                ],
+                'correct_options' => ['They provide real-time visibility and trend analysis'],
+                'justifications' => [
+                    'Incorrect - This option does not accurately describe the concept',
+                    'Correct - They provide real-time visibility and trend analysis',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This overstates the capability or scope',
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 45 - L3 - Apply
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'When reporting significant enterprise-level risks to the Board of Directors, which characteristic is paramount for the report\'s effectiveness?',
+                'options' => [
+                    'Including highly detailed technical specifications of all implemented controls.',
+                    'Listing every single identified risk, regardless of its significance.',
+                    'Focusing solely on past incidents and their financial impact.',
+                    'Providing clear, concise, and strategic insights on potential impact and proposed actions.'
+                ],
+                'correct_options' => ['Providing clear, concise, and strategic insights on potential impact and proposed actions.'],
+                'justifications' => [
+                    'Incorrect - Board members need strategic insights, not technical minutiae',
+                    'Incorrect - Information overload dilutes focus from significant risks',
+                    'Incorrect - Forward-looking risk perspective is more valuable than historical analysis alone',
+                    'Correct - Board effectiveness requires clear strategic insights that enable informed decision-making'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 46 - L3 - Apply
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'What is the most effective frequency for executive risk reporting?',
+                'options' => [
+                    'Daily for all risk updates',
+                    'Regular scheduled reports with exception-based urgent updates',
+                    'Only annual comprehensive reports',
+                    'Ad-hoc reporting when requested'
+                ],
+                'correct_options' => ['Regular scheduled reports with exception-based urgent updates'],
+                'justifications' => [
+                    'Incorrect - This overstates the capability or scope',
+                    'Correct - Regular scheduled reports with exception-based urgent updates',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 47 - L3 - Apply
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Continuous risk monitoring processes',
+                'type_id' => 1,
+                'question' => 'How should you incorporate risk trend analysis in reporting?',
+                'options' => [
+                    'Only report current risk levels without trends',
+                    'Show risk changes over time with context for variations',
+                    'Report trends only when risks are decreasing',
+                    'Focus exclusively on historical trends'
+                ],
+                'correct_options' => ['Show risk changes over time with context for variations'],
+                'justifications' => [
+                    'Incorrect - This is too absolute or limiting',
+                    'Correct - Show risk changes over time with context for variations',
+                    'Incorrect - This is too absolute or limiting',
+                    'Incorrect - This option does not accurately describe the concept',
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'A risk manager submits a report indicating an Annualized Loss Expectancy (ALE) of $50,000 for a cyber risk but fails to disclose the assumptions behind asset valuation, threat frequency, and control effectiveness. What is the primary implication of this omission for stakeholders?',
+                'options' => [
+                    'The report provides a precise and reliable risk figure for immediate decision-making',
+                    'Stakeholders can easily verify the accuracy of the ALE without further information',
+                    'The quantitative figure may be misinterpreted or seen as absolute, hiding significant uncertainties and biases in the underlying model',
+                    'Omitting assumptions simplifies the report and makes it more accessible to non-technical stakeholders'
+                ],
+                'correct_options' => ['The quantitative figure may be misinterpreted or seen as absolute, hiding significant uncertainties and biases in the underlying model'],
+                'justifications' => [
+                    'Incorrect - Misleading precision; ALE without context is not reliable',
+                    'Incorrect - Assumptions are necessary for verification',
+                    'Correct - The quantitative figure may be misinterpreted or seen as absolute, hiding significant uncertainties and biases in the underlying model',
+                    'Incorrect - Accessibility should not come at the cost of clarity or transparency'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 49 - L4 - Analyze
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Risk reporting to stakeholders',
+                'type_id' => 1,
+                'question' => 'An IT security team reports cyber risks to the executive committee using technical terms such as \'CVE-2023-XXXX\' and \'advanced persistent threats\' without connecting them to business impact. What is the likely consequence of this communication approach?',
+                'options' => [
+                    'Executives will gain a deep technical understanding of the risks, enabling informed security investments',
+                    'The executive committee will likely struggle to grasp the business implications, leading to ineffective decision-making or apathy towards cybersecurity initiatives',
+                    'This approach demonstrates the security team\'s technical expertise, thereby building confidence in their abilities',
+                    'The report will be highly actionable for strategic planning, as it contains all technical details'
+                ],
+                'correct_options' => ['The executive committee will likely struggle to grasp the business implications, leading to ineffective decision-making or apathy towards cybersecurity initiatives'],
+                'justifications' => [
+                    'Incorrect - Assumes technical fluency and fails to acknowledge the communication gap',
+                    'Correct - This clearly outlines the impact of poor translation from technical to business language',
+                    'Incorrect - Technical accuracy does not equal effective executive communication. May build confusion instead',
+                    'Incorrect - Actionability at the executive level comes from contextualization, not raw technical data'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published'
+
+            ],
+            
+            // Item 50 - L5 - Evaluate
+            [
+                'topic' => 'Risk Monitoring & Reporting',
+                'subtopic' => 'Key Risk Indicators (KRIs) and metrics',
+                'type_id' => 1,
+                'question' => 'A critical KRI for employee cybersecurity awareness shows a "100% completion rate for mandatory annual training." However, internal audits reveal significant non-compliance with security policies and high phishing susceptibility. Evaluate the effectiveness of this KRI as a measure of actual risk reduction.',
+                'options' => [
+                    'The KRI accurately reflects high employee security awareness, and the audit findings are likely outliers',
+                    'The KRI is flawed because it measures activity (training completion) rather than actual behavioral change, understanding, or risk reduction',
+                    'The KRI is useful for compliance tracking, but its purpose is not to measure risk reduction',
+                    'A 100% completion rate means there is no remaining risk from employee behavior, so the KRI is highly effective'
+                ],
+                'correct_options' => ['The KRI is flawed because it measures activity (training completion) rather than actual behavioral change, understanding, or risk reduction'],
+                'justifications' => [
+                    'Incorrect - Contradicts the audit evidence showing poor security behavior despite training completion',
+                    'Correct - The KRI measures a process metric (training completion) not an outcome metric (actual security behavior), making it ineffective for risk reduction measurement',
+                    'Incorrect - While partially true about compliance, it misses the core issue that the KRI is intended but failing to measure risk',
+                    'Incorrect - Completion of training does not guarantee elimination of human risk factors'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published'
+
+            ],
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 5 (Risk Management) diagnostic items seeded successfully!');
     }
 }

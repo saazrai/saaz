@@ -2,1260 +2,1377 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-use Illuminate\Database\Seeder;
-
-class D1GeneralSecurityConceptsSeeder extends Seeder
+class D1GeneralSecurityConceptsSeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'General Security Concepts';
+    
+    protected function getQuestions(): array
     {
-        // Clear existing items for this domain to prevent duplicates
-        DiagnosticItem::whereHas('topic.domain', function($query) {
-            $query->where('name', 'General Security Concepts');
-        })->forceDelete();
-        
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'General Security Concepts');
-        })->pluck('id', 'name');
-        
-        $items = [
-            // 5 Pillars of Information Security - 10 Questions (Items 1-10)
+        return [
+            // Topic 1: 5 Pillars of Information Security - 10 Questions
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
             
             // Item 1 - 5 Pillars - L1 Knowledge
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Confidentiality',
+                'question' => 'Which pillar of information security protects data from unauthorized access?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What are the five pillars of information security?',
                 'options' => [
-                    'Confidentiality, Integrity, Availability, Authentication, Authorization',
-                    'Confidentiality, Integrity, Availability, Authenticity, Non-repudiation',
-                    'Prevention, Detection, Response, Recovery, Monitoring',
-                    'Physical, Technical, Administrative, Deterrent, Compensating'
+                    'Integrity',
+                    'Availability',
+                    'Confidentiality',
+                    'Non-repudiation'
                 ],
-                'correct_options' => ['Confidentiality, Integrity, Availability, Authenticity, Non-repudiation'],
+                'correct_options' => ['Confidentiality'],
                 'justifications' => [
-                    'Authentication and authorization are access control mechanisms, not the five pillars',
-                    'Correct - These are the five fundamental pillars of information security',
-                    'These are incident response phases, not the five pillars',
-                    'These are security control categories, not the five pillars'
+                    'Integrity ensures data has not been modified',
+                    'Availability ensures data is accessible when needed',
+                    'Correct - Confidentiality prevents unauthorized access to sensitive information',
+                    'Non-repudiation prevents denial of actions or transactions'
                 ],
                 'difficulty_level' => 1,
                 'bloom_level' => 1,
+                'irt_a' => 1.2,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 2 - 5 Pillars - L1 Knowledge
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Integrity',
+                'question' => 'What does data integrity ensure in information security?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which pillar of information security ensures that data has not been altered or modified?',
                 'options' => [
-                    'Confidentiality',
-                    'Integrity',
-                    'Availability',
-                    'Authenticity'
+                    'Data is available when needed',
+                    'Data has not been altered or corrupted',
+                    'Data is kept confidential',
+                    'Data access is logged'
                 ],
-                'correct_options' => ['Integrity'],
+                'correct_options' => ['Data has not been altered or corrupted'],
                 'justifications' => [
-                    'Confidentiality protects data from unauthorized access',
-                    'Correct - Integrity ensures data remains unaltered and accurate',
-                    'Availability ensures data is accessible when needed',
-                    'Authenticity verifies the source of data'
+                    'This describes availability',
+                    'Correct - Integrity ensures data remains unaltered and trustworthy',
+                    'This describes confidentiality',
+                    'This describes auditing/accountability'
                 ],
                 'difficulty_level' => 1,
                 'bloom_level' => 1,
+                'irt_a' => 1.0,
+                'irt_b' => -1.8,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 3 - 5 Pillars - L3 Application
+            // Item 3 - 5 Pillars - L2 Comprehension
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Availability',
+                'question' => 'How does the availability pillar differ from the other security pillars?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A healthcare organization implements digital signatures for patient records. Which two pillars of information security are primarily addressed?',
                 'options' => [
-                    'Confidentiality and Availability',
-                    'Integrity and Authenticity',
-                    'Availability and Non-repudiation',
-                    'Confidentiality and Integrity'
+                    'It focuses on preventing unauthorized access',
+                    'It ensures data can be accessed when needed by authorized users',
+                    'It verifies the identity of users',
+                    'It prevents data modification'
                 ],
-                'correct_options' => ['Integrity and Authenticity'],
+                'correct_options' => ['It ensures data can be accessed when needed by authorized users'],
                 'justifications' => [
-                    'Digital signatures don\'t provide confidentiality protection',
-                    'Correct - Digital signatures verify both data integrity and authenticity of the signer',
-                    'Digital signatures don\'t directly address availability',
-                    'Digital signatures don\'t provide confidentiality protection'
+                    'This describes confidentiality, not availability',
+                    'Correct - Availability ensures authorized users can access resources when needed',
+                    'This describes authentication/authenticity',
+                    'This describes integrity'
                 ],
                 'difficulty_level' => 2,
-                'bloom_level' => 3,
+                'bloom_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 4 - 5 Pillars - L3 Application
+            // Item 4 - 5 Pillars - L2 Comprehension
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Non-repudiation',
+                'question' => 'Why is non-repudiation important in digital transactions?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'An e-commerce website uses timestamped transaction logs that cannot be denied by customers. Which pillar is primarily demonstrated?',
                 'options' => [
-                    'Confidentiality',
-                    'Integrity', 
-                    'Availability',
-                    'Non-repudiation'
+                    'It prevents unauthorized access to systems',
+                    'It ensures data integrity during transmission',
+                    'It prevents parties from denying they performed an action',
+                    'It encrypts sensitive information'
                 ],
-                'correct_options' => ['Non-repudiation'],
+                'correct_options' => ['It prevents parties from denying they performed an action'],
                 'justifications' => [
-                    'Confidentiality protects information from unauthorized access',
-                    'Integrity ensures data hasn\'t been altered',
-                    'Availability ensures systems are accessible',
-                    'Correct - Non-repudiation prevents denial of actions or transactions'
+                    'This describes access control/confidentiality',
+                    'This describes integrity controls',
+                    'Correct - Non-repudiation provides proof of origin and delivery',
+                    'This describes confidentiality controls'
                 ],
                 'difficulty_level' => 2,
-                'bloom_level' => 3,
+                'bloom_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 5 - 5 Pillars - L3 Application
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Authenticity',
+                'question' => 'A company needs to verify that documents received from partners are genuine. Which security pillar addresses this requirement?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company\'s backup system fails during a cyberattack, customer data is stolen, and some records are corrupted. Which pillar is MOST severely impacted?',
                 'options' => [
-                    'Confidentiality - due to data theft',
-                    'Integrity - due to data corruption',
-                    'Availability - due to backup failure',
-                    'All pillars are equally impacted'
+                    'Confidentiality',
+                    'Integrity',
+                    'Authenticity',
+                    'Availability'
                 ],
-                'correct_options' => ['Confidentiality - due to data theft'],
+                'correct_options' => ['Authenticity'],
                 'justifications' => [
-                    'Correct - Data theft creates immediate legal liability and reputation damage',
-                    'Data corruption is serious but typically has less immediate impact than theft',
-                    'Backup failure affects recovery but data theft is more severe',
-                    'Data theft typically has the most severe immediate consequences'
+                    'Confidentiality protects against unauthorized access',
+                    'Integrity ensures data has not been modified',
+                    'Correct - Authenticity verifies the genuineness and source of information',
+                    'Availability ensures resources are accessible when needed'
                 ],
                 'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 6 - 5 Pillars - L3 Application
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Confidentiality',
+                'question' => 'Which control would best protect confidentiality in a database containing customer credit card information?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A financial institution needs to prove that a customer authorized a large transfer. Which pillar should be the primary focus?',
                 'options' => [
-                    'Confidentiality',
-                    'Integrity',
-                    'Availability',
-                    'Non-repudiation'
+                    'Regular database backups',
+                    'Database activity logging',
+                    'Field-level encryption of sensitive data',
+                    'Database performance monitoring'
                 ],
-                'correct_options' => ['Non-repudiation'],
+                'correct_options' => ['Field-level encryption of sensitive data'],
                 'justifications' => [
-                    'Confidentiality protects transaction details but doesn\'t prove authorization',
-                    'Integrity ensures transaction data hasn\'t been altered',
-                    'Availability ensures the system is accessible',
-                    'Correct - Non-repudiation provides proof that the customer authorized the transaction'
+                    'Backups support availability, not confidentiality',
+                    'Logging supports accountability, not direct confidentiality protection',
+                    'Correct - Encryption directly protects confidentiality by making data unreadable to unauthorized users',
+                    'Performance monitoring supports availability'
                 ],
                 'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 7 - 5 Pillars - L4 Analysis
+            // Item 7 - 5 Pillars - L3 Application
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Integrity',
+                'question' => 'An organization discovers that financial records have been altered without authorization. Which combination of controls would best prevent future integrity violations?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Analyze why availability is often the most challenging pillar to maintain in distributed systems. What is the primary architectural factor?',
                 'options' => [
-                    'Encryption processes consume excessive computational resources',
-                    'System dependencies create multiple failure points that can cascade',
-                    'Integrity verification adds latency across distributed components',
-                    'Authentication bottlenecks limit concurrent access'
+                    'Access controls and encryption',
+                    'Digital signatures and checksums',
+                    'Firewalls and antivirus software',
+                    'Backup systems and monitoring'
                 ],
-                'correct_options' => ['System dependencies create multiple failure points that can cascade'],
+                'correct_options' => ['Digital signatures and checksums'],
                 'justifications' => [
-                    'Encryption affects performance but isn\'t the primary availability challenge',
-                    'Correct - Distributed systems have interdependent components where failures cascade',
-                    'Integrity checks add overhead but aren\'t the fundamental challenge',
-                    'Well-designed authentication shouldn\'t create availability bottlenecks'
+                    'These primarily protect confidentiality and access',
+                    'Correct - Digital signatures and checksums directly detect and prevent unauthorized modifications',
+                    'These provide general security but not specific integrity protection',
+                    'These support availability and detection but not prevention of modifications'
                 ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
+                'difficulty_level' => 3,
+                'bloom_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 8 - 5 Pillars - L4 Analysis
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Availability',
+                'question' => 'Analyze why availability often conflicts with confidentiality and integrity in security design.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze the trade-offs between the five pillars. Why do organizations struggle to optimize all pillars simultaneously?',
                 'options' => [
-                    'Technical expertise limitations prevent optimal implementation',
-                    'Resource constraints force prioritization between competing security objectives',
-                    'Security frameworks don\'t provide adequate guidance for balancing pillars',
-                    'Management lacks understanding of pillar importance'
+                    'Availability is not related to other security pillars',
+                    'Security controls that protect confidentiality and integrity can restrict or slow access',
+                    'Availability always takes priority over other pillars',
+                    'Confidentiality and integrity controls never affect system performance'
                 ],
-                'correct_options' => ['Resource constraints force prioritization between competing security objectives'],
+                'correct_options' => ['Security controls that protect confidentiality and integrity can restrict or slow access'],
                 'justifications' => [
-                    'Technical expertise affects implementation quality but doesn\'t explain trade-offs',
-                    'Correct - Limited resources force difficult choices between potentially conflicting security controls',
-                    'Frameworks provide guidance but can\'t eliminate resource constraints',
-                    'Management understanding affects investment but doesn\'t eliminate trade-offs'
+                    'All security pillars are interconnected and must be balanced',
+                    'Correct - Encryption, access controls, and integrity checks can impact system availability',
+                    'Security requires balancing all pillars based on risk and business needs',
+                    'Many security controls have performance and accessibility impacts'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
-            // Item 9 - 5 Pillars - L3 Application
+            // Item 9 - 5 Pillars - L4 Analysis
             [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Non-repudiation',
+                'question' => 'What is the primary challenge in implementing effective non-repudiation controls?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Evaluate the effectiveness of biometric authentication in addressing the five pillars. Which pillar receives the strongest benefit?',
                 'options' => [
-                    'Confidentiality - biometrics are harder to steal',
-                    'Integrity - biometric data cannot be altered',
-                    'Authenticity - biometrics provide unique individual identification',
-                    'Non-repudiation - biometric actions cannot be denied'
+                    'Technical complexity of encryption algorithms',
+                    'Balancing security with usability while ensuring legal admissibility',
+                    'High cost of digital certificate infrastructure',
+                    'Lack of standardized protocols'
                 ],
-                'correct_options' => ['Authenticity - biometrics provide unique individual identification'],
+                'correct_options' => ['Balancing security with usability while ensuring legal admissibility'],
                 'justifications' => [
-                    'Biometrics can be stolen through various methods',
-                    'Biometric data can be altered or spoofed',
-                    'Correct - The inherent connection between biometric traits and identity provides strongest authenticity assurance',
-                    'Biometrics support non-repudiation but authenticity is the primary strength'
+                    'Technical complexity exists but is not the primary challenge',
+                    'Correct - Non-repudiation must be legally binding while remaining practical for users',
+                    'Cost is a factor but not the primary challenge',
+                    'Standards exist for non-repudiation implementations'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 10 - 5 Pillars - L5 Evaluation
+            [
+                'topic' => '5 Pillars of Information Security',
+                'subtopic' => 'Authenticity',
+                'question' => 'Evaluate the relative importance of the five security pillars in a cloud-based e-commerce environment.',
+                'type_id' => 1,
+                'options' => [
+                    'All pillars are equally important in all contexts',
+                    'Confidentiality is always the most critical pillar',
+                    'The relative importance depends on business context, regulatory requirements, and risk tolerance',
+                    'Availability is the only pillar that matters for e-commerce'
+                ],
+                'correct_options' => ['The relative importance depends on business context, regulatory requirements, and risk tolerance'],
+                'justifications' => [
+                    'Business context and risk profiles create different priority needs',
+                    'While important, confidentiality may not always be the top priority',
+                    'Correct - Security pillar priorities must align with business needs and regulatory requirements',
+                    'E-commerce requires balancing all pillars, not just availability'
                 ],
                 'difficulty_level' => 5,
-                'bloom_level' => 3,
+                'bloom_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.2,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
             
-            // Item 10 - 5 Pillars - L3 Application
-            [
-                'topic_id' => $topics['5 Pillars of Information Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Evaluate the five pillars in a zero-trust architecture implementation. Which pillar presents the greatest implementation challenge?',
-                'options' => [
-                    'Confidentiality - encrypting all communications',
-                    'Integrity - ensuring data hasn\'t been tampered with',
-                    'Availability - maintaining performance with additional security checks',
-                    'All pillars present equal challenges'
-                ],
-                'correct_options' => ['Availability - maintaining performance with additional security checks'],
-                'justifications' => [
-                    'Encryption is well-understood and standardized',
-                    'Integrity checks are established practices',
-                    'Correct - Zero-trust adds significant latency and complexity that impacts user experience',
-                    'Availability challenges are typically most significant in zero-trust'
-                ],
-                'difficulty_level' => 5,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
+            // Topic 2: Professional Ethics - 10 Questions
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
             
-            // Professional Ethics - 10 Questions (Items 11-20)
-            
-            // Item 11 - Professional Ethics - L2 Comprehension
+            // Item 11 - Professional Ethics - L1 Knowledge
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Organizational Code of Ethics',
+                'question' => 'What is the primary purpose of a professional code of ethics in cybersecurity?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of a professional code of ethics in cybersecurity?',
                 'options' => [
-                    'To provide legal protection for practitioners',
-                    'To establish professional standards and guide behavior',
-                    'To increase salary and career opportunities',
-                    'To comply with government regulations'
+                    'To increase salary levels for certified professionals',
+                    'To establish standards of conduct and responsibility for practitioners',
+                    'To eliminate liability for security breaches',
+                    'To replace legal requirements with professional guidelines'
                 ],
-                'correct_options' => ['To establish professional standards and guide behavior'],
+                'correct_options' => ['To establish standards of conduct and responsibility for practitioners'],
                 'justifications' => [
-                    'Codes of ethics provide guidance but not legal protection',
-                    'Correct - Professional codes establish standards and guide ethical decision-making',
-                    'Ethics codes focus on behavior standards, not compensation',
-                    'Ethics codes are professional standards, not regulatory compliance'
+                    'Ethics codes focus on professional conduct, not compensation',
+                    'Correct - Professional ethics establish behavioral expectations and responsibilities',
+                    'Ethics codes do not eliminate legal or professional liability',
+                    'Ethics complement but do not replace legal requirements'
                 ],
                 'difficulty_level' => 1,
-                'bloom_level' => 2,
+                'bloom_level' => 1,
+                'irt_a' => 1.0,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 12 - Professional Ethics - L2 Comprehension
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Professional Standards and Conduct',
+                'question' => 'Why must cybersecurity professionals maintain objectivity in their work?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which principle is fundamental to cybersecurity professional ethics?',
                 'options' => [
-                    'Maximizing organizational profits',
-                    'Protecting the public interest and safety',
-                    'Maintaining competitive advantage',
-                    'Minimizing security investment costs'
+                    'To ensure accurate risk assessments and unbiased security recommendations',
+                    'To comply with software licensing requirements',
+                    'To maintain certification status only',
+                    'To avoid technical training requirements'
                 ],
-                'correct_options' => ['Protecting the public interest and safety'],
+                'correct_options' => ['To ensure accurate risk assessments and unbiased security recommendations'],
                 'justifications' => [
-                    'Profit maximization may conflict with ethical obligations',
-                    'Correct - Protecting public interest and safety is a core ethical principle',
-                    'Competitive advantage shouldn\'t override ethical obligations',
-                    'Cost minimization may compromise security and ethics'
+                    'Correct - Objectivity ensures professional judgments are based on facts, not personal interests',
+                    'Licensing compliance is separate from professional objectivity',
+                    'While important for certification, objectivity serves broader professional purposes',
+                    'Training requirements are unrelated to professional objectivity'
                 ],
-                'difficulty_level' => 1,
+                'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'irt_a' => 1.2,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 13 - Professional Ethics - L3 Application
+            // Item 13 - Professional Ethics - L2 Comprehension
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Organizational Code of Ethics',
+                'question' => 'How do professional ethics relate to legal compliance in cybersecurity?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A cybersecurity professional discovers a vulnerability in their employer\'s system that could harm customers. What is the ethical obligation?',
                 'options' => [
-                    'Ignore it to protect the employer\'s reputation',
-                    'Report it immediately to management for remediation',
-                    'Disclose it publicly to warn customers',
-                    'Use it to test the organization\'s response'
+                    'Ethics replace the need for legal compliance',
+                    'Legal requirements are sufficient without ethical considerations',
+                    'Ethics provide higher standards of conduct beyond minimum legal requirements',
+                    'Ethics and legal requirements are completely unrelated'
                 ],
-                'correct_options' => ['Report it immediately to management for remediation'],
+                'correct_options' => ['Ethics provide higher standards of conduct beyond minimum legal requirements'],
                 'justifications' => [
-                    'Ignoring vulnerabilities violates the duty to protect stakeholders',
-                    'Correct - Internal reporting allows remediation while protecting the organization',
-                    'Public disclosure should be a last resort after internal processes fail',
-                    'Unauthorized testing could cause harm and violate trust'
+                    'Ethics complement but do not replace legal obligations',
+                    'Legal compliance is minimum standard; ethics provide additional guidance',
+                    'Correct - Professional ethics often establish higher standards than legal minimums',
+                    'Ethics and legal requirements often overlap and reinforce each other'
                 ],
                 'difficulty_level' => 2,
+                'bloom_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 14 - Professional Ethics - L3 Application
+            [
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Professional Standards and Conduct',
+                'question' => 'A security consultant discovers that their client\'s competitor is using the same consulting firm. What is the most ethical approach?',
+                'type_id' => 1,
+                'options' => [
+                    'Share insights between clients to provide better service',
+                    'Maintain strict confidentiality and avoid conflicts of interest',
+                    'Only work with one client at a time',
+                    'Charge higher fees to both clients'
+                ],
+                'correct_options' => ['Maintain strict confidentiality and avoid conflicts of interest'],
+                'justifications' => [
+                    'Sharing confidential information violates professional ethics',
+                    'Correct - Professional ethics require maintaining client confidentiality and managing conflicts',
+                    'While one option, proper conflict management can allow serving multiple clients ethically',
+                    'Fee structure is unrelated to ethical conflict resolution'
+                ],
+                'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 14 - Professional Ethics - L2 Comprehension
+            // Item 15 - Professional Ethics - L3 Application
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Organizational Code of Ethics',
+                'question' => 'How should a cybersecurity professional handle a situation where management pressures them to approve an inadequate security control?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What does "due care" mean in the context of cybersecurity ethics?',
                 'options' => [
-                    'Investigating risks before making decisions',
-                    'Taking reasonable actions to protect stakeholders',
-                    'Following all security policies exactly',
-                    'Documenting all security activities'
+                    'Comply with management to maintain employment',
+                    'Document concerns and escalate through appropriate channels while maintaining professional standards',
+                    'Ignore the issue and let others decide',
+                    'Publicly criticize management decisions'
                 ],
-                'correct_options' => ['Taking reasonable actions to protect stakeholders'],
+                'correct_options' => ['Document concerns and escalate through appropriate channels while maintaining professional standards'],
                 'justifications' => [
-                    'This describes due diligence, not due care',
-                    'Correct - Due care involves taking reasonable protective actions',
-                    'Following policies is important but due care is broader',
-                    'Documentation supports due care but isn\'t the definition'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 15 - Professional Ethics - L5 Evaluation
-            [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A CISO is pressured by executives to bypass security controls to meet a business deadline. What is the most ethical response?',
-                'options' => [
-                    'Comply with executive requests to maintain employment',
-                    'Refuse and escalate to the board if necessary',
-                    'Implement temporary workarounds without approval',
-                    'Compromise by reducing some but not all controls'
-                ],
-                'correct_options' => ['Refuse and escalate to the board if necessary'],
-                'justifications' => [
-                    'Compliance with unethical requests violates professional obligations',
-                    'Correct - Protecting stakeholders may require escalation despite personal risk',
-                    'Unauthorized workarounds could increase risk and violate trust',
-                    'Compromising security controls puts stakeholders at risk'
+                    'Professional ethics require maintaining security standards despite pressure',
+                    'Correct - Ethical professionals must document concerns and use proper escalation procedures',
+                    'Professional responsibility requires active engagement with security issues',
+                    'Public criticism violates confidentiality and professional conduct standards'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 5,
+                'bloom_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 16 - Professional Ethics - L5 Evaluation
+            // Item 16 - Professional Ethics - L3 Application
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Professional Standards and Conduct',
+                'question' => 'When conducting a penetration test, what ethical obligations must be considered?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A cybersecurity consultant discovers their client is using security tools for employee surveillance beyond stated purposes. What should they do?',
                 'options' => [
-                    'Continue the engagement since it\'s not their decision',
-                    'Address concerns with the client and seek resolution',
-                    'Immediately terminate the contract',
-                    'Report the client to authorities'
+                    'Only technical effectiveness of the testing methodology',
+                    'Proper authorization, scope limitations, and responsible disclosure of findings',
+                    'Maximizing billable time and demonstrating advanced skills',
+                    'Showing weaknesses in competitive products'
                 ],
-                'correct_options' => ['Address concerns with the client and seek resolution'],
+                'correct_options' => ['Proper authorization, scope limitations, and responsible disclosure of findings'],
                 'justifications' => [
-                    'Professionals have obligations beyond contractual requirements',
-                    'Correct - Addressing concerns allows opportunity for ethical resolution',
-                    'Immediate termination should follow failed resolution attempts',
-                    'Reporting may be premature without attempting resolution'
+                    'Technical effectiveness alone ignores critical ethical considerations',
+                    'Correct - Ethical penetration testing requires proper authorization and responsible handling of vulnerabilities',
+                    'Billing considerations should not override ethical testing practices',
+                    'Competitive concerns are unrelated to ethical testing obligations'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 5,
+                'bloom_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 17 - Professional Ethics - L4 Analysis
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Organizational Code of Ethics',
+                'question' => 'Analyze the potential conflicts between organizational loyalty and professional ethical obligations.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze the ethical conflict between organizational loyalty and professional responsibility. When should professional responsibility take precedence?',
                 'options' => [
-                    'When the organization faces financial difficulties',
-                    'When stakeholder safety or public interest is at risk',
-                    'When personal career advancement is threatened',
-                    'When competitive advantage is at stake'
+                    'Organizational loyalty always takes precedence over professional ethics',
+                    'Professional ethics may require actions that conflict with organizational pressure',
+                    'There are never conflicts between organizational and professional obligations',
+                    'Ethical obligations are purely personal and don\'t affect professional work'
                 ],
-                'correct_options' => ['When stakeholder safety or public interest is at risk'],
+                'correct_options' => ['Professional ethics may require actions that conflict with organizational pressure'],
                 'justifications' => [
-                    'Financial difficulties don\'t override ethical obligations',
-                    'Correct - Professional responsibility prioritizes stakeholder safety over organizational interests',
-                    'Personal advancement shouldn\'t drive ethical decisions',
-                    'Competitive advantage is secondary to ethical obligations'
+                    'Professional ethics establish standards beyond organizational preferences',
+                    'Correct - Ethical professionals may need to resist organizational pressure to maintain standards',
+                    'Conflicts frequently arise between business pressures and professional standards',
+                    'Professional ethics directly govern workplace conduct and decisions'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.7,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
             // Item 18 - Professional Ethics - L4 Analysis
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Professional Standards and Conduct',
+                'question' => 'What are the primary challenges in enforcing professional ethics in the cybersecurity field?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze why cybersecurity professionals have higher ethical obligations than other IT professionals. What is the primary differentiator?',
                 'options' => [
-                    'Cybersecurity requires more technical expertise',
-                    'Cybersecurity professionals have access to sensitive systems',
-                    'Cybersecurity decisions directly impact stakeholder safety and trust',
-                    'Cybersecurity roles have higher compensation'
+                    'Lack of technical standards for security implementations',
+                    'Rapid technological change, global scope, and varying legal frameworks',
+                    'Insufficient salary levels for security professionals',
+                    'Limited availability of security training programs'
                 ],
-                'correct_options' => ['Cybersecurity decisions directly impact stakeholder safety and trust'],
+                'correct_options' => ['Rapid technological change, global scope, and varying legal frameworks'],
                 'justifications' => [
-                    'Technical expertise doesn\'t determine ethical obligations',
-                    'Access creates responsibility but impact is the key factor',
-                    'Correct - Cybersecurity decisions have broad impact on safety and trust',
-                    'Compensation doesn\'t determine ethical obligations'
+                    'Technical standards exist but enforcement challenges are broader than technical issues',
+                    'Correct - Ethics enforcement faces challenges from technology evolution and global complexity',
+                    'Compensation levels are not directly related to ethics enforcement',
+                    'Training availability does not address enforcement challenges'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
-            // Item 19 - Professional Ethics - L3 Application
+            // Item 19 - Professional Ethics - L5 Evaluation
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Organizational Code of Ethics',
+                'question' => 'Evaluate the effectiveness of professional certification requirements in promoting ethical conduct.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Evaluate the effectiveness of professional codes of ethics in cybersecurity. What is their primary limitation?',
                 'options' => [
-                    'They are too complex for practitioners to understand',
-                    'They lack legal enforcement mechanisms',
-                    'They cannot address all specific ethical dilemmas',
-                    'They are not updated frequently enough'
+                    'Certification requirements guarantee ethical behavior',
+                    'Certifications are ineffective at promoting ethics',
+                    'Certifications provide foundation but require ongoing reinforcement and accountability',
+                    'Only technical skills matter; ethics cannot be taught or measured'
                 ],
-                'correct_options' => ['They cannot address all specific ethical dilemmas'],
+                'correct_options' => ['Certifications provide foundation but require ongoing reinforcement and accountability'],
                 'justifications' => [
-                    'Most codes are designed to be understandable',
-                    'Legal enforcement isn\'t the primary purpose of ethical codes',
-                    'Correct - Codes provide principles but cannot cover every specific situation',
-                    'Update frequency is less important than fundamental guidance'
+                    'Certification alone cannot guarantee ethical behavior in all situations',
+                    'While imperfect, certifications do establish baseline ethical expectations',
+                    'Correct - Certifications establish foundations but need ongoing support and enforcement',
+                    'Ethics can be taught, measured, and are essential for professional practice'
                 ],
                 'difficulty_level' => 5,
-                'bloom_level' => 3,
+                'bloom_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.1,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
             
-            // Item 20 - Professional Ethics - L1 Knowledge
+            // Item 20 - Professional Ethics - L5 Evaluation
             [
-                'topic_id' => $topics['Professional Ethics'] ?? 2,
+                'topic' => 'Professional Ethics',
+                'subtopic' => 'Professional Standards and Conduct',
+                'question' => 'Assess the role of professional ethics in addressing emerging cybersecurity challenges like AI and IoT security.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which ethical principle requires cybersecurity professionals to act in the best interest of society?',
                 'options' => [
-                    'Professional competence',
-                    'Public interest',
-                    'Organizational loyalty',
-                    'Technical excellence'
+                    'Traditional ethics are sufficient for new technologies',
+                    'New technologies require completely different ethical frameworks',
+                    'Ethical principles must evolve while maintaining core professional values',
+                    'Ethics are irrelevant to technological security challenges'
                 ],
-                'correct_options' => ['Public interest'],
+                'correct_options' => ['Ethical principles must evolve while maintaining core professional values'],
                 'justifications' => [
-                    'Professional competence is about skills and knowledge',
-                    'Correct - Public interest principle requires acting for society\'s benefit',
-                    'Organizational loyalty is important but secondary to public interest',
-                    'Technical excellence is about quality, not ethical obligations'
+                    'New technologies create novel ethical challenges requiring updated approaches',
+                    'While new considerations are needed, fundamental ethical principles remain relevant',
+                    'Correct - Ethics must adapt to new challenges while preserving core professional values',
+                    'Ethics are central to responsible development and deployment of new technologies'
+                ],
+                'difficulty_level' => 5,
+                'bloom_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 3: Security Controls - 10 Questions
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 21 - Security Controls - L1 Knowledge
+            [
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Categories',
+                'question' => 'What are the three main categories of security controls?',
+                'type_id' => 1,
+                'options' => [
+                    'Physical, Technical, Administrative',
+                    'Preventive, Detective, Corrective',
+                    'Hardware, Software, Human',
+                    'Internal, External, Hybrid'
+                ],
+                'correct_options' => ['Physical, Technical, Administrative'],
+                'justifications' => [
+                    'Correct - The three main categories are Physical, Technical (logical), and Administrative (management)',
+                    'These are control functions, not categories',
+                    'These are implementation types, not the standard control categories',
+                    'These are not standard security control classifications'
                 ],
                 'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Security Controls - 10 Questions (Items 21-30)
-            
-            // Item 21 - Security Controls - L2 Comprehension
-            [
-                'topic_id' => $topics['Security Controls'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which type of security control is a firewall?',
-                'options' => [
-                    'Administrative',
-                    'Physical',
-                    'Technical',
-                    'Operational'
-                ],
-                'correct_options' => ['Technical'],
-                'justifications' => [
-                    'Administrative controls are policies and procedures',
-                    'Physical controls protect physical assets',
-                    'Correct - Firewalls are technical/logical security controls',
-                    'Operational is not a standard control type category'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
+                'irt_a' => 1.1,
+                'irt_b' => -1.6,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 22 - Security Controls - L2 Comprehension
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Functions',
+                'question' => 'How do preventive controls differ from detective controls?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of administrative security controls?',
                 'options' => [
-                    'To provide technical protection mechanisms',
-                    'To establish policies, procedures, and guidelines',
-                    'To protect physical assets and facilities',
-                    'To monitor and detect security incidents'
+                    'Preventive controls are more expensive than detective controls',
+                    'Preventive controls stop incidents before they occur; detective controls identify incidents after they happen',
+                    'Detective controls are always automated; preventive controls are manual',
+                    'There is no functional difference between these control types'
                 ],
-                'correct_options' => ['To establish policies, procedures, and guidelines'],
+                'correct_options' => ['Preventive controls stop incidents before they occur; detective controls identify incidents after they happen'],
                 'justifications' => [
-                    'Technical controls provide technical protection',
-                    'Correct - Administrative controls establish governance and procedures',
-                    'Physical controls protect physical assets',
-                    'Monitoring can be done by various control types'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 23 - Security Controls - L3 Application
-            [
-                'topic_id' => $topics['Security Controls'] ?? 3,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each security control with its primary category:',
-                'options' => [
-                    'items' => [
-                        'Security awareness training',
-                        'Biometric access control',
-                        'Encryption software',
-                        'Security guards',
-                        'Background checks'
-                    ],
-                    'responses' => [
-                        'Administrative',
-                        'Physical',
-                        'Technical',
-                        'Administrative',
-                        'Physical'
-                    ]
-                ],
-                'correct_options' => [
-                    'Security awareness training' => 'Administrative',
-                    'Biometric access control' => 'Physical',
-                    'Encryption software' => 'Technical',
-                    'Security guards' => 'Physical',
-                    'Background checks' => 'Administrative'
-                ],
-                'justifications' => [
-                    'Security awareness training' => 'Training programs are administrative controls',
-                    'Biometric access control' => 'Controls physical access to facilities',
-                    'Encryption software' => 'Software-based technical control',
-                    'Security guards' => 'Human physical security control',
-                    'Background checks' => 'Administrative screening procedure'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 24 - Security Controls - L2 Comprehension
-            [
-                'topic_id' => $topics['Security Controls'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which control function does an intrusion detection system (IDS) primarily serve?',
-                'options' => [
-                    'Preventive',
-                    'Detective',
-                    'Corrective',
-                    'Deterrent'
-                ],
-                'correct_options' => ['Detective'],
-                'justifications' => [
-                    'Preventive controls stop incidents before they occur',
-                    'Correct - IDS detects and alerts on security incidents',
-                    'Corrective controls fix problems after they occur',
-                    'Deterrent controls discourage potential attackers'
+                    'Cost differences vary by implementation, not control type',
+                    'Correct - Preventive controls proactively prevent; detective controls identify after occurrence',
+                    'Both control types can be automated or manual',
+                    'These control types have distinct and important functional differences'
                 ],
                 'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'irt_a' => 1.2,
+                'irt_b' => -0.9,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 25 - Security Controls - L5 Evaluation
+            // Item 23 - Security Controls - L2 Comprehension
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Categories',
+                'question' => 'Why is a layered approach to security controls more effective than relying on a single control type?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company requires 20-character passwords changed every 30 days. Users write passwords on sticky notes. What is the BEST solution?',
                 'options' => [
-                    'Increase password requirements to 25 characters',
-                    'Implement password manager with single sign-on',
-                    'Add security cameras to monitor desks',
-                    'Require passwords be memorized with testing'
+                    'It reduces the total cost of security implementation',
+                    'Different controls address different threats and failure modes, providing defense in depth',
+                    'It eliminates the need for security policies',
+                    'Layered controls are easier to manage than single controls'
                 ],
-                'correct_options' => ['Implement password manager with single sign-on'],
+                'correct_options' => ['Different controls address different threats and failure modes, providing defense in depth'],
                 'justifications' => [
-                    'This worsens the usability problem',
-                    'Correct - Balances security with usability',
-                    'Addresses symptoms, not root cause',
-                    'Impractical and reduces productivity'
+                    'Layered approaches typically increase costs but improve effectiveness',
+                    'Correct - Multiple control layers provide redundancy and address diverse threat vectors',
+                    'Policies remain necessary regardless of control architecture',
+                    'Multiple layers typically increase management complexity'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 24 - Security Controls - L3 Application
+            [
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Functions',
+                'question' => 'A company wants to prevent unauthorized access to their data center. Which combination of controls would be most effective?',
+                'type_id' => 1,
+                'options' => [
+                    'Only administrative controls like policies and procedures',
+                    'Only technical controls like electronic locks and cameras',
+                    'A combination of physical barriers, access controls, and monitoring systems',
+                    'Only detective controls to identify intruders after entry'
+                ],
+                'correct_options' => ['A combination of physical barriers, access controls, and monitoring systems'],
+                'justifications' => [
+                    'Administrative controls alone cannot physically prevent unauthorized entry',
+                    'Technical controls alone may have vulnerabilities or failure points',
+                    'Correct - Effective data center security requires multiple control types working together',
+                    'Detective controls alone allow intrusions to occur before detection'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 5,
+                'bloom_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.0,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 25 - Security Controls - L3 Application
+            [
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Categories',
+                'question' => 'How should an organization implement corrective controls for a malware incident?',
+                'type_id' => 1,
+                'options' => [
+                    'Focus only on removing the malware from infected systems',
+                    'Implement system restoration, improve preventive controls, and update incident procedures',
+                    'Only update antivirus signatures for future prevention',
+                    'Replace all affected systems with new hardware'
+                ],
+                'correct_options' => ['Implement system restoration, improve preventive controls, and update incident procedures'],
+                'justifications' => [
+                    'Malware removal alone does not address systemic improvements',
+                    'Correct - Corrective controls should restore operations and prevent recurrence',
+                    'Signature updates alone are insufficient corrective measures',
+                    'Hardware replacement is typically unnecessary and excessively costly'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 26 - Security Controls - L3 Application
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Functions',
+                'question' => 'What type of security control is a security awareness training program?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A financial institution needs controls for a new payment system. Which approach best addresses regulatory requirements?',
                 'options' => [
-                    'Technical controls only (encryption, authentication)',
-                    'Administrative controls only (policies, procedures)',
-                    'Physical controls only (secure facilities, hardware)',
-                    'Integrated technical, administrative, and physical controls'
+                    'Physical preventive control',
+                    'Technical detective control',
+                    'Administrative preventive control',
+                    'Administrative corrective control'
                 ],
-                'correct_options' => ['Integrated technical, administrative, and physical controls'],
+                'correct_options' => ['Administrative preventive control'],
                 'justifications' => [
-                    'Technical controls alone don\'t address all requirements',
-                    'Policies without implementation are insufficient',
-                    'Physical security alone doesn\'t address digital threats',
-                    'Correct - Comprehensive approach addresses all threat vectors'
+                    'Training programs are not physical controls',
+                    'Training is administrative, not technical, and preventive rather than detective',
+                    'Correct - Security awareness training is an administrative control that prevents incidents',
+                    'While administrative, training is primarily preventive, not corrective'
                 ],
                 'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 27 - Security Controls - L4 Analysis
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Categories',
+                'question' => 'Analyze why technical controls alone are insufficient for comprehensive security.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze why layered security controls are necessary. What is the primary architectural benefit?',
                 'options' => [
-                    'Regulatory compliance requires multiple control types',
-                    'Each control type addresses different attack vectors and threats',
-                    'Technical controls are strongest with other types as backup',
-                    'Multiple layers demonstrate security maturity'
+                    'Technical controls are always unreliable',
+                    'Human factors, policy enforcement, and physical security cannot be addressed by technical controls alone',
+                    'Technical controls are too expensive to implement comprehensively',
+                    'Administrative controls are always more effective than technical controls'
                 ],
-                'correct_options' => ['Each control type addresses different attack vectors and threats'],
+                'correct_options' => ['Human factors, policy enforcement, and physical security cannot be addressed by technical controls alone'],
                 'justifications' => [
-                    'Compliance influences design but isn\'t the primary reason',
-                    'Correct - Different threats require different control types for comprehensive coverage',
-                    'No single control type is inherently strongest',
-                    'Maturity demonstration is secondary to effectiveness'
+                    'Technical controls can be reliable but have scope limitations',
+                    'Correct - Technical controls cannot address all security domains and require support from other control types',
+                    'Cost varies but is not the primary limitation of technical controls',
+                    'Control effectiveness varies by situation; no single type is universally superior'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.6,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
             // Item 28 - Security Controls - L4 Analysis
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Functions',
+                'question' => 'What is the primary limitation of relying heavily on detective controls?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze the effectiveness of deterrent controls. What is their primary limitation?',
                 'options' => [
-                    'They are too expensive to implement',
-                    'They only work on rational actors who fear consequences',
-                    'They require constant monitoring to be effective',
-                    'They cannot be measured or quantified'
+                    'Detective controls are more expensive than preventive controls',
+                    'They identify incidents after damage has occurred, requiring recovery and remediation',
+                    'Detective controls cannot be automated effectively',
+                    'They require more technical expertise to implement'
                 ],
-                'correct_options' => ['They only work on rational actors who fear consequences'],
+                'correct_options' => ['They identify incidents after damage has occurred, requiring recovery and remediation'],
                 'justifications' => [
-                    'Cost isn\'t the primary limitation',
-                    'Correct - Deterrent controls are ineffective against irrational or desperate actors',
-                    'Monitoring isn\'t required for deterrence',
-                    'Measurement challenges exist but aren\'t the primary limitation'
+                    'Costs vary by implementation; expense is not the primary limitation',
+                    'Correct - Detective controls inherently allow incidents to occur before detection',
+                    'Many detective controls can be effectively automated',
+                    'Implementation complexity varies but is not the primary limitation'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 0.7,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
-            // Item 29 - Security Controls - L3 Application
+            // Item 29 - Security Controls - L5 Evaluation
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Categories',
+                'question' => 'Evaluate the optimal balance between preventive, detective, and corrective controls for a financial services organization.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Evaluate the security control design that leads to password sticky notes. What is the fundamental failure?',
                 'options' => [
-                    'Users are inherently careless about security',
-                    'Controls that are too difficult to use will be circumvented',
-                    'Password complexity requirements are fundamentally flawed',
-                    'Physical security is less important than logical security'
+                    'Focus entirely on preventive controls to avoid all incidents',
+                    'Emphasize detective controls for rapid incident response',
+                    'Balance all three types based on risk assessment, regulatory requirements, and business context',
+                    'Corrective controls are sufficient if implemented properly'
                 ],
-                'correct_options' => ['Controls that are too difficult to use will be circumvented'],
+                'correct_options' => ['Balance all three types based on risk assessment, regulatory requirements, and business context'],
                 'justifications' => [
-                    'This blames users rather than recognizing design problems',
-                    'Correct - Poor usability leads to security workarounds that reduce overall security',
-                    'Complexity can be good when implemented with proper tools',
-                    'Physical exposure of passwords creates multiple security risks'
+                    'No preventive control is 100% effective; other controls are necessary',
+                    'Detective controls alone allow incidents to occur and cause damage',
+                    'Correct - Optimal security requires balancing control types based on organizational needs',
+                    'Corrective controls alone cannot prevent incidents or provide early detection'
                 ],
                 'difficulty_level' => 5,
-                'bloom_level' => 3,
+                'bloom_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.0,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
             
-            // Item 30 - Security Controls - L1 Knowledge
+            // Item 30 - Security Controls - L5 Evaluation
             [
-                'topic_id' => $topics['Security Controls'] ?? 3,
+                'topic' => 'Security Controls',
+                'subtopic' => 'Control Functions',
+                'question' => 'Assess the long-term sustainability of a security control program that prioritizes immediate cost savings over comprehensive protection.',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which security control function is primarily performed by antivirus software?',
                 'options' => [
-                    'Preventive',
-                    'Detective',
-                    'Corrective',
-                    'Deterrent'
+                    'Cost-focused approaches always provide the best security value',
+                    'Immediate cost savings typically lead to higher long-term costs due to incidents and remediation',
+                    'Security effectiveness is unrelated to investment levels',
+                    'Comprehensive protection is always cost-prohibitive'
                 ],
-                'correct_options' => ['Preventive'],
+                'correct_options' => ['Immediate cost savings typically lead to higher long-term costs due to incidents and remediation'],
                 'justifications' => [
-                    'Correct - Antivirus software prevents malware from executing',
-                    'While it detects threats, its primary function is prevention',
-                    'Corrective controls fix problems after they occur',
-                    'Deterrent controls discourage attackers'
+                    'Cost-focused approaches may create security gaps leading to incidents',
+                    'Correct - Inadequate security investment often results in higher total costs over time',
+                    'While not linear, there is generally a relationship between investment and security effectiveness',
+                    'Comprehensive protection can be achieved through risk-based, cost-effective approaches'
+                ],
+                'difficulty_level' => 5,
+                'bloom_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.2,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 4: Security Principles - 10 Questions
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 31 - Security Principles - L1 Knowledge
+            [
+                'topic' => 'Security Principles',
+                'subtopic' => 'Access Control Principles',
+                'question' => 'What does the principle of least privilege require?',
+                'type_id' => 1,
+                'options' => [
+                    'Users should have maximum access to perform their jobs efficiently',
+                    'Users should have the minimum access necessary to perform their job functions',
+                    'All users should have identical access levels',
+                    'Access should be granted based on seniority in the organization'
+                ],
+                'correct_options' => ['Users should have the minimum access necessary to perform their job functions'],
+                'justifications' => [
+                    'Maximum access violates the principle of least privilege',
+                    'Correct - Least privilege grants only the minimum necessary access for job performance',
+                    'Identical access ignores different job requirements and violates least privilege',
+                    'Seniority is not a valid criterion for access control under least privilege'
                 ],
                 'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Security Principles - 10 Questions (Items 31-40)
-            
-            // Item 31 - Security Principles - L2 Comprehension
-            [
-                'topic_id' => $topics['Security Principles'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What does the principle of least privilege mean?',
-                'options' => [
-                    'Users should have the minimum access necessary to perform their job',
-                    'Users should have read-only access to all systems',
-                    'Users should share accounts to minimize administrative overhead',
-                    'Users should only access systems during business hours'
-                ],
-                'correct_options' => ['Users should have the minimum access necessary to perform their job'],
-                'justifications' => [
-                    'Correct - Least privilege grants only necessary access for job functions',
-                    'Read-only access might be insufficient for job requirements',
-                    'Shared accounts violate accountability principles',
-                    'Time restrictions are separate from privilege levels'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
+                'irt_a' => 1.0,
+                'irt_b' => -1.7,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 32 - Security Principles - L2 Comprehension
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Design Principles',
+                'question' => 'Why is the principle of "fail secure" important in security system design?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the principle of need-to-know?',
                 'options' => [
-                    'Information should be shared with everyone in the organization',
-                    'Information should only be shared with those who require it for their duties',
-                    'Information should only be shared with management',
-                    'Information should be publicly available unless classified'
+                    'It ensures systems never experience failures',
+                    'When systems fail, they default to a secure state rather than an open state',
+                    'It makes systems more user-friendly during failures',
+                    'It reduces the cost of system maintenance'
                 ],
-                'correct_options' => ['Information should only be shared with those who require it for their duties'],
+                'correct_options' => ['When systems fail, they default to a secure state rather than an open state'],
                 'justifications' => [
-                    'Universal sharing violates need-to-know principle',
-                    'Correct - Information access is limited to those who need it for legitimate purposes',
-                    'Management doesn\'t automatically have need-to-know for all information',
-                    'Default public access violates need-to-know principle'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 33 - Security Principles - L3 Application
-            [
-                'topic_id' => $topics['Security Principles'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A bank requires two employees to approve wire transfers over $50,000. Which principle is demonstrated?',
-                'options' => [
-                    'Least privilege',
-                    'Need-to-know',
-                    'Separation of duties',
-                    'Dual control'
-                ],
-                'correct_options' => ['Dual control'],
-                'justifications' => [
-                    'Least privilege limits access, not requiring multiple people',
-                    'Need-to-know limits information access',
-                    'Separation of duties divides responsibilities, not requiring simultaneous approval',
-                    'Correct - Dual control requires two people to complete sensitive operations'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 34 - Security Principles - L2 Comprehension
-            [
-                'topic_id' => $topics['Security Principles'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the difference between separation of duties and dual control?',
-                'options' => [
-                    'Separation of duties is for technical systems, dual control is for people',
-                    'Separation divides tasks among different people, dual control requires simultaneous action',
-                    'Separation is preventive, dual control is detective',
-                    'There is no difference - they are the same principle'
-                ],
-                'correct_options' => ['Separation divides tasks among different people, dual control requires simultaneous action'],
-                'justifications' => [
-                    'Both can apply to technical and human processes',
-                    'Correct - Separation divides responsibilities, dual control requires concurrent involvement',
-                    'Both are typically preventive controls',
-                    'They are related but distinct principles'
+                    'Fail secure does not prevent failures; it manages failure behavior',
+                    'Correct - Fail secure ensures system failures do not compromise security',
+                    'Fail secure may actually reduce usability during failures to maintain security',
+                    'Maintenance costs are not the primary concern of fail secure design'
                 ],
                 'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'irt_a' => 1.2,
+                'irt_b' => -0.7,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 35 - Security Principles - L5 Evaluation
+            // Item 33 - Security Principles - L2 Comprehension
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Access Control Principles',
+                'question' => 'How does separation of duties enhance security?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A developer needs access to production systems to troubleshoot. How should least privilege be applied?',
                 'options' => [
-                    'Grant full administrative access to resolve issues quickly',
-                    'Grant read-only access to production systems',
-                    'Grant temporary, specific access for the troubleshooting task',
-                    'Deny all access to maintain security'
+                    'It reduces the number of people needed to complete tasks',
+                    'It prevents any single individual from completing critical processes alone',
+                    'It eliminates the need for access controls',
+                    'It simplifies audit procedures'
                 ],
-                'correct_options' => ['Grant temporary, specific access for the troubleshooting task'],
+                'correct_options' => ['It prevents any single individual from completing critical processes alone'],
                 'justifications' => [
-                    'Full administrative access violates least privilege',
-                    'Read-only access might be insufficient for troubleshooting',
-                    'Correct - Temporary, specific access aligns with least privilege principles',
-                    'Denying necessary access could prevent legitimate business needs'
+                    'Separation of duties typically requires more people, not fewer',
+                    'Correct - Separation of duties requires multiple people for critical tasks, preventing single-person fraud or errors',
+                    'Access controls are still necessary with separation of duties',
+                    'While it may aid auditing, the primary purpose is preventing single-person control'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 34 - Security Principles - L3 Application
+            [
+                'topic' => 'Security Principles',
+                'subtopic' => 'Design Principles',
+                'question' => 'How should the principle of defense in depth be applied to web application security?',
+                'type_id' => 1,
+                'options' => [
+                    'Implement only the strongest single security control',
+                    'Use multiple layers including input validation, authentication, authorization, and logging',
+                    'Focus exclusively on perimeter security',
+                    'Rely on the web server\'s built-in security features'
+                ],
+                'correct_options' => ['Use multiple layers including input validation, authentication, authorization, and logging'],
+                'justifications' => [
+                    'Single controls, regardless of strength, can fail or be bypassed',
+                    'Correct - Defense in depth requires multiple security layers for comprehensive protection',
+                    'Perimeter security alone cannot protect against all web application threats',
+                    'Built-in features alone are insufficient for comprehensive web application security'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 5,
+                'bloom_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 35 - Security Principles - L3 Application
+            [
+                'topic' => 'Security Principles',
+                'subtopic' => 'Access Control Principles',
+                'question' => 'A financial system requires dual approval for transactions over $10,000. Which security principle does this implement?',
+                'type_id' => 1,
+                'options' => [
+                    'Principle of least privilege',
+                    'Separation of duties',
+                    'Defense in depth',
+                    'Fail secure'
+                ],
+                'correct_options' => ['Separation of duties'],
+                'justifications' => [
+                    'While related, this specifically requires multiple people, not minimum access',
+                    'Correct - Dual approval requires two people to complete the transaction, implementing separation of duties',
+                    'This is not about multiple layers of different controls',
+                    'This is not about failure behavior but normal operational requirements'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.0,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 36 - Security Principles - L3 Application
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Design Principles',
+                'question' => 'When designing a secure network architecture, how should the principle of "security by design" be implemented?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How should split knowledge be implemented for a critical encryption key?',
                 'options' => [
-                    'Store the complete key in multiple locations',
-                    'Divide the key into parts, with each part held by different people',
-                    'Share the key with all authorized users',
-                    'Store the key in a hardware security module'
+                    'Add security features after the network is operational',
+                    'Integrate security considerations into every phase of network design and implementation',
+                    'Use only the most expensive security products available',
+                    'Copy security designs from other organizations'
                 ],
-                'correct_options' => ['Divide the key into parts, with each part held by different people'],
+                'correct_options' => ['Integrate security considerations into every phase of network design and implementation'],
                 'justifications' => [
-                    'Complete key storage doesn\'t implement split knowledge',
-                    'Correct - Split knowledge divides sensitive information among multiple parties',
-                    'Sharing with all users violates the principle',
-                    'HSM provides security but doesn\'t implement split knowledge'
+                    'Security by design requires incorporating security from the beginning, not as an afterthought',
+                    'Correct - Security by design integrates security throughout the entire design and implementation process',
+                    'Cost is not the determining factor for security by design',
+                    'Each organization has unique requirements that require customized security design'
                 ],
                 'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 37 - Security Principles - L4 Analysis
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Access Control Principles',
+                'question' => 'Analyze the potential conflicts between the principle of least privilege and operational efficiency.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze why least privilege is difficult to implement in practice. What is the primary challenge?',
                 'options' => [
-                    'Technical systems cannot support granular permissions',
-                    'Users complain about restricted access affecting productivity',
-                    'Determining minimum necessary access requires ongoing analysis',
-                    'Administrative overhead is too high'
+                    'There are never conflicts between security and efficiency',
+                    'Least privilege can slow operations but provides essential security protection',
+                    'Operational efficiency should always override security principles',
+                    'These principles are unrelated to each other'
                 ],
-                'correct_options' => ['Determining minimum necessary access requires ongoing analysis'],
+                'correct_options' => ['Least privilege can slow operations but provides essential security protection'],
                 'justifications' => [
-                    'Most modern systems support granular permissions',
-                    'User complaints are a concern but not the primary challenge',
-                    'Correct - Job functions change, requiring continuous assessment of access needs',
-                    'Administrative overhead is manageable with proper tools'
+                    'Security and efficiency often require balancing competing interests',
+                    'Correct - Least privilege may add steps or restrictions but is necessary for security',
+                    'Security principles serve important risk management purposes',
+                    'Access controls directly impact operational procedures and efficiency'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
             // Item 38 - Security Principles - L4 Analysis
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Design Principles',
+                'question' => 'What are the primary challenges in implementing defense in depth in cloud environments?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze the effectiveness of separation of duties in fraud prevention. What is its primary limitation?',
                 'options' => [
-                    'It cannot prevent collusion between multiple parties',
-                    'It requires too many people to complete simple tasks',
-                    'It slows down business processes significantly',
-                    'It only works for financial transactions'
+                    'Cloud environments don\'t support multiple security layers',
+                    'Complexity of managing multiple cloud services, shared responsibility models, and integration challenges',
+                    'Defense in depth is not applicable to cloud computing',
+                    'Cloud providers handle all security automatically'
                 ],
-                'correct_options' => ['It cannot prevent collusion between multiple parties'],
+                'correct_options' => ['Complexity of managing multiple cloud services, shared responsibility models, and integration challenges'],
                 'justifications' => [
-                    'Correct - Separation of duties is ineffective when multiple parties conspire',
-                    'Proper implementation balances security with efficiency',
-                    'Process impact can be managed with good design',
-                    'Separation of duties applies to many types of sensitive operations'
+                    'Cloud environments can support multiple layers but implementation can be complex',
+                    'Correct - Cloud environments present unique challenges for implementing layered security',
+                    'Defense in depth principles apply to cloud environments but require adapted implementation',
+                    'Cloud security is a shared responsibility requiring customer implementation of many controls'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 0.6,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
-            // Item 39 - Security Principles - L3 Application
+            // Item 39 - Security Principles - L5 Evaluation
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Access Control Principles',
+                'question' => 'Evaluate the trade-offs between implementing strict separation of duties versus accepting some security risk for operational flexibility.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Evaluate the trade-off between security principles and operational efficiency. Which approach is most effective?',
                 'options' => [
-                    'Prioritize security principles regardless of efficiency impact',
-                    'Prioritize efficiency and implement security where possible',
-                    'Balance security and efficiency based on risk assessment',
-                    'Implement security principles only for critical operations'
+                    'Strict separation of duties should never be compromised',
+                    'Security risks are never acceptable for any operational benefits',
+                    'Risk-based decisions should consider threat likelihood, impact, and business requirements',
+                    'Operational flexibility is always more important than security'
                 ],
-                'correct_options' => ['Balance security and efficiency based on risk assessment'],
+                'correct_options' => ['Risk-based decisions should consider threat likelihood, impact, and business requirements'],
                 'justifications' => [
-                    'Rigid security focus may harm business objectives',
-                    'Efficiency focus may create unacceptable security risks',
-                    'Correct - Risk-based approach balances security needs with business requirements',
-                    'Limiting to critical operations may miss important security needs'
+                    'Some situations may justify modified implementations based on risk assessment',
+                    'Risk management involves balancing security with business needs',
+                    'Correct - Security decisions should be based on comprehensive risk assessment and business context',
+                    'Security provides essential protection that cannot be ignored for convenience'
                 ],
                 'difficulty_level' => 5,
-                'bloom_level' => 3,
+                'bloom_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 0.9,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
             
-            // Item 40 - Security Principles - L1 Knowledge
+            // Item 40 - Security Principles - L5 Evaluation
             [
-                'topic_id' => $topics['Security Principles'] ?? 4,
+                'topic' => 'Security Principles',
+                'subtopic' => 'Design Principles',
+                'question' => 'Assess the long-term effectiveness of security principles developed decades ago in addressing modern cybersecurity challenges.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What does split knowledge mean in security?',
                 'options' => [
-                    'Dividing sensitive information among multiple people',
-                    'Separating different types of knowledge',
-                    'Distributing knowledge across departments',
-                    'Creating knowledge backup systems'
+                    'Old principles are completely obsolete and should be abandoned',
+                    'New technologies require entirely different security approaches',
+                    'Core principles remain valid but require modern interpretation and implementation',
+                    'Traditional principles are sufficient without any updates'
                 ],
-                'correct_options' => ['Dividing sensitive information among multiple people'],
+                'correct_options' => ['Core principles remain valid but require modern interpretation and implementation'],
                 'justifications' => [
-                    'Correct - Split knowledge divides critical information so no single person has complete access',
-                    'This describes knowledge categorization, not split knowledge',
-                    'This describes knowledge distribution, not the security principle',
-                    'This describes knowledge redundancy, not split knowledge'
+                    'Fundamental security principles address timeless security challenges',
+                    'While implementation changes, core principles like least privilege remain relevant',
+                    'Correct - Security principles provide enduring guidance but need contemporary application',
+                    'Modern threats and technologies require updated implementation of traditional principles'
+                ],
+                'difficulty_level' => 5,
+                'bloom_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.1,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 5: Cybersecurity Frameworks - 10 Questions
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - Cybersecurity Frameworks - L1 Knowledge
+            [
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Risk Management Frameworks',
+                'question' => 'What is the primary purpose of the NIST Cybersecurity Framework?',
+                'type_id' => 1,
+                'options' => [
+                    'To replace all other security standards',
+                    'To provide a voluntary framework for managing cybersecurity risk',
+                    'To establish mandatory security requirements for all organizations',
+                    'To create new cybersecurity technologies'
+                ],
+                'correct_options' => ['To provide a voluntary framework for managing cybersecurity risk'],
+                'justifications' => [
+                    'NIST CSF complements rather than replaces other standards',
+                    'Correct - The NIST CSF provides voluntary guidance for cybersecurity risk management',
+                    'The framework is voluntary, not mandatory (except for some federal agencies)',
+                    'The framework focuses on management approaches, not technology development'
                 ],
                 'difficulty_level' => 1,
                 'bloom_level' => 1,
+                'irt_a' => 1.0,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Cybersecurity Frameworks - 10 Questions (Items 41-50)
-            
-            // Item 41 - Cybersecurity Frameworks - L2 Comprehension
+            // Item 42 - Cybersecurity Frameworks - L1 Knowledge
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Control Frameworks',
+                'question' => 'What are the five core functions of the NIST Cybersecurity Framework?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which framework consists of Identify, Protect, Detect, Respond, and Recover functions?',
                 'options' => [
-                    'ISO 27001',
-                    'NIST Cybersecurity Framework',
-                    'COBIT',
-                    'CIS Controls'
+                    'Plan, Do, Check, Act, Improve',
+                    'Identify, Protect, Detect, Respond, Recover',
+                    'Assess, Design, Implement, Monitor, Review',
+                    'Prevent, Detect, Contain, Eradicate, Learn'
                 ],
-                'correct_options' => ['NIST Cybersecurity Framework'],
+                'correct_options' => ['Identify, Protect, Detect, Respond, Recover'],
                 'justifications' => [
-                    'ISO 27001 is organized by control domains, not these functions',
-                    'Correct - NIST CSF is organized into these five core functions',
-                    'COBIT focuses on IT governance processes',
-                    'CIS Controls are organized by security control categories'
+                    'This describes the PDCA cycle, not NIST CSF functions',
+                    'Correct - The five core functions are Identify, Protect, Detect, Respond, Recover',
+                    'This describes a general system lifecycle, not NIST CSF functions',
+                    'This describes incident response phases, not NIST CSF core functions'
                 ],
                 'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 42 - Cybersecurity Frameworks - L2 Comprehension
-            [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of ISO/IEC 27001?',
-                'options' => [
-                    'To provide technical security controls',
-                    'To establish an information security management system',
-                    'To define incident response procedures',
-                    'To create network security standards'
-                ],
-                'correct_options' => ['To establish an information security management system'],
-                'justifications' => [
-                    'ISO 27001 is about management systems, not specific technical controls',
-                    'Correct - ISO 27001 defines requirements for an information security management system',
-                    'ISO 27001 covers management systems, not specific procedures',
-                    'ISO 27001 is not specific to network security'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
+                'bloom_level' => 1,
+                'irt_a' => 1.1,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 43 - Cybersecurity Frameworks - L2 Comprehension
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Governance Frameworks',
+                'question' => 'How does ISO 27001 differ from other cybersecurity frameworks?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization wants third-party certification for their security management system. Which framework should they implement?',
                 'options' => [
-                    'NIST CSF',
-                    'ISO 27001',
-                    'CIS Controls',
-                    'COBIT'
+                    'It focuses only on technical controls',
+                    'It provides a certifiable information security management system standard',
+                    'It applies only to government organizations',
+                    'It replaces the need for other security frameworks'
                 ],
-                'correct_options' => ['ISO 27001'],
+                'correct_options' => ['It provides a certifiable information security management system standard'],
                 'justifications' => [
-                    'NIST CSF is a framework but not certifiable',
-                    'Correct - ISO 27001 is the international standard for certifiable security management systems',
-                    'CIS Controls are best practices but not certifiable',
-                    'COBIT is for IT governance, not security certification'
+                    'ISO 27001 covers management, physical, and technical controls',
+                    'Correct - ISO 27001 is unique in providing a certifiable ISMS standard',
+                    'ISO 27001 applies to all types of organizations',
+                    'ISO 27001 can be used alongside other frameworks'
                 ],
                 'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'irt_a' => 1.2,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 44 - Cybersecurity Frameworks - L2 Comprehension
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Control Frameworks',
+                'question' => 'Why do organizations often use multiple cybersecurity frameworks simultaneously?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the relationship between COBIT and cybersecurity frameworks?',
                 'options' => [
-                    'COBIT replaces the need for cybersecurity frameworks',
-                    'COBIT provides IT governance context for cybersecurity frameworks',
-                    'COBIT and cybersecurity frameworks are completely separate',
-                    'COBIT is a subset of cybersecurity frameworks'
+                    'To increase compliance costs',
+                    'Different frameworks address different aspects of cybersecurity and regulatory requirements',
+                    'Multiple frameworks are always better than single frameworks',
+                    'It is required by law in most jurisdictions'
                 ],
-                'correct_options' => ['COBIT provides IT governance context for cybersecurity frameworks'],
+                'correct_options' => ['Different frameworks address different aspects of cybersecurity and regulatory requirements'],
                 'justifications' => [
-                    'COBIT complements rather than replaces cybersecurity frameworks',
-                    'Correct - COBIT provides governance structure that cybersecurity frameworks operate within',
-                    'They are related and complementary',
-                    'COBIT is broader, covering overall IT governance'
+                    'Organizations use multiple frameworks for benefits, not to increase costs',
+                    'Correct - Different frameworks serve different purposes and regulatory needs',
+                    'More frameworks are not automatically better; it depends on organizational needs',
+                    'Multiple framework usage is typically voluntary, not legally required'
                 ],
                 'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'irt_a' => 1.3,
+                'irt_b' => -0.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 45 - Cybersecurity Frameworks - L5 Evaluation
+            // Item 45 - Cybersecurity Frameworks - L3 Application
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Risk Management Frameworks',
+                'question' => 'How should a healthcare organization choose between NIST CSF and HIPAA Security Rule for cybersecurity guidance?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A healthcare organization needs to comply with HIPAA while improving cybersecurity. Which framework combination is most appropriate?',
                 'options' => [
-                    'NIST CSF only',
-                    'ISO 27001 only',
-                    'NIST CSF with healthcare-specific guidelines',
-                    'CIS Controls with COBIT'
+                    'Choose only one framework to avoid conflicts',
+                    'Use NIST CSF as voluntary guidance while ensuring HIPAA compliance',
+                    'HIPAA automatically covers all NIST CSF requirements',
+                    'Healthcare organizations cannot use NIST CSF'
                 ],
-                'correct_options' => ['NIST CSF with healthcare-specific guidelines'],
+                'correct_options' => ['Use NIST CSF as voluntary guidance while ensuring HIPAA compliance'],
                 'justifications' => [
-                    'NIST CSF alone may not address healthcare-specific requirements',
-                    'ISO 27001 alone may not address healthcare compliance needs',
-                    'Correct - NIST CSF provides comprehensive cybersecurity with healthcare-specific adaptations',
-                    'This combination doesn\'t directly address healthcare compliance'
+                    'Frameworks can be complementary rather than conflicting',
+                    'Correct - NIST CSF can provide additional guidance while meeting mandatory HIPAA requirements',
+                    'HIPAA has specific requirements but NIST CSF provides broader cybersecurity guidance',
+                    'NIST CSF is applicable to healthcare organizations'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 5,
+                'bloom_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.0,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 46 - Cybersecurity Frameworks - L3 Application
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Governance Frameworks',
+                'question' => 'What is the most effective approach for implementing a cybersecurity framework in a mid-sized organization?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A small business wants to implement basic cybersecurity controls cost-effectively. Which framework is most appropriate?',
                 'options' => [
-                    'Full ISO 27001 implementation',
-                    'Complete NIST CSF implementation',
-                    'CIS Controls focusing on first six controls',
-                    'COBIT full framework'
+                    'Implement all framework requirements immediately',
+                    'Conduct a gap analysis, prioritize based on risk, and implement in phases',
+                    'Ignore frameworks and develop custom security measures',
+                    'Only implement the least expensive framework requirements'
                 ],
-                'correct_options' => ['CIS Controls focusing on first six controls'],
+                'correct_options' => ['Conduct a gap analysis, prioritize based on risk, and implement in phases'],
                 'justifications' => [
-                    'Full ISO 27001 may be too complex and expensive for small businesses',
-                    'Complete NIST CSF may be overwhelming for small businesses',
-                    'Correct - CIS Controls prioritize the most effective controls for small organizations',
-                    'COBIT is focused on governance, not practical security controls'
+                    'Immediate full implementation may be overwhelming and ineffective',
+                    'Correct - Phased, risk-based implementation allows for manageable and effective deployment',
+                    'Frameworks provide valuable guidance that custom approaches may miss',
+                    'Cost should not be the primary factor; risk and effectiveness are more important'
                 ],
                 'difficulty_level' => 3,
                 'bloom_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
-            // Item 47 - Cybersecurity Frameworks - L4 Analysis
+            // Item 47 - Cybersecurity Frameworks - L3 Application
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Control Frameworks',
+                'question' => 'How should an organization measure the effectiveness of their cybersecurity framework implementation?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze why organizations struggle with cybersecurity framework implementation. What is the primary challenge?',
                 'options' => [
-                    'Frameworks are too technically complex',
-                    'Frameworks lack specific implementation guidance',
-                    'Aligning framework requirements with business objectives',
-                    'Frameworks are too expensive to implement'
+                    'Count the number of controls implemented',
+                    'Measure risk reduction, incident frequency, and control performance metrics',
+                    'Only measure compliance with framework requirements',
+                    'Framework effectiveness cannot be measured'
                 ],
-                'correct_options' => ['Aligning framework requirements with business objectives'],
+                'correct_options' => ['Measure risk reduction, incident frequency, and control performance metrics'],
                 'justifications' => [
-                    'Most frameworks are designed to be understandable',
-                    'Many frameworks provide implementation guidance',
-                    'Correct - The biggest challenge is making frameworks relevant to specific business needs',
-                    'Cost is a factor but alignment is the primary challenge'
+                    'Control quantity does not indicate effectiveness or risk reduction',
+                    'Correct - Effectiveness should be measured through security outcomes and performance metrics',
+                    'Compliance alone does not guarantee security effectiveness',
+                    'Framework effectiveness can and should be measured through various metrics'
                 ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
+                'difficulty_level' => 3,
+                'bloom_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
             
             // Item 48 - Cybersecurity Frameworks - L4 Analysis
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Risk Management Frameworks',
+                'question' => 'Analyze the challenges organizations face when trying to align multiple cybersecurity frameworks.',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Analyze the effectiveness of combining multiple frameworks. What is the primary benefit?',
                 'options' => [
-                    'Demonstrates compliance with more regulations',
-                    'Provides comprehensive coverage of different security aspects',
-                    'Reduces implementation complexity',
-                    'Minimizes audit requirements'
+                    'There are no challenges because all frameworks are identical',
+                    'Different terminology, overlapping requirements, and resource allocation complexity',
+                    'Only technical implementation challenges exist',
+                    'Alignment is impossible and should not be attempted'
                 ],
-                'correct_options' => ['Provides comprehensive coverage of different security aspects'],
+                'correct_options' => ['Different terminology, overlapping requirements, and resource allocation complexity'],
                 'justifications' => [
-                    'Compliance is a benefit but not the primary one',
-                    'Correct - Different frameworks address different aspects, providing comprehensive coverage',
-                    'Multiple frameworks typically increase complexity',
-                    'Multiple frameworks may increase audit requirements'
+                    'Frameworks have different approaches and terminology',
+                    'Correct - Multiple frameworks create complexity in terminology, requirements, and resource management',
+                    'Challenges include management and policy issues beyond technical implementation',
+                    'While challenging, framework alignment is possible and often beneficial'
                 ],
                 'difficulty_level' => 4,
                 'bloom_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.4,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
-            // Item 49 - Cybersecurity Frameworks - L5 Evaluation
+            // Item 49 - Cybersecurity Frameworks - L4 Analysis
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Governance Frameworks',
+                'question' => 'What is the primary limitation of relying solely on framework compliance for cybersecurity?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Evaluate the long-term effectiveness of cybersecurity frameworks in rapidly changing threat landscapes. What is their primary limitation?',
                 'options' => [
-                    'They become outdated too quickly',
-                    'They focus on processes rather than specific threats',
-                    'They are too rigid for modern organizations',
-                    'They require too many resources to maintain'
+                    'Frameworks are always outdated',
+                    'Compliance may create a checkbox mentality without addressing actual security risks',
+                    'Frameworks are too expensive to implement properly',
+                    'Compliance guarantees perfect security'
                 ],
-                'correct_options' => ['They focus on processes rather than specific threats'],
+                'correct_options' => ['Compliance may create a checkbox mentality without addressing actual security risks'],
                 'justifications' => [
-                    'Good frameworks are designed to be adaptable',
-                    'Correct - Process focus provides stability but may miss emerging specific threats',
-                    'Modern frameworks are designed to be flexible',
-                    'Resource requirements are manageable with proper planning'
+                    'While frameworks may lag behind threats, this is not the primary limitation',
+                    'Correct - Framework compliance alone may not address organization-specific risks and threats',
+                    'Cost is a consideration but not the primary limitation of compliance-focused approaches',
+                    'No framework or compliance approach can guarantee perfect security'
                 ],
-                'difficulty_level' => 5,
-                'bloom_level' => 5,
+                'difficulty_level' => 4,
+                'bloom_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
             
-            // Item 50 - Cybersecurity Frameworks - L5 Evaluation
+            // Item 50 - Cybersecurity Frameworks - L3 Application
             [
-                'topic_id' => $topics['Cybersecurity Frameworks'] ?? 5,
+                'topic' => 'Cybersecurity Frameworks',
+                'subtopic' => 'Control Frameworks',
+                'question' => 'A company implementing NIST CSF wants to address emerging AI security risks. How should they approach framework adaptation?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Evaluate the strategic value of cybersecurity frameworks for organizational maturity. What is their greatest contribution?',
                 'options' => [
-                    'Providing specific technical solutions',
-                    'Establishing systematic, repeatable security processes',
-                    'Ensuring regulatory compliance',
-                    'Reducing cybersecurity costs'
+                    'Wait for official framework updates before taking action',
+                    'Ignore AI risks since they are not in the current framework',
+                    'Apply existing framework principles to AI risks while monitoring for formal updates',
+                    'Abandon NIST CSF and create a completely new approach'
                 ],
-                'correct_options' => ['Establishing systematic, repeatable security processes'],
+                'correct_options' => ['Apply existing framework principles to AI risks while monitoring for formal updates'],
                 'justifications' => [
-                    'Frameworks provide structure, not specific technical solutions',
-                    'Correct - Frameworks establish systematic approaches that enable organizational maturity',
-                    'Compliance is a benefit but not the primary strategic value',
-                    'Frameworks may actually increase costs while improving effectiveness'
+                    'Waiting may leave the organization exposed to evolving risks',
+                    'Emerging risks should be addressed proactively, not ignored',
+                    'Correct - Framework principles can be applied to new technologies while staying current with updates',
+                    'Abandoning proven frameworks eliminates valuable guidance and structure'
                 ],
-                'difficulty_level' => 5,
-                'bloom_level' => 5,
+                'difficulty_level' => 3,
+                'bloom_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ]
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 1 (General Security Concepts) diagnostic items seeded successfully!');
-        $this->command->info('Distribution: L1:7, L2:10, L3:16, L4:10, L5:7 (50 questions total)');
-        $this->command->info('Topics: 5 Pillars (10), Professional Ethics (10), Security Controls (10), Security Principles (10), Cybersecurity Frameworks (10)');
     }
 }

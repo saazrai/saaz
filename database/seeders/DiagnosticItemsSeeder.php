@@ -52,8 +52,8 @@ class DiagnosticItemsSeeder extends Seeder
             // Domain 9: Data Governance
             Diagnostics\D9DataGovernanceSeeder::class,
             
-            // Domain 10: Access Control
-            Diagnostics\D10AccessControlSeeder::class,
+            // Domain 10: Identity and Access Management (IAM)
+            Diagnostics\D10IdentityandAccessManagementIAMSeeder::class,
             
             // Domain 11: Network Concepts
             Diagnostics\D11NetworkConceptsSeeder::class,
@@ -80,7 +80,7 @@ class DiagnosticItemsSeeder extends Seeder
             Diagnostics\D18SecurityOperationsMonitoringSeeder::class,
             
             // Domain 19: Incident Management & Forensics
-            Diagnostics\D19IncidentManagementForensicsSeeder::class,
+            Diagnostics\D19IncidentManagementSeeder::class,
             
             // Domain 20: Business Continuity & Disaster Recovery
             Diagnostics\D20BusinessContinuityDisasterRecoverySeeder::class,

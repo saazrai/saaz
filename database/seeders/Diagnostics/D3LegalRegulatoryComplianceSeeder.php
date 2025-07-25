@@ -2,1317 +2,1393 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-
-
-use Illuminate\Database\Seeder;
-
-class D3LegalRegulatoryComplianceSeeder extends Seeder
+class D3LegalRegulatoryComplianceSeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Legal, Regulatory & Compliance';
+    
+    protected function getQuestions(): array
     {
-        // Clear existing items for this domain to prevent duplicates
-        $domain = \App\Models\DiagnosticDomain::where('name', 'Legal, Regulatory & Compliance')->first();
-        if ($domain) {
-            \App\Models\DiagnosticItem::whereHas('topic', function($query) use ($domain) {
-                $query->where('domain_id', $domain->id);
-            })->forceDelete();
-        }
-
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Legal, Regulatory & Compliance');
-        })->pluck('id', 'name');
-        
-        
-        $items = [
-            // Compliance Requirements - Item 1
+        return [
+            // Topic 1: Compliance Requirements (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 1 - L1 - Remember
             [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Compliance Framework',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the PRIMARY difference between laws and regulations?',
+                'question' => 'What does GDPR stand for?',
                 'options' => [
-                    'Laws are optional, regulations are mandatory',
-                    'Laws are created by legislatures, regulations by government agencies',
-                    'Laws apply internationally, regulations are local',
-                    'Laws are for businesses, regulations for individuals'
+                    'General Data Protection Regulation',
+                    'Global Data Privacy Requirements',
+                    'Government Data Protection Rules',
+                    'General Database Protection Requirements'
                 ],
-                'correct_options' => ['Laws are created by legislatures, regulations by government agencies'],
+                'correct_options' => ['General Data Protection Regulation'],
                 'justifications' => [
-                    'Both laws and regulations are mandatory',
-                    'Correct - Laws are enacted by legislative bodies while regulations are created by authorized agencies to implement laws',
-                    'Both can have local, national, or international scope',
-                    'Both apply to businesses and individuals as relevant'
+                    'Correct - GDPR stands for General Data Protection Regulation, which is the comprehensive data protection law enacted by the European Union.',
+                    'This is not an actual legal framework or regulation.',
+                    'While governments do have data protection rules, this is not what GDPR stands for',
+                    'GDPR is about personal data protection, not database protection requirements.'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Compliance Requirements - Item 2
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Compliance with industry standards like ISO 27001 is legally mandatory for all organizations.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. Industry standards like ISO 27001 are voluntary unless specifically required by law, regulation, or contract. However, they may become mandatory through contractual obligations or when referenced by regulations.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Compliance Requirements - Item 3
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each compliance driver with its source:',
-                'options' => [
-                    'items' => [
-                        'GDPR requirement to appoint a DPO',
-                        'Contractual SLA for 99.9% uptime',
-                        'Industry best practice for encryption',
-                        'Court order for data preservation'
-                    ],
-                    'responses' => [
-                        'Regulatory requirement',
-                        'Contractual obligation',
-                        'Standard/Framework',
-                        'Legal requirement'
-                    ]
-                ],
-                'correct_options' => [
-                    'GDPR requirement to appoint a DPO' => 'Regulatory requirement',
-                    'Contractual SLA for 99.9% uptime' => 'Contractual obligation',
-                    'Industry best practice for encryption' => 'Standard/Framework',
-                    'Court order for data preservation' => 'Legal requirement'
-                ],
-                'justifications' => [
-                    'GDPR requirement to appoint a DPO' => 'GDPR is a regulation that mandates DPO appointment for certain organizations',
-                    'Contractual SLA for 99.9% uptime' => 'SLAs are contractual commitments between parties',
-                    'Industry best practice for encryption' => 'Best practices come from standards and frameworks',
-                    'Court order for data preservation' => 'Court orders are legal requirements that must be followed'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Compliance Requirements - Item 4
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these compliance activities in the order they should be performed:',
-                'options' => [
-                    'Conduct gap analysis',
-                    'Identify applicable requirements',
-                    'Implement controls',
-                    'Monitor compliance',
-                    'Document compliance evidence'
-                ],
-                'correct_options' => [
-                    'Identify applicable requirements',
-                    'Conduct gap analysis',
-                    'Implement controls',
-                    'Document compliance evidence',
-                    'Monitor compliance'
-                ],
-                'justifications' => ['First identify what applies, assess gaps, implement controls to close gaps, document the implementation, then continuously monitor compliance.'],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // GDPR - Item 5
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Under GDPR, what is the maximum fine for the most serious violations?',
-                'options' => [
-                    '€10 million or 2% of global annual turnover',
-                    '€20 million or 4% of global annual turnover',
-                    '€50 million or 10% of global annual turnover',
-                    '€100 million flat rate'
-                ],
-                'correct_options' => ['€20 million or 4% of global annual turnover'],
-                'justifications' => [
-                    'This is the lower tier fine for less serious violations',
-                    'Correct - The maximum fine is €20 million or 4% of global annual turnover, whichever is higher',
-                    'This exceeds the actual GDPR maximum fines',
-                    'GDPR fines are not flat rates but based on turnover'
-                ],
                 'difficulty_level' => 1,
-                'bloom_level' => 4,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25
             ],
             
-            // GDPR - Item 6
+            // Item 2 - L2 - Understand
             [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Requirements Hierarchy',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which of the following is NOT a lawful basis for processing personal data under GDPR?',
+                'question' => 'What is the primary difference between laws and regulations?',
                 'options' => [
-                    'Consent',
-                    'Legitimate interest',
-                    'Financial benefit',
-                    'Legal obligation'
+                    'Laws are voluntary while regulations are mandatory',
+                    'Laws are created by legislatures while regulations are created by agencies',
+                    'Laws apply globally while regulations are local only',
+                    'Laws are temporary while regulations are permanent'
                 ],
-                'correct_options' => ['Financial benefit'],
+                'correct_options' => ['Laws are created by legislatures while regulations are created by agencies'],
                 'justifications' => [
-                    'Consent is one of the six lawful bases under GDPR',
-                    'Legitimate interest is a recognized lawful basis',
-                    'Correct - Financial benefit alone is not a lawful basis under GDPR',
-                    'Legal obligation is one of the six lawful bases'
+                    'Both laws and regulations are mandatory and enforceable',
+                    'Correct - Laws are created by legislatures while regulations are created by agencies to implement and enforce laws',
+                    'Both laws and regulations can have local, national, or international scope',
+                    'Both laws and regulations can be permanent or temporary'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // GDPR - Item 7
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the rights that data subjects have under GDPR to the drop zone:',
-                'options' => [
-                    'Right to be forgotten',
-                    'Right to free services',
-                    'Right to data portability',
-                    'Right to financial compensation',
-                    'Right to rectification',
-                    'Right to restrict processing'
-                ],
-                'correct_options' => [
-                    'Right to be forgotten',
-                    'Right to data portability',
-                    'Right to rectification',
-                    'Right to restrict processing'
-                ],
-                'justifications' => [
-                    'Also known as right to erasure under GDPR',
-                    'GDPR does not guarantee free services',
-                    'Allows data subjects to receive their data in portable format',
-                    'Compensation requires demonstrating damage',
-                    'Right to correct inaccurate personal data',
-                    'Right to limit how data is processed'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // GDPR - Item 8
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Within what timeframe must a data breach be reported to the supervisory authority under GDPR?',
-                'options' => [
-                    '24 hours',
-                    '48 hours',
-                    '72 hours',
-                    '7 days'
-                ],
-                'correct_options' => ['72 hours'],
-                'justifications' => [
-                    '24 hours is too short under GDPR requirements',
-                    '48 hours is shorter than required',
-                    'Correct - GDPR requires notification within 72 hours where feasible',
-                    '7 days exceeds the GDPR requirement'
-                ],
+                'bloom_level' => 2,
                 'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -1.0,
+                'irt_c' => 0.25
             ],
             
-            // HIPAA - Item 9
+            // Item 3 - L2 - Understand
             [
-                'topic_id' => $topics['Health Insurance Portability & Accountability Act (HIPAA)'] ?? 23,
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Compliance Framework',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which entities are directly subject to HIPAA regulations?',
+                'question' => 'Why do organizations need to maintain compliance with multiple regulatory frameworks simultaneously?',
                 'options' => [
-                    'Only hospitals and doctors',
-                    'Covered entities and business associates',
-                    'All businesses that handle any health information',
-                    'Only health insurance companies'
+                    'Different regulations cover different aspects of business operations',
+                    'Regulations are always conflicting and require balance',
+                    'Only large organizations need multiple compliance frameworks',
+                    'Compliance requirements are recommendations, not requirements'
                 ],
-                'correct_options' => ['Covered entities and business associates'],
+                'correct_options' => ['Different regulations cover different aspects of business operations'],
                 'justifications' => [
-                    'HIPAA covers more than just hospitals and doctors',
-                    'Correct - HIPAA applies to covered entities (providers, plans, clearinghouses) and their business associates',
-                    'Not all businesses handling health info are subject to HIPAA',
-                    'Health plans are just one type of covered entity'
+                    'Correct - Organizations operate across multiple jurisdictions and industries, each with specific regulatory requirements',
+                    'Regulations may overlap but are not necessarily conflicting',
+                    'Organizations of all sizes must comply with applicable regulations',
+                    'Compliance requirements are mandatory, not recommendations'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // HIPAA - Item 10
-            [
-                'topic_id' => $topics['Health Insurance Portability & Accountability Act (HIPAA)'] ?? 23,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Under HIPAA, patient consent is always required before sharing Protected Health Information (PHI) for treatment purposes.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. HIPAA permits sharing PHI without patient consent for treatment, payment, and healthcare operations (TPO). Consent is generally required for uses beyond TPO, with specific exceptions for public health, law enforcement, and other specified purposes.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // HIPAA - Item 11
-            [
-                'topic_id' => $topics['Health Insurance Portability & Accountability Act (HIPAA)'] ?? 23,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each HIPAA rule with its primary purpose:',
-                'options' => [
-                    'items' => [
-                        'Privacy Rule',
-                        'Security Rule',
-                        'Breach Notification Rule',
-                        'Enforcement Rule'
-                    ],
-                    'responses' => [
-                        'Protects electronic PHI through administrative, physical, and technical safeguards',
-                        'Establishes standards for use and disclosure of PHI',
-                        'Requires notification of unsecured PHI breaches',
-                        'Sets civil and criminal penalties for violations'
-                    ]
-                ],
-                'correct_options' => [
-                    'Privacy Rule' => 'Establishes standards for use and disclosure of PHI',
-                    'Security Rule' => 'Protects electronic PHI through administrative, physical, and technical safeguards',
-                    'Breach Notification Rule' => 'Requires notification of unsecured PHI breaches',
-                    'Enforcement Rule' => 'Sets civil and criminal penalties for violations'
-                ],
-                'justifications' => [
-                    'Privacy Rule' => 'The Privacy Rule governs all forms of PHI and its use/disclosure',
-                    'Security Rule' => 'The Security Rule specifically addresses electronic PHI protection',
-                    'Breach Notification Rule' => 'This rule mandates breach notifications to affected individuals',
-                    'Enforcement Rule' => 'Establishes investigation procedures and penalty structures'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // PCI DSS - Item 12
-            [
-                'topic_id' => $topics['Payment Card Industry Data Security Standard (PCI DSS)'] ?? 24,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What determines a merchant\'s PCI DSS compliance level?',
-                'options' => [
-                    'The type of business they operate',
-                    'Annual transaction volume',
-                    'Geographic location',
-                    'Number of employees'
-                ],
-                'correct_options' => ['Annual transaction volume'],
-                'justifications' => [
-                    'Business type doesn\'t determine compliance level',
-                    'Correct - PCI DSS levels (1-4) are based on annual transaction volume',
-                    'Location doesn\'t affect compliance level requirements',
-                    'Employee count is not a factor in PCI DSS levels'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // PCI DSS - Item 13
-            [
-                'topic_id' => $topics['Payment Card Industry Data Security Standard (PCI DSS)'] ?? 24,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the PCI DSS requirements to the drop zone:',
-                'options' => [
-                    'Install and maintain firewall configuration',
-                    'Implement biometric authentication for all users',
-                    'Encrypt transmission of cardholder data',
-                    'Maintain 10-year audit logs',
-                    'Regularly test security systems',
-                    'Assign unique ID to each person with computer access'
-                ],
-                'correct_options' => [
-                    'Install and maintain firewall configuration',
-                    'Encrypt transmission of cardholder data',
-                    'Regularly test security systems',
-                    'Assign unique ID to each person with computer access'
-                ],
-                'justifications' => [
-                    'Requirement 1 of PCI DSS',
-                    'Biometrics are not mandated by PCI DSS',
-                    'Requirement 4 addresses encryption in transit',
-                    'PCI DSS requires 1 year minimum, not 10 years',
-                    'Requirement 11 covers security testing',
-                    'Requirement 8 mandates unique user IDs'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // PCI DSS - Item 14
-            [
-                'topic_id' => $topics['Payment Card Industry Data Security Standard (PCI DSS)'] ?? 24,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which data elements are considered "sensitive authentication data" that must NEVER be stored after authorization?',
-                'options' => [
-                    'Cardholder name and expiration date',
-                    'Full magnetic stripe data, CVV, and PIN',
-                    'Primary account number (PAN) and zip code',
-                    'Transaction amount and merchant ID'
-                ],
-                'correct_options' => ['Full magnetic stripe data, CVV, and PIN'],
-                'justifications' => [
-                    'These can be stored with proper protection',
-                    'Correct - These sensitive authentication data elements must never be stored post-authorization',
-                    'PAN can be stored with proper protection; zip code is not sensitive',
-                    'Transaction details are not authentication data'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Criminal Law & Civil Law - Item 15
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the PRIMARY difference between criminal and civil law proceedings?',
-                'options' => [
-                    'Criminal law is federal, civil law is state-based',
-                    'Criminal law involves prosecution by government, civil law involves disputes between parties',
-                    'Criminal law has lower burden of proof than civil law',
-                    'Criminal law only applies to businesses, civil to individuals'
-                ],
-                'correct_options' => ['Criminal law involves prosecution by government, civil law involves disputes between parties'],
-                'justifications' => [
-                    'Both criminal and civil law exist at federal and state levels',
-                    'Correct - Criminal cases are prosecuted by government; civil cases are between private parties',
-                    'Criminal law has higher burden of proof (beyond reasonable doubt) than civil (preponderance)',
-                    'Both apply to businesses and individuals'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Criminal Law & Civil Law - Item 16
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each scenario with the type of legal action:',
-                'options' => [
-                    'items' => [
-                        'Company sued for data breach damages',
-                        'Individual prosecuted for hacking',
-                        'Contract dispute over SLA violation',
-                        'Insider trading prosecution'
-                    ],
-                    'responses' => [
-                        'Civil law',
-                        'Criminal law',
-                        'Civil law',
-                        'Criminal law'
-                    ]
-                ],
-                'correct_options' => [
-                    'Company sued for data breach damages' => 'Civil law',
-                    'Individual prosecuted for hacking' => 'Criminal law',
-                    'Contract dispute over SLA violation' => 'Civil law',
-                    'Insider trading prosecution' => 'Criminal law'
-                ],
-                'justifications' => [
-                    'Company sued for data breach damages' => 'Lawsuits for damages are civil matters',
-                    'Individual prosecuted for hacking' => 'Prosecution for crimes is criminal law',
-                    'Contract dispute over SLA violation' => 'Contract disputes are civil matters',
-                    'Insider trading prosecution' => 'Securities fraud prosecution is criminal law'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Criminal Law & Civil Law - Item 17
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** A single security incident can result in both criminal prosecution and civil lawsuits.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'explanation' => 'True. The same incident can lead to criminal prosecution by the government for law violations AND civil lawsuits by affected parties for damages. For example, a data breach could result in criminal charges for negligence and civil suits from affected customers.'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Contractual Obligations & Liability Clauses - Item 18
-            [
-                'topic_id' => $topics['Contractual Obligations & Liability Clauses'] ?? 26,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What type of clause limits the maximum amount one party must pay for damages?',
-                'options' => [
-                    'Indemnification clause',
-                    'Force majeure clause',
-                    'Limitation of liability clause',
-                    'Non-disclosure clause'
-                ],
-                'correct_options' => ['Limitation of liability clause'],
-                'justifications' => [
-                    'Indemnification shifts liability to another party',
-                    'Force majeure excuses performance during extraordinary events',
-                    'Correct - Limitation of liability clauses cap the maximum damages payable',
-                    'NDAs protect confidential information'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Contractual Obligations & Liability Clauses - Item 19
-            [
-                'topic_id' => $topics['Contractual Obligations & Liability Clauses'] ?? 26,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the contractual provisions that PROTECT the service provider to the drop zone:',
-                'options' => [
-                    'Limitation of liability',
-                    'Service level agreements',
-                    'Force majeure clause',
-                    'Penalty clauses',
-                    'Disclaimer of warranties',
-                    'Right to audit'
-                ],
-                'correct_options' => [
-                    'Limitation of liability',
-                    'Force majeure clause',
-                    'Disclaimer of warranties'
-                ],
-                'justifications' => [
-                    'Limits financial exposure of service provider',
-                    'SLAs typically create obligations for providers',
-                    'Excuses performance during unforeseeable events',
-                    'Penalties are obligations, not protections',
-                    'Limits warranty obligations of provider',
-                    'Audit rights benefit the customer, not provider'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Contractual Obligations & Liability Clauses - Item 20
-            [
-                'topic_id' => $topics['Contractual Obligations & Liability Clauses'] ?? 26,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An MSP\'s contract states they are not liable for "consequential damages." A breach causes a client to lose a major customer. Can the client recover these losses?',
-                'options' => [
-                    'Yes, because the damage was foreseeable',
-                    'No, because loss of business is consequential damage',
-                    'Yes, if they can prove gross negligence',
-                    'No, unless criminal activity is involved'
-                ],
-                'correct_options' => ['No, because loss of business is consequential damage'],
-                'justifications' => [
-                    'Foreseeability doesn\'t override consequential damage exclusions',
-                    'Correct - Loss of business/customers is typically considered consequential damage',
-                    'Gross negligence might override some limitations but not always',
-                    'Criminal activity is separate from contractual limitations'
-                ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
             ],
             
-            // Intellectual Property - Item 21
+            // Item 4 - L3 - Apply
             [
-                'topic_id' => $topics['Intellectual Property'] ?? 27,
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Cross-Border Considerations',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which type of intellectual property protection is automatic upon creation of an original work?',
+                'question' => 'A healthcare organization processes patient data in the EU and US. Which compliance frameworks must they consider?',
+                'options' => [
+                    'Only HIPAA since healthcare is involved',
+                    'Only GDPR since EU data is processed',
+                    'Both HIPAA and GDPR due to jurisdictional requirements',
+                    'Neither applies to international healthcare organizations'
+                ],
+                'correct_options' => ['Both HIPAA and GDPR due to jurisdictional requirements'],
+                'justifications' => [
+                    'HIPAA applies to healthcare data in the US, but EU data processing requires GDPR compliance',
+                    'GDPR applies to EU data, but US healthcare data requires HIPAA compliance',
+                    'Correct - Both HIPAA and GDPR apply due to processing healthcare data in both jurisdictions',
+                    'International healthcare organizations must comply with applicable regulations in each jurisdiction'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.0,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 5 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Requirements Hierarchy',
+                'type_id' => 1,
+                'question' => 'How should an organization prioritize compliance requirements when resources are limited?',
+                'options' => [
+                    'Focus only on requirements with the highest penalties',
+                    'Prioritize based on business impact, legal risk, and regulatory enforcement',
+                    'Implement all requirements equally regardless of impact',
+                    'Choose requirements based on implementation ease'
+                ],
+                'correct_options' => ['Prioritize based on business impact, legal risk, and regulatory enforcement'],
+                'justifications' => [
+                    'Focusing only on penalties ignores business impact and enforcement likelihood',
+                    'Correct - Risk-based prioritization considers business impact, legal consequences, and regulatory enforcement patterns',
+                    'Equal implementation ignores resource constraints and varying risk levels',
+                    'Ease of implementation should not override risk considerations'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 6 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Compliance Program Establishment',
+                'type_id' => 1,
+                'question' => 'What is the most effective approach for tracking regulatory changes that affect your organization?',
+                'options' => [
+                    'Manually review all regulations quarterly',
+                    'Implement automated monitoring with expert validation',
+                    'Rely on industry peers to notify about changes',
+                    'Wait for regulators to contact the organization directly'
+                ],
+                'correct_options' => ['Implement automated monitoring with expert validation'],
+                'justifications' => [
+                    'Manual quarterly reviews may miss critical updates between reviews',
+                    'Correct - Automated monitoring ensures timely awareness while expert validation ensures relevance',
+                    'Relying on peers creates gaps and delays in awareness',
+                    'Waiting for regulators is reactive and may result in non-compliance'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 7 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Compliance Framework',
+                'type_id' => 1,
+                'question' => 'Analyze why prescriptive regulations (specific rules) might be less effective than principle-based regulations (broad goals) in rapidly evolving technology sectors.',
+                'options' => [
+                    'Prescriptive regulations are easier to implement and audit',
+                    'Principle-based regulations allow innovation while maintaining outcomes',
+                    'Technology companies prefer detailed specifications',
+                    'Prescriptive regulations provide better legal certainty'
+                ],
+                'correct_options' => ['Principle-based regulations allow innovation while maintaining outcomes'],
+                'justifications' => [
+                    'While easier to audit, prescriptive rules become outdated quickly in technology sectors',
+                    'Correct - Principle-based regulations focus on outcomes, allowing innovative approaches while maintaining security objectives',
+                    'Technology companies often struggle with rigid prescriptive requirements',
+                    'Prescriptive regulations can provide certainty but limit adaptation to new technologies'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 8 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Compliance Framework',
+                'type_id' => 1,
+                'question' => 'What are the primary drivers for regulatory compliance requirements in an organization?',
+                'options' => [
+                    'Ethical and financial requirements',
+                    'Geographic location and industry sector',
+                    'Geographic location and market share',
+                    'Customer expectations and contractual obligations'
+                ],
+                'correct_options' => ['Geographic location and industry sector'],
+                'justifications' => [
+                    'While ethical and financial considerations are important, they are not the primary drivers for regulatory compliance. Regulatory requirements are often imposed by external authorities based on specific criteria.',
+                    'Correct - The primary drivers for regulatory compliance are the geographic location of the organization and the industry sector in which it operates. Different regions have different laws and regulations, and various industry sectors have specific regulatory requirements that organizations must comply with to operate legally and ethically.',
+                    'Market share does not typically drive regulatory compliance. Regulatory requirements are based on geographic location and industry sector, regardless of the organization\'s market share.',
+                    'While customer expectations and contractual obligations can influence an organization\'s practices, they are not the primary drivers for regulatory compliance. Compliance requirements are typically mandated by external regulatory bodies based on location and industry.'
+                ],
+                'bloom_level' => 4, // Analyze
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 9 - L1 - Remember
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Compliance Framework',
+                'type_id' => 1,
+                'question' => 'What is the primary consequence of lacking due care in information security?',
+                'options' => [
+                    'Reduced system performance',
+                    'Increased risk of legal liability',
+                    'Reduced user satisfaction',
+                    'Enhanced need for security audits'
+                ],
+                'correct_options' => ['Increased risk of legal liability'],
+                'justifications' => [
+                    'Performance reduction is not the primary legal consequence',
+                    'Correct - Lack of due care creates legal liability and potential penalties',
+                    'User satisfaction is secondary to legal consequences',
+                    'Audit needs are reactive, not the primary consequence'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 10 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Cross-Border Considerations',
+                'type_id' => 1,
+                'question' => 'A multinational corporation faces conflicting privacy requirements between EU GDPR and US state laws. What is the most strategic approach to resolve this?',
+                'options' => [
+                    'Implement the strictest requirements globally',
+                    'Maintain separate systems for each jurisdiction',
+                    'Choose the approach with lowest implementation cost',
+                    'Wait for regulatory harmonization before deciding'
+                ],
+                'correct_options' => ['Implement the strictest requirements globally'],
+                'justifications' => [
+                    'Correct - Implementing the strictest requirements globally ensures compliance across all jurisdictions and simplifies operations',
+                    'Separate systems increase complexity, cost, and risk of errors',
+                    'Lowest cost approach may result in non-compliance and penalties',
+                    'Waiting for harmonization is impractical and leaves the organization at risk'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15
+            ],
+            
+            // Topic 2: Contracts (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L1 - Remember
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Service Level Agreements',
+                'type_id' => 1,
+                'question' => 'What is a Service Level Agreement (SLA)?',
+                'options' => [
+                    'A contract defining performance standards and remedies',
+                    'A software license agreement',
+                    'A data processing agreement',
+                    'A network service configuration'
+                ],
+                'correct_options' => ['A contract defining performance standards and remedies'],
+                'justifications' => [
+                    'Correct - An SLA is a contract that defines specific performance standards, metrics, and remedies for service failures',
+                    'Software licenses govern usage rights, not service performance',
+                    'Data processing agreements govern data handling, not service levels',
+                    'Network configurations are technical specifications, not contractual agreements'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 12 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Liability & Indemnification',
+                'type_id' => 1,
+                'question' => 'Why are indemnification clauses important in security service contracts?',
+                'options' => [
+                    'They define service performance metrics',
+                    'They allocate responsibility for losses from security failures',
+                    'They specify payment terms and conditions',
+                    'They outline technical implementation requirements'
+                ],
+                'correct_options' => ['They allocate responsibility for losses from security failures'],
+                'justifications' => [
+                    'Performance metrics are defined in SLAs, not indemnification clauses',
+                    'Correct - Indemnification clauses allocate financial responsibility and liability for security breaches and failures',
+                    'Payment terms are separate contractual provisions',
+                    'Technical requirements are specified in statements of work or technical specifications'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 13 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Data Processing Agreements',
+                'type_id' => 1,
+                'question' => 'What is the difference between a Data Processing Agreement (DPA) and a Data Sharing Agreement (DSA)?',
+                'options' => [
+                    'DPAs are for EU organizations, DSAs are for US organizations',
+                    'DPAs govern processing on behalf of another, DSAs govern joint use',
+                    'DPAs are temporary, DSAs are permanent arrangements',
+                    'DPAs are for personal data, DSAs are for business data'
+                ],
+                'correct_options' => ['DPAs govern processing on behalf of another, DSAs govern joint use'],
+                'justifications' => [
+                    'Both agreement types are used globally, not limited by geography',
+                    'Correct - DPAs are for processors acting on behalf of controllers, while DSAs are for independent parties sharing data',
+                    'Both can be temporary or permanent based on business needs',
+                    'Both can cover personal and business data depending on the context'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 14 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Vendor Security Requirements',
+                'type_id' => 1,
+                'question' => 'Your organization is outsourcing email hosting to a cloud provider. What contractual security requirements should you prioritize?',
+                'options' => [
+                    'Only encryption requirements for data transmission',
+                    'Comprehensive security controls, incident response, and audit rights',
+                    'Basic availability guarantees and support response times',
+                    'Cost minimization with standard vendor terms'
+                ],
+                'correct_options' => ['Comprehensive security controls, incident response, and audit rights'],
+                'justifications' => [
+                    'Encryption alone is insufficient for email hosting security',
+                    'Correct - Email hosting requires comprehensive security controls, incident response procedures, and audit rights to ensure data protection',
+                    'Availability alone ignores critical security requirements',
+                    'Cost minimization should not compromise security requirements'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 15 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Termination & Data Return',
+                'type_id' => 1,
+                'question' => 'How should you structure termination clauses in a contract with a critical security service provider?',
+                'options' => [
+                    'Immediate termination with no notice period',
+                    'Standard 30-day notice with transition assistance',
+                    'Risk-based approach with data return and security continuity',
+                    'Extended notice period to minimize vendor costs'
+                ],
+                'correct_options' => ['Risk-based approach with data return and security continuity'],
+                'justifications' => [
+                    'Immediate termination risks business disruption without proper transition',
+                    'Standard notice may be insufficient for critical security services',
+                    'Correct - Risk-based approach ensures secure transition, data return, and continuity of security controls',
+                    'Extended notice should not prioritize vendor costs over security needs'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 16 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Source Code Escrow',
+                'type_id' => 1,
+                'question' => 'When negotiating a software license agreement, what security-related terms are most critical to include?',
+                'options' => [
+                    'Source code escrow and security update guarantees',
+                    'Only standard warranty and support terms',
+                    'Pricing and payment schedule requirements',
+                    'User training and documentation requirements'
+                ],
+                'correct_options' => ['Source code escrow and security update guarantees'],
+                'justifications' => [
+                    'Correct - Source code escrow ensures business continuity and security update guarantees maintain protection',
+                    'Standard terms often lack specific security provisions',
+                    'Financial terms do not address security requirements',
+                    'Training and documentation do not address ongoing security needs'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 17 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Liability & Indemnification',
+                'type_id' => 1,
+                'question' => 'Analyze why mutual indemnification clauses in security contracts can create perverse incentives. What is the core problem?',
+                'options' => [
+                    'They increase contract negotiation time unnecessarily',
+                    'They can reduce incentives for proper security investment',
+                    'They favor large vendors over small security companies',
+                    'They complicate insurance coverage and claims'
+                ],
+                'correct_options' => ['They can reduce incentives for proper security investment'],
+                'justifications' => [
+                    'Negotiation time is not the core problem with mutual indemnification',
+                    'Correct - When both parties indemnify each other equally, neither has strong incentive to invest in security improvements',
+                    'Company size is not the fundamental issue',
+                    'Insurance complications are a symptom, not the core problem'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 18 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Audit Clauses',
+                'type_id' => 1,
+                'question' => 'What is the fundamental tension between "right to audit" clauses and vendor intellectual property protection?',
+                'options' => [
+                    'Audits are too expensive for vendors to support',
+                    'Customers need security visibility while vendors need IP protection',
+                    'Audit requirements violate vendor employee privacy',
+                    'International audits face jurisdictional complications'
+                ],
+                'correct_options' => ['Customers need security visibility while vendors need IP protection'],
+                'justifications' => [
+                    'Cost is not the fundamental tension',
+                    'Correct - Customers require audit rights to verify security while vendors must protect proprietary methods and intellectual property',
+                    'Employee privacy is typically not the primary concern in security audits',
+                    'Jurisdictional issues can be addressed through contract terms'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.7,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Audit Clauses',
+                'type_id' => 1,
+                'question' => 'Evaluate this scenario: A vendor offers the lowest price but refuses security audit rights and limits liability to contract value. What should guide your decision?',
+                'options' => [
+                    'Accept the proposal since cost savings offset security risks',
+                    'Reject based on inadequate risk transfer and visibility',
+                    'Negotiate only liability terms while accepting audit limitations',
+                    'Accept if the vendor has industry security certifications'
+                ],
+                'correct_options' => ['Reject based on inadequate risk transfer and visibility'],
+                'justifications' => [
+                    'Cost savings rarely offset the risks of no audit rights and limited liability',
+                    'Correct - Without audit rights and with limited liability, the organization cannot verify security or recover losses',
+                    'Both audit rights and liability terms are critical for risk management',
+                    'Certifications alone without audit rights provide insufficient assurance'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.2,
+                'irt_c' => 0.15
+            ],
+            
+            // Item 20 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Liability & Indemnification',
+                'type_id' => 1,
+                'question' => 'A cloud provider contract includes a force majeure clause covering "cyber attacks." How does this fundamentally change your risk assessment?',
+                'options' => [
+                    'It has no impact on security risk calculations',
+                    'It shifts cyber attack liability back to you, requiring additional controls',
+                    'It provides better protection against cyber incidents',
+                    'It only affects insurance coverage requirements'
+                ],
+                'correct_options' => ['It shifts cyber attack liability back to you, requiring additional controls'],
+                'justifications' => [
+                    'Force majeure clauses significantly impact risk allocation',
+                    'Correct - Including cyber attacks in force majeure shifts liability from provider to customer, requiring additional security controls and insurance',
+                    'Force majeure relieves the provider of liability, not provides protection',
+                    'The impact extends beyond insurance to overall risk management'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 2.0,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15
+            ],
+            
+            // Topic 3: Industry Specific Regulations (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 21 - L1 - Remember
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Financial Regulations',
+                'type_id' => 1,
+                'question' => 'What does PCI DSS stand for?',
+                'options' => [
+                    'Payment Card Industry Data Security Standard',
+                    'Personal Credit Information Data Security System',
+                    'Private Card Industry Data Security Standard',
+                    'Payment Credit Information Data Safety Standard'
+                ],
+                'correct_options' => ['Payment Card Industry Data Security Standard'],
+                'justifications' => [
+                    'Correct - PCI DSS stands for Payment Card Industry Data Security Standard',
+                    'This is not the correct acronym for PCI DSS',
+                    'This is not the correct acronym for PCI DSS', 
+                    'This is not the correct acronym for PCI DSS'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 22 - L1 - Remember
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Healthcare Regulations',
+                'type_id' => 1,
+                'question' => 'What does HIPAA primarily regulate?',
+                'options' => [
+                    'Healthcare information privacy and security',
+                    'Financial transaction processing',
+                    'Educational record management',
+                    'Government data classification'
+                ],
+                'correct_options' => ['Healthcare information privacy and security'],
+                'justifications' => [
+                    'Correct - HIPAA (Health Insurance Portability and Accountability Act) primarily regulates healthcare information privacy and security',
+                    'Financial transactions are regulated by laws like PCI DSS and SOX',
+                    'Educational records are governed by FERPA',
+                    'Government data classification is covered by various regulations like FISMA'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.6,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 23 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Financial Regulations',
+                'type_id' => 1,
+                'question' => 'Why do financial institutions face more stringent regulatory requirements than other industries?',
+                'options' => [
+                    'Financial institutions process more valuable data',
+                    'They are critical infrastructure with systemic risk implications',
+                    'Government owns shares in financial institutions',
+                    'Financial regulations are easier to enforce'
+                ],
+                'correct_options' => ['They are critical infrastructure with systemic risk implications'],
+                'justifications' => [
+                    'Data value alone does not determine regulatory stringency',
+                    'Correct - Financial institutions are critical infrastructure whose failures can have systemic economic impacts',
+                    'Government ownership is not the basis for regulatory requirements',
+                    'Enforcement difficulty does not determine regulatory stringency'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 24 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Industry-Specific Obligations',
+                'type_id' => 1,
+                'question' => 'How do industry-specific regulations typically differ from general privacy laws like GDPR?',
+                'options' => [
+                    'Industry regulations are voluntary while privacy laws are mandatory',
+                    'Industry regulations provide sector-specific controls and requirements',
+                    'Privacy laws only apply to European organizations',
+                    'Industry regulations have lower penalty structures'
+                ],
+                'correct_options' => ['Industry regulations provide sector-specific controls and requirements'],
+                'justifications' => [
+                    'Both industry regulations and privacy laws are typically mandatory',
+                    'Correct - Industry regulations address sector-specific risks and requirements beyond general privacy protections',
+                    'Privacy laws like GDPR have global reach through extraterritorial provisions',
+                    'Penalty structures vary by regulation, not by category'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => -0.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 25 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Healthcare Regulations',
+                'type_id' => 1,
+                'question' => 'Evaluate the regulatory compliance strategy for a telemedicine company expanding globally while processing patient data and payments.',
+                'options' => [
+                    'Apply only US regulations since the company is US-based',
+                    'Implement a layered compliance approach addressing healthcare, payment, and privacy regulations',
+                    'Focus only on the strictest single regulation to minimize complexity',
+                    'Wait for international regulatory harmonization before expanding'
+                ],
+                'correct_options' => ['Implement a layered compliance approach addressing healthcare, payment, and privacy regulations'],
+                'justifications' => [
+                    'US-only approach ignores international requirements and risks non-compliance',
+                    'Correct - Global telemedicine requires comprehensive compliance addressing HIPAA, PCI DSS, GDPR, and local healthcare regulations',
+                    'Single regulation focus leaves gaps in compliance coverage',
+                    'Regulatory harmonization is unlikely; companies must comply with current requirements'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 2.0,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15
+            ],
+            
+            // Item 26 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Financial Regulations',
+                'type_id' => 1,
+                'question' => 'How should a fintech startup approach regulatory compliance when expanding internationally?',
+                'options' => [
+                    'Wait until established in each market before addressing compliance',
+                    'Apply home country regulations globally for consistency',
+                    'Design systems to meet the most stringent requirements expected',
+                    'Obtain legal opinions for each jurisdiction individually'
+                ],
+                'correct_options' => ['Design systems to meet the most stringent requirements expected'],
+                'justifications' => [
+                    'Waiting until established risks non-compliance penalties and retrofitting costs',
+                    'Home country regulations may not meet all international requirements',
+                    'Correct - Designing for the most stringent requirements ensures compliance across jurisdictions and avoids costly redesigns',
+                    'Individual legal opinions are necessary but insufficient without system design'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 27 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Healthcare Regulations',
+                'type_id' => 1,
+                'question' => 'Assess the long-term viability of maintaining HIPAA compliance through on-premises infrastructure versus cloud adoption.',
+                'options' => [
+                    'On-premises is always more secure and compliant',
+                    'Cloud adoption is incompatible with HIPAA requirements',
+                    'Hybrid approach balancing control, cost, and compliance is most viable',
+                    'Full cloud migration eliminates all compliance concerns'
+                ],
+                'correct_options' => ['Hybrid approach balancing control, cost, and compliance is most viable'],
+                'justifications' => [
+                    'On-premises has security advantages but higher costs and limited scalability',
+                    'Cloud can be HIPAA compliant with proper BAAs and controls',
+                    'Correct - Hybrid approaches leverage cloud benefits while maintaining control over sensitive data and processes',
+                    'Cloud migration requires careful compliance planning and ongoing management'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.2,
+                'irt_c' => 0.15
+            ],
+            
+            // Item 28 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Industry-Specific Obligations',
+                'type_id' => 1,
+                'question' => 'How should a financial services company handle personal data that is subject to both GDPR and local banking regulations?',
+                'options' => [
+                    'Follow only the local banking regulations',
+                    'Choose the regulation with the lowest compliance cost',
+                    'Implement controls that satisfy both regulatory frameworks',
+                    'Seek exemption from one of the regulations'
+                ],
+                'correct_options' => ['Implement controls that satisfy both regulatory frameworks'],
+                'justifications' => [
+                    'Ignoring GDPR when it applies creates compliance gaps and penalties',
+                    'Cost should not determine regulatory compliance strategy',
+                    'Correct - Organizations must comply with all applicable regulations by implementing comprehensive controls',
+                    'Regulatory exemptions are rare and typically not available for overlapping requirements'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 29 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Industry-Specific Obligations',
+                'type_id' => 1,
+                'question' => 'What creates the fundamental tension between innovation and regulatory compliance in emerging technologies?',
+                'options' => [
+                    'Regulations are always written by non-technical people',
+                    'Regulations lag behind technology while requiring specific controls',
+                    'Innovation requires breaking existing security models',
+                    'Technology companies prefer self-regulation approaches'
+                ],
+                'correct_options' => ['Regulations lag behind technology while requiring specific controls'],
+                'justifications' => [
+                    'Technical expertise exists among regulators but is not the core issue',
+                    'Correct - Regulations are developed slowly while technology evolves rapidly, creating gaps between requirements and capabilities',
+                    'Innovation can work within security models',
+                    'Self-regulation preference is a result, not a cause of the tension'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 30 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Healthcare Regulations',
+                'type_id' => 1,
+                'question' => 'A healthcare AI company argues that HIPAA doesn\'t apply because they only process "de-identified" data. Evaluate this position.',
+                'options' => [
+                    'Correct - de-identified data is exempt from HIPAA',
+                    'Incorrect - AI systems can re-identify data, creating HIPAA obligations',
+                    'Partially correct - depends on the specific AI algorithms used',
+                    'Irrelevant - HIPAA applies to all healthcare technology companies'
+                ],
+                'correct_options' => ['Incorrect - AI systems can re-identify data, creating HIPAA obligations'],
+                'justifications' => [
+                    'De-identified data may still be subject to HIPAA if re-identification is possible',
+                    'Correct - AI\'s ability to re-identify supposedly de-identified data creates HIPAA obligations and compliance requirements',
+                    'The specific algorithms don\'t change the re-identification risk',
+                    'HIPAA applies based on the nature of data and business, not all healthcare tech'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15
+            ],
+            
+            // Topic 4: Intellectual Property (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L1 - Remember
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Trade Secrets',
+                'type_id' => 1,
+                'question' => 'What is a trade secret?',
+                'options' => [
+                    'Information that provides competitive advantage and is kept confidential',
+                    'A type of patent that expires after 5 years',
+                    'Public information that is trademarked',
+                    'Copyright-protected business documents'
+                ],
+                'correct_options' => ['Information that provides competitive advantage and is kept confidential'],
+                'justifications' => [
+                    'Correct - Trade secrets are confidential information that provides competitive advantage and is actively protected',
+                    'Trade secrets have no expiration if properly maintained',
+                    'Trade secrets must be kept confidential, not made public',
+                    'Trade secrets are protected by confidentiality, not copyright'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 32 - L1 - Remember
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Trade Secrets',
+                'type_id' => 1,
+                'question' => 'For how long can an organization claim ownership of a trade secret?',
+                'options' => [
+                    'As long as the trade secret remains confidential',
+                    '20 years, renewable indefinitely',
+                    '20 years, with no option for renewal',
+                    'Forever after one-time registration'
+                ],
+                'correct_options' => ['As long as the trade secret remains confidential'],
+                'justifications' => [
+                    'Correct - Trade secrets are protected for as long as they remain confidential and provide a competitive advantage. There is no time limit on this protection, but it requires the organization to take reasonable steps to maintain the secrecy of the information.',
+                    'This is incorrect as it pertains to patents. Trade secrets do not have a fixed term and are not renewable.',
+                    'This is incorrect as it pertains to patents. Trade secrets are not limited to a 20-year period and do not follow this model.',
+                    'Trade secrets do not require registration and are not protected through registration. Their protection depends on maintaining their confidentiality.'
+                ],
+                'bloom_level' => 1, // Remember
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 33 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Trademarks',
+                'type_id' => 1,
+                'question' => 'For how long can an organization claim ownership of a trademark?',
+                'options' => [
+                    'As long as the trademark remains in use',
+                    '20 years, renewable indefinitely',
+                    '20 years, with no option for renewal',
+                    'Forever after one-time registration'
+                ],
+                'correct_options' => ['As long as the trademark remains in use'],
+                'justifications' => [
+                    'Correct - Trademarks can be maintained indefinitely as long as they are actively used in commerce and the necessary renewal fees and documentation are submitted within required intervals.',
+                    'This statement is incorrect as it pertains to patents, not trademarks. Patents typically last for 20 years and can be subject to specific renewal processes, but trademarks are not governed by this rule.',
+                    'This is incorrect. Trademarks are not limited to a 20-year period and can be renewed indefinitely as long as they are in use.',
+                    'This statement is incorrect. While trademarks can last indefinitely, they require regular renewal and must continue to be used in commerce to retain protection.'
+                ],
+                'bloom_level' => 2, // Understand
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 34 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Trade Secrets',
+                'type_id' => 1,
+                'question' => 'Which of the following is NOT an appropriate control to protect trade secrets?',
+                'options' => [
+                    'Non-disclosure agreements (NDAs)',
+                    'Registration',
+                    'Need to know',
+                    'Encryption'
+                ],
+                'correct_options' => ['Registration'],
+                'justifications' => [
+                    'NDAs are commonly used to protect trade secrets by legally binding individuals to confidentiality regarding proprietary information.',
+                    'Trade secrets are not protected through registration. Registration is typically used for intellectual property protection like patents or trademarks. Trade secrets rely on confidentiality and do not require formal registration.',
+                    'Implementing a need-to-know policy is an effective way to protect trade secrets by ensuring that only authorized individuals have access to sensitive information.',
+                    'Encryption is an appropriate control to protect trade secrets by securing the data and making it unreadable to unauthorized users.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 35 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Trademarks',
+                'type_id' => 1,
+                'question' => 'Mike Rowe, a Canadian teenager, started a small web design business and registered the domain name MikeRoweSoft.com. The name was a pun on his own name, making it sound similar to Microsoft. In response, Microsoft sent a cease-and-desist letter to Mike Rowe, demanding that he give up the domain name. Microsoft is concerned about a potential violation of which type of intellectual property right?',
+                'options' => [
+                    'Patent infringement',
+                    'Copyright infringement',
+                    'Trademark infringement',
+                    'Trade secret violation'
+                ],
+                'correct_options' => ['Trademark infringement'],
+                'justifications' => [
+                    'Patents protect inventions and technological processes, not names or branding. The dispute was over the domain name "MikeRoweSoft.com," which Microsoft argued resembled their trademarked name "Microsoft".',
+                    'Copyright protects original works of authorship like books, music, or software code. The issue here was not about copyrighted content but the use of a name resembling Microsoft\'s trademark.',
+                    'Correct - Microsoft claimed that the domain name "MikeRoweSoft.com" infringed on their trademark because of its phonetic similarity to "Microsoft." Trademarks protect brand names and logos to prevent consumer confusion, which was Microsoft\'s concern in this case.',
+                    'Trade secrets involve confidential business information and are unrelated to domain names or branding. Hence, this option is incorrect.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 36 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Trade Secrets',
+                'type_id' => 1,
+                'question' => 'How should you protect proprietary security algorithms developed by your organization?',
+                'options' => [
+                    'Always publish to demonstrate technical capability',
+                    'Use trade secret protection with strong access controls',
+                    'Apply for patents in all jurisdictions immediately',
+                    'Release under permissive open source licenses'
+                ],
+                'correct_options' => ['Use trade secret protection with strong access controls'],
+                'justifications' => [
+                    'Publishing proprietary algorithms eliminates competitive advantage',
+                    'Correct - Trade secret protection maintains competitive advantage while strong access controls prevent unauthorized disclosure',
+                    'Patents require public disclosure and are expensive to obtain globally',
+                    'Open source release forfeits proprietary advantage'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 37 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Copyrights',
+                'type_id' => 1,
+                'question' => 'What is the most effective approach for managing intellectual property risks when outsourcing software development?',
+                'options' => [
+                    'Avoid outsourcing any development involving IP',
+                    'Use comprehensive IP assignment and confidentiality agreements',
+                    'Only outsource to vendors in your home country',
+                    'Require vendors to obtain insurance for IP violations'
+                ],
+                'correct_options' => ['Use comprehensive IP assignment and confidentiality agreements'],
+                'justifications' => [
+                    'Avoiding outsourcing entirely is often impractical for business needs',
+                    'Correct - Comprehensive agreements ensure IP ownership transfers and confidentiality is maintained',
+                    'Geographical location doesn\'t eliminate IP risks',
+                    'Insurance helps but doesn\'t prevent IP disputes'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.7,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 38 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Copyrights',
+                'type_id' => 1,
+                'question' => 'Jennifer has written a book on environmental sustainability. Her lawyer informed her that copyright is granted automatically upon creation. However, her lawyer advises her to register the copyright for additional legal benefits. Copyright protection is designed to safeguard which of the following?',
+                'options' => [
+                    'The expression of the ideas in the book',
+                    'The physical copy of the book',
+                    'The digital copy of the book',
+                    'The accuracy of the book content'
+                ],
+                'correct_options' => ['The expression of the ideas in the book'],
+                'justifications' => [
+                    'Correct - Copyright protection is designed to safeguard the specific expression of ideas. This includes the way the ideas are articulated and presented in the book, protecting Jennifer\'s original written content from unauthorized copying or use.',
+                    'While the physical book can be protected as a physical asset, copyright itself protects the content rather than the physical manifestation. The physical copy can be protected through other means, such as physical security or insurance.',
+                    'Similar to the physical copy, copyright protection extends to the content of the digital copy, not the digital file itself. The digital file can be protected through digital rights management (DRM) and other technical measures.',
+                    'Copyright does not protect the accuracy or truthfulness of the content. It only protects the original expression of the content.'
+                ],
+                'bloom_level' => 4, // Analyze - understanding the concept and application
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 39 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Patents',
+                'question' => 'Match the following types of intellectual property (IP) with their definitions:',
+                'type_id' => 5, // Matching question
+                'options' => [
+                    'items' => ['Patent', 'Trademark', 'Copyright', 'Trade Secret'],
+                    'responses' => [
+                        'Protection for confidential business information that provides a competitive edge.',
+                        'Protection for original works of authorship like books, music, and software.',
+                        'Protection for inventions, granting exclusive rights to the inventor.',
+                        'Protection for symbols, names, and slogans used to identify goods or services.'
+                    ]
+                ],
+                'correct_options' => [
+                    'Protection for inventions, granting exclusive rights to the inventor.',
+                    'Protection for symbols, names, and slogans used to identify goods or services.',
+                    'Protection for original works of authorship like books, music, and software.',
+                    'Protection for confidential business information that provides a competitive edge.'
+                ],
+                'justifications' => [
+                    'Patent: Legal protection for inventions, granting exclusive rights to the inventor to make, use, and sell the invention for a certain period.',
+                    'Trademark: Protection for symbols, names, and slogans used in commerce to identify and distinguish goods or services.',
+                    'Copyright: Exclusive rights granted to creators of original works of authorship, such as literary, musical, and artistic works, to reproduce, distribute, perform, and display the work.',
+                    'Trade Secret: Legal protection for a company\'s confidential business information, which provides a competitive edge, such as formulas, practices, processes, designs, instruments, or patterns.'
+                ],
+                'bloom_level' => 4, // Analyze - requires understanding relationships
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 40 - L5 - Evaluate
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Copyrights',
+                'question' => 'Which of the following intellectual property protections can be considered as perpetual? Drag and drop the correct answers from left to right.',
+                'type_id' => 5, // Matching question
                 'options' => [
                     'Patent',
-                    'Trademark',
+                    'Trademark', 
                     'Copyright',
                     'Trade secret'
                 ],
-                'correct_options' => ['Copyright'],
+                'correct_options' => ['Trademark', 'Trade secret'],
                 'justifications' => [
-                    'Patents require application and approval',
-                    'Trademarks require use in commerce or registration',
-                    'Correct - Copyright protection is automatic upon creation of original work in tangible form',
-                    'Trade secrets require active measures to maintain secrecy'
+                    'Patent: Legal protection for inventions that expires after 20 years. NOT perpetual - patents have a fixed term to encourage innovation and eventual public access.',
+                    'Trademark: Can be renewed indefinitely every 10 years as long as the mark is used in commerce. PERPETUAL - trademarks can last forever with proper maintenance and renewal.',
+                    'Copyright: Exclusive rights that expire (typically life of author plus 50-70 years). NOT perpetual - copyrights eventually expire to allow works to enter the public domain.',
+                    'Trade Secret: Protection lasts as long as the information remains confidential. PERPETUAL - trade secrets like the Coca-Cola formula can be protected indefinitely if secrecy is maintained.'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'bloom_level' => 5, // Evaluate
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
             ],
             
-            // Intellectual Property - Item 22
+            // Topic 5: Investigation Types (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L3 - Apply
             [
-                'topic_id' => $topics['Intellectual Property'] ?? 27,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each intellectual property type with what it protects:',
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Evidence Standards',
+                'type_id' => 1,
+                'question' => 'Which of the following tools would be MOST appropriate for reconstructing deleted partitions and recovering file system metadata in a forensic investigation?',
                 'options' => [
-                    'items' => [
-                        'Patent',
-                        'Copyright',
-                        'Trademark',
-                        'Trade Secret'
-                    ],
+                    'Autopsy',
+                    'FTK Imager',
+                    'Sleuth Kit',
+                    'Volatility'
+                ],
+                'correct_options' => ['Sleuth Kit'],
+                'justifications' => [
+                    'Autopsy is a GUI-based forensic platform that uses Sleuth Kit as its backend, but is more focused on case management and analysis rather than low-level file system reconstruction.',
+                    'FTK Imager is primarily used for creating forensic images and basic data preview, not for advanced file system reconstruction or partition recovery.',
+                    'Sleuth Kit is specifically designed for file system forensics and includes tools like mmls for partition analysis and fsstat for file system metadata examination, making it the most appropriate for reconstructing deleted partitions and recovering file system metadata.',
+                    'Volatility is a memory forensics framework designed for analyzing RAM dumps, not for file system or partition recovery.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 42 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Evidence Standards',
+                'type_id' => 1,
+                'question' => 'Which of the following forensic principles is MOST critical to preserve the admissibility of digital evidence in court?',
+                'options' => [
+                    'Documenting all tools used in the investigation',
+                    'Following ISO/IEC 27037 for evidence handling',
+                    'Maintaining an unbroken chain of custody',
+                    'Conducting the investigation in a certified lab'
+                ],
+                'correct_options' => ['Maintaining an unbroken chain of custody'],
+                'justifications' => [
+                    'While documenting tools is important for transparency and reproducibility, it is not the most critical factor for admissibility.',
+                    'ISO/IEC 27037 provides good practices but following it is not the most critical requirement for court admissibility.',
+                    'Maintaining an unbroken chain of custody is the most critical principle as it demonstrates the evidence has not been tampered with or altered from collection through presentation in court. Without this, evidence may be deemed inadmissible.',
+                    'While certified labs may enhance credibility, investigations can be legally admissible without being conducted in certified facilities if proper procedures are followed.'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 43 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Administrative Investigations',
+                'type_id' => 1,
+                'question' => 'An employee at ABC Corporation has been reported for violating the company\'s internal policies. The management needs to conduct an investigation to examine these violations and determine the appropriate course of action. Which type of investigation is specifically designed to examine violations of an organization\'s policies?',
+                'options' => [
+                    'Criminal Investigation',
+                    'Civil Investigation',
+                    'Regulatory Investigation',
+                    'Administrative Investigation'
+                ],
+                'correct_options' => ['Administrative Investigation'],
+                'justifications' => [
+                    'A criminal investigation involves probing into potential violations of criminal law. This is not suitable for internal policy violations unless the actions are illegal.',
+                    'A civil investigation typically pertains to disputes between individuals or organizations regarding legal rights and obligations, often involving lawsuits. This is not directly related to internal policy violations.',
+                    'A regulatory investigation is conducted to ensure compliance with laws and regulations imposed by government bodies. Internal policy violations do not generally fall under this category unless they also violate regulatory requirements.',
+                    'An administrative investigation is specifically designed to examine violations of an organization\'s internal policies and procedures. It involves reviewing the conduct of employees and determining if there has been a breach of company policies, making it the most appropriate type for this situation.'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 44 - L2 - Understand
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Regulatory Investigations',
+                'type_id' => 1,
+                'question' => 'How do regulatory investigations differ from internal security investigations?',
+                'options' => [
+                    'Regulatory investigations focus on compliance violations vs security incidents',
+                    'Internal investigations are always confidential',
+                    'Regulatory investigations only examine financial data',
+                    'There are no significant differences between investigation types'
+                ],
+                'correct_options' => ['Regulatory investigations focus on compliance violations vs security incidents'],
+                'justifications' => [
+                    'Correct - Regulatory investigations examine compliance with specific regulations while internal investigations focus on security incidents',
+                    'Internal investigations may become public through various means',
+                    'Regulatory investigations examine all relevant data, not just financial',
+                    'Significant differences exist in scope, authority, and consequences'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 45 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Criminal Investigations',
+                'type_id' => 1,
+                'question' => 'Your organization discovers potential insider trading based on security system access logs. What type of investigation is most appropriate?',
+                'options' => [
+                    'Internal HR investigation only',
+                    'Forensic investigation with legal counsel involvement',
+                    'Routine security audit procedures',
+                    'External consultant review'
+                ],
+                'correct_options' => ['Forensic investigation with legal counsel involvement'],
+                'justifications' => [
+                    'HR investigation alone is insufficient for potential criminal activity',
+                    'Correct - Insider trading requires forensic investigation to preserve evidence and legal counsel for regulatory reporting',
+                    'Routine audits lack the rigor needed for potential criminal investigations',
+                    'External consultants may be involved but legal counsel is essential'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 46 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Regulatory Investigations',
+                'type_id' => 1,
+                'question' => 'An investigation into violations of PCI DSS (Payment Card Industry Data Security Standard) is MOST likely to be performed as:',
+                'options' => [
+                    'Regulatory Investigation',
+                    'Criminal Investigation',
+                    'Civil Investigation',
+                    'Industry-standard Investigation'
+                ],
+                'correct_options' => ['Industry-standard Investigation'],
+                'justifications' => [
+                    'Although PCI DSS is not a law, investigations into its violations are often treated similarly to regulatory investigations because they are based on contractual obligations. These investigations can lead to fines or sanctions if non-compliance is found.',
+                    'PCI DSS violations are typically not handled as criminal investigations unless there is evidence of illegal activities such as fraud or theft involved.',
+                    'Civil investigations usually involve disputes between parties over rights and obligations, which is not the primary focus of PCI DSS compliance checks.',
+                    'PCI DSS is an industry standard that mandates compliance through contractual obligations. Investigations are conducted by independent third parties to ensure adherence to these standards, similar to how regulatory investigations are performed.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 47 - L3 - Apply
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Regulatory Investigations',
+                'type_id' => 1,
+                'question' => 'A company has been accused of failing to obtain proper consent for data collection and processing from its customers. What type of investigation is MOST appropriate for this situation, who will initiate it, and what is the potential punishment?',
+                'options' => [
+                    'Criminal Investigation, initiated by law enforcement agencies, with potential imprisonment',
+                    'Civil Investigation, initiated by affected individuals or groups, with potential financial compensation',
+                    'Regulatory Investigation, initiated by regulatory agencies, with potential fines and sanctions',
+                    'Administrative Investigation, initiated by the company\'s leadership, with potential internal disciplinary actions'
+                ],
+                'correct_options' => ['Regulatory Investigation, initiated by regulatory agencies, with potential fines and sanctions'],
+                'justifications' => [
+                    'While data protection violations can sometimes lead to criminal charges, the primary response to failing to obtain proper consent for data collection is usually handled through regulatory or civil channels rather than criminal prosecution.',
+                    'Affected individuals or groups may initiate civil lawsuits for compensation if their data privacy rights have been violated. However, this type of investigation focuses more on seeking damages rather than enforcing regulatory compliance.',
+                    'Regulatory agencies, such as the Data Protection Authorities (DPAs) under the General Data Protection Regulation (GDPR) in Europe, are responsible for ensuring compliance with data protection laws. They initiate regulatory investigations and can impose fines and sanctions for non-compliance, making this the most appropriate response for failing to obtain proper consent for data collection.',
+                    'An internal administrative investigation might address company policy violations, but it does not address the legal and regulatory implications of data privacy breaches.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.8,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Criminal Investigations',
+                'type_id' => 1,
+                'question' => 'Insider trading occurs when individuals buy or sell stocks based on non-public, material information. What type of investigation is MOST appropriate, who will initiate it, and what is the potential punishment?',
+                'options' => [
+                    'Criminal Investigation, initiated by law enforcement agencies, with potential imprisonment and fines',
+                    'Civil Investigation, initiated by affected investors, with potential financial compensation',
+                    'Regulatory Investigation, initiated by regulatory bodies, with potential fines and sanctions',
+                    'Administrative Investigation, initiated by the company\'s internal compliance team, with potential employment termination'
+                ],
+                'correct_options' => ['Criminal Investigation, initiated by law enforcement agencies, with potential imprisonment and fines'],
+                'justifications' => [
+                    'Insider trading is a serious offense that violates securities laws. It often results in criminal investigations led by law enforcement agencies, such as the FBI in the United States. The potential punishments for those found guilty include imprisonment and significant fines.',
+                    'Affected investors may file civil lawsuits seeking compensation for damages resulting from insider trading. However, this is usually secondary to the criminal and regulatory actions taken by the authorities.',
+                    'Regulatory bodies such as the Securities and Exchange Commission (SEC) in the United States typically initiate investigations into insider trading. They can impose fines and sanctions on individuals and entities involved in insider trading. However, regulatory investigations are often conducted in parallel with criminal investigations.',
+                    'While a company\'s internal compliance team may conduct an administrative investigation to determine if insider trading occurred within the organization, the potential punishments are limited to employment termination and do not address the legal ramifications.'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.7,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 49 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Evidence Standards',
+                'type_id' => 1,
+                'question' => 'Which of the following is the GREATEST risk when performing live acquisition of a system\'s memory and processes?',
+                'options' => [
+                    'Damaging physical evidence',
+                    'Modifying file timestamps',
+                    'Introducing malware to the system',
+                    'Altering system state during acquisition'
+                ],
+                'correct_options' => ['Altering system state during acquisition'],
+                'justifications' => [
+                    'Live acquisition is performed on running systems and does not involve physical evidence handling, so physical damage is not a concern.',
+                    'While file timestamps may be modified during live acquisition, this is a lesser concern compared to the overall system state changes.',
+                    'Introducing malware is a risk that can be mitigated with proper tools and procedures, but is not the greatest inherent risk of live acquisition.',
+                    'Altering system state during acquisition is the greatest risk because any interaction with a live system changes its state. This includes loading acquisition tools into memory, which overwrites RAM contents, and the act of reading memory which can trigger system behaviors. This alteration can destroy volatile evidence and make it difficult to prove the integrity of collected evidence.'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 50 - L4 - Analyze
+            [
+                'topic' => 'Legal, Regulatory, and Compliance',
+                'subtopic' => 'Criminal Investigations',
+                'question' => 'Match the following types of investigations with their associated punishments:',
+                'type_id' => 5, // Matching question
+                'options' => [
+                    'items' => ['Criminal Investigation', 'Civil Investigation', 'Regulatory Investigation', 'Administrative Investigation'],
                     'responses' => [
-                        'Inventions and processes',
-                        'Original works of authorship',
-                        'Brand identifiers and logos',
-                        'Confidential business information'
+                        'Prison sentence',
+                        'Financial restitution',
+                        'Financial penalty',
+                        'Disciplinary action'
                     ]
                 ],
                 'correct_options' => [
-                    'Patent' => 'Inventions and processes',
-                    'Copyright' => 'Original works of authorship',
-                    'Trademark' => 'Brand identifiers and logos',
-                    'Trade Secret' => 'Confidential business information'
+                    'Criminal Investigation' => 'Prison sentence',
+                    'Civil Investigation' => 'Financial restitution',
+                    'Regulatory Investigation' => 'Financial penalty',
+                    'Administrative Investigation' => 'Disciplinary action'
                 ],
                 'justifications' => [
-                    'Patent' => 'Patents protect inventions, processes, and methods',
-                    'Copyright' => 'Copyright protects original creative works',
-                    'Trademark' => 'Trademarks protect brand identity elements',
-                    'Trade Secret' => 'Trade secrets protect confidential business information'
+                    'Criminal Investigation' => 'Criminal investigations can lead to criminal charges and convictions, which may result in prison sentences for individuals found guilty of criminal offenses.',
+                    'Civil Investigation' => 'Civil investigations typically result in financial restitution to injured parties, compensating them for damages or losses suffered due to the actions of another party.',
+                    'Regulatory Investigation' => 'Regulatory investigations often impose financial penalties or fines for non-compliance with laws, regulations, or industry standards.',
+                    'Administrative Investigation' => 'Administrative investigations usually result in internal disciplinary actions such as warnings, suspensions, demotions, or termination for violations of organizational policies.'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Intellectual Property - Item 23
-            [
-                'topic_id' => $topics['Intellectual Property'] ?? 27,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Open source software cannot be protected by copyright.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. Open source software IS protected by copyright. The copyright holder chooses to license it under open source terms, which grants certain usage rights while retaining copyright ownership. The license terms are enforceable because of copyright protection.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Advanced Integration Questions
-            
-            // Item 24 - GDPR and Contracts
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A US company processing EU citizen data must include which provisions in vendor contracts under GDPR?',
-                'options' => [
-                    'Standard contractual clauses or other transfer mechanism',
-                    'Unlimited liability for data breaches',
-                    'Requirement to store all data in the EU',
-                    'Mandatory cyber insurance coverage'
-                ],
-                'correct_options' => ['Standard contractual clauses or other transfer mechanism'],
-                'justifications' => [
-                    'Correct - GDPR requires appropriate safeguards like SCCs for international data transfers',
-                    'GDPR doesn\'t mandate unlimited liability',
-                    'Data can be transferred outside EU with proper safeguards',
-                    'Insurance is not a GDPR requirement'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 25 - Multiple Regulations
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A healthcare payment processor must comply with multiple regulations. Which combination is MOST likely to apply?',
-                'options' => [
-                    'HIPAA and PCI DSS',
-                    'GDPR and SOX',
-                    'FERPA and GLBA',
-                    'COPPA and CAN-SPAM'
-                ],
-                'correct_options' => ['HIPAA and PCI DSS'],
-                'justifications' => [
-                    'Correct - Healthcare (HIPAA) plus payment processing (PCI DSS) both apply',
-                    'SOX is for public companies, not specifically healthcare payments',
-                    'FERPA is education; GLBA is financial but not healthcare-specific',
-                    'COPPA is children\'s privacy; CAN-SPAM is email marketing'
-                ],
-                'difficulty_level' => 3,
                 'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 26 - Breach Notification
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these breach notification requirements from SHORTEST to LONGEST timeframe:',
-                'options' => [
-                    'GDPR to supervisory authority',
-                    'PCI DSS to card brands',
-                    'HIPAA to affected individuals',
-                    'State breach laws (typical)',
-                    'SEC disclosure for material breaches'
-                ],
-                'correct_options' => [
-                    'PCI DSS to card brands',
-                    'GDPR to supervisory authority',
-                    'HIPAA to affected individuals',
-                    'State breach laws (typical)',
-                    'SEC disclosure for material breaches'
-                ],
-                'justifications' => ['PCI DSS requires immediate notification, GDPR within 72 hours, HIPAA within 60 days, state laws vary but often 30-90 days, SEC in quarterly/annual reports.'],
                 'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.7,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
             ],
-            
-            // Item 27 - Regulatory Investigation
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'During a regulatory investigation, an employee takes the Fifth Amendment. What can the organization do?',
-                'options' => [
-                    'Fire the employee for non-cooperation',
-                    'Force the employee to testify internally',
-                    'Continue investigation without that testimony',
-                    'Stop all investigation activities'
-                ],
-                'correct_options' => ['Continue investigation without that testimony'],
-                'justifications' => [
-                    'Fifth Amendment protects against self-incrimination in criminal matters',
-                    'Cannot force testimony that might self-incriminate',
-                    'Correct - Organization can and should continue investigating through other means',
-                    'No requirement to stop investigation due to one person\'s silence'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 28 - Liability and Insurance
-            [
-                'topic_id' => $topics['Contractual Obligations & Liability Clauses'] ?? 26,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A cloud provider\'s terms exclude liability for data breaches. Your cyber insurance denies coverage because you didn\'t ensure adequate vendor security. Who bears the loss?',
-                'options' => [
-                    'Cloud provider due to negligence',
-                    'Insurance company must cover',
-                    'Your organization bears the loss',
-                    'Losses are shared equally'
-                ],
-                'correct_options' => ['Your organization bears the loss'],
-                'justifications' => [
-                    'Liability exclusions in contracts are often enforceable',
-                    'Insurance can deny claims for failure to meet policy conditions',
-                    'Correct - With vendor exclusions and insurance denial, organization bears risk',
-                    'No automatic sharing without agreement'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 29 - Privacy Rights
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'A customer requests data deletion under GDPR. Drag the reasons that would allow you to REFUSE deletion to the drop zone:',
-                'options' => [
-                    'Data needed for legal claims',
-                    'Deletion is technically difficult',
-                    'Legal obligation to retain',
-                    'Customer owes money',
-                    'Freedom of expression',
-                    'Backup restoration costs'
-                ],
-                'correct_options' => [
-                    'Data needed for legal claims',
-                    'Legal obligation to retain',
-                    'Freedom of expression'
-                ],
-                'justifications' => [
-                    'Legal claims defense is a valid GDPR exception',
-                    'Technical difficulty is not a valid exception',
-                    'Legal retention requirements override deletion rights',
-                    'Financial disputes don\'t override privacy rights',
-                    'Freedom of expression is a recognized exception',
-                    'Cost is not a valid reason to refuse'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 30 - Compliance Program
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the MOST important factor in determining penalties for regulatory violations?',
-                'options' => [
-                    'Size of the organization',
-                    'Whether self-reported and cooperation level',
-                    'Industry sector',
-                    'Geographic location'
-                ],
-                'correct_options' => ['Whether self-reported and cooperation level'],
-                'justifications' => [
-                    'Size may affect fine amounts but not as much as cooperation',
-                    'Correct - Self-reporting and cooperation typically result in reduced penalties',
-                    'Industry sector affects which regulations apply, not penalty severity',
-                    'Location determines jurisdiction but not penalty factors'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 31 - HIPAA Specific
-            [
-                'topic_id' => $topics['Health Insurance Portability & Accountability Act (HIPAA)'] ?? 23,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A hospital employee views their own medical record in the system. Under HIPAA, this is:',
-                'options' => [
-                    'Always permitted as patient right of access',
-                    'Potentially a violation if not for job duties',
-                    'Allowed if they have system access',
-                    'Only permitted with supervisor approval'
-                ],
-                'correct_options' => ['Potentially a violation if not for job duties'],
-                'justifications' => [
-                    'Patient rights don\'t extend to bypassing access controls',
-                    'Correct - Accessing PHI outside of job duties violates minimum necessary rule',
-                    'System access doesn\'t authorize all uses',
-                    'Employees should use patient portals, not work access'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 32 - PCI DSS Scope
-            [
-                'topic_id' => $topics['Payment Card Industry Data Security Standard (PCI DSS)'] ?? 24,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company uses a payment iframe from a PCI-compliant provider. What is their PCI DSS obligation?',
-                'options' => [
-                    'No PCI requirements apply',
-                    'Must complete SAQ A',
-                    'Full PCI DSS compliance required',
-                    'Only network security requirements apply'
-                ],
-                'correct_options' => ['Must complete SAQ A'],
-                'justifications' => [
-                    'Even with outsourcing, some PCI obligations remain',
-                    'Correct - SAQ A applies when using compliant third-party payment pages',
-                    'Full compliance not needed with proper outsourcing',
-                    'SAQ A covers more than just network security'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 33 - Legal Privilege
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Attorney-client privilege protects all communications with lawyers from disclosure in legal proceedings.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. Attorney-client privilege has limitations: it doesn\'t cover communications made to further a crime, doesn\'t apply if shared with third parties, and can be waived. It only protects confidential communications seeking legal advice.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 34 - Contract Negotiation
-            [
-                'topic_id' => $topics['Contractual Obligations & Liability Clauses'] ?? 26,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these contract negotiation priorities for a CUSTOMER from MOST to LEAST important:',
-                'options' => [
-                    'Unlimited vendor liability',
-                    'Right to audit',
-                    'Service level agreements',
-                    'Termination rights',
-                    'Price guarantees'
-                ],
-                'correct_options' => [
-                    'Service level agreements',
-                    'Termination rights',
-                    'Right to audit',
-                    'Price guarantees',
-                    'Unlimited vendor liability'
-                ],
-                'justifications' => ['SLAs ensure service quality, termination rights provide exit options, audit rights verify compliance, price guarantees control costs, unlimited liability is rarely achievable.'],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 35 - IP in Employment
-            [
-                'topic_id' => $topics['Intellectual Property'] ?? 27,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An employee develops a security tool at home using personal equipment but based on work knowledge. Who likely owns the IP?',
-                'options' => [
-                    'Employee owns it completely',
-                    'Employer likely has rights to it',
-                    'Joint ownership automatically',
-                    'Public domain since unclear'
-                ],
-                'correct_options' => ['Employer likely has rights to it'],
-                'justifications' => [
-                    'Personal time/equipment doesn\'t override employment agreements',
-                    'Correct - Work-related inventions often belong to employer per contracts',
-                    'Joint ownership requires specific agreement',
-                    'Ownership disputes don\'t create public domain'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 36 - Data Localization
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which country has the MOST comprehensive data localization requirements for personal data?',
-                'options' => [
-                    'United States',
-                    'United Kingdom',
-                    'Russia',
-                    'Japan'
-                ],
-                'correct_options' => ['Russia'],
-                'justifications' => [
-                    'The US has sector-specific requirements but no comprehensive national data localization law',
-                    'The UK focuses on data protection rather than localization requirements',
-                    'Correct - Russia has comprehensive data localization laws requiring personal data of Russian citizens to be stored within Russia',
-                    'Japan has data protection laws but limited localization requirements'
-                ],
-                'justifications' => [
-                    'Russia requires personal data of citizens stored domestically',
-                    'US has sectoral requirements but no general localization law',
-                    'China has strict data localization requirements',
-                    'UK follows GDPR-style rules without localization mandate',
-                    'India has data localization requirements for certain sectors',
-                    'Japan allows transfers with appropriate safeguards'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 37 - Forensics and Legal Hold
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Your company receives a litigation hold notice. An automated system is about to delete old backups per retention policy. You should:',
-                'options' => [
-                    'Let the deletion proceed as scheduled',
-                    'Immediately preserve all identified data',
-                    'Delete data to avoid discovery',
-                    'Wait for court order before acting'
-                ],
-                'correct_options' => ['Immediately preserve all identified data'],
-                'justifications' => [
-                    'Scheduled deletion must stop for data under legal hold',
-                    'Correct - Legal hold requires immediate preservation of relevant data',
-                    'Intentional deletion after hold notice is spoliation',
-                    'Hold notices require immediate action, not court orders'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 38 - Regulatory Overlap
-            [
-                'topic_id' => $topics['Health Insurance Portability & Accountability Act (HIPAA)'] ?? 23,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A healthcare app for EU citizens must comply with both HIPAA and GDPR. When requirements conflict, you should:',
-                'options' => [
-                    'Follow the stricter requirement',
-                    'Choose which one to follow',
-                    'Request exemption from one',
-                    'Only follow local country law'
-                ],
-                'correct_options' => ['Follow the stricter requirement'],
-                'justifications' => [
-                    'Correct - When regulations overlap, meeting the stricter requirement ensures compliance with both',
-                    'Must comply with all applicable regulations',
-                    'Exemptions are rarely granted for conflicts',
-                    'Both regulations may apply regardless of location'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 39 - Whistleblower Protections
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Whistleblower protections allow employees to publicly disclose any suspected wrongdoing without consequence.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. Whistleblower protections have specific requirements and channels. Employees typically must report through proper channels (internal reporting, regulatory agencies) and the disclosure must relate to specific violations. Public disclosure without following procedures may not be protected.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 40 - Compliance Technology
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which technology solution BEST supports multi-regulatory compliance management?',
-                'options' => [
-                    'Separate tools for each regulation',
-                    'Integrated GRC (Governance, Risk, Compliance) platform',
-                    'Spreadsheet tracking system',
-                    'Email-based workflow system'
-                ],
-                'correct_options' => ['Integrated GRC (Governance, Risk, Compliance) platform'],
-                'justifications' => [
-                    'Separate tools create silos and miss overlaps',
-                    'Correct - GRC platforms provide unified compliance management across regulations',
-                    'Spreadsheets don\'t scale for complex compliance',
-                    'Email lacks audit trails and control features'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 41 - Extraterritorial Application
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A US-only company with no EU presence collects data from EU visitors to its website. Does GDPR apply?',
-                'options' => [
-                    'No, company has no EU establishment',
-                    'Yes, if targeting EU residents or monitoring behavior',
-                    'Only if processing large amounts of data',
-                    'Only if explicitly offering services to EU'
-                ],
-                'correct_options' => ['Yes, if targeting EU residents or monitoring behavior'],
-                'justifications' => [
-                    'GDPR has extraterritorial reach beyond physical presence',
-                    'Correct - GDPR Article 3 applies to non-EU entities targeting or monitoring EU residents',
-                    'Volume doesn\'t determine GDPR applicability',
-                    'Even passive collection can trigger GDPR if monitoring behavior'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 42 - Regulatory Audit
-            [
-                'topic_id' => $topics['Payment Card Industry Data Security Standard (PCI DSS)'] ?? 24,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which validation method is required for PCI DSS Level 1 merchants?',
-                'options' => [
-                    'Annual self-assessment questionnaire (SAQ)',
-                    'Annual onsite assessment by Qualified Security Assessor (QSA)',
-                    'Quarterly network scan by Approved Scanning Vendor (ASV)',
-                    'Internal vulnerability assessment'
-                ],
-                'correct_options' => ['Annual onsite assessment by Qualified Security Assessor (QSA)'],
-                'justifications' => [
-                    'SAQ is used for lower-level merchants with simpler requirements',
-                    'Correct - Level 1 merchants require the most rigorous validation through annual onsite QSA assessment',
-                    'ASV scans are required for all levels but are not the primary validation method for Level 1',
-                    'Internal assessments are not sufficient for Level 1 validation'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 43 - Privacy vs Security
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Security monitoring detects an employee accessing personal data unnecessarily. Under GDPR, this is primarily a violation of:',
-                'options' => [
-                    'Data security principle',
-                    'Purpose limitation principle',
-                    'Transparency requirement',
-                    'Accountability principle'
-                ],
-                'correct_options' => ['Purpose limitation principle'],
-                'justifications' => [
-                    'Security was working (it detected the access)',
-                    'Correct - Accessing data beyond the specified purpose violates purpose limitation',
-                    'Transparency relates to informing data subjects',
-                    'Accountability is about demonstrating compliance'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 44 - Incident Response Legal
-            [
-                'topic_id' => $topics['Criminal Law & Civil Law'] ?? 25,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'During incident response, your team finds evidence of criminal activity. The FIRST action should be:',
-                'options' => [
-                    'Immediately call law enforcement',
-                    'Preserve evidence and consult legal counsel',
-                    'Continue normal incident response',
-                    'Delete evidence to avoid liability'
-                ],
-                'correct_options' => ['Preserve evidence and consult legal counsel'],
-                'justifications' => [
-                    'Premature law enforcement contact may complicate response',
-                    'Correct - Preserve evidence properly and get legal guidance on obligations',
-                    'Criminal evidence requires special handling',
-                    'Destroying evidence is obstruction of justice'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 45 - Compliance Metrics
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the metrics that BEST demonstrate compliance program effectiveness to the drop zone:',
-                'options' => [
-                    'Number of policies written',
-                    'Reduction in compliance violations',
-                    'Training attendance records',
-                    'Self-identified issues reported',
-                    'Audit finding closure rate',
-                    'Size of compliance team'
-                ],
-                'correct_options' => [
-                    'Reduction in compliance violations',
-                    'Self-identified issues reported',
-                    'Audit finding closure rate'
-                ],
-                'justifications' => [
-                    'Policy count doesn\'t indicate effectiveness',
-                    'Fewer violations shows program works',
-                    'Attendance doesn\'t ensure understanding',
-                    'Self-reporting indicates healthy compliance culture',
-                    'Closing findings demonstrates remediation',
-                    'Team size doesn\'t correlate with effectiveness'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 46 - Cross-Border Data Transfer Assessment (Level 3)
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A European subsidiary wants to transfer employee data to its US parent company. Which transfer mechanism provides the strongest legal protection?',
-                'options' => [
-                    'Binding Corporate Rules (BCRs)',
-                    'Standard Contractual Clauses (SCCs)',
-                    'Adequacy decision',
-                    'Legitimate interest assessment'
-                ],
-                'correct_options' => ['Adequacy decision'],
-                'justifications' => [
-                    'BCRs are strong but require EU approval and only apply within corporate groups',
-                    'SCCs are widely used but require additional safeguards and risk assessments',
-                    'Correct - Adequacy decisions provide the strongest protection as they recognize equivalent data protection',
-                    'Legitimate interest alone is insufficient for international transfers without additional safeguards'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 47 - Multi-Jurisdictional Compliance Strategy (Level 4)
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Your organization operates in multiple countries with conflicting data localization laws. Which approach BEST balances compliance and operational efficiency?',
-                'options' => [
-                    'Implement the strictest requirements globally',
-                    'Use regional data architectures with local compliance',
-                    'Choose one jurisdiction and exit others',
-                    'Implement minimum requirements everywhere'
-                ],
-                'correct_options' => ['Use regional data architectures with local compliance'],
-                'justifications' => [
-                    'Global strict requirements may be unnecessarily costly and operationally complex',
-                    'Correct - Regional architectures allow tailored compliance while maintaining operational efficiency',
-                    'Exiting markets limits business opportunities unnecessarily',
-                    'Minimum requirements risk non-compliance in strict jurisdictions'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 48 - Regulatory Change Management (Level 5)
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A new privacy regulation will take effect in 18 months with significant penalties. Your compliance budget is limited. Which strategy should you prioritize?',
-                'options' => [
-                    'Wait until 6 months before to start implementation',
-                    'Immediately hire external consultants for full implementation',
-                    'Conduct gap analysis and implement high-risk areas first',
-                    'Request regulatory extension due to budget constraints'
-                ],
-                'correct_options' => ['Conduct gap analysis and implement high-risk areas first'],
-                'justifications' => [
-                    'Waiting increases risk and reduces time for proper implementation',
-                    'External consultants may be expensive and not necessary for all aspects',
-                    'Correct - Risk-based prioritization maximizes compliance impact within budget constraints',
-                    'Regulatory extensions are rarely granted for budget reasons'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 49 - Security vs. Privacy Compliance Trade-offs (Level 3)
-            [
-                'topic_id' => $topics['General Data Protection Regulation (GDPR)'] ?? 22,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A data subject requests deletion of their account data, but security logs containing their information are needed for ongoing fraud investigation. You should:',
-                'options' => [
-                    'Delete all data immediately to comply with GDPR',
-                    'Retain data for investigation and explain legal basis to data subject',
-                    'Anonymize the data in security logs',
-                    'Transfer the case to law enforcement first'
-                ],
-                'correct_options' => ['Retain data for investigation and explain legal basis to data subject'],
-                'justifications' => [
-                    'Immediate deletion ignores legitimate interests in fraud prevention',
-                    'Correct - GDPR allows retention for legitimate interests like fraud prevention with proper communication',
-                    'Anonymization may not preserve necessary investigative value',
-                    'Law enforcement transfer is not required for private fraud investigations'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 50 - Compliance Program Effectiveness Evaluation (Level 4)
-            [
-                'topic_id' => $topics['Compliance Requirements'] ?? 21,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Your organization has had zero regulatory violations in 3 years but compliance costs are increasing. Management questions the program value. Which metric BEST demonstrates ROI?',
-                'options' => [
-                    'Number of compliance training hours completed',
-                    'Comparison of potential fines avoided vs. program costs',
-                    'Number of policies and procedures documented',
-                    'Percentage of audit findings closed on time'
-                ],
-                'correct_options' => ['Comparison of potential fines avoided vs. program costs'],
-                'justifications' => [
-                    'Training hours show activity but not business value',
-                    'Correct - ROI calculation comparing avoided penalties to program investment demonstrates financial value',
-                    'Policy documentation shows process but not outcomes',
-                    'Finding closure shows efficiency but not business impact'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ]
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 3 (Legal, Regulatory & Compliance) diagnostic items seeded successfully!');
     }
 }

@@ -2,1244 +2,1327 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-use Illuminate\Database\Seeder;
-
-class D17PhysicalEnvironmentalSecuritySeeder extends Seeder
+class D17PhysicalEnvironmentalSecuritySeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Physical & Environmental Security';
+    
+    protected function getQuestions(): array
     {
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Physical & Environmental Security');
-        })->pluck('id', 'name');
-        
-        $items = [
-            // Physical Access Control - Physical Barriers (10 items)
+        return [
+            // Topic 1: Physical Access Control (10 questions)
+            // Bloom Distribution: L1:0, L2:2, L3:4, L4:2, L5:2
+            
+            // Item 1 - L3 - Apply
             [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
+                'subtopic' => 'Physical Access Control',
+                'question' => 'Your company\'s data center has experienced: (1) A cleaner was found in the server room without authorization, (2) An ex-employee used their old badge to enter, (3) A vendor tailgated through an open door. Which physical access control measures should you prioritize to address these incidents?',
+                'options' => [
+                    'Install better lighting and surveillance cameras throughout the facility',
+                    'Implement multi-factor authentication with regular access reviews and anti-tailgating controls',
+                    'Hire additional security guards and reception staff',
+                    'Upgrade the HVAC system and fire suppression equipment'
+                ],
+                'correct_options' => ['Implement multi-factor authentication with regular access reviews and anti-tailgating controls'],
+                'justifications' => [
+                    'Incorrect - Surveillance helps with monitoring but doesn\'t prevent these specific access issues',
+                    'Correct - These controls directly address unauthorized access, outdated credentials, and tailgating vulnerabilities',
+                    'Incorrect - More staff helps but doesn\'t systematically prevent these technical access control failures',
+                    'Incorrect - Environmental controls don\'t address the core access authorization problems'
+                ],
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of bollards in perimeter security?',
-                'options' => [
-                    'Provide lighting for walkways',
-                    'Prevent vehicle-borne attacks',
-                    'Support security cameras',
-                    'Mark property boundaries'
-                ],
-                'correct_options' => ['Prevent vehicle-borne attacks'],
-                'justifications' => [
-                    'Bollards don\'t typically provide lighting',
-                    'Correct - Bollards are designed to stop or slow vehicles',
-                    'Camera mounting is not the primary purpose',
-                    'Boundary marking is secondary to vehicle protection'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which physical barrier provides the strongest deterrent against unauthorized vehicle access?',
-                'options' => [
-                    'Chain-link fence',
-                    'Concrete jersey barriers',
-                    'Decorative hedges',
-                    'Warning signs'
-                ],
-                'correct_options' => ['Concrete jersey barriers'],
-                'justifications' => [
-                    'Chain-link fences can be cut and don\'t stop vehicles',
-                    'Correct - Concrete barriers physically stop vehicle impacts',
-                    'Hedges provide minimal physical resistance',
-                    'Signs provide warning but no physical barrier'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary advantage of a mantrap over standard door access?',
-                'options' => [
-                    'Faster employee throughput',
-                    'Lower installation costs',
-                    'Prevents tailgating completely',
-                    'Requires no maintenance'
-                ],
-                'correct_options' => ['Prevents tailgating completely'],
-                'justifications' => [
-                    'Mantraps actually slow throughput by design',
-                    'Mantraps are more expensive than standard doors',
-                    'Correct - Only one person can pass through at a time',
-                    'Mantraps require more maintenance than standard doors'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each physical barrier with its primary security function:',
-                'options' => [
-                    'items' => [
-                        'Chain-link fence',
-                        'Turnstiles',
-                        'Walls',
-                        'Gates'
-                    ],
-                    'responses' => [
-                        'Perimeter boundary definition',
-                        'Controlled pedestrian access',
-                        'Solid visual barrier',
-                        'Authorized vehicle entry'
-                    ]
-                ],
-                'correct_options' => [
-                    'Chain-link fence' => 'Perimeter boundary definition',
-                    'Turnstiles' => 'Controlled pedestrian access',
-                    'Walls' => 'Solid visual barrier',
-                    'Gates' => 'Authorized vehicle entry'
-                ],
-                'justifications' => [
-                    'Chain-link fence' => 'Defines property boundaries and deters casual intrusion',
-                    'Turnstiles' => 'Allow one-person-at-a-time pedestrian access control',
-                    'Walls' => 'Provide privacy and block sight lines',
-                    'Gates' => 'Control vehicle access while allowing authorized entry'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
+            
+            // Item 2 - L2 - Understand
             [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Physical barriers should be designed to completely prevent all unauthorized access.',
+                'subtopic' => 'Physical Access Control',
+                'question' => 'How do biometric access controls provide stronger security than traditional key-based systems?',
                 'options' => [
-                    'True',
-                    'False'
+                    'Biometric systems are less expensive to maintain',
+                    'Biometric identifiers are unique to individuals and cannot be easily duplicated or shared',
+                    'Biometric systems work faster than key-based systems',
+                    'Biometric systems do not require any maintenance or updates'
                 ],
-                'correct_options' => ['False'],
+                'correct_options' => ['Biometric identifiers are unique to individuals and cannot be easily duplicated or shared'],
                 'justifications' => [
-                    'explanation' => 'Physical barriers are designed to delay, deter, and detect intrusion attempts, not completely prevent them. A determined attacker with enough time and resources can eventually overcome any physical barrier. The goal is to create enough delay for detection and response systems to be effective.'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Biometric identifiers are unique to individuals and cannot be easily duplicated or shared',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 3 - L2 - Understand
+            [
+                'subtopic' => 'Physical Access Control',
+                'question' => 'Why is the principle of "defense in depth" important for physical access control?',
+                'options' => [
+                    'It reduces the cost of security systems',
+                    'Multiple layers of security controls provide redundancy if one layer fails',
+                    'It simplifies security management and administration',
+                    'It eliminates the need for security guards and monitoring'
+                ],
+                'correct_options' => ['Multiple layers of security controls provide redundancy if one layer fails'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Multiple layers of security controls provide redundancy if one layer fails',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 4 - L3 - Apply
+            [
+                'subtopic' => 'Physical Access Control',
+                'question' => 'A data center needs to implement access control for areas with different security requirements. What approach should they use?',
+                'options' => [
+                    'Use the same access level for all areas to simplify management',
+                    'Implement zone-based access control with increasing security levels toward critical areas',
+                    'Only control access to the main entrance',
+                    'Allow unrestricted internal access once someone enters the building'
+                ],
+                'correct_options' => ['Implement zone-based access control with increasing security levels toward critical areas'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement zone-based access control with increasing security levels toward critical areas',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 5 - L3 - Apply
+            [
+                'subtopic' => 'Physical Access Control',
+                'question' => 'How should an organization handle physical access control for temporary visitors and contractors?',
+                'options' => [
+                    'Grant the same access as permanent employees',
+                    'Implement escort requirements and time-limited access badges with visitor logging',
+                    'Allow unrestricted access during business hours only',
+                    'Prohibit all visitor access to maintain security'
+                ],
+                'correct_options' => ['Implement escort requirements and time-limited access badges with visitor logging'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement escort requirements and time-limited access badges with visitor logging',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 6 - L3 - Apply
+            [
+                'subtopic' => 'Physical Access Control',
+                'question' => 'What is the most effective approach for preventing tailgating in high-security facilities?',
+                'options' => [
+                    'Post signs asking people not to tailgate',
+                    'Install mantrap entry systems and security awareness training',
+                    'Use only card readers without additional controls',
+                    'Rely on security cameras to detect tailgating after it occurs'
+                ],
+                'correct_options' => ['Install mantrap entry systems and security awareness training'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Install mantrap entry systems and security awareness training',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 7 - L4 - Analyze
+            [
+                'subtopic' => 'Physical Access Control',
+                'question' => 'Analyze why card-based access systems require additional security measures to be effective.',
+                'options' => [
+                    'Cards are too expensive to replace when lost',
+                    'Cards can be lost, stolen, shared, or cloned, requiring authentication and monitoring',
+                    'Card readers are unreliable and frequently malfunction',
+                    'Cards work too slowly for high-traffic areas'
+                ],
+                'correct_options' => ['Cards can be lost, stolen, shared, or cloned, requiring authentication and monitoring'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Cards can be lost, stolen, shared, or cloned, requiring authentication and monitoring',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
                 'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
+            
+            // Item 8 - L4 - Analyze
             [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
+                'subtopic' => 'Physical Access Control',
+                'question' => 'What is the fundamental security challenge with emergency egress requirements in physical access control?',
+                'options' => [
+                    'Emergency exits are too expensive to secure properly',
+                    'Fire codes require immediate exit capability that can conflict with access control security',
+                    'Emergency exits are only needed in certain types of buildings',
+                    'Security systems are not required to consider emergency egress'
+                ],
+                'correct_options' => ['Fire codes require immediate exit capability that can conflict with access control security'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Fire codes require immediate exit capability that can conflict with access control security',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary security responsibility of security guards at entry points?',
-                'options' => [
-                    'Check employee productivity levels',
-                    'Verify credentials and control access',
-                    'Provide customer service information',
-                    'Monitor social media activity'
-                ],
-                'correct_options' => ['Verify credentials and control access'],
-                'justifications' => [
-                    'Productivity monitoring is not a security function',
-                    'Correct - Guards verify authorization and control facility access',
-                    'Customer service is secondary to security functions',
-                    'Social media monitoring is typically a cybersecurity function'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
                 'status' => 'published'
             ],
+            
+            // Item 9 - L5 - Evaluate
             [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag essential security guard responsibilities to the drop zone:',
+                'subtopic' => 'Physical Access Control',
+                'question' => 'A company implements facial recognition for access control but employees complain about privacy concerns. Evaluate this situation.',
                 'options' => [
-                    'Patrol designated areas',
-                    'Approve employee vacations',
-                    'Verify visitor identification',
-                    'Conduct performance reviews',
-                    'Respond to security alarms',
-                    'Process payroll',
-                    'Maintain activity logs',
-                    'Schedule meetings'
+                    'Facial recognition should always be implemented regardless of employee concerns',
+                    'Must balance security benefits with privacy rights and consider alternative biometric options',
+                    'Employee privacy is not relevant for workplace security measures',
+                    'Facial recognition is inappropriate for all workplace applications'
                 ],
-                'correct_options' => ['Patrol designated areas', 'Verify visitor identification', 'Respond to security alarms', 'Maintain activity logs'],
+                'correct_options' => ['Must balance security benefits with privacy rights and consider alternative biometric options'],
                 'justifications' => [
-                    'Essential security function for area monitoring',
-                    'HR function, not security responsibility',
-                    'Critical access control function',
-                    'Management function, not security duty',
-                    'Primary emergency response responsibility',
-                    'Administrative function, not security related',
-                    'Required for security accountability and incident tracking',
-                    'Administrative function, not security related'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Must balance security benefits with privacy rights and consider alternative biometric options',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Why should security guard patrols follow randomized routes and timing?',
-                'options' => [
-                    'To ensure all guards get equal exercise',
-                    'To prevent predictable patterns that can be exploited',
-                    'To reduce guard boredom during shifts',
-                    'To comply with labor regulations'
-                ],
-                'correct_options' => ['To prevent predictable patterns that can be exploited'],
-                'justifications' => [
-                    'Exercise is not a security consideration',
-                    'Correct - Predictable patterns allow intruders to time their activities',
-                    'While reducing boredom is beneficial, security effectiveness is primary',
-                    'Randomization is not a labor law requirement'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which combination provides the strongest multi-factor physical access control?',
-                'options' => [
-                    'Card reader only',
-                    'Card reader + PIN code',
-                    'Card reader + PIN + biometric scanner',
-                    'Biometric scanner only'
-                ],
-                'correct_options' => ['Card reader + PIN + biometric scanner'],
-                'justifications' => [
-                    'Single factor is weakest authentication',
-                    'Two factors are better but not maximum security',
-                    'Correct - Three factors (have, know, are) provide strongest authentication',
-                    'Single factor with no backup if biometric fails'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Physical Access Control'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these perimeter security layers from outermost to innermost:',
-                'options' => [
-                    'Building entrance',
-                    'Property fence',
-                    'Parking barriers',
-                    'Reception desk',
-                    'Landscaping'
-                ],
-                'correct_options' => [
-                    'Landscaping',
-                    'Property fence',
-                    'Parking barriers',
-                    'Building entrance',
-                    'Reception desk'
-                ],
-                'justifications' => ['Defense in depth starts with natural barriers (landscaping), then property boundary (fence), vehicle control (parking barriers), facility access (building entrance), and finally internal checkpoint (reception desk).'],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Fire Protection - Prevention, Detection, Suppression (10 items)
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which fire-resistant material property is most important for data center construction?',
-                'options' => [
-                    'Low cost and easy installation',
-                    'Attractive appearance',
-                    'High fire rating and low smoke production',
-                    'Sound dampening qualities'
-                ],
-                'correct_options' => ['High fire rating and low smoke production'],
-                'justifications' => [
-                    'Cost is secondary to fire safety requirements',
-                    'Appearance is not a safety consideration',
-                    'Correct - Fire rating prevents spread, low smoke protects occupants and equipment',
-                    'Sound dampening is not a fire safety requirement'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each fire detection method with what it primarily detects:',
-                'options' => [
-                    'items' => [
-                        'Heat detectors',
-                        'Smoke detectors (photoelectric)',
-                        'Smoke detectors (ionization)',
-                        'Flame detectors'
-                    ],
-                    'responses' => [
-                        'Temperature rise',
-                        'Visible smoke particles',
-                        'Combustion particles',
-                        'Infrared/ultraviolet radiation'
-                    ]
-                ],
-                'correct_options' => [
-                    'Heat detectors' => 'Temperature rise',
-                    'Smoke detectors (photoelectric)' => 'Visible smoke particles',
-                    'Smoke detectors (ionization)' => 'Combustion particles',
-                    'Flame detectors' => 'Infrared/ultraviolet radiation'
-                ],
-                'justifications' => [
-                    'Heat detectors' => 'Respond to rapid temperature increase or fixed temperature',
-                    'Smoke detectors (photoelectric)' => 'Light beam detects smoke particles',
-                    'Smoke detectors (ionization)' => 'Radioactive source detects ion changes from combustion',
-                    'Flame detectors' => 'Detect specific wavelengths emitted by flames'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which type of fire detector provides the earliest warning in most situations?',
-                'options' => [
-                    'Heat detectors',
-                    'Smoke detectors',
-                    'Flame detectors',
-                    'Carbon monoxide detectors'
-                ],
-                'correct_options' => ['Smoke detectors'],
-                'justifications' => [
-                    'Heat detectors respond after significant temperature rise',
-                    'Correct - Smoke is usually produced before significant heat or visible flames',
-                    'Flame detectors require visible fire to be present',
-                    'CO detectors are for gas detection, not general fire detection'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the most appropriate fire suppression system for a data center?',
-                'options' => [
-                    'Water sprinkler system',
-                    'Clean agent gas system',
-                    'Foam suppression system',
-                    'Dry powder system'
-                ],
-                'correct_options' => ['Clean agent gas system'],
-                'justifications' => [
-                    'Water damages electronic equipment',
-                    'Correct - Clean agents suppress fire without damaging equipment',
-                    'Foam can damage electronics and leave residue',
-                    'Powder is corrosive and damages electronic components'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag appropriate fire suppression agents for different fire types:',
-                'options' => [
-                    'Water - Class A fires',
-                    'CO2 - Class B fires',
-                    'Water - Electrical fires',
-                    'Foam - Class C fires',
-                    'Clean agent - Electronic equipment',
-                    'Powder - Class D fires'
-                ],
-                'correct_options' => ['Water - Class A fires', 'CO2 - Class B fires', 'Clean agent - Electronic equipment', 'Powder - Class D fires'],
-                'justifications' => [
-                    'Water effective for ordinary combustibles',
-                    'CO2 displaces oxygen for flammable liquids',
-                    'Water conducts electricity - dangerous for electrical fires',
-                    'Foam not appropriate for electrical (Class C) fires',
-                    'Clean agents safe for sensitive electronic equipment',
-                    'Special powder needed for metal fires'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange the fire suppression system activation sequence in correct order:',
-                'options' => [
-                    'Suppression agent release',
-                    'Fire detection',
-                    'Alarm notification',
-                    'HVAC shutdown',
-                    'Pre-discharge delay'
-                ],
-                'correct_options' => [
-                    'Fire detection',
-                    'Alarm notification',
-                    'HVAC shutdown',
-                    'Pre-discharge delay',
-                    'Suppression agent release'
-                ],
-                'justifications' => ['Detection triggers the sequence, followed by alarm notification, HVAC shutdown to prevent smoke spread, pre-discharge delay for evacuation, and finally agent release.'],
-                'difficulty_level' => 3,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Pre-action fire suppression systems release water immediately when smoke is detected.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'Pre-action systems require two separate events before water is released: first a detection system activation (smoke/heat), and second, individual sprinkler head activation. This prevents accidental water discharge from single-point failures and is especially important in areas with sensitive equipment.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of fire-retardant materials in construction?',
-                'options' => [
-                    'Completely prevent fires from starting',
-                    'Slow fire spread and reduce flame propagation',
-                    'Make materials completely fireproof',
-                    'Reduce construction costs'
-                ],
-                'correct_options' => ['Slow fire spread and reduce flame propagation'],
-                'justifications' => [
-                    'No material can completely prevent fires',
-                    'Correct - Fire-retardant materials slow combustion and limit fire spread',
-                    'No material is completely fireproof under all conditions',
-                    'Fire-retardant materials typically increase costs'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which fire detection system provides the earliest possible warning?',
-                'options' => [
-                    'Standard smoke detectors',
-                    'Heat detectors',
-                    'VESDA (Very Early Smoke Detection Apparatus)',
-                    'Flame detectors'
-                ],
-                'correct_options' => ['VESDA (Very Early Smoke Detection Apparatus)'],
-                'justifications' => [
-                    'Standard detectors wait for smoke to reach the detector',
-                    'Heat detection is slower than smoke detection',
-                    'Correct - VESDA actively samples air and detects trace amounts of smoke',
-                    'Flame detection requires visible fire'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Fire'] ?? 2,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'During a fire emergency in a secure facility, what takes absolute priority?',
-                'options' => [
-                    'Protecting classified documents',
-                    'Securing valuable equipment',
-                    'Ensuring human safety and evacuation',
-                    'Shutting down computer systems properly'
-                ],
-                'correct_options' => ['Ensuring human safety and evacuation'],
-                'justifications' => [
-                    'Documents can be replaced or recovered',
-                    'Equipment can be replaced',
-                    'Correct - Human life always takes absolute priority over all other concerns',
-                    'System shutdown is important but secondary to life safety'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-
-            // Power Systems - Anomalies & Protection (10 items)
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each power anomaly with its description:',
-                'options' => [
-                    'items' => [
-                        'Surge/Spike',
-                        'Brownout/Sag',
-                        'Blackout/Fault',
-                        'Inrush'
-                    ],
-                    'responses' => [
-                        'Complete loss of power',
-                        'Temporary high voltage',
-                        'Sustained low voltage',
-                        'Initial high current draw'
-                    ]
-                ],
-                'correct_options' => [
-                    'Surge/Spike' => 'Temporary high voltage',
-                    'Brownout/Sag' => 'Sustained low voltage',
-                    'Blackout/Fault' => 'Complete loss of power',
-                    'Inrush' => 'Initial high current draw'
-                ],
-                'justifications' => [
-                    'Surge/Spike' => 'Brief voltage increase above normal levels',
-                    'Brownout/Sag' => 'Voltage drops below normal operating levels',
-                    'Blackout/Fault' => 'Total loss of electrical power supply',
-                    'Inrush' => 'High current when equipment first starts up'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which power protection device is most effective against voltage surges?',
-                'options' => [
-                    'UPS (Uninterruptible Power Supply)',
-                    'Generator',
-                    'Surge protector',
-                    'Power strip'
-                ],
-                'correct_options' => ['Surge protector'],
-                'justifications' => [
-                    'UPS provides backup power but may not handle all surges',
-                    'Generators provide backup power, not surge protection',
-                    'Correct - Surge protectors are specifically designed to block voltage spikes',
-                    'Basic power strips provide no surge protection'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of a UPS in a data center?',
-                'options' => [
-                    'Provide long-term power during extended outages',
-                    'Bridge power during generator startup',
-                    'Reduce electricity costs',
-                    'Improve power quality'
-                ],
-                'correct_options' => ['Bridge power during generator startup'],
-                'justifications' => [
-                    'UPS batteries typically last minutes to hours, not long-term',
-                    'Correct - UPS provides immediate power while generators start up',
-                    'UPS systems increase costs, don\'t reduce them',
-                    'While UPS may improve power quality, the primary purpose is backup power'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What does "N+1 redundancy" mean in power system design?',
-                'options' => [
-                    'One backup system for the entire facility',
-                    'Normal capacity plus one additional unit for redundancy',
-                    'One generator for every UPS unit',
-                    'One hour of battery backup'
-                ],
-                'correct_options' => ['Normal capacity plus one additional unit for redundancy'],
-                'justifications' => [
-                    'N+1 refers to capacity redundancy, not just having one backup',
-                    'Correct - N units handle normal load, +1 provides redundancy if any unit fails',
-                    'N+1 applies to total system capacity, not one-to-one ratios',
-                    'N+1 refers to equipment redundancy, not time duration'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the power protection systems that address specific power problems:',
-                'options' => [
-                    'Surge protector - Voltage spikes',
-                    'UPS - Power outages',
-                    'Generator - Extended outages',
-                    'Voltage regulator - Brownouts',
-                    'Surge protector - Blackouts',
-                    'UPS - Voltage regulation',
-                    'Generator - Surge protection',
-                    'Line conditioner - Power quality'
-                ],
-                'correct_options' => ['Surge protector - Voltage spikes', 'UPS - Power outages', 'Generator - Extended outages', 'Voltage regulator - Brownouts', 'Line conditioner - Power quality'],
-                'justifications' => [
-                    'Surge protectors designed for voltage spikes',
-                    'UPS provides immediate backup during outages',
-                    'Generators provide long-term backup power',
-                    'Voltage regulators maintain steady voltage levels',
-                    'Surge protectors don\'t address power loss',
-                    'UPS primary function is backup power, not voltage regulation',
-                    'Generators don\'t provide surge protection',
-                    'Line conditioners filter and clean power'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these power systems from least to most resilient:',
-                'options' => [
-                    'Single utility feed + UPS',
-                    'Dual utility feeds + UPS + generators',
-                    'Single utility feed only',
-                    'Single feed + generator',
-                    'Dual utility feeds only'
-                ],
-                'correct_options' => [
-                    'Single utility feed only',
-                    'Single utility feed + UPS',
-                    'Single feed + generator',
-                    'Dual utility feeds only',
-                    'Dual utility feeds + UPS + generators'
-                ],
-                'justifications' => ['Progression from no backup (least resilient) to battery backup, generator backup, redundant utility feeds, and finally full redundancy with multiple feeds, UPS, and generators (most resilient).'],
-                'difficulty_level' => 3,
                 'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
+            
+            // Item 10 - L5 - Evaluate
             [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Brownouts are more damaging to computer equipment than complete power outages.',
+                'subtopic' => 'Physical Access Control',
+                'question' => 'Assess the effectiveness of implementing physical access control that requires two-person integrity for critical areas.',
                 'options' => [
-                    'True',
-                    'False'
+                    'Two-person integrity is unnecessary overhead that slows operations',
+                    'Provides strong security for critical areas but requires careful implementation to avoid operational issues',
+                    'Two-person requirements eliminate all security risks',
+                    'Single-person access is always more secure than two-person systems'
                 ],
-                'correct_options' => ['True'],
+                'correct_options' => ['Provides strong security for critical areas but requires careful implementation to avoid operational issues'],
                 'justifications' => [
-                    'explanation' => 'Brownouts (sustained low voltage) can be more damaging than blackouts because equipment may continue to operate under insufficient voltage, causing components to overheat and fail. During blackouts, equipment simply shuts down cleanly or switches to backup power. Brownouts can cause gradual component degradation and premature failure.'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Provides strong security for critical areas but requires careful implementation to avoid operational issues',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary function of an Automatic Transfer Switch (ATS)?',
-                'options' => [
-                    'Convert AC power to DC power',
-                    'Regulate voltage levels',
-                    'Switch between power sources automatically',
-                    'Protect against power surges'
-                ],
-                'correct_options' => ['Switch between power sources automatically'],
-                'justifications' => [
-                    'Power conversion is done by different equipment',
-                    'Voltage regulation is a separate function',
-                    'Correct - ATS automatically switches from utility to backup power',
-                    'Surge protection is handled by surge protectors'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which alternate power source provides the fastest response time during a power outage?',
-                'options' => [
-                    'Diesel generator',
-                    'UPS battery system',
-                    'Solar panels',
-                    'Fuel cells'
-                ],
-                'correct_options' => ['UPS battery system'],
-                'justifications' => [
-                    'Generators take seconds to minutes to start',
-                    'Correct - UPS provides instantaneous power switching',
-                    'Solar panels depend on sunlight and weather',
-                    'Fuel cells take time to reach full output'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Power'] ?? 3,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'During a data center power failure, what sequence should occur to protect equipment?',
-                'options' => [
-                    'Everything shuts down immediately',
-                    'UPS activates → Generator starts → Transfer to generator power',
-                    'Generator starts → UPS activates → Normal operations',
-                    'HVAC shuts down → All systems restart'
-                ],
-                'correct_options' => ['UPS activates → Generator starts → Transfer to generator power'],
-                'justifications' => [
-                    'Immediate shutdown causes data loss and service interruption',
-                    'Correct - UPS provides immediate power while generator starts, then transfer occurs',
-                    'Generators take time to start; UPS must provide immediate power',
-                    'HVAC should continue operating to prevent equipment overheating'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-
-            // Site Design - Selection, CPTED, Layout (10 items)
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which factors are most critical when selecting a site for a data center? (Select all that apply)',
-                'options' => [
-                    'Proximity to flood zones',
-                    'Available parking spaces',
-                    'Seismic activity history',
-                    'Distance from emergency services',
-                    'Local crime statistics',
-                    'Proximity to chemical plants'
-                ],
-                'correct_options' => [
-                    'Proximity to flood zones',
-                    'Seismic activity history',
-                    'Distance from emergency services',
-                    'Local crime statistics',
-                    'Proximity to chemical plants'
-                ],
-                'justifications' => [
-                    'Correct - Flood risk affects facility availability and equipment',
-                    'Convenient but not critical for security',
-                    'Correct - Earthquake risk affects structural integrity',
-                    'Correct - Emergency response time is critical for incidents',
-                    'Correct - Crime rates affect physical security requirements',
-                    'Correct - Chemical accidents pose environmental contamination risks'
-                ],
-                'settings' => ['isMultiSelect' => true],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary CPTED principle demonstrated by using low hedges and transparent fencing?',
-                'options' => [
-                    'Natural access control',
-                    'Natural surveillance',
-                    'Territorial reinforcement',
-                    'Target hardening'
-                ],
-                'correct_options' => ['Natural surveillance'],
-                'justifications' => [
-                    'Access control relates to directing movement, not visibility',
-                    'Correct - Low hedges and transparent barriers allow clear sight lines for observation',
-                    'Territorial reinforcement shows ownership but doesn\'t improve visibility',
-                    'Target hardening involves physical barriers, not visibility design'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each CPTED principle with its implementation example:',
-                'options' => [
-                    'items' => [
-                        'Natural surveillance',
-                        'Natural access control',
-                        'Territorial reinforcement',
-                        'Target hardening'
-                    ],
-                    'responses' => [
-                        'Company logos and maintained landscaping',
-                        'Clear sight lines and proper lighting',
-                        'Single entry point with reception desk',
-                        'Security cameras and alarm systems'
-                    ]
-                ],
-                'correct_options' => [
-                    'Natural surveillance' => 'Clear sight lines and proper lighting',
-                    'Natural access control' => 'Single entry point with reception desk',
-                    'Territorial reinforcement' => 'Company logos and maintained landscaping',
-                    'Target hardening' => 'Security cameras and alarm systems'
-                ],
-                'justifications' => [
-                    'Natural surveillance' => 'Design enables visibility and observation of activities',
-                    'Natural access control' => 'Design directs people through controlled entry points',
-                    'Territorial reinforcement' => 'Clear ownership and maintenance of space',
-                    'Target hardening' => 'Physical security devices that harden the target'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When designing security zones in a facility, which principle should guide the layout?',
-                'options' => [
-                    'Place critical assets nearest to the entrance for quick access',
-                    'Create concentric layers with increasing security toward core assets',
-                    'Randomly distribute critical assets to confuse intruders',
-                    'Concentrate all critical assets in one area'
-                ],
-                'correct_options' => ['Create concentric layers with increasing security toward core assets'],
-                'justifications' => [
-                    'Placing critical assets near entrances violates defense-in-depth',
-                    'Correct - Progressive security layers provide multiple barriers (defense in depth)',
-                    'Random distribution complicates legitimate access and emergency response',
-                    'Single concentration creates a single point of failure'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which areas should be located in the highest security zone of a facility?',
-                'options' => [
-                    'Employee break rooms and cafeteria',
-                    'Conference rooms for client meetings',
-                    'Server rooms and network operations centers',
-                    'Reception and lobby areas'
-                ],
-                'correct_options' => ['Server rooms and network operations centers'],
-                'justifications' => [
-                    'Break rooms need employee access but minimal security',
-                    'Meeting rooms often require visitor access, moderate security only',
-                    'Correct - Critical infrastructure requires maximum protection',
-                    'Reception areas are public-facing, requiring lowest security restrictions'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag features that support natural surveillance in site design:',
-                'options' => [
-                    'Low landscaping near walkways',
-                    'Solid 8-foot walls',
-                    'Large windows in stairwells',
-                    'Dense tree coverage',
-                    'Open-design structures',
-                    'Underground tunnels',
-                    'Transparent bus shelters',
-                    'Enclosed dumpster areas'
-                ],
-                'correct_options' => ['Low landscaping near walkways', 'Large windows in stairwells', 'Open-design structures', 'Transparent bus shelters'],
-                'justifications' => [
-                    'Maintains clear sight lines for observation',
-                    'Blocks visibility and surveillance',
-                    'Allows observation of vertical circulation',
-                    'Creates concealment and reduces visibility',
-                    'Enables visual monitoring of activities',
-                    'Reduces visibility between areas',
-                    'Maintains visibility while providing weather protection',
-                    'Creates hidden areas that reduce surveillance'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** The primary consideration for data center site selection should always be the lowest cost location.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'While cost is important, site selection must prioritize multiple critical factors including natural disaster risks, utility reliability, proximity to emergency services, network connectivity, and environmental hazards. A cheap location prone to flooding, earthquakes, or far from emergency services could result in much higher costs from downtime, equipment damage, and service disruptions.'
-                ],
-                'difficulty_level' => 1,
                 'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ],
+            
+            // Topic 2: Fire Protection & Safety (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L1 - Remember
             [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the primary purpose of standoff distance in facility security design?',
+                'subtopic' => 'Fire',
+                'question' => 'What are the three elements of the fire triangle that must be present for combustion?',
                 'options' => [
-                    'Provide space for employee parking',
-                    'Create attractive landscaping areas',
-                    'Reduce blast effects from vehicle-borne threats',
-                    'Allow room for emergency vehicle access'
+                    'Heat, fuel, and oxygen',
+                    'Smoke, flame, and heat',
+                    'Fuel, water, and air',
+                    'Ignition, combustion, and extinction'
                 ],
-                'correct_options' => ['Reduce blast effects from vehicle-borne threats'],
+                'correct_options' => ['Heat, fuel, and oxygen'],
                 'justifications' => [
-                    'Parking is a secondary use, not the primary security purpose',
-                    'Landscaping is aesthetic, not the security function',
-                    'Correct - Distance reduces blast damage and fragments from vehicle bombs',
-                    'Emergency access is important but not the primary purpose of standoff'
+                    'Correct - Heat, fuel, and oxygen',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A potential data center site is located 2 miles from a major airport. What security considerations does this present?',
-                'options' => [
-                    'Aircraft noise may interfere with alarm systems',
-                    'Airport security may conflict with facility operations',
-                    'Potential aircraft impact risk and flight path restrictions',
-                    'Electromagnetic interference from aircraft'
-                ],
-                'correct_options' => ['Potential aircraft impact risk and flight path restrictions'],
-                'justifications' => [
-                    'Modern alarm systems are not affected by aircraft noise',
-                    'Airport security operates independently of private facilities',
-                    'Correct - Aircraft pose direct impact risk and may restrict building height/equipment',
-                    'Aircraft do not typically cause significant EMI problems'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Site Design'] ?? 4,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which approach provides the most comprehensive physical security assessment?',
-                'options' => [
-                    'Review security policies and procedures only',
-                    'Conduct penetration testing of access controls only',
-                    'Combine document review, physical testing, and red team exercises',
-                    'Interview security personnel and observe operations only'
-                ],
-                'correct_options' => ['Combine document review, physical testing, and red team exercises'],
-                'justifications' => [
-                    'Documentation alone doesn\'t test actual implementation',
-                    'Technical testing alone misses human factors and physical vulnerabilities',
-                    'Correct - Multi-faceted approach tests policies, systems, and responses comprehensively',
-                    'Interviews and observation provide limited testing of actual security effectiveness'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-
-            // Environmental Controls - HVAC, Lighting, Monitoring (10 items)
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the recommended temperature range for optimal data center operations?',
-                'options' => [
-                    '55-65°F (13-18°C)',
-                    '65-75°F (18-24°C)',
-                    '75-85°F (24-29°C)',
-                    '85-95°F (29-35°C)'
-                ],
-                'correct_options' => ['65-75°F (18-24°C)'],
-                'justifications' => [
-                    'Too cold - wastes energy and may cause condensation',
-                    'Correct - ASHRAE recommended range balancing efficiency and equipment reliability',
-                    'Upper acceptable limit but may stress some equipment',
-                    'Too hot - significantly increases equipment failure risk'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the ideal relative humidity range for data center environments?',
-                'options' => [
-                    '20-30%',
-                    '40-60%',
-                    '70-80%',
-                    '80-90%'
-                ],
-                'correct_options' => ['40-60%'],
-                'justifications' => [
-                    'Too low - increases static electricity and component damage risk',
-                    'Correct - Optimal range preventing both static buildup and condensation',
-                    'Too high - risk of condensation and corrosion',
-                    'Excessive humidity causing equipment damage and mold growth'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag environmental threats that HVAC systems help mitigate:',
-                'options' => [
-                    'Temperature fluctuations',
-                    'Power surges',
-                    'Excessive humidity',
-                    'Network attacks',
-                    'Airborne contaminants',
-                    'Physical intrusion',
-                    'Static electricity buildup',
-                    'Electromagnetic interference'
-                ],
-                'correct_options' => ['Temperature fluctuations', 'Excessive humidity', 'Airborne contaminants', 'Static electricity buildup'],
-                'justifications' => [
-                    'HVAC maintains stable temperatures',
-                    'Electrical protection issue, not HVAC function',
-                    'HVAC controls humidity levels',
-                    'Cybersecurity issue, not environmental',
-                    'HVAC filters remove dust and particles',
-                    'Physical security issue, not environmental control',
-                    'Proper humidity control reduces static electricity',
-                    'EMI requires shielding, not HVAC systems'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which type of lighting provides the best security coverage for parking areas?',
-                'options' => [
-                    'Maximum intensity flood lighting everywhere',
-                    'Motion-activated lighting only',
-                    'Continuous lighting with overlapping coverage eliminating dark spots',
-                    'Intermittent lighting that cycles on and off'
-                ],
-                'correct_options' => ['Continuous lighting with overlapping coverage eliminating dark spots'],
-                'justifications' => [
-                    'Excessive brightness creates harsh shadows and glare problems',
-                    'Motion-only lighting leaves areas dark until activated',
-                    'Correct - Consistent, overlapping coverage eliminates hiding spots',
-                    'Cycling creates predictable dark periods for exploitation'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What lighting solution best addresses CCTV blind spots near loading docks?',
-                'options' => [
-                    'High-intensity flood lights throughout the area',
-                    'Infrared illuminators for night vision cameras',
-                    'Motion-activated strobe lights',
-                    'Colored lighting to mark security zones'
-                ],
-                'correct_options' => ['Infrared illuminators for night vision cameras'],
-                'justifications' => [
-                    'Flood lights may create glare and new shadow blind spots',
-                    'Correct - IR illuminators enhance camera visibility without light pollution',
-                    'Strobe lights disorient but don\'t improve continuous surveillance',
-                    'Colored lighting doesn\'t improve visibility for security'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which environmental conditions should be continuously monitored in data centers? (Select all that apply)',
-                'options' => [
-                    'Temperature',
-                    'Humidity',
-                    'Sound levels',
-                    'Water/flooding detection',
-                    'Air quality and particulates',
-                    'Light levels',
-                    'Power quality',
-                    'Vibration levels'
-                ],
-                'correct_options' => [
-                    'Temperature',
-                    'Humidity',
-                    'Water/flooding detection',
-                    'Air quality and particulates',
-                    'Power quality'
-                ],
-                'justifications' => [
-                    'Correct - Critical for equipment operation and longevity',
-                    'Correct - Prevents condensation, corrosion, and static electricity',
-                    'Not critical for data center equipment operation',
-                    'Correct - Early warning prevents catastrophic water damage',
-                    'Correct - Dust and contaminants damage sensitive equipment',
-                    'Not critical for equipment operation in server areas',
-                    'Correct - Voltage fluctuations damage electronic equipment',
-                    'Important in some cases but not universally critical'
-                ],
-                'settings' => ['isMultiSelect' => true],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** CCTV cameras should always be hidden to maximize effectiveness in catching security violations.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'Visible CCTV cameras provide valuable deterrence, often more effective than catching violations after they occur. A combination of visible (deterrent) and discrete (detection) cameras provides optimal coverage. Visible cameras also meet legal notification requirements in many jurisdictions.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each environmental monitoring system with its primary purpose:',
-                'options' => [
-                    'items' => [
-                        'Temperature sensors',
-                        'Humidity sensors',
-                        'Water detection cables',
-                        'Air quality monitors'
-                    ],
-                    'responses' => [
-                        'Prevent equipment overheating',
-                        'Detect flooding and leaks',
-                        'Monitor particulate contamination',
-                        'Prevent condensation and static'
-                    ]
-                ],
-                'correct_options' => [
-                    'Temperature sensors' => 'Prevent equipment overheating',
-                    'Humidity sensors' => 'Prevent condensation and static',
-                    'Water detection cables' => 'Detect flooding and leaks',
-                    'Air quality monitors' => 'Monitor particulate contamination'
-                ],
-                'justifications' => [
-                    'Temperature sensors' => 'Ensure equipment operates within safe temperature ranges',
-                    'Humidity sensors' => 'Maintain optimal humidity to prevent condensation and static electricity',
-                    'Water detection cables' => 'Provide early warning of water intrusion from leaks or flooding',
-                    'Air quality monitors' => 'Detect dust, chemicals, and contaminants that damage equipment'
-                ],
                 'difficulty_level' => 1,
-                'bloom_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
                 'status' => 'published'
             ],
+            
+            // Item 12 - L2 - Understand
             [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange lighting types by their best security application from general to specialized:',
+                'subtopic' => 'Fire',
+                'question' => 'Why are clean agent fire suppression systems preferred over water sprinklers in data centers?',
                 'options' => [
-                    'Infrared illuminators',
-                    'Continuous area lighting',
-                    'Emergency lighting',
-                    'Motion-activated lighting'
+                    'Clean agents are less expensive than water systems',
+                    'Clean agents suppress fire without damaging electronic equipment',
+                    'Clean agents work faster than water in all situations',
+                    'Clean agents require less maintenance than water systems'
                 ],
-                'correct_options' => [
-                    'Emergency lighting',
-                    'Continuous area lighting',
-                    'Motion-activated lighting',
-                    'Infrared illuminators'
-                ],
-                'justifications' => ['Emergency lighting is most general (required everywhere), continuous area lighting for general security, motion-activated for specific areas, and infrared illuminators for specialized camera applications.'],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            [
-                'topic_id' => $topics['Environmental Controls'] ?? 5,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How long should CCTV footage typically be retained for a standard commercial facility?',
-                'options' => [
-                    '24-48 hours',
-                    '7-14 days',
-                    '30-90 days',
-                    '1 year minimum'
-                ],
-                'correct_options' => ['30-90 days'],
+                'correct_options' => ['Clean agents suppress fire without damaging electronic equipment'],
                 'justifications' => [
-                    'Too short to discover and investigate most incidents',
-                    'May be insufficient for thorough investigations',
-                    'Correct - Balances storage costs with investigation and legal requirements',
-                    'Excessive for most facilities unless specific regulatory requirement'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Clean agents suppress fire without damaging electronic equipment',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 13 - L2 - Understand
+            [
+                'subtopic' => 'Fire',
+                'question' => 'How do early warning fire detection systems improve facility safety?',
+                'options' => [
+                    'They eliminate the need for fire suppression systems',
+                    'They provide faster response time allowing for evacuation and fire suppression before major damage',
+                    'They are less expensive than traditional fire alarms',
+                    'They prevent all fires from starting'
+                ],
+                'correct_options' => ['They provide faster response time allowing for evacuation and fire suppression before major damage'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - They provide faster response time allowing for evacuation and fire suppression before major damage',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 14 - L3 - Apply
+            [
+                'subtopic' => 'Fire',
+                'question' => 'A server room contains critical IT equipment that cannot tolerate water damage. What fire suppression approach should be implemented?',
+                'options' => [
+                    'Standard water sprinkler systems for cost effectiveness',
+                    'Clean agent gas suppression systems with early detection and pre-action controls',
+                    'No fire suppression to avoid accidental discharge',
+                    'Portable fire extinguishers only'
+                ],
+                'correct_options' => ['Clean agent gas suppression systems with early detection and pre-action controls'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Clean agent gas suppression systems with early detection and pre-action controls',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 15 - L3 - Apply
+            [
+                'subtopic' => 'Fire',
+                'question' => 'How should an organization design fire evacuation procedures for a high-rise office building?',
+                'options' => [
+                    'Rely on elevators for fast evacuation',
+                    'Designate stairwells, assembly points, and train floor wardens with regular drills',
+                    'Assume all employees know how to evacuate without training',
+                    'Focus only on ground floor evacuation procedures'
+                ],
+                'correct_options' => ['Designate stairwells, assembly points, and train floor wardens with regular drills'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Designate stairwells, assembly points, and train floor wardens with regular drills',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 16 - L3 - Apply
+            [
+                'subtopic' => 'Fire',
+                'question' => 'What is the most effective approach for protecting irreplaceable documents and records from fire damage?',
+                'options' => [
+                    'Store everything in regular filing cabinets',
+                    'Use fire-rated safes and vaults with climate control and backup copies in separate locations',
+                    'Keep digital copies on the same premises only',
+                    'Rely on standard building fire suppression systems only'
+                ],
+                'correct_options' => ['Use fire-rated safes and vaults with climate control and backup copies in separate locations'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Use fire-rated safes and vaults with climate control and backup copies in separate locations',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 17 - L4 - Analyze
+            [
+                'subtopic' => 'Fire',
+                'question' => 'Analyze why pre-action fire suppression systems are often used in environments with sensitive equipment.',
+                'options' => [
+                    'Pre-action systems are less expensive than other suppression methods',
+                    'They require multiple triggers before discharging, reducing accidental activation while maintaining protection',
+                    'Pre-action systems extinguish fires faster than other methods',
+                    'They work without any detection systems or manual intervention'
+                ],
+                'correct_options' => ['They require multiple triggers before discharging, reducing accidental activation while maintaining protection'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - They require multiple triggers before discharging, reducing accidental activation while maintaining protection',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 18 - L4 - Analyze
+            [
+                'subtopic' => 'Fire',
+                'question' => 'What is the fundamental challenge in balancing fire safety with security in high-security facilities?',
+                'options' => [
+                    'Fire safety and security requirements never conflict',
+                    'Fire codes require immediate exit access while security requires controlled access',
+                    'Fire safety is always more important than security considerations',
+                    'Security systems are not affected by fire safety requirements'
+                ],
+                'correct_options' => ['Fire codes require immediate exit access while security requires controlled access'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Fire codes require immediate exit access while security requires controlled access',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'subtopic' => 'Fire',
+                'question' => 'A company installs a very early smoke detection aspirating (VESDA) system but experiences frequent false alarms. Evaluate this situation.',
+                'options' => [
+                    'VESDA systems should be removed due to false alarm issues',
+                    'Requires system calibration and environmental assessment while maintaining early detection benefits',
+                    'False alarms indicate the system is working too well',
+                    'VESDA systems should never be used in office environments'
+                ],
+                'correct_options' => ['Requires system calibration and environmental assessment while maintaining early detection benefits'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Requires system calibration and environmental assessment while maintaining early detection benefits',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Item 20 - L5 - Evaluate
+            [
+                'subtopic' => 'Fire',
+                'question' => 'Assess the effectiveness of combining multiple fire detection technologies (smoke, heat, flame) in a single facility.',
+                'options' => [
+                    'Multiple detection types create too much complexity and false alarms',
+                    'Provides comprehensive coverage and faster detection but requires careful integration and testing',
+                    'Only one detection type should ever be used per facility',
+                    'Multiple detection systems interfere with each other'
+                ],
+                'correct_options' => ['Provides comprehensive coverage and faster detection but requires careful integration and testing'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Provides comprehensive coverage and faster detection but requires careful integration and testing',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 3: Power & Utility Systems (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 21 - L1 - Remember
+            [
+                'subtopic' => 'Power',
+                'question' => 'What is the primary purpose of an Uninterruptible Power Supply (UPS) in critical facilities?',
+                'options' => [
+                    'Reducing electricity costs during peak usage times',
+                    'Providing temporary power during electrical outages to prevent system disruption',
+                    'Improving overall power efficiency and performance',
+                    'Eliminating the need for backup generators'
+                ],
+                'correct_options' => ['Providing temporary power during electrical outages to prevent system disruption'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Providing temporary power during electrical outages to prevent system disruption',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
                 'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 22 - L1 - Remember
+            [
+                'subtopic' => 'Power',
+                'question' => 'What does power redundancy mean in facility design?',
+                'options' => [
+                    'Using excessive power beyond what is needed',
+                    'Having backup power systems that can take over if primary power fails',
+                    'Reducing power consumption to save costs',
+                    'Eliminating all electrical systems for security'
+                ],
+                'correct_options' => ['Having backup power systems that can take over if primary power fails'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Having backup power systems that can take over if primary power fails',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 23 - L2 - Understand
+            [
+                'subtopic' => 'Power',
+                'question' => 'Why is clean power (power conditioning) important for sensitive electronic equipment?',
+                'options' => [
+                    'Clean power reduces electricity costs significantly',
+                    'Power fluctuations and electrical noise can damage equipment or cause data corruption',
+                    'Clean power eliminates the need for UPS systems',
+                    'Clean power systems require less maintenance'
+                ],
+                'correct_options' => ['Power fluctuations and electrical noise can damage equipment or cause data corruption'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Power fluctuations and electrical noise can damage equipment or cause data corruption',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 24 - L2 - Understand
+            [
+                'subtopic' => 'Power',
+                'question' => 'How do emergency generators differ from UPS systems in backup power strategies?',
+                'options' => [
+                    'Generators are faster to start than UPS systems',
+                    'UPS provides immediate power while generators offer longer-term backup power',
+                    'Generators are less expensive than UPS systems',
+                    'UPS systems work better outdoors than generators'
+                ],
+                'correct_options' => ['UPS provides immediate power while generators offer longer-term backup power'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - UPS provides immediate power while generators offer longer-term backup power',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 25 - L3 - Apply
+            [
+                'subtopic' => 'Power',
+                'question' => 'A financial trading firm requires 99.99% uptime for their critical systems. What power architecture should they implement?',
+                'options' => [
+                    'Single UPS system connected to utility power',
+                    'Redundant power feeds, multiple UPS systems, and backup generators with automatic transfer',
+                    'Only backup generators without UPS systems',
+                    'Standard office power systems with surge protectors'
+                ],
+                'correct_options' => ['Redundant power feeds, multiple UPS systems, and backup generators with automatic transfer'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Redundant power feeds, multiple UPS systems, and backup generators with automatic transfer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 26 - L3 - Apply
+            [
+                'subtopic' => 'Power',
+                'question' => 'How should power distribution be designed in a data center to minimize single points of failure?',
+                'options' => [
+                    'Use a single large UPS for the entire facility',
+                    'Implement A and B power distribution paths with separate UPS and generator systems',
+                    'Connect all equipment to standard office power outlets',
+                    'Use only battery backup systems without generators'
+                ],
+                'correct_options' => ['Implement A and B power distribution paths with separate UPS and generator systems'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement A and B power distribution paths with separate UPS and generator systems',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 27 - L3 - Apply
+            [
+                'subtopic' => 'Power',
+                'question' => 'What is the most critical factor when sizing backup generators for emergency power?',
+                'options' => [
+                    'Choose the least expensive generator available',
+                    'Calculate actual power requirements plus growth capacity with proper load testing',
+                    'Always buy the largest generator possible',
+                    'Use the same size as the building\'s main electrical service'
+                ],
+                'correct_options' => ['Calculate actual power requirements plus growth capacity with proper load testing'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Calculate actual power requirements plus growth capacity with proper load testing',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 28 - L4 - Analyze
+            [
+                'subtopic' => 'Power',
+                'question' => 'Analyze why battery-based UPS systems require environmental controls and monitoring.',
+                'options' => [
+                    'Batteries work better in any environmental condition',
+                    'Temperature and humidity affect battery performance and lifespan, requiring monitoring for reliability',
+                    'Environmental controls are only needed for aesthetic purposes',
+                    'Batteries never fail and do not require monitoring'
+                ],
+                'correct_options' => ['Temperature and humidity affect battery performance and lifespan, requiring monitoring for reliability'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Temperature and humidity affect battery performance and lifespan, requiring monitoring for reliability',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 29 - L4 - Analyze
+            [
+                'subtopic' => 'Power',
+                'question' => 'What is the fundamental challenge in maintaining power systems during natural disasters?',
+                'options' => [
+                    'Natural disasters never affect power systems',
+                    'External utility infrastructure may be damaged while fuel supplies and maintenance access are limited',
+                    'Backup systems always work perfectly during disasters',
+                    'Natural disasters only affect power during business hours'
+                ],
+                'correct_options' => ['External utility infrastructure may be damaged while fuel supplies and maintenance access are limited'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - External utility infrastructure may be damaged while fuel supplies and maintenance access are limited',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 30 - L5 - Evaluate
+            [
+                'subtopic' => 'Power',
+                'question' => 'A company implements a microgrid system with renewable energy and storage to improve resilience. Evaluate this approach.',
+                'options' => [
+                    'Microgrids are always more expensive and provide no benefits',
+                    'Can improve resilience and sustainability but requires careful design and higher initial investment',
+                    'Microgrids eliminate all power reliability issues',
+                    'Renewable energy systems are inappropriate for critical facilities'
+                ],
+                'correct_options' => ['Can improve resilience and sustainability but requires careful design and higher initial investment'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Can improve resilience and sustainability but requires careful design and higher initial investment',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 4: Site Design & Construction (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L1 - Remember
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'What is the primary security benefit of implementing a secure perimeter around a facility?',
+                'options' => [
+                    'Improving the aesthetic appearance of the property',
+                    'Creating the first line of defense against unauthorized access',
+                    'Reducing property insurance costs',
+                    'Increasing the property value for resale'
+                ],
+                'correct_options' => ['Creating the first line of defense against unauthorized access'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Creating the first line of defense against unauthorized access',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 32 - L1 - Remember
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'What does CPTED stand for in security design?',
+                'options' => [
+                    'Crime Prevention Through Environmental Design',
+                    'Critical Protection Through Enhanced Defense',
+                    'Comprehensive Physical Threat Evaluation and Defense',
+                    'Centralized Perimeter Threat Detection'
+                ],
+                'correct_options' => ['Crime Prevention Through Environmental Design'],
+                'justifications' => [
+                    'Correct - Crime Prevention Through Environmental Design',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 33 - L2 - Understand
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'How does natural surveillance contribute to facility security?',
+                'options' => [
+                    'It eliminates the need for security cameras',
+                    'Clear sightlines and good lighting enable observation of activities and deter criminal behavior',
+                    'Natural surveillance only works during daylight hours',
+                    'It reduces the need for security guards'
+                ],
+                'correct_options' => ['Clear sightlines and good lighting enable observation of activities and deter criminal behavior'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Clear sightlines and good lighting enable observation of activities and deter criminal behavior',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 34 - L2 - Understand
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'Why is setback distance important in secure facility design?',
+                'options' => [
+                    'Setback distance improves property aesthetics',
+                    'It provides buffer space against vehicle-borne threats and enables detection zones',
+                    'Setback distance reduces construction costs',
+                    'It eliminates the need for perimeter fencing'
+                ],
+                'correct_options' => ['It provides buffer space against vehicle-borne threats and enables detection zones'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - It provides buffer space against vehicle-borne threats and enables detection zones',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 35 - L3 - Apply
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'A government facility needs protection against vehicle-borne improvised explosive devices (VBIEDs). What design measures should be implemented?',
+                'options' => [
+                    'Standard decorative landscaping around the building',
+                    'Anti-ram barriers, standoff distance, and hardened construction with progressive collapse resistance',
+                    'Only security cameras and lighting',
+                    'Standard commercial building construction'
+                ],
+                'correct_options' => ['Anti-ram barriers, standoff distance, and hardened construction with progressive collapse resistance'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Anti-ram barriers, standoff distance, and hardened construction with progressive collapse resistance',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 36 - L3 - Apply
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'How should visitor parking be positioned relative to a high-security facility?',
+                'options' => [
+                    'Directly adjacent to the main building entrance',
+                    'At a safe distance from the building with controlled access and screening areas',
+                    'Mixed with employee parking throughout the property',
+                    'Visitor parking is not needed for secure facilities'
+                ],
+                'correct_options' => ['At a safe distance from the building with controlled access and screening areas'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - At a safe distance from the building with controlled access and screening areas',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 37 - L3 - Apply
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'What is the most effective approach for integrating blast-resistant design with normal building operations?',
+                'options' => [
+                    'Make blast resistance obvious to deter attackers',
+                    'Integrate protective features into normal architectural elements while maintaining functionality',
+                    'Only protect selected areas and leave others vulnerable',
+                    'Sacrifice all normal operations for maximum protection'
+                ],
+                'correct_options' => ['Integrate protective features into normal architectural elements while maintaining functionality'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Integrate protective features into normal architectural elements while maintaining functionality',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 38 - L4 - Analyze
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'Analyze why balancing security requirements with accessibility compliance (ADA) can be challenging in facility design.',
+                'options' => [
+                    'Security and accessibility requirements never conflict',
+                    'Security measures may impede accessibility while ADA requires barrier-free access',
+                    'Accessibility requirements eliminate all security options',
+                    'Security is always more important than accessibility'
+                ],
+                'correct_options' => ['Security measures may impede accessibility while ADA requires barrier-free access'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Security measures may impede accessibility while ADA requires barrier-free access',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 39 - L4 - Analyze
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'What is the fundamental challenge in designing security for mixed-use facilities with both public and restricted areas?',
+                'options' => [
+                    'Mixed-use facilities cannot be secured effectively',
+                    'Must clearly define and control transitions between public and restricted zones while maintaining user experience',
+                    'All areas should have identical security levels',
+                    'Public areas eliminate the need for any security measures'
+                ],
+                'correct_options' => ['Must clearly define and control transitions between public and restricted zones while maintaining user experience'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Must clearly define and control transitions between public and restricted zones while maintaining user experience',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 40 - L5 - Evaluate
+            [
+                'subtopic' => 'Site Design',
+                'question' => 'A company builds an open-plan office with extensive glass walls to promote collaboration but faces security concerns. Evaluate this design choice.',
+                'options' => [
+                    'Open designs are always incompatible with security requirements',
+                    'Requires balancing collaboration benefits with security controls like smart glass and zone-based access',
+                    'Glass walls provide better security than solid walls',
+                    'Open plans eliminate all security and privacy concerns'
+                ],
+                'correct_options' => ['Requires balancing collaboration benefits with security controls like smart glass and zone-based access'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Requires balancing collaboration benefits with security controls like smart glass and zone-based access',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'status' => 'published'
+            ],
+            
+            // Topic 5: Environmental Controls (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L1 - Remember
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'What is the primary purpose of HVAC systems in data centers and server rooms?',
+                'options' => [
+                    'Providing comfortable working conditions for employees only',
+                    'Maintaining proper temperature and humidity to ensure equipment reliability',
+                    'Reducing energy costs and consumption',
+                    'Meeting building code requirements only'
+                ],
+                'correct_options' => ['Maintaining proper temperature and humidity to ensure equipment reliability'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Maintaining proper temperature and humidity to ensure equipment reliability',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 42 - L1 - Remember
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'What environmental factors can damage sensitive electronic equipment?',
+                'options' => [
+                    'Only temperature variations',
+                    'Temperature, humidity, dust, vibration, and electromagnetic interference',
+                    'Only high humidity levels',
+                    'Environmental factors do not affect electronic equipment'
+                ],
+                'correct_options' => ['Temperature, humidity, dust, vibration, and electromagnetic interference'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Temperature, humidity, dust, vibration, and electromagnetic interference',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 43 - L2 - Understand
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'Why is humidity control critical in environments with electronic equipment?',
+                'options' => [
+                    'Humidity only affects human comfort',
+                    'Low humidity causes static electricity while high humidity enables corrosion and condensation',
+                    'Humidity control reduces energy costs',
+                    'Electronic equipment works better in high humidity'
+                ],
+                'correct_options' => ['Low humidity causes static electricity while high humidity enables corrosion and condensation'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Low humidity causes static electricity while high humidity enables corrosion and condensation',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 44 - L2 - Understand
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'How do positive pressure systems contribute to environmental security?',
+                'options' => [
+                    'They reduce heating and cooling costs',
+                    'They prevent infiltration of outside air, dust, and contaminants',
+                    'They eliminate the need for air filtration systems',
+                    'Positive pressure has no security benefits'
+                ],
+                'correct_options' => ['They prevent infiltration of outside air, dust, and contaminants'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - They prevent infiltration of outside air, dust, and contaminants',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 45 - L3 - Apply
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'A pharmaceutical research lab handles sensitive compounds that could be harmful if airborne. What environmental controls should be implemented?',
+                'options' => [
+                    'Standard office HVAC with basic filtration',
+                    'Negative pressure containment with HEPA filtration and emergency shutdown capabilities',
+                    'No special environmental controls are needed',
+                    'Only temperature control without air handling considerations'
+                ],
+                'correct_options' => ['Negative pressure containment with HEPA filtration and emergency shutdown capabilities'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Negative pressure containment with HEPA filtration and emergency shutdown capabilities',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 46 - L3 - Apply
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'How should environmental monitoring be implemented in a critical facility?',
+                'options' => [
+                    'Manual checks once per day are sufficient',
+                    'Continuous automated monitoring with alarms and redundant sensors',
+                    'Environmental monitoring is not necessary',
+                    'Only monitor during business hours'
+                ],
+                'correct_options' => ['Continuous automated monitoring with alarms and redundant sensors'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Continuous automated monitoring with alarms and redundant sensors',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 47 - L3 - Apply
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'What is the most effective approach for environmental controls in a clean room manufacturing facility?',
+                'options' => [
+                    'Use standard commercial HVAC systems',
+                    'Implement classified clean room standards with appropriate filtration, air changes, and contamination control',
+                    'Only control temperature without considering air quality',
+                    'Environmental controls are not needed in manufacturing'
+                ],
+                'correct_options' => ['Implement classified clean room standards with appropriate filtration, air changes, and contamination control'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement classified clean room standards with appropriate filtration, air changes, and contamination control',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'status' => 'published'
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'Analyze why environmental control systems require redundancy and backup power in critical facilities.',
+                'options' => [
+                    'Redundancy is only needed for cost savings',
+                    'Environmental system failures can cause equipment damage and data loss within minutes',
+                    'Environmental controls never fail',
+                    'Backup power is only needed for lighting systems'
+                ],
+                'correct_options' => ['Environmental system failures can cause equipment damage and data loss within minutes'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Environmental system failures can cause equipment damage and data loss within minutes',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 49 - L4 - Analyze
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'What is the fundamental challenge in designing environmental controls for facilities with mixed requirements (offices and data centers)?',
+                'options' => [
+                    'Mixed facilities cannot have environmental controls',
+                    'Human comfort and equipment requirements differ significantly requiring zoned systems',
+                    'All areas should have identical environmental conditions',
+                    'Environmental controls are only needed in one type of area'
+                ],
+                'correct_options' => ['Human comfort and equipment requirements differ significantly requiring zoned systems'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Human comfort and equipment requirements differ significantly requiring zoned systems',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'status' => 'published'
+            ],
+            
+            // Item 50 - L5 - Evaluate
+            [
+                'subtopic' => 'Environmental Controls',
+                'question' => 'A data center implements free cooling (using outside air) to reduce energy costs but faces concerns about air quality and security. Evaluate this approach.',
+                'options' => [
+                    'Free cooling should never be used in data centers',
+                    'Can provide energy savings but requires careful filtration and contamination monitoring',
+                    'Outside air always improves data center operations',
+                    'Energy costs are not important for data center operations'
+                ],
+                'correct_options' => ['Can provide energy savings but requires careful filtration and contamination monitoring'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Can provide energy savings but requires careful filtration and contamination monitoring',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'type_id' => 1,
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
                 'status' => 'published'
             ]
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 17 (Physical & Environmental Security) diagnostic items seeded successfully!');
     }
 }

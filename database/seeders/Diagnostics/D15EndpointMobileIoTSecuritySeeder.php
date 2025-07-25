@@ -2,1310 +2,1368 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-use Illuminate\Database\Seeder;
-
-class D15EndpointMobileIoTSecuritySeeder extends Seeder
+class D15EndpointMobileIoTSecuritySeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Endpoint, Mobile & IoT Security';
+    
+    protected function getQuestions(): array
     {
-        // Clear existing items
-        DiagnosticItem::whereHas('topic.domain', function($query) {
-            $query->where('name', 'Endpoint, Mobile & IoT Security');
-        })->forceDelete();
-        
-        // Get topic references
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Endpoint, Mobile & IoT Security');
-        })->pluck('id', 'name');
-        
-        $items = [
-            // Topic 1: Endpoint Security - Questions 1-10 (Bloom: 2-2-3-2-1)
+        return [
+            // Topic 1: Endpoint Protection (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
             
-            // Item 1 - Endpoint Security - L1 Knowledge
+            // Item 1 - L1 - Remember
             [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary difference between EPP and EDR?',
+                'subtopic' => 'Endpoint Security',
+                'question' => 'What is the primary difference between traditional antivirus and modern Endpoint Detection and Response (EDR) solutions?',
                 'options' => [
-                    'EPP is for servers, EDR is for workstations',
-                    'EPP prevents threats, EDR detects and responds to threats',
-                    'EPP is cloud-based, EDR is on-premises',
-                    'EPP is newer technology than EDR'
+                    'EDR is less expensive than traditional antivirus',
+                    'EDR provides behavioral analysis and threat hunting capabilities beyond signature-based detection',
+                    'Traditional antivirus works faster than EDR solutions',
+                    'EDR only works on mobile devices while antivirus works on computers'
                 ],
-                'correct_options' => ['EPP prevents threats, EDR detects and responds to threats'],
+                'correct_options' => ['EDR provides behavioral analysis and threat hunting capabilities beyond signature-based detection'],
                 'justifications' => [
-                    'Both EPP and EDR protect all endpoint types',
-                    'Correct - EPP focuses on prevention, EDR on detection and response',
-                    'Both can be cloud-based or on-premises',
-                    'EDR is actually the newer technology'
+                    'EDR typically has higher initial costs than traditional antivirus solutions',
+                    'Correct - EDR provides behavioral analysis and threat hunting capabilities beyond signature-based detection',
+                    'EDR solutions often require more processing power than traditional antivirus',
+                    'EDR works on all types of endpoints, not just mobile devices'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 2 - Endpoint Security - L1 Knowledge
-            [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What does XDR extend beyond traditional EDR capabilities?',
-                'options' => [
-                    'Only email security',
-                    'Network, cloud, and email telemetry correlation',
-                    'Only cloud workload protection',
-                    'Only network traffic analysis'
-                ],
-                'correct_options' => ['Network, cloud, and email telemetry correlation'],
-                'justifications' => [
-                    'XDR includes email but extends beyond it',
-                    'Correct - XDR correlates data across multiple security layers',
-                    'XDR includes cloud but is not limited to it',
-                    'XDR includes network but extends beyond it'
-                ],
                 'difficulty_level' => 1,
-                'bloom_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 3 - Endpoint Security - L2 Comprehension
+            // Item 2 - L2 - Understand
             [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which application control method allows only pre-approved software to execute?',
+                'subtopic' => 'Endpoint Security',
+                'question' => 'How does Zero Trust endpoint security differ from traditional perimeter-based security?',
                 'options' => [
-                    'Blacklisting',
-                    'Whitelisting',
-                    'Graylisting',
-                    'Sandboxing'
+                    'Zero Trust is faster than perimeter-based security',
+                    'Zero Trust assumes no implicit trust and verifies every endpoint connection',
+                    'Zero Trust only applies to cloud environments',
+                    'Zero Trust eliminates the need for endpoint security software'
                 ],
-                'correct_options' => ['Whitelisting'],
+                'correct_options' => ['Zero Trust assumes no implicit trust and verifies every endpoint connection'],
                 'justifications' => [
-                    'Blacklisting blocks known bad software but allows unknown',
-                    'Correct - Whitelisting only permits approved applications',
-                    'Graylisting is for email, not application control',
-                    'Sandboxing isolates but doesn\'t control execution'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Zero Trust assumes no implicit trust and verifies every endpoint connection',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 4 - Endpoint Security - L2 Comprehension
+            // Item 3 - L2 - Understand
             [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of security baselines in endpoint management?',
+                'subtopic' => 'Endpoint Security',
+                'question' => 'Why is application whitelisting more secure than blacklisting for endpoint protection?',
                 'options' => [
-                    'To create backup images',
-                    'To establish minimum security configuration standards',
-                    'To monitor network traffic',
-                    'To encrypt hard drives'
+                    'Whitelisting is easier to manage than blacklisting',
+                    'Whitelisting prevents execution of unknown threats by default',
+                    'Whitelisting is faster than blacklisting',
+                    'Whitelisting works better with older operating systems'
                 ],
-                'correct_options' => ['To establish minimum security configuration standards'],
+                'correct_options' => ['Whitelisting prevents execution of unknown threats by default'],
                 'justifications' => [
-                    'Baselines are configuration standards, not backup solutions',
-                    'Correct - Baselines define minimum security configuration requirements',
-                    'Baselines are about configuration, not network monitoring',
-                    'Baselines cover broader configuration, not just encryption'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Whitelisting prevents execution of unknown threats by default',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 5 - Endpoint Security - L3 Application
-            [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Select all components typically included in endpoint configuration management:',
-                'options' => [
-                    'Patch management',
-                    'Software inventory',
-                    'Network firewall rules',
-                    'Registry settings',
-                    'User account provisioning',
-                    'Hardware asset tracking'
-                ],
-                'correct_options' => ['Patch management', 'Software inventory', 'Registry settings', 'Hardware asset tracking'],
-                'justifications' => [
-                    'Patch management is core to endpoint configuration',
-                    'Software inventory tracks installed applications',
-                    'Network firewall rules are network-level, not endpoint configuration',
-                    'Registry settings are part of endpoint configuration',
-                    'User account provisioning is identity management, not endpoint configuration',
-                    'Hardware asset tracking is part of endpoint management'
-                ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 6 - Endpoint Security - L3 Application
-            [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 5,
-                'dimension' => 'Technical',
-                'content' => 'Match each capability with the appropriate technology:',
-                'options' => [
-                    'items' => [
-                        'Signature-based malware detection',
-                        'Behavioral threat hunting',
-                        'Cross-platform telemetry correlation',
-                        'Real-time file blocking'
-                    ],
-                    'responses' => [
-                        'EPP',
-                        'EDR',
-                        'XDR',
-                        'EPP'
-                    ]
-                ],
-                'correct_options' => [
-                    'Signature-based malware detection' => 'EPP',
-                    'Behavioral threat hunting' => 'EDR',
-                    'Cross-platform telemetry correlation' => 'XDR',
-                    'Real-time file blocking' => 'EPP'
-                ],
-                'justifications' => [
-                    'Signature-based malware detection' => 'Traditional EPP capability for known threats',
-                    'Behavioral threat hunting' => 'EDR analyzes behavior patterns for threats',
-                    'Cross-platform telemetry correlation' => 'XDR extends beyond endpoints to correlate data',
-                    'Real-time file blocking' => 'EPP prevents execution of malicious files'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 7 - Endpoint Security - L3 Application
-            [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'In an XDR implementation, which data source provides the most comprehensive view of lateral movement?',
-                'options' => [
-                    'Endpoint process telemetry only',
-                    'Network traffic logs only',
-                    'Correlated endpoint and network telemetry',
-                    'Email security logs only'
-                ],
-                'correct_options' => ['Correlated endpoint and network telemetry'],
-                'justifications' => [
-                    'Endpoint telemetry alone misses network-based movement',
-                    'Network logs alone miss endpoint-based activities',
-                    'Correct - Correlation shows complete lateral movement patterns',
-                    'Email logs don\'t track lateral movement within networks'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 8 - Endpoint Security - L4 Analysis
+            // Item 4 - L3 - Apply
             [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Why might an organization choose application whitelisting over blacklisting for critical systems?',
+                'subtopic' => 'Endpoint Security',
+                'question' => 'A financial services company needs to secure laptops for remote workers accessing sensitive customer data. What endpoint security approach would be most comprehensive?',
                 'options' => [
-                    'Whitelisting requires less maintenance',
-                    'Whitelisting provides better protection against unknown threats',
-                    'Whitelisting has lower performance impact',
-                    'Whitelisting is easier to implement'
+                    'Install only traditional antivirus software',
+                    'Deploy EDR with full disk encryption, VPN, and application controls',
+                    'Rely on built-in operating system security features only',
+                    'Use only network-based security controls'
                 ],
-                'correct_options' => ['Whitelisting provides better protection against unknown threats'],
+                'correct_options' => ['Deploy EDR with full disk encryption, VPN, and application controls'],
                 'justifications' => [
-                    'Whitelisting actually requires more maintenance than blacklisting',
-                    'Correct - Whitelisting blocks unknown/zero-day threats by default',
-                    'Whitelisting can have higher performance impact due to constant checking',
-                    'Whitelisting is typically more complex to implement'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Deploy EDR with full disk encryption, VPN, and application controls',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 4,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 5 - L3 - Apply
+            [
+                'subtopic' => 'Endpoint Security',
+                'question' => 'How should an organization implement endpoint security for a mixed environment of Windows, macOS, and Linux systems?',
+                'options' => [
+                    'Use different security vendors for each operating system',
+                    'Implement unified endpoint management with cross-platform capabilities',
+                    'Only secure Windows systems as they are most vulnerable',
+                    'Rely on each operating system\'s built-in security'
+                ],
+                'correct_options' => ['Implement unified endpoint management with cross-platform capabilities'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement unified endpoint management with cross-platform capabilities',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 6 - L3 - Apply
+            [
+                'subtopic' => 'Endpoint Security',
+                'question' => 'What is the most effective approach for protecting endpoints against fileless malware attacks?',
+                'options' => [
+                    'Increase signature database update frequency',
+                    'Implement behavior-based detection and memory protection controls',
+                    'Disable all PowerShell and scripting capabilities',
+                    'Use only hardware-based security solutions'
+                ],
+                'correct_options' => ['Implement behavior-based detection and memory protection controls'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement behavior-based detection and memory protection controls',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.4,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 7 - L4 - Analyze
+            [
+                'subtopic' => 'Endpoint Security',
+                'question' => 'Analyze why cloud-based endpoint security solutions may be more effective than on-premises solutions for detecting advanced threats.',
+                'options' => [
+                    'Cloud solutions are always faster than on-premises solutions',
+                    'Cloud solutions leverage global threat intelligence and machine learning at scale',
+                    'Cloud solutions are less expensive than on-premises solutions',
+                    'Cloud solutions eliminate the need for local endpoint agents'
+                ],
+                'correct_options' => ['Cloud solutions leverage global threat intelligence and machine learning at scale'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Cloud solutions leverage global threat intelligence and machine learning at scale',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 9 - Endpoint Security - L4 Analysis
-            [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary advantage of XDR over traditional SIEM for incident response?',
-                'options' => [
-                    'XDR replaces all security tools',
-                    'XDR provides automated response capabilities with context',
-                    'XDR only focuses on endpoints',
-                    'XDR is less expensive than SIEM'
-                ],
-                'correct_options' => ['XDR provides automated response capabilities with context'],
-                'justifications' => [
-                    'XDR complements rather than replaces all security tools',
-                    'Correct - XDR combines detection, investigation, and response with rich context',
-                    'XDR extends beyond endpoints to multiple security layers',
-                    'Cost comparison varies by implementation and vendor'
-                ],
                 'difficulty_level' => 4,
-                'bloom_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 10 - Endpoint Security - L5 Synthesis
+            // Item 8 - L4 - Analyze
             [
-                'topic_id' => $topics['Endpoint Security'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Design an endpoint security strategy for a financial institution with 5,000 endpoints. Rank these components in order of implementation priority:',
+                'subtopic' => 'Endpoint Security',
+                'question' => 'What is the fundamental challenge in securing endpoints in a BYOD (Bring Your Own Device) environment?',
                 'options' => [
-                    'XDR deployment',
-                    'EPP with real-time protection',
-                    'Security baseline enforcement',
-                    'EDR implementation',
-                    'Application whitelisting for critical systems'
+                    'BYOD devices are inherently less secure than corporate devices',
+                    'Balancing employee privacy with corporate security requirements',
+                    'BYOD devices cannot run enterprise security software',
+                    'BYOD environments are too expensive to secure properly'
                 ],
-                'correct_options' => ['EPP with real-time protection', 'Security baseline enforcement', 'EDR implementation', 'Application whitelisting for critical systems', 'XDR deployment'],
+                'correct_options' => ['Balancing employee privacy with corporate security requirements'],
                 'justifications' => [
-                    'XDR deployment' => 'Advanced capability built on foundation of other tools',
-                    'EPP with real-time protection' => 'Foundation - must prevent known threats first',
-                    'Security baseline enforcement' => 'Essential configuration security foundation',
-                    'EDR implementation' => 'Detection and response capabilities for advanced threats',
-                    'Application whitelisting for critical systems' => 'High-value protection for most critical assets'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Balancing employee privacy with corporate security requirements',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 5,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 9 - L5 - Evaluate
+            [
+                'subtopic' => 'Endpoint Security',
+                'question' => 'A company implements AI-powered endpoint protection that automatically isolates suspicious endpoints. Evaluate the security benefits and operational risks.',
+                'options' => [
+                    'AI-powered isolation is always beneficial with no risks',
+                    'Can improve threat response time but may cause business disruption from false positives',
+                    'AI-powered systems should never make automatic isolation decisions',
+                    'Automatic isolation eliminates the need for security analysts'
+                ],
+                'correct_options' => ['Can improve threat response time but may cause business disruption from false positives'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Can improve threat response time but may cause business disruption from false positives',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Topic 2: Device Security - Questions 11-20 (Bloom: 1-2-3-2-2)
-            
-            // Item 11 - Device Security - L1 Knowledge
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of a Trusted Platform Module (TPM)?',
-                'options' => [
-                    'To encrypt network traffic',
-                    'To provide hardware-based cryptographic functions',
-                    'To manage user passwords',
-                    'To scan for malware'
-                ],
-                'correct_options' => ['To provide hardware-based cryptographic functions'],
-                'justifications' => [
-                    'TPM is not for network encryption specifically',
-                    'Correct - TPM provides secure key storage and cryptographic operations',
-                    'TPM is not primarily for password management',
-                    'TPM is not a malware scanning tool'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 12 - Device Security - L2 Comprehension
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What happens during the secure boot process?',
-                'options' => [
-                    'The operating system encrypts all files',
-                    'Digital signatures of boot components are verified',
-                    'User credentials are authenticated',
-                    'Network connections are established'
-                ],
-                'correct_options' => ['Digital signatures of boot components are verified'],
-                'justifications' => [
-                    'File encryption occurs after boot, not during secure boot',
-                    'Correct - Secure boot verifies integrity of boot components',
-                    'User authentication happens after system boot',
-                    'Network establishment is not part of secure boot process'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 13 - Device Security - L2 Comprehension
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which type of encryption protects data if a device is stolen?',
-                'options' => [
-                    'File-level encryption only',
-                    'Full disk encryption',
-                    'Network encryption only',
-                    'Database encryption only'
-                ],
-                'correct_options' => ['Full disk encryption'],
-                'justifications' => [
-                    'File-level encryption only protects specific files',
-                    'Correct - Full disk encryption protects all data if device is stolen',
-                    'Network encryption protects data in transit, not at rest',
-                    'Database encryption only protects database files'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 14 - Device Security - L3 Application
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Select all components involved in maintaining firmware integrity:',
-                'options' => [
-                    'Digital signatures',
-                    'Hash verification',
-                    'Password complexity',
-                    'Measured boot',
-                    'Network firewalls',
-                    'Secure update channels'
-                ],
-                'correct_options' => ['Digital signatures', 'Hash verification', 'Measured boot', 'Secure update channels'],
-                'justifications' => [
-                    'Digital signatures verify firmware authenticity',
-                    'Hash verification ensures firmware hasn\'t been modified',
-                    'Password complexity is not related to firmware integrity',
-                    'Measured boot verifies system state during startup',
-                    'Network firewalls don\'t directly maintain firmware integrity',
-                    'Secure update channels prevent tampering during firmware updates'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 15 - Device Security - L3 Application
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'In a UEFI secure boot implementation, what happens if a boot component fails signature verification?',
-                'options' => [
-                    'The system boots normally with a warning',
-                    'The boot process is halted',
-                    'The component is automatically updated',
-                    'The system boots in safe mode'
-                ],
-                'correct_options' => ['The boot process is halted'],
-                'justifications' => [
-                    'Secure boot prevents normal operation with invalid signatures',
-                    'Correct - Boot process stops to prevent potentially compromised components',
-                    'Secure boot doesn\'t automatically update components',
-                    'Secure boot doesn\'t fall back to safe mode'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 16 - Device Security - L3 Application
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which hardware security feature provides isolated execution environment for sensitive operations?',
-                'options' => [
-                    'TPM only',
-                    'Secure enclave/TEE',
-                    'Standard CPU cache',
-                    'Regular system memory'
-                ],
-                'correct_options' => ['Secure enclave/TEE'],
-                'justifications' => [
-                    'TPM stores keys but doesn\'t provide execution environment',
-                    'Correct - Secure enclave/TEE provides isolated execution',
-                    'Standard CPU cache is not secure or isolated',
-                    'Regular system memory is accessible to the OS'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 17 - Device Security - L4 Analysis
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Why is TPM-backed encryption preferred over software-only encryption for enterprise devices?',
-                'options' => [
-                    'TPM encryption is faster',
-                    'TPM provides hardware-based key protection',
-                    'TPM encryption uses less disk space',
-                    'TPM encryption is easier to recover'
-                ],
-                'correct_options' => ['TPM provides hardware-based key protection'],
-                'justifications' => [
-                    'TPM may not be faster than software encryption',
-                    'Correct - TPM protects encryption keys in hardware, harder to extract',
-                    'TPM doesn\'t affect disk space usage',
-                    'TPM-backed encryption is actually harder to recover without proper auth'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 18 - Device Security - L4 Analysis
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the security advantage of measured boot over secure boot?',
-                'options' => [
-                    'Measured boot is faster',
-                    'Measured boot prevents all malware',
-                    'Measured boot provides attestation of system state',
-                    'Measured boot requires no hardware support'
-                ],
-                'correct_options' => ['Measured boot provides attestation of system state'],
-                'justifications' => [
-                    'Speed is not the primary security advantage',
-                    'Measured boot detects but doesn\'t prevent all malware',
-                    'Correct - Measured boot creates verifiable system state measurements',
-                    'Measured boot typically requires TPM or similar hardware'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 19 - Device Security - L5 Synthesis
-            [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'For a high-security environment, which combination provides the strongest device protection?',
-                'options' => [
-                    'Full disk encryption + antivirus only',
-                    'TPM + secure boot + measured boot + full disk encryption',
-                    'File-level encryption + firewall only',
-                    'Password protection + software encryption only'
-                ],
-                'correct_options' => ['TPM + secure boot + measured boot + full disk encryption'],
-                'justifications' => [
-                    'Missing hardware-based security and boot integrity',
-                    'Correct - Comprehensive hardware and software protection layers',
-                    'Missing boot protection and hardware security',
-                    'Missing hardware-based security and boot integrity'
-                ],
                 'difficulty_level' => 5,
-                'bloom_level' => 5,
+                'type_id' => 1,
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 20 - Device Security - L5 Synthesis
+            // Item 10 - L5 - Evaluate
             [
-                'topic_id' => $topics['Device Security'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Design a device security strategy for executive laptops. Rank these controls by effectiveness against sophisticated attacks:',
+                'subtopic' => 'Endpoint Security',
+                'question' => 'Assess the effectiveness of using endpoint security as the primary defense strategy for an organization.',
                 'options' => [
-                    'Password complexity requirements',
-                    'TPM-backed full disk encryption',
-                    'Secure boot with trusted certificates',
-                    'Regular antivirus updates',
-                    'Hardware-based authentication'
+                    'Endpoint security alone provides complete protection',
+                    'Endpoint security is critical but must be part of a layered defense strategy',
+                    'Endpoint security is unnecessary with proper network security',
+                    'Endpoint security is only effective for known threats'
                 ],
-                'correct_options' => ['TPM-backed full disk encryption', 'Secure boot with trusted certificates', 'Hardware-based authentication', 'Regular antivirus updates', 'Password complexity requirements'],
+                'correct_options' => ['Endpoint security is critical but must be part of a layered defense strategy'],
                 'justifications' => [
-                    'Password complexity requirements' => 'Important but weakest against sophisticated attacks',
-                    'TPM-backed full disk encryption' => 'Most effective - protects data even if device compromised',
-                    'Secure boot with trusted certificates' => 'Prevents boot-level attacks and rootkits',
-                    'Regular antivirus updates' => 'Helpful but sophisticated attacks often bypass AV',
-                    'Hardware-based authentication' => 'Strong protection against credential theft'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Endpoint security is critical but must be part of a layered defense strategy',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
+                'bloom_level' => 5,
                 'difficulty_level' => 5,
+                'type_id' => 1,
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Topic 2: Mobile Device Management (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L1 - Remember
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'What is the primary difference between MDM (Mobile Device Management) and MAM (Mobile Application Management)?',
+                'options' => [
+                    'MDM manages entire devices while MAM manages specific applications',
+                    'MDM is for iOS while MAM is for Android',
+                    'MDM is cheaper while MAM is more expensive',
+                    'MDM and MAM are identical technologies'
+                ],
+                'correct_options' => ['MDM manages entire devices while MAM manages specific applications'],
+                'justifications' => [
+                    'Correct - MDM manages entire devices while MAM manages specific applications',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 12 - L2 - Understand
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'How does containerization improve mobile security in enterprise environments?',
+                'options' => [
+                    'Containerization increases device performance',
+                    'Containerization separates corporate and personal data with distinct security policies',
+                    'Containerization reduces battery consumption',
+                    'Containerization only works on corporate-owned devices'
+                ],
+                'correct_options' => ['Containerization separates corporate and personal data with distinct security policies'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Containerization separates corporate and personal data with distinct security policies',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 13 - L2 - Understand
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'Why is remote wipe capability important in mobile device management?',
+                'options' => [
+                    'Remote wipe improves device performance',
+                    'Remote wipe protects corporate data when devices are lost or stolen',
+                    'Remote wipe is required for app store compliance',
+                    'Remote wipe reduces mobile data usage'
+                ],
+                'correct_options' => ['Remote wipe protects corporate data when devices are lost or stolen'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Remote wipe protects corporate data when devices are lost or stolen',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 14 - L3 - Apply
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'A healthcare organization needs to enable staff to access patient records on personal mobile devices. What MDM approach should they implement?',
+                'options' => [
+                    'Allow unrestricted access from any personal device',
+                    'Implement MAM with app-based encryption and conditional access policies',
+                    'Prohibit all personal device access to maintain security',
+                    'Only allow access through web browsers without any controls'
+                ],
+                'correct_options' => ['Implement MAM with app-based encryption and conditional access policies'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement MAM with app-based encryption and conditional access policies',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 15 - L3 - Apply
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'How should an organization handle mobile device compliance for devices in different countries with varying privacy regulations?',
+                'options' => [
+                    'Apply the same MDM policies globally without consideration of local laws',
+                    'Customize MDM policies to respect local privacy requirements while maintaining security',
+                    'Only deploy MDM in countries with minimal privacy regulations',
+                    'Avoid international mobile device deployment entirely'
+                ],
+                'correct_options' => ['Customize MDM policies to respect local privacy requirements while maintaining security'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Customize MDM policies to respect local privacy requirements while maintaining security',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 16 - L3 - Apply
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'What is the most secure approach for implementing mobile device authentication in a high-security environment?',
+                'options' => [
+                    'Use only device PIN or password',
+                    'Implement multi-factor authentication with biometrics and device certificates',
+                    'Rely on network-based authentication only',
+                    'Use shared device credentials for simplicity'
+                ],
+                'correct_options' => ['Implement multi-factor authentication with biometrics and device certificates'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement multi-factor authentication with biometrics and device certificates',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 17 - L4 - Analyze
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'Analyze the privacy implications of implementing comprehensive MDM policies on employee personal devices.',
+                'options' => [
+                    'MDM policies have no privacy implications for personal devices',
+                    'Comprehensive MDM can create privacy concerns requiring careful policy balance',
+                    'Privacy concerns are irrelevant when devices access corporate data',
+                    'MDM only affects corporate applications and data'
+                ],
+                'correct_options' => ['Comprehensive MDM can create privacy concerns requiring careful policy balance'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Comprehensive MDM can create privacy concerns requiring careful policy balance',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 18 - L4 - Analyze
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'What is the fundamental challenge in managing mobile devices across different operating systems and versions?',
+                'options' => [
+                    'All mobile operating systems have identical security features',
+                    'Fragmented OS capabilities and security model differences require platform-specific approaches',
+                    'Mobile device management is only possible on the latest OS versions',
+                    'Cross-platform management has no technical challenges'
+                ],
+                'correct_options' => ['Fragmented OS capabilities and security model differences require platform-specific approaches'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Fragmented OS capabilities and security model differences require platform-specific approaches',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'A company adopts a "mobile-first" work strategy with minimal device restrictions to improve employee satisfaction. Evaluate this approach from a security perspective.',
+                'options' => [
+                    'Mobile-first strategies with minimal restrictions are always secure',
+                    'May improve productivity but increases security risk requiring compensating controls',
+                    'Security is not relevant in mobile-first environments',
+                    'Minimal restrictions eliminate all mobile security concerns'
+                ],
+                'correct_options' => ['May improve productivity but increases security risk requiring compensating controls'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - May improve productivity but increases security risk requiring compensating controls',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Topic 3: Mobile Security - Questions 21-30 (Bloom: 2-2-3-2-1)
-            
-            // Item 21 - Mobile Security - L1 Knowledge
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What does MDM stand for in mobile security?',
-                'options' => [
-                    'Mobile Data Management',
-                    'Mobile Device Management',
-                    'Mobile Detection Management',
-                    'Mobile Defense Management'
-                ],
-                'correct_options' => ['Mobile Device Management'],
-                'justifications' => [
-                    'Data management is part of MDM but not the full scope',
-                    'Correct - Mobile Device Management is the full term',
-                    'Detection is not the primary focus of MDM',
-                    'Defense is too narrow for MDM capabilities'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 22 - Mobile Security - L1 Knowledge
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What does BYOD stand for?',
-                'options' => [
-                    'Bring Your Own Data',
-                    'Bring Your Own Device',
-                    'Build Your Own Defense',
-                    'Buy Your Own Device'
-                ],
-                'correct_options' => ['Bring Your Own Device'],
-                'justifications' => [
-                    'BYOD is about devices, not just data',
-                    'Correct - Bring Your Own Device policy',
-                    'BYOD is not about building defenses',
-                    'BYOD is about bringing, not buying devices'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 23 - Mobile Security - L2 Comprehension
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary difference between MDM and EMM?',
-                'options' => [
-                    'MDM is for iOS, EMM is for Android',
-                    'EMM includes broader enterprise mobility capabilities beyond device management',
-                    'MDM is cloud-based, EMM is on-premises',
-                    'There is no difference between MDM and EMM'
-                ],
-                'correct_options' => ['EMM includes broader enterprise mobility capabilities beyond device management'],
-                'justifications' => [
-                    'Both MDM and EMM work across mobile platforms',
-                    'Correct - EMM includes apps, content, and identity management',
-                    'Both can be cloud-based or on-premises',
-                    'EMM is an evolution and expansion of MDM capabilities'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 24 - Mobile Security - L2 Comprehension
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'In a COPE (Corporate Owned, Personally Enabled) model, who owns the device?',
-                'options' => [
-                    'The employee',
-                    'The corporation',
-                    'Shared ownership',
-                    'The mobile carrier'
-                ],
-                'correct_options' => ['The corporation'],
-                'justifications' => [
-                    'In COPE, corporation owns but allows personal use',
-                    'Correct - Corporate Owned means company owns the device',
-                    'COPE specifically means corporate ownership',
-                    'Carrier is not involved in COPE ownership model'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 25 - Mobile Security - L3 Application
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Select all capabilities typically provided by modern MDM solutions:',
-                'options' => [
-                    'Remote device wipe',
-                    'App installation control',
-                    'Network firewall management',
-                    'Device encryption enforcement',
-                    'Email server configuration',
-                    'Compliance policy enforcement'
-                ],
-                'correct_options' => ['Remote device wipe', 'App installation control', 'Device encryption enforcement', 'Compliance policy enforcement'],
-                'justifications' => [
-                    'Remote device wipe is core MDM functionality',
-                    'App installation control is key MDM capability',
-                    'Network firewall management is typically separate from MDM',
-                    'Device encryption enforcement is standard MDM feature',
-                    'Email server configuration is typically handled by email security solutions',
-                    'Compliance policy enforcement is essential MDM function'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 26 - Mobile Security - L3 Application
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which mobile threat protection technique is most effective against malicious apps?',
-                'options' => [
-                    'Network-based filtering only',
-                    'App store vetting and sandboxing',
-                    'Device encryption only',
-                    'Password complexity only'
-                ],
-                'correct_options' => ['App store vetting and sandboxing'],
-                'justifications' => [
-                    'Network filtering misses locally installed malicious apps',
-                    'Correct - App store vetting and sandboxing prevent malicious app execution',
-                    'Encryption protects data but doesn\'t prevent malicious app installation',
-                    'Password complexity doesn\'t address malicious apps'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 27 - Mobile Security - L3 Application
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 5,
-                'dimension' => 'Technical',
-                'content' => 'Match each mobile security model with its primary characteristic:',
-                'options' => [
-                    'items' => [
-                        'Employee owns and uses personal device for work',
-                        'Company provides device for business and personal use',
-                        'Company provides device for business use only',
-                        'Employee chooses from company-approved devices'
-                    ],
-                    'responses' => [
-                        'BYOD',
-                        'COPE',
-                        'Corporate-owned',
-                        'Choose Your Own Device (CYOD)'
-                    ]
-                ],
-                'correct_options' => [
-                    'Employee owns and uses personal device for work' => 'BYOD',
-                    'Company provides device for business and personal use' => 'COPE',
-                    'Company provides device for business use only' => 'Corporate-owned',
-                    'Employee chooses from company-approved devices' => 'Choose Your Own Device (CYOD)'
-                ],
-                'justifications' => [
-                    'Employee owns and uses personal device for work' => 'Classic BYOD model',
-                    'Company provides device for business and personal use' => 'COPE allows personal use of corporate devices',
-                    'Company provides device for business use only' => 'Traditional corporate-owned model',
-                    'Employee chooses from company-approved devices' => 'CYOD provides controlled choice'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 28 - Mobile Security - L4 Analysis
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Why might an organization prefer COPE over BYOD for security-sensitive roles?',
-                'options' => [
-                    'COPE is less expensive',
-                    'COPE provides greater control over device security and compliance',
-                    'COPE is easier to manage',
-                    'COPE supports more applications'
-                ],
-                'correct_options' => ['COPE provides greater control over device security and compliance'],
-                'justifications' => [
-                    'COPE typically has higher upfront costs than BYOD',
-                    'Correct - COPE allows full control over device security configuration',
-                    'COPE can be more complex due to personal use considerations',
-                    'App support depends on platform, not ownership model'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 29 - Mobile Security - L4 Analysis
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary security challenge with BYOD implementations?',
-                'options' => [
-                    'Higher device costs',
-                    'Limited app availability',
-                    'Balancing security control with user privacy',
-                    'Poor network performance'
-                ],
-                'correct_options' => ['Balancing security control with user privacy'],
-                'justifications' => [
-                    'BYOD typically reduces device costs for organizations',
-                    'App availability is not the primary security concern',
-                    'Correct - BYOD creates tension between security needs and privacy rights',
-                    'Network performance is not the primary BYOD security challenge'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 30 - Mobile Security - L5 Synthesis
-            [
-                'topic_id' => $topics['Mobile Security'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Design a mobile security strategy for a healthcare organization. Rank these components by implementation priority:',
-                'options' => [
-                    'Mobile threat protection deployment',
-                    'HIPAA-compliant MDM selection and deployment',
-                    'Device encryption enforcement',
-                    'App whitelisting for medical applications',
-                    'Mobile device policy development'
-                ],
-                'correct_options' => ['Mobile device policy development', 'HIPAA-compliant MDM selection and deployment', 'Device encryption enforcement', 'App whitelisting for medical applications', 'Mobile threat protection deployment'],
-                'justifications' => [
-                    'Mobile threat protection deployment' => 'Advanced protection after basic controls established',
-                    'HIPAA-compliant MDM selection and deployment' => 'Core platform for enforcing security controls',
-                    'Device encryption enforcement' => 'Essential for protecting PHI on mobile devices',
-                    'App whitelisting for medical applications' => 'Critical for protecting sensitive medical apps',
-                    'Mobile device policy development' => 'Foundation - must establish requirements first'
-                ],
                 'difficulty_level' => 5,
+                'type_id' => 1,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 20 - L5 - Evaluate
+            [
+                'subtopic' => 'Mobile Security',
+                'question' => 'Assess the long-term sustainability of traditional MDM approaches as mobile operating systems become more privacy-focused.',
+                'options' => [
+                    'Traditional MDM will remain unchanged regardless of OS evolution',
+                    'Privacy-focused OS changes require evolution toward zero-trust and application-centric security',
+                    'Privacy improvements eliminate the need for mobile device management',
+                    'Traditional MDM approaches are incompatible with privacy requirements'
+                ],
+                'correct_options' => ['Privacy-focused OS changes require evolution toward zero-trust and application-centric security'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Privacy-focused OS changes require evolution toward zero-trust and application-centric security',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Topic 4: IoT Security - Questions 31-40 (Bloom: 2-2-3-2-1)
-            
-            // Item 31 - IoT Security - L1 Knowledge
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is a primary security challenge with IoT devices?',
-                'options' => [
-                    'High processing power',
-                    'Limited resources for security controls',
-                    'Too much memory',
-                    'Excessive network bandwidth'
-                ],
-                'correct_options' => ['Limited resources for security controls'],
-                'justifications' => [
-                    'IoT devices typically have limited, not high processing power',
-                    'Correct - Constrained resources limit security implementation',
-                    'IoT devices typically have limited memory',
-                    'IoT devices typically have limited bandwidth'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 32 - IoT Security - L1 Knowledge
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What does "constrained environment" mean in IoT context?',
-                'options' => [
-                    'Physically small devices only',
-                    'Devices with limited processing, memory, or power',
-                    'Devices that require internet connection',
-                    'Devices that cost less than $100'
-                ],
-                'correct_options' => ['Devices with limited processing, memory, or power'],
-                'justifications' => [
-                    'Size is not the defining factor of constrained environments',
-                    'Correct - Constrained refers to limited computational resources',
-                    'Internet connectivity is not related to constraint level',
-                    'Cost is not the primary factor in constraint definition'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Item 33 - IoT Security - L2 Comprehension
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Why is network segmentation particularly important for IoT devices?',
-                'options' => [
-                    'To improve device performance',
-                    'To isolate potentially vulnerable devices from critical networks',
-                    'To reduce network costs',
-                    'To increase internet speed'
-                ],
-                'correct_options' => ['To isolate potentially vulnerable devices from critical networks'],
-                'justifications' => [
-                    'Segmentation is for security, not performance optimization',
-                    'Correct - Segmentation limits blast radius of compromised IoT devices',
-                    'Segmentation is for security, not cost reduction',
-                    'Segmentation doesn\'t directly increase internet speed'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 34 - IoT Security - L2 Comprehension
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is a common security problem with IoT device lifecycle management?',
-                'options' => [
-                    'Devices are too expensive to replace',
-                    'Devices are deployed without security updates or patch management',
-                    'Devices use too much electricity',
-                    'Devices are too difficult to install'
-                ],
-                'correct_options' => ['Devices are deployed without security updates or patch management'],
-                'justifications' => [
-                    'Cost is not the primary security lifecycle issue',
-                    'Correct - Many IoT devices lack proper update mechanisms',
-                    'Power consumption is not a security lifecycle issue',
-                    'Installation difficulty is not a security lifecycle issue'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 35 - IoT Security - L3 Application
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Select all security challenges specific to embedded systems in IoT:',
-                'options' => [
-                    'Limited cryptographic capabilities',
-                    'Unlimited storage space',
-                    'Difficulty implementing security updates',
-                    'High processing power',
-                    'Physical tampering risks',
-                    'Long operational lifespans without updates'
-                ],
-                'correct_options' => ['Limited cryptographic capabilities', 'Difficulty implementing security updates', 'Physical tampering risks', 'Long operational lifespans without updates'],
-                'justifications' => [
-                    'Limited cryptographic capabilities are common in constrained devices',
-                    'Embedded systems typically have limited, not unlimited storage',
-                    'Update mechanisms are often limited or absent in embedded systems',
-                    'Embedded systems typically have limited, not high processing power',
-                    'Physical access risks are higher for deployed embedded systems',
-                    'Many embedded systems operate for years without updates'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 36 - IoT Security - L3 Application
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which approach is most effective for securing IoT devices with limited update capabilities?',
-                'options' => [
-                    'Rely on device encryption only',
-                    'Implement network-based security controls and segmentation',
-                    'Use only strong passwords',
-                    'Deploy antivirus on each device'
-                ],
-                'correct_options' => ['Implement network-based security controls and segmentation'],
-                'justifications' => [
-                    'Device encryption alone is insufficient without other controls',
-                    'Correct - Network controls compensate for device limitations',
-                    'Passwords alone don\'t address all IoT security challenges',
-                    'Antivirus typically not feasible on constrained IoT devices'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 37 - IoT Security - L3 Application
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary security benefit of implementing IoT device discovery and inventory?',
-                'options' => [
-                    'Improving device performance',
-                    'Identifying and managing security risks of unknown devices',
-                    'Reducing network bandwidth usage',
-                    'Increasing device battery life'
-                ],
-                'correct_options' => ['Identifying and managing security risks of unknown devices'],
-                'justifications' => [
-                    'Discovery and inventory are for security, not performance',
-                    'Correct - Visibility is essential for managing IoT security risks',
-                    'Discovery is for security visibility, not bandwidth optimization',
-                    'Discovery doesn\'t directly affect device battery life'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 38 - IoT Security - L4 Analysis
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Why is the "security by obscurity" approach particularly problematic for IoT devices?',
-                'options' => [
-                    'IoT devices are always visible on networks',
-                    'Many IoT devices use common, discoverable protocols and default configurations',
-                    'IoT devices are expensive to secure properly',
-                    'IoT devices require constant internet connectivity'
-                ],
-                'correct_options' => ['Many IoT devices use common, discoverable protocols and default configurations'],
-                'justifications' => [
-                    'Network visibility alone doesn\'t make security by obscurity problematic',
-                    'Correct - Common protocols and defaults make IoT devices easily discoverable',
-                    'Cost is not the reason security by obscurity fails',
-                    'Connectivity requirements don\'t directly relate to obscurity problems'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 39 - IoT Security - L4 Analysis
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What makes IoT botnets particularly dangerous compared to traditional PC botnets?',
-                'options' => [
-                    'IoT devices have more processing power',
-                    'IoT devices are harder to detect and clean',
-                    'IoT devices cost more to replace',
-                    'IoT devices use more bandwidth'
-                ],
-                'correct_options' => ['IoT devices are harder to detect and clean'],
-                'justifications' => [
-                    'IoT devices typically have less processing power than PCs',
-                    'Correct - Limited interfaces and update mechanisms make IoT cleanup difficult',
-                    'Cost is not what makes IoT botnets more dangerous',
-                    'Individual IoT devices typically use less bandwidth than PCs'
-                ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 40 - IoT Security - L5 Synthesis
-            [
-                'topic_id' => $topics['IoT Security'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Design an IoT security strategy for a smart building. Rank these controls by effectiveness:',
-                'options' => [
-                    'Individual device passwords',
-                    'Network segmentation and micro-segmentation',
-                    'IoT device discovery and asset management',
-                    'Certificate-based device authentication',
-                    'Anomaly detection for IoT traffic'
-                ],
-                'correct_options' => ['Network segmentation and micro-segmentation', 'IoT device discovery and asset management', 'Certificate-based device authentication', 'Anomaly detection for IoT traffic', 'Individual device passwords'],
-                'justifications' => [
-                    'Individual device passwords' => 'Weakest - often default/weak passwords, hard to manage',
-                    'Network segmentation and micro-segmentation' => 'Most effective - limits blast radius and provides fundamental isolation',
-                    'IoT device discovery and asset management' => 'Essential foundation - can\'t secure what you don\'t know',
-                    'Certificate-based device authentication' => 'Strong authentication mechanism for device identity',
-                    'Anomaly detection for IoT traffic' => 'Advanced capability for detecting compromised devices'
-                ],
                 'difficulty_level' => 5,
-                'bloom_level' => 5,
+                'type_id' => 1,
+                'irt_a' => 2.0,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Topic 5: Operational Technology (OT) - Questions 41-50 (Bloom: 2-2-3-2-1)
+            // Topic 3: IoT Device Security (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
             
-            // Item 41 - Operational Technology (OT) - L1 Knowledge
+            // Item 21 - L1 - Remember
             [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What does ICS stand for in industrial security?',
+                'subtopic' => 'IoT Security',
+                'question' => 'What is the primary security challenge with IoT devices?',
                 'options' => [
-                    'Internet Communication System',
-                    'Industrial Control System',
-                    'Information Control Standard',
-                    'Integrated Computing System'
+                    'IoT devices consume too much power',
+                    'Many IoT devices have weak authentication and are difficult to update',
+                    'IoT devices are too expensive to secure properly',
+                    'IoT devices only work with wireless networks'
                 ],
-                'correct_options' => ['Industrial Control System'],
+                'correct_options' => ['Many IoT devices have weak authentication and are difficult to update'],
                 'justifications' => [
-                    'ICS is not related to internet communication',
-                    'Correct - Industrial Control System',
-                    'ICS is not about information control standards',
-                    'ICS is not about integrated computing'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Many IoT devices have weak authentication and are difficult to update',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 42 - Operational Technology (OT) - L1 Knowledge
+            // Item 22 - L1 - Remember
             [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What does SCADA stand for?',
+                'subtopic' => 'IoT Security',
+                'question' => 'What does "device shadowing" or "shadow IoT" refer to?',
                 'options' => [
-                    'System Control and Data Analysis',
+                    'IoT devices that operate in dark environments',
+                    'Unauthorized IoT devices connected to corporate networks without IT approval',
+                    'IoT devices that create backups of other devices',
+                    'IoT devices that are more expensive than budgeted'
+                ],
+                'correct_options' => ['Unauthorized IoT devices connected to corporate networks without IT approval'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Unauthorized IoT devices connected to corporate networks without IT approval',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 23 - L2 - Understand
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'How does network segmentation improve IoT security?',
+                'options' => [
+                    'Segmentation improves IoT device performance',
+                    'Segmentation isolates IoT devices and limits potential attack spread',
+                    'Segmentation reduces the cost of IoT deployment',
+                    'Segmentation is only useful for wireless IoT devices'
+                ],
+                'correct_options' => ['Segmentation isolates IoT devices and limits potential attack spread'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Segmentation isolates IoT devices and limits potential attack spread',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 24 - L2 - Understand
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'Why is certificate-based authentication particularly important for IoT devices?',
+                'options' => [
+                    'Certificates improve IoT device battery life',
+                    'Certificates provide device identity and secure communication without user interaction',
+                    'Certificates are required by IoT device manufacturers',
+                    'Certificates reduce IoT device manufacturing costs'
+                ],
+                'correct_options' => ['Certificates provide device identity and secure communication without user interaction'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Certificates provide device identity and secure communication without user interaction',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 25 - L3 - Apply
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'A manufacturing company wants to deploy IoT sensors for equipment monitoring. What security approach should they implement?',
+                'options' => [
+                    'Connect all IoT devices directly to the corporate network',
+                    'Create isolated network segments with monitoring and access controls',
+                    'Use only wireless IoT devices to avoid network security issues',
+                    'Implement IoT devices without any security controls for simplicity'
+                ],
+                'correct_options' => ['Create isolated network segments with monitoring and access controls'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Create isolated network segments with monitoring and access controls',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 26 - L3 - Apply
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'How should an organization handle firmware updates for critical IoT devices in production environments?',
+                'options' => [
+                    'Never update firmware to maintain stability',
+                    'Implement staged rollouts with testing and rollback capabilities',
+                    'Update all devices simultaneously to ensure consistency',
+                    'Only update firmware when devices fail'
+                ],
+                'correct_options' => ['Implement staged rollouts with testing and rollback capabilities'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement staged rollouts with testing and rollback capabilities',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 27 - L3 - Apply
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'What is the most effective approach for monitoring IoT device security in a large deployment?',
+                'options' => [
+                    'Manually check each device periodically',
+                    'Implement automated network monitoring with anomaly detection',
+                    'Rely on device manufacturers to monitor security',
+                    'Only monitor devices when security incidents occur'
+                ],
+                'correct_options' => ['Implement automated network monitoring with anomaly detection'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement automated network monitoring with anomaly detection',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 28 - L4 - Analyze
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'Analyze why traditional IT security approaches may be inadequate for IoT environments.',
+                'options' => [
+                    'IoT devices are inherently more secure than traditional IT systems',
+                    'IoT devices have resource constraints and different threat models than traditional IT',
+                    'Traditional IT security is always superior to IoT security approaches',
+                    'IoT and traditional IT have identical security requirements'
+                ],
+                'correct_options' => ['IoT devices have resource constraints and different threat models than traditional IT'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - IoT devices have resource constraints and different threat models than traditional IT',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 29 - L4 - Analyze
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'What is the fundamental challenge in implementing end-to-end encryption for IoT communications?',
+                'options' => [
+                    'IoT devices do not support any form of encryption',
+                    'Limited processing power and battery life of many IoT devices',
+                    'Encryption is illegal for IoT devices in most countries',
+                    'End-to-end encryption eliminates IoT device functionality'
+                ],
+                'correct_options' => ['Limited processing power and battery life of many IoT devices'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Limited processing power and battery life of many IoT devices',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 30 - L5 - Evaluate
+            [
+                'subtopic' => 'IoT Security',
+                'question' => 'A smart city initiative deploys thousands of IoT sensors with 10-year expected lifespans. Evaluate the long-term security implications.',
+                'options' => [
+                    'Long-term deployments eliminate security concerns',
+                    'Requires sustainable security update mechanisms and lifecycle management strategies',
+                    'Security is only important during initial deployment',
+                    'Long-term IoT deployments are inherently secure'
+                ],
+                'correct_options' => ['Requires sustainable security update mechanisms and lifecycle management strategies'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Requires sustainable security update mechanisms and lifecycle management strategies',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Topic 4: Industrial Control Systems Security (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L1 - Remember
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'What does SCADA stand for in industrial control systems?',
+                'options' => [
                     'Supervisory Control and Data Acquisition',
-                    'Secure Communication and Data Access',
-                    'Software Control and Device Automation'
+                    'Secure Communication and Data Analysis',
+                    'System Control and Database Administration',
+                    'Standard Compliance and Data Assessment'
                 ],
                 'correct_options' => ['Supervisory Control and Data Acquisition'],
                 'justifications' => [
-                    'SCADA is not about system control and analysis',
                     'Correct - Supervisory Control and Data Acquisition',
-                    'SCADA is not primarily about secure communication',
-                    'SCADA is not about software control and device automation'
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.25,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 43 - Operational Technology (OT) - L2 Comprehension
+            // Item 32 - L1 - Remember
             [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'In OT environments, why is availability typically prioritized over confidentiality?',
+                'subtopic' => 'OT Security',
+                'question' => 'What is the primary difference between IT and OT (Operational Technology) networks?',
                 'options' => [
-                    'OT data is not sensitive',
-                    'System downtime can cause safety hazards and production losses',
-                    'OT systems are harder to hack',
-                    'Confidentiality is not important in industrial settings'
+                    'IT focuses on data processing while OT focuses on physical process control',
+                    'IT is more expensive than OT',
+                    'IT uses wireless while OT uses wired connections',
+                    'IT and OT networks are identical in function'
                 ],
-                'correct_options' => ['System downtime can cause safety hazards and production losses'],
+                'correct_options' => ['IT focuses on data processing while OT focuses on physical process control'],
                 'justifications' => [
-                    'OT data can be very sensitive (trade secrets, safety data)',
-                    'Correct - Availability directly impacts safety and operations',
-                    'OT systems can be vulnerable to attacks',
-                    'Confidentiality is important but secondary to safety'
+                    'Correct - IT focuses on data processing while OT focuses on physical process control',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.9,
+                'irt_b' => -1.3,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 33 - L2 - Understand
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'Why is network segmentation particularly critical for industrial control systems?',
+                'options' => [
+                    'Segmentation improves system performance',
+                    'Segmentation protects critical industrial processes from cyber attacks',
+                    'Segmentation reduces power consumption',
+                    'Segmentation is only required for new industrial systems'
+                ],
+                'correct_options' => ['Segmentation protects critical industrial processes from cyber attacks'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Segmentation protects critical industrial processes from cyber attacks',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.2,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 44 - Operational Technology (OT) - L2 Comprehension
+            // Item 34 - L2 - Understand
             [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of air-gapping in OT networks?',
+                'subtopic' => 'OT Security',
+                'question' => 'How do safety systems interact with security systems in industrial environments?',
                 'options' => [
-                    'To improve network performance',
-                    'To physically isolate critical systems from external networks',
-                    'To reduce network costs',
-                    'To comply with environmental regulations'
+                    'Safety and security systems are completely independent',
+                    'Security controls must not interfere with safety system operations',
+                    'Safety systems are not important when security is implemented',
+                    'Security systems always override safety systems'
                 ],
-                'correct_options' => ['To physically isolate critical systems from external networks'],
+                'correct_options' => ['Security controls must not interfere with safety system operations'],
                 'justifications' => [
-                    'Air-gapping is for security, not performance optimization',
-                    'Correct - Physical isolation prevents network-based attacks',
-                    'Air-gapping is for security, not cost reduction',
-                    'Air-gapping is for security, not environmental compliance'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Security controls must not interfere with safety system operations',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 45 - Operational Technology (OT) - L3 Application
-            [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
+                'difficulty_level' => 3,
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary function of a PLC in industrial control systems?',
-                'options' => [
-                    'To provide network connectivity',
-                    'To control and automate industrial processes',
-                    'To store data backups',
-                    'To generate reports'
-                ],
-                'correct_options' => ['To control and automate industrial processes'],
-                'justifications' => [
-                    'PLCs may have network connectivity but that\'s not their primary function',
-                    'Correct - PLCs control machinery and industrial processes',
-                    'Data backup is not the primary PLC function',
-                    'Report generation is not the primary PLC function'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 46 - Operational Technology (OT) - L3 Application
-            [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 2,
-                'dimension' => 'Technical',
-                'content' => 'Select all security challenges specific to OT environments:',
-                'options' => [
-                    'Legacy systems without security updates',
-                    'Real-time operational requirements',
-                    'Unlimited computational resources',
-                    'Safety-critical operations',
-                    'High network bandwidth',
-                    'Long system lifecycles (10-20 years)'
-                ],
-                'correct_options' => ['Legacy systems without security updates', 'Real-time operational requirements', 'Safety-critical operations', 'Long system lifecycles (10-20 years)'],
-                'justifications' => [
-                    'Legacy systems in OT often lack security update mechanisms',
-                    'OT typically has limited, not unlimited computational resources',
-                    'Real-time requirements limit security control implementation',
-                    'OT typically has limited, not high network bandwidth',
-                    'Safety-critical nature requires careful security implementation',
-                    'Long lifecycles mean systems operate with outdated security'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 47 - Operational Technology (OT) - L3 Application
-            [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 5,
-                'dimension' => 'Technical',
-                'content' => 'Match each OT component with its primary function:',
-                'options' => [
-                    'items' => [
-                        'Monitors and controls distributed systems remotely',
-                        'Interfaces between operators and control systems',
-                        'Controls machinery and processes directly',
-                        'Connects field devices to control networks'
-                    ],
-                    'responses' => [
-                        'SCADA',
-                        'HMI',
-                        'PLC',
-                        'RTU'
-                    ]
-                ],
-                'correct_options' => [
-                    'Monitors and controls distributed systems remotely' => 'SCADA',
-                    'Interfaces between operators and control systems' => 'HMI',
-                    'Controls machinery and processes directly' => 'PLC',
-                    'Connects field devices to control networks' => 'RTU'
-                ],
-                'justifications' => [
-                    'Monitors and controls distributed systems remotely' => 'SCADA provides supervisory control over distributed systems',
-                    'Interfaces between operators and control systems' => 'HMI (Human Machine Interface) provides operator interaction',
-                    'Controls machinery and processes directly' => 'PLC (Programmable Logic Controller) provides direct process control',
-                    'Connects field devices to control networks' => 'RTU (Remote Terminal Unit) interfaces field devices'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 48 - Operational Technology (OT) - L4 Analysis
-            [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Why is patching particularly challenging in OT environments compared to IT environments?',
+                'status' => 'published'
+            ],
+            
+            // Item 35 - L3 - Apply
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'A power plant needs to upgrade its control systems while maintaining operational continuity. What security approach should they implement?',
                 'options' => [
-                    'OT patches are more expensive',
-                    'Downtime for patching can affect safety and production',
-                    'OT systems have faster processors',
-                    'OT patches are released more frequently'
+                    'Upgrade all systems simultaneously during a planned outage',
+                    'Implement phased upgrades with parallel security monitoring and backup systems',
+                    'Avoid upgrades to maintain system stability',
+                    'Only upgrade systems that have already experienced security incidents'
                 ],
-                'correct_options' => ['Downtime for patching can affect safety and production'],
+                'correct_options' => ['Implement phased upgrades with parallel security monitoring and backup systems'],
                 'justifications' => [
-                    'Cost is not the primary patching challenge in OT',
-                    'Correct - OT systems often cannot be taken offline for routine maintenance',
-                    'Processing power is not related to patching challenges',
-                    'OT patches are typically released less frequently than IT patches'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement phased upgrades with parallel security monitoring and backup systems',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 4,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.5,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 36 - L3 - Apply
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'How should remote access to industrial control systems be implemented securely?',
+                'options' => [
+                    'Allow direct internet access to control systems for convenience',
+                    'Implement VPN with multi-factor authentication and session monitoring',
+                    'Use standard Windows Remote Desktop without additional security',
+                    'Prohibit all remote access to maintain security'
+                ],
+                'correct_options' => ['Implement VPN with multi-factor authentication and session monitoring'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement VPN with multi-factor authentication and session monitoring',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.4,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 37 - L3 - Apply
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'What is the most appropriate approach for implementing security monitoring in industrial environments?',
+                'options' => [
+                    'Use standard IT security tools without modification',
+                    'Deploy specialized industrial security monitoring that understands OT protocols',
+                    'Only monitor network perimeter security',
+                    'Avoid security monitoring to prevent interference with operations'
+                ],
+                'correct_options' => ['Deploy specialized industrial security monitoring that understands OT protocols'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Deploy specialized industrial security monitoring that understands OT protocols',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 38 - L4 - Analyze
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'Analyze why traditional IT security patching practices may be inappropriate for industrial control systems.',
+                'options' => [
+                    'Industrial systems never require security patches',
+                    'Industrial systems require high availability and extensive testing before patches',
+                    'IT patches always improve industrial system performance',
+                    'Industrial systems use different operating systems that cannot be patched'
+                ],
+                'correct_options' => ['Industrial systems require high availability and extensive testing before patches'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Industrial systems require high availability and extensive testing before patches',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 49 - Operational Technology (OT) - L4 Analysis
-            [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary security concern when connecting OT systems to corporate IT networks?',
-                'options' => [
-                    'Increased bandwidth usage',
-                    'Introduction of IT-based attack vectors to OT environment',
-                    'Higher licensing costs',
-                    'Reduced system performance'
-                ],
-                'correct_options' => ['Introduction of IT-based attack vectors to OT environment'],
-                'justifications' => [
-                    'Bandwidth is not the primary security concern',
-                    'Correct - IT connectivity exposes OT to malware and IT-based attacks',
-                    'Licensing costs are not a security concern',
-                    'Performance impact is not the primary security concern'
-                ],
                 'difficulty_level' => 4,
-                'bloom_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20,
+                'type_id' => 1,
                 'status' => 'published'
             ],
             
-            // Item 50 - Operational Technology (OT) - L5 Synthesis
+            // Item 39 - L4 - Analyze
             [
-                'topic_id' => $topics['Operational Technology (OT)'] ?? 1,
-                'type_id' => 4,
-                'dimension' => 'Technical',
-                'content' => 'Design a security strategy for connecting an OT network to corporate IT. Rank these controls by implementation priority:',
+                'subtopic' => 'OT Security',
+                'question' => 'What is the fundamental challenge in applying zero trust principles to industrial control networks?',
                 'options' => [
-                    'OT network monitoring and anomaly detection',
-                    'Industrial DMZ with firewalls',
-                    'Asset inventory and network mapping',
-                    'OT-specific incident response procedures',
-                    'Air-gap assessment and risk analysis'
+                    'Zero trust is not applicable to industrial environments',
+                    'Legacy systems and real-time requirements complicate identity verification and micro-segmentation',
+                    'Industrial systems are inherently more trustworthy than IT systems',
+                    'Zero trust eliminates the need for industrial safety systems'
                 ],
-                'correct_options' => ['Air-gap assessment and risk analysis', 'Asset inventory and network mapping', 'Industrial DMZ with firewalls', 'OT network monitoring and anomaly detection', 'OT-specific incident response procedures'],
+                'correct_options' => ['Legacy systems and real-time requirements complicate identity verification and micro-segmentation'],
                 'justifications' => [
-                    'OT network monitoring and anomaly detection' => 'Important ongoing capability once basic protections established',
-                    'Industrial DMZ with firewalls' => 'Core network protection for IT-OT connectivity',
-                    'Asset inventory and network mapping' => 'Essential foundation - must understand what needs protection',
-                    'OT-specific incident response procedures' => 'Critical but built on foundation of other controls',
-                    'Air-gap assessment and risk analysis' => 'First step - understand current state and risks before connecting'
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Legacy systems and real-time requirements complicate identity verification and micro-segmentation',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
                 ],
-                'difficulty_level' => 5,
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 40 - L5 - Evaluate
+            [
+                'subtopic' => 'OT Security',
+                'question' => 'A manufacturing company wants to connect their production systems to cloud-based analytics platforms. Evaluate the security implications.',
+                'options' => [
+                    'Cloud connectivity eliminates all industrial security risks',
+                    'Requires careful architecture to maintain operational integrity while enabling data analytics',
+                    'Industrial systems should never connect to external networks',
+                    'Cloud analytics platforms automatically secure industrial connections'
+                ],
+                'correct_options' => ['Requires careful architecture to maintain operational integrity while enabling data analytics'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Requires careful architecture to maintain operational integrity while enabling data analytics',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
                 'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'type_id' => 1,
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Topic 5: Device Lifecycle Management (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L1 - Remember
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'What are the main phases of device lifecycle management?',
+                'options' => [
+                    'Procurement, deployment, maintenance, and disposal',
+                    'Planning, purchasing, and installation only',
+                    'Manufacturing, selling, and supporting',
+                    'Development, testing, and production'
+                ],
+                'correct_options' => ['Procurement, deployment, maintenance, and disposal'],
+                'justifications' => [
+                    'Correct - Procurement, deployment, maintenance, and disposal',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'type_id' => 1,
+                'irt_a' => 0.8,
+                'irt_b' => -1.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 42 - L3 - Apply
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'How should an enterprise implement secure device provisioning for a large-scale laptop deployment with diverse user roles?',
+                'options' => [
+                    'Use identical configurations for all devices to ensure consistency',
+                    'Implement automated provisioning with role-based configurations and security baselines',
+                    'Allow users to configure their own devices after receiving them',
+                    'Only provision devices manually to ensure maximum security'
+                ],
+                'correct_options' => ['Implement automated provisioning with role-based configurations and security baselines'],
+                'justifications' => [
+                    'Incorrect - Identical configurations don\'t address varying security and functional requirements',
+                    'Correct - Automated role-based provisioning ensures appropriate security while scaling efficiently',
+                    'Incorrect - User configuration introduces security risks and inconsistencies',
+                    'Incorrect - Manual provisioning doesn\'t scale and increases error risk'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 43 - L2 - Understand
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'Why is asset inventory critical for device lifecycle management?',
+                'options' => [
+                    'Asset inventory reduces device costs',
+                    'Asset inventory enables security monitoring and compliance throughout device lifecycles',
+                    'Asset inventory is only needed for expensive devices',
+                    'Asset inventory improves device performance'
+                ],
+                'correct_options' => ['Asset inventory enables security monitoring and compliance throughout device lifecycles'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Asset inventory enables security monitoring and compliance throughout device lifecycles',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.2,
+                'irt_b' => -0.3,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 44 - L2 - Understand
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'How does secure device disposal protect organizational data?',
+                'options' => [
+                    'Disposal procedures only affect physical device security',
+                    'Proper data wiping and destruction prevent data recovery from discarded devices',
+                    'Device disposal has no impact on data security',
+                    'Only damaged devices require secure disposal'
+                ],
+                'correct_options' => ['Proper data wiping and destruction prevent data recovery from discarded devices'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Proper data wiping and destruction prevent data recovery from discarded devices',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'irt_a' => 1.3,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 45 - L3 - Apply
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'A financial services company needs to replace 1000 workstations while maintaining data security. What approach should they implement?',
+                'options' => [
+                    'Replace all devices simultaneously without data migration',
+                    'Implement phased replacement with secure data migration and disposal procedures',
+                    'Keep old devices as backups without any security controls',
+                    'Allow employees to dispose of old devices independently'
+                ],
+                'correct_options' => ['Implement phased replacement with secure data migration and disposal procedures'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement phased replacement with secure data migration and disposal procedures',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.4,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 46 - L3 - Apply
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'How should an organization handle end-of-life devices that cannot be securely updated?',
+                'options' => [
+                    'Continue using devices until they fail completely',
+                    'Isolate devices from networks and plan replacement with enhanced monitoring',
+                    'Only update devices that show signs of security compromise',
+                    'Transfer end-of-life devices to less critical functions'
+                ],
+                'correct_options' => ['Isolate devices from networks and plan replacement with enhanced monitoring'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Isolate devices from networks and plan replacement with enhanced monitoring',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 47 - L3 - Apply
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'What is the most effective approach for managing device certificates and keys throughout their lifecycle?',
+                'options' => [
+                    'Use permanent certificates that never expire',
+                    'Implement automated certificate lifecycle management with rotation and revocation',
+                    'Only manage certificates manually when problems occur',
+                    'Use the same certificate for all devices of the same type'
+                ],
+                'correct_options' => ['Implement automated certificate lifecycle management with rotation and revocation'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Implement automated certificate lifecycle management with rotation and revocation',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'type_id' => 1,
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.25,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'Analyze the security implications of extending device lifecycles beyond manufacturer support periods.',
+                'options' => [
+                    'Extended lifecycles always improve security through stability',
+                    'Extended lifecycles increase security risk due to lack of updates and support',
+                    'Manufacturer support has no impact on device security',
+                    'Extended lifecycles reduce costs without affecting security'
+                ],
+                'correct_options' => ['Extended lifecycles increase security risk due to lack of updates and support'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Extended lifecycles increase security risk due to lack of updates and support',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 49 - L4 - Analyze
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'What is the fundamental challenge in managing device lifecycles in hybrid cloud environments?',
+                'options' => [
+                    'Cloud devices never require lifecycle management',
+                    'Hybrid environments complicate visibility and control across on-premises and cloud resources',
+                    'Device lifecycles are identical in cloud and on-premises environments',
+                    'Cloud providers handle all device lifecycle management automatically'
+                ],
+                'correct_options' => ['Hybrid environments complicate visibility and control across on-premises and cloud resources'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Hybrid environments complicate visibility and control across on-premises and cloud resources',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'type_id' => 1,
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20,
+                'type_id' => 1,
+                'status' => 'published'
+            ],
+            
+            // Item 50 - L5 - Evaluate
+            [
+                'subtopic' => 'Device Security',
+                'question' => 'An organization implements AI-driven predictive analytics to optimize device replacement timing. Evaluate this approach.',
+                'options' => [
+                    'AI-driven optimization eliminates all device lifecycle risks',
+                    'Can improve efficiency and security posture but requires validation and human oversight',
+                    'Predictive analytics should never be used for device lifecycle decisions',
+                    'AI optimization eliminates the need for traditional lifecycle management'
+                ],
+                'correct_options' => ['Can improve efficiency and security posture but requires validation and human oversight'],
+                'justifications' => [
+                    'Incorrect - This option is not the best answer',
+                    'Correct - Can improve efficiency and security posture but requires validation and human oversight',
+                    'Incorrect - This option is not the best answer',
+                    'Incorrect - This option is not the best answer'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15,
+                'type_id' => 1,
                 'status' => 'published'
             ]
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('D15 Endpoint, Mobile & IoT Security questions seeded successfully! Total: 50 questions across 5 topics');
     }
 }

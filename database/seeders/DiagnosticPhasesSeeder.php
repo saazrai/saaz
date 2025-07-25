@@ -97,22 +97,22 @@ class DiagnosticPhasesSeeder extends Seeder
                 'Threat & Vulnerability Management',
                 'Cryptography & Key Management',
                 'Data Governance',
-                'Access Control',
+                'Identity and Access Management (IAM)',
             ],
             // Phase 3: Infrastructure & Applications (D11-D15)
             3 => [
-                'Network & Communication Security',
-                'Application Security & DevSecOps',
+                'Network Concepts',
+                'Network Security',
+                'Application Security',
                 'Cloud Security',
                 'Endpoint, Mobile & IoT Security',
-                'Security Architecture & Design',
             ],
             // Phase 4: Operations & Response (D16-D20)
             4 => [
                 'Security Awareness & Human Factors',
                 'Physical & Environmental Security',
                 'Security Operations & Monitoring',
-                'Incident Management & Forensics',
+                'Incident Management',
                 'Business Continuity & Disaster Recovery',
             ],
         ];

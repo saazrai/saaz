@@ -33,28 +33,28 @@
                         <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
                             <Link 
                                 :href="route('login')"
-                                class="inline-block px-8 py-3 bg-gray-900 dark:bg-gray-700 text-white text-base font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
+                                class="inline-block px-10 py-3 bg-gray-900 dark:bg-gray-700 text-white text-base font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
                             >
-                                Sign In
+                                Sign In to Start
                             </Link>
                             
                             <div class="text-sm text-gray-500 dark:text-gray-400 hidden md:block">or</div>
                             
                             <Link 
                                 :href="route('register')"
-                                class="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[180px] text-center"
+                                class="inline-block px-10 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-base font-semibold rounded-full hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
                             >
-                                Create Account
+                                Create Free Account
                             </Link>
                         </div>
                         
                         <div class="text-center mb-6">
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Not ready to commit?</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Want to experience our quality first?</p>
                             <Link 
                                 :href="route('assessments.diagnostics.sample')"
                                 class="inline-block px-6 py-2 bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             >
-                                Try 10-Question Sample First
+                                Try 10-Question Sample
                             </Link>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                             <span class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-blue-600 dark:text-blue-400">1</span>
                             Foundation & Governance
                         </h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase1Domains" :key="domain.name"
                                  class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
@@ -101,7 +101,7 @@
                             <span class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-green-600 dark:text-green-400">2</span>
                             Technical Controls
                         </h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase2Domains" :key="domain.name"
                                  class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
@@ -127,7 +127,7 @@
                             <span class="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-purple-600 dark:text-purple-400">3</span>
                             Infrastructure & Applications
                         </h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase3Domains" :key="domain.name"
                                  class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
@@ -153,7 +153,7 @@
                             <span class="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-orange-600 dark:text-orange-400">4</span>
                             Operations & Response
                         </h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                             <div v-for="(domain, index) in phase4Domains" :key="domain.name"
                                  class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
@@ -234,12 +234,22 @@
                                 </Link>
                             </div>
                             
-                            <div class="text-gray-500 dark:text-gray-400">
+                            <!-- Sample CTA -->
+                            <div class="text-center space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-center text-sm text-green-600 dark:text-green-400">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <span class="font-medium">Quick Demo</span>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    Or try our 10-question sample — no signup required
+                                </p>
                                 <Link 
                                     :href="route('assessments.diagnostics.sample')"
-                                    class="hover:text-gray-700 dark:hover:text-gray-300 underline text-sm"
+                                    class="inline-block px-10 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-base font-semibold rounded-full hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg hover:shadow-xl min-w-[200px] text-center"
                                 >
-                                    Or try the 10-question sample without registration
+                                    Start Sample Quiz →
                                 </Link>
                             </div>
                         </div>

@@ -23,11 +23,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Fundamental security principles that form the foundation of all cybersecurity practices. Covers the CIA Triad, security controls, and core concepts essential for understanding more advanced topics.',
                 'learning_objectives' => 'Understand and apply fundamental security principles including confidentiality, integrity, and availability. Identify different types of security controls and their applications.',
                 'topics' => [
-                    '5 Pillars of Information Security', // Confidentiality, integrity, availability, authenticity, nonrepudiation
-                    'Professional Ethics', // Organizational code of ethics
-                    'Security Controls', // Administrative, Technical, Physical, Deterrent, Preventative, Detective, Corrective, Compensating
-                    'Security Principles', // Least Privilege, Need-to-Know
-                    'Cybersecurity Frameworks', // NIST CSF, ISO/IEC 27001, COBIT, CIS Controls
+                    '5 Pillars of Information Security', // Confidentiality, Integrity, Availability, Authenticity, Non-repudiation
+                    'Professional Ethics', // Organizational Code of Ethics, Professional Standards and Conduct
+                    'Security Controls', // Control Categories, Control Functions
+                    'Security Principles', // Access Control Principles, Design Principles
+                    'Cybersecurity Frameworks', // Risk Management Frameworks, Governance Frameworks, Control Frameworks
                 ],
             ],
             [
@@ -40,14 +40,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Organizational frameworks and policies that establish security management structure. Essential for aligning security with business objectives and ensuring proper oversight.',
                 'learning_objectives' => 'Understand governance frameworks, security roles and responsibilities, and how to establish effective security policies and procedures.',
                 'topics' => [
-                    'Security Roles & Responsibilities', // Board, CISO, Data Owner, Custodian
-                    'Policy, Standard, Procedure, Guideline', // Policy hierarchy
-                    'Security Frameworks', // NIST CSF, COBIT, ISO 27001
-                    'IT Governance vs IT Management', // Strategic vs operational focus
-                    'Three Lines of Defense', // Operational, Risk/Compliance, Audit
-                    'Key Performance / Risk / Control Indicators (KPI/KRI/KCI)', // Security metrics and thresholds
-                    'Due Care & Due Diligence', // Legal expectations and proactive behavior
-                    'Security Culture & Tone at the Top', // Leadership-driven security values
+                    'Information Security Program', // Security program establishment and charter, Program governance structure and oversight, Gap analysis and current state assessment, Maturity models and maturity assessment, Program improvement planning and roadmaps, Program effectiveness measurement and reporting
+                    'Strategic Alignment', // Aligning InfoSec with business goals and objectives, Security strategy development and implementation, Business case development for security investments, Strategic planning and roadmap development, Business-security integration and collaboration
+                    'Leadership & Accountability', // Board of Directors and senior management accountability, C-suite security responsibilities (CEO, CFO, CRO), Steering committees and governance bodies, CISO role, responsibilities, and reporting structure, RACI Matrix and accountability frameworks, Tone at the top and security culture leadership
+                    'Security Policy Framework', // Policy hierarchy (Policy → Standard → Procedure → Guideline), Policy types and classification (mandatory vs advisory), Documentation standards and requirements, Policy templates and standardization, Regulatory and compliance mapping
+                    'Policy Governance and Management', // Policy lifecycle management (development, approval, review), Policy approval workflows and authority levels, Policy governance and compliance monitoring, Policy enforcement and exception management, Policy effectiveness measurement and metrics, Policy communication and awareness programs
                 ],
             ],
             [
@@ -60,13 +57,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Legal frameworks, regulations, and compliance requirements that organizations must follow. Critical for avoiding legal liabilities and maintaining regulatory compliance.',
                 'learning_objectives' => 'Identify key regulations and compliance requirements. Understand legal implications of security decisions and contractual obligations.',
                 'topics' => [
-                    'Compliance Requirements', // Regulatory, contractual, internal
-                    'General Data Protection Regulation (GDPR)', // Privacy law
-                    'Health Insurance Portability & Accountability Act (HIPAA)', // Health data protection
-                    'Payment Card Industry Data Security Standard (PCI DSS)', // Payment security
-                    'Criminal Law & Civil Law', // Legal systems and remedies
-                    'Contractual Obligations & Liability Clauses', // Legal risk from agreements
-                    'Intellectual Property', // Copyright, Trademark, Patent, Trade Secret
+                    'Compliance Requirements', // Framework and process for meeting obligation, Cross-border/jurisdictional considerations, Data localization and residency requirements, Digital sovereignty and data embassy concepts, Compliance program establishment, Legal vs regulatory vs contractual requirements hierarchy
+                    'Contracts', // Vendor Security Requirements, Service Level Agreements (SLAs), Liability & Indemnification, Data Processing Agreements (DPAs), Breach Notification Clauses, Subcontracts & Fourth-party Risk, Source Code Escrow, Right to Audit Clauses, Insurance & Bonding Requirements, Termination & Data Return
+                    'Industry Specific Regulations', // Specific regulatory content and requirements - HIPAA, SOX, GLBA, FERPA, FedRAMP, ITAR details, Industry-specific compliance obligations
+                    'Intellectual Property', // Patent, Trademark, Copyright, Trade secret
+                    'Investigation Types', // Administrative, criminal, civil, regulatory, industry standards, Evidence standards and burden of proof, penalties for violations
                 ],
             ],
             [
@@ -79,18 +74,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Privacy principles and data protection requirements. Focuses on protecting personal information and ensuring compliance with privacy regulations like GDPR.',
                 'learning_objectives' => 'Apply privacy principles to protect personal data. Understand data subject rights and implement privacy by design.',
                 'topics' => [
-                    'Personally Identifiable Information (PII)', // Data subject identity
-                    'Electronic Protected Health Information (ePHI)', // Sensitive health data
-                    'Collection Limitation', // Minimal and lawful data gathering
-                    'Purpose Limitation', // Use only for declared purposes
-                    'Data Minimisation', // Limit data to what is necessary
-                    'Storage Limitation', // Retention period enforcement
-                    'Security Safeguards', // Protect privacy data from breaches
-                    'Data Subject Rights & Data Portability', // GDPR rights (access, rectification, portability)
-                    'Privacy by Design & by Default', // Embed privacy in development
-                    'Data Sovereignty & Cross-Border Transfer (SCC, BCR, DPF)', // Jurisdiction compliance
-                    'Roles: Data Controller & Data Processor', // GDPR-defined roles
-                    'Privacy Impact Assessment (PIA) / DPIA', // Risk assessment for privacy impacts
+                    'Personal Information', // Definition of Personal Data, PII, PHI, SPI (Sensitive Personal Information), Contextual identifiers (direct vs indirect), Examples across sectors (health, financial, biometrics), Global definitions across laws (GDPR, CCPA, PIPL)
+                    'Privacy Principles', // GDPR principles (lawfulness, fairness, transparency, purpose limitation, data minimization, accuracy, storage limitation, accountability), Legal bases for processing (consent, contract, legal obligation, vital interests, public task, legitimate interests)
+                    'Data Subject Rights', // Right of access, rectification, erasure (right to be forgotten), Right to restrict processing, data portability, Right to object, rights related to automated decision-making, Right to withdraw consent
+                    'Privacy Governance', // Data controllers vs processors responsibilities, Data Protection Officer (DPO) requirements, Privacy Impact Assessment (DPIA) / Privacy by Design, Records of processing activities
+                    'Privacy Protection', // International data transfers (adequacy decisions, SCCs, BCRs), Technical safeguards (masking, anonymization, pseudonymization, encryption, tokenization)
                 ],
             ],
             [
@@ -103,17 +91,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Comprehensive risk management processes from identification to monitoring. Core competency for security professionals to assess and manage organizational risks.',
                 'learning_objectives' => 'Perform risk assessments, implement risk treatment strategies, and maintain risk registers. Understand quantitative and qualitative risk analysis.',
                 'topics' => [
-                    'IT Risk Management Lifecycle', // Identify → Assess → Treat → Monitor
-                    'Risk Identification', // Threats, vulnerabilities, asset value
-                    'Risk Assessment', // Qualitative, Quantitative
-                    'Risk Response & Treatment', // Avoid, Accept, Transfer, Mitigate
-                    'Risk Monitoring & Reporting', // Track effectiveness of controls
-                    'Risk Appetite, Tolerance & Capacity', // Risk strategy thresholds
-                    'Risk/Control Owner', // Responsibility assignment
-                    'Risk Register', // Central record of risks and treatment plans
-                    'Inherent & Residual Risk', // Before and after controls
-                    'Third-Party & Supply-Chain Risk', // Vendor exposure management
-                    'Risk Management Frameworks', // NIST RMF, ISO 31000
+                    'Risk Management Fundamentals', // Risk management lifecycle (Identify → Assess → Treat → Monitor), Risk management frameworks (NIST RMF, ISO 31000, COSO ERM), Risk appetite, tolerance, and capacity definitions, Inherent risk (risk before controls), Risk governance structure and committees, Risk management program establishment
+                    'Risk Identification', // Threat, Threat modeling (STRIDE), Vulnerability, Risk scenario development, Risk owner assignment
+                    'Risk Assessment', // Qualitative risk assessment methods, Quantitative risk assessment techniques, Impact and likelihood determination, Risk scoring and prioritization, Risk analysis methodologies
+                    'Risk Response & Treatment', // Risk response strategies (Avoid, Accept, Transfer, Mitigate), Control selection and implementation, Residual risk calculation (risk after controls), Control owner assignment, Cost-benefit analysis for controls, Risk treatment planning
+                    'Risk Monitoring & Reporting', // Continuous risk monitoring processes, Key Risk Indicators (KRIs) and metrics, Risk reporting to stakeholders
                 ],
             ],
             [
@@ -126,18 +108,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Audit methodologies and assessment techniques to evaluate security effectiveness. Essential for maintaining compliance and identifying security gaps.',
                 'learning_objectives' => 'Conduct security audits and assessments. Understand different audit types and testing methodologies.',
                 'topics' => [
-                    'Audit Life-Cycle Phases', // Planning, Fieldwork, Reporting, Follow-up
-                    'Security Audits (Internal, External)', // Independent vs in-house
-                    'Compliance vs Substantive Testing', // Nature of evidence
-                    'Evidence-Gathering Techniques', // Interview, Observation, Re-performance, CAAT
-                    'Sampling Methods & Sampling Risk', // Attribute, Stop-or-Go, Discovery
-                    'Gap Analysis', // Identify control weaknesses
-                    'Control Design & Operating-Effectiveness Testing', // Process assurance
-                    'Continuous Control Monitoring (CCM)', // Ongoing assurance with automation
-                    'Vulnerability Assessment & Management', // Weakness discovery
-                    'Penetration Testing & Red/Purple Teaming', // Simulated attacks
-                    'Service Organization Control (SOC) Reports', // SOC 1/2/3 assurance
-                    'ISO 27001 Certification Audits', // ISO compliance verification
+                    'Audit Fundamentals', // Audit lifecycle phases (Planning → Fieldwork → Reporting → Follow-up), Audit types (Internal vs External, Compliance vs Operational), Audit planning and scoping methodologies, Risk-based audit approaches and audit universe development, Professional standards and ethics (ISACA, IIA guidelines)
+                    'Evidence Gathering', // Evidence-gathering techniques (Interview, Observation, Re-performance, CAAT), Sampling methods and sampling risk (Attribute, Stop-or-Go, Discovery), Documentation standards and audit trails
+                    'Control Assessment', // Control design vs operating effectiveness testing, Gap analysis and control weakness identification, Compliance vs substantive testing approaches, Control testing procedures and documentation, Remediation tracking and validation
+                    'Testing Methodologies & Approaches', // Black-box testing - External perspective, no internal knowledge, White-box testing - Full internal knowledge and access, Gray-box testing - Limited internal knowledge/hybrid approach, Static vs Dynamic analysis techniques, Manual vs Automated testing approaches, Risk-based testing strategies
+                    'Security Testing', // Penetration testing methodologies, Red team vs Purple team exercises, Security assessment techniques, Security code review and configuration assessment, Specialized testing (web apps, networks, wireless, mobile)
                 ],
             ],
             [
@@ -150,21 +125,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Identification and management of threats and vulnerabilities. Covers threat actors, attack vectors, and vulnerability lifecycle management.',
                 'learning_objectives' => 'Identify threats and vulnerabilities. Implement vulnerability management processes and understand threat intelligence.',
                 'topics' => [
-                    'Threats & Threat Actors', // Nation-state, hacktivist, insider
-                    'Threat Vectors', // Email, web, supply chain
-                    'Attack Surface & Enumeration', // Exposure identification
-                    'Malware Families', // Virus, Worm, Ransomware, Rootkit
-                    'MITRE ATT&CK Framework', // TTP classification
-                    'Cyber Kill Chain', // Recon → Weaponize → Exploit ...
-                    'Threat Indicators', // IOA, IOC, Precursors
-                    'Vulnerability Management Lifecycle', // Discovery to remediation
-                    'Common Vulnerabilities & Exposures (CVE)', // Known flaws
-                    'Common Vulnerability Scoring System (CVSS)', // Severity scale
-                    'Common Weakness Enumeration (CWE)', // Underlying software flaws
-                    'National Vulnerability Database (NVD)', // US-CERT repository
-                    'Zero-Day Vulnerabilities', // Unpatched and unknown
-                    'End-of-Life / End-of-Support (EOL/EOS)', // Unsupported tech risk
-                    'System & Application Hardening', // Secure configurations
+                    'Threat Actors', // Items 1-10: APT, hacktivist, organized crime, nation-state, script kiddie, insider threats
+                    'TTPs', // Items 11-20: Tactics, Techniques, Procedures, MITRE ATT&CK, Cyber Kill Chain, attribution
+                    'Vulnerability Management', // Items 21-30: Lifecycle phases, asset inventory, scanning, remediation strategies
+                    'Vulnerability Assessment', // Items 31-40: CVSS scoring, prioritization, CVE/CWE/NVD, zero-day vs N-day
+                    'Malware', // Items 41-50: Family types, delivery mechanisms, behavior patterns, analysis, indicators
                 ],
             ],
             [
@@ -177,15 +142,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Cryptographic principles and key management practices. Essential for protecting data confidentiality and integrity.',
                 'learning_objectives' => 'Apply cryptographic concepts and implement secure key management. Understand encryption algorithms and PKI.',
                 'topics' => [
-                    'Symmetric & Asymmetric Encryption', // AES, RSA
-                    'Hashing', // SHA-256, MD5
-                    'Digital Signatures', // Integrity and authenticity
-                    'Public Key Infrastructure (PKI)', // Certificate-based trust
-                    'Key Management Lifecycle', // Generation to destruction
-                    'Hardware Security Module (HSM)', // Secure key storage
-                    'Trusted Platform Module (TPM) & Secure Enclave', // Device-based crypto
-                    'Cryptographic Attacks', // Collision, Replay, Downgrade, Side-channel
-                    'Quantum-Resistant Cryptography (PQC)', // Post-quantum crypto algorithms
+                    'Cryptography Algorithms', // Items 1-10: Symmetric, asymmetric, hashing algorithms, selection criteria
+                    'Cryptographic Applications', // Items 11-20: Digital signatures, MAC, HMAC, non-repudiation, protocols
+                    'Public Key Infrastructure (PKI)', // Items 21-30: CA hierarchies, certificates, lifecycle, CRL, OCSP, trust models
+                    'Key Management', // Items 31-40: Lifecycle management, HSM, TPM, storage, escrow, exchange protocols
+                    'Cryptanalysis', // Items 41-50: Cryptographic attacks, vulnerabilities, quantum threats, post-quantum crypto
                 ],
             ],
             [
@@ -198,17 +159,15 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Data lifecycle management and governance practices. Covers classification, retention, and protection of organizational data.',
                 'learning_objectives' => 'Implement data classification schemes and manage data throughout its lifecycle. Apply data protection techniques.',
                 'topics' => [
-                    'Data Classification & Categorisation', // Public, Internal, Confidential
-                    'Data Owner / Custodian / Steward', // Roles and responsibilities
-                    'Data Retention', // Legal, regulatory, business policy
-                    'Data Sanitisation & Destruction', // Clearing, purging, destruction
-                    'Anonymisation & Pseudonymisation / Tokenisation', // Data masking techniques
-                    'Data Loss Prevention (DLP)', // Prevent exfiltration of data
-                    'Information Rights Management (IRM)', // Access enforcement on shared data
+                    'Data Classification & Categorization', // Items 1-10: Sensitivity levels, data types, regulatory categories, processes, roles
+                    'Data Lifecycle Management', // Items 11-20: Create, Store, Use, Share, Archive, Destroy phases
+                    'Data Retention & Archival', // Items 21-30: Retention policies, archival, long-term storage, retrieval
+                    'Data Sanitization', // Items 31-40: Sanitization techniques, categories (clearing, purging, destroy)
+                    'Data Security Controls', // Items 41-50: Data states, rights management, DLP, encryption
                 ],
             ],
             [
-                'name' => 'Access Control',
+                'name' => 'Identity and Access Management (IAM)',
                 'code' => 'IAM',
                 'priority_order' => 10,
                 'category' => 'foundational',
@@ -217,17 +176,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Identity and access management principles. Critical for ensuring only authorized users access resources.',
                 'learning_objectives' => 'Implement authentication and authorization controls. Design access control systems using various models.',
                 'topics' => [
-                    'Authentication & MFA', // Passwords, biometrics, OTP
-                    'Authorization & Least-Privilege Policy', // Access enforcement
-                    'Accounting / Auditing', // Logging and monitoring
-                    'Single Sign-On (SSO) & Kerberos', // Federated credentials
-                    'Federation & Identity Protocols', // SAML, OAuth, OpenID Connect
-                    'Password Policy & Hygiene', // Length, complexity, rotation
-                    'Password Attacks & Salting / Peppering', // Brute force, dictionary, rainbow tables
-                    'Access-Control Models', // DAC, MAC, RBAC, ABAC, RuleBAC
-                    'Privileged Access Management (PAM)', // Admin access security
-                    'Just-in-Time (JIT) / Just-Enough-Access', // Temporary elevated privileges
-                    'Identity Provisioning & De-provisioning', // Onboarding and offboarding
+                    'Identification', // Items 1-10: Identity establishment, proofing, verification, lifecycle management
+                    'Authentication', // Items 11-20: Password fundamentals, MFA, biometrics, tokens, certificates, passwordless
+                    'Authorization', // Items 21-30: Access control models (DAC, MAC, RBAC, ABAC), PAM, JIT, least privilege
+                    'Accounting (Auditing)', // Items 31-40: Access logging, audit trails, compliance, session management
+                    'Federation & Advanced IAM', // Items 41-50: SSO, Kerberos, identity federation (SAML, OAuth, OpenID Connect)
                 ],
             ],
             [
@@ -240,11 +193,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Fundamental networking concepts and protocols. Essential foundation for understanding network security.',
                 'learning_objectives' => 'Understand network protocols, architectures, and communication models.',
                 'topics' => [
-                    'Network Standards (IEEE 802)', // LAN/Wi-Fi protocols
-                    'OSI & TCP/IP Models', // Layered communication models
-                    'Common Ports & Protocols', // HTTP, FTP, SSH, DNS
-                    'Network Architecture', // LAN, WAN, topology
-                    'Routing & Switching', // Basic networking concepts
+                    'OSI Model', // Items 1-10: Layer functions, encapsulation
+                    'TCP/IP Protocols', // Items 11-20: Addressing, subnetting, routing, core protocols (TCP, UDP, ICMP)
+                    'Network Appliances', // Items 21-30: Switches, routers, infrastructure devices, physical media
+                    'Network Services', // Items 31-40: DNS, DHCP, NTP, directory services, load balancing
+                    'Communication Protocols', // Items 41-50: HTTP/HTTPS, FTP, SMTP, POP3, IMAP, routing protocols
                 ],
             ],
             [
@@ -257,13 +210,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Network security fundamentals including defense mechanisms and attack vectors. Essential for protecting data in transit.',
                 'learning_objectives' => 'Design secure network architectures and implement network security controls. Understand network attacks and defenses.',
                 'topics' => [
-                    'DNS Security', // DNSSEC, zone transfer, poisoning
-                    'Firewall & Proxy Types', // NGFW, WAF, UTM
-                    'Network Segmentation', // VLAN, DMZ, air-gap
-                    'Virtual Private Network (VPN)', // IPsec, SSL VPN
-                    'Wi-Fi Security', // WPA2, WPA3
-                    'Network Attacks', // DDoS, sniffing, spoofing
-                    'Network Scanning & Recon Tools', // nmap, dig, traceroute
+                    'Security Protocols', // Items 1-10: IPSec, TLS/SSL, VPN technologies, secure communications
+                    'Network Attacks', // Items 11-20: DDoS, MITM, spoofing, network reconnaissance, threat vectors
+                    'Network Segmentation', // Items 21-30: VLANs, DMZ, microsegmentation, access control, firewalls
+                    'Wireless Security', // Items 31-40: Enterprise WiFi (WPA3, 802.1X), wireless threats, enterprise architecture
+                    'Network Diagnostic Tools', // Items 41-50: ping, traceroute, nslookup, tcpdump, dig, netstat, ip/ifconfig, arp, nmap
                 ],
             ],
             [
@@ -276,11 +227,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Secure software development practices and application security. Integrates security throughout the development lifecycle.',
                 'learning_objectives' => 'Implement secure coding practices and integrate security into CI/CD pipelines. Identify and mitigate application vulnerabilities.',
                 'topics' => [
-                    'Secure Software Development Lifecycle (SSDLC)', // SDLC Security Integration, Gates, Threat Modeling, Requirements
-                    'Development Models', // Waterfall, Agile, CI/CD, DevSecOps practices
-                    'Application Vulnerabilities', // SQLi, XSS, CSRF, Buffer Overflow, SSRF, Path Traversal
-                    'Security Testing', // Functional, QA, Security testing methods
-                    'Secure Coding', // Input validation, output encoding, session management
+                    'Secure Software Development Lifecycle (SSDLC)', // Items 1-10: SDLC security integration, gates, threat modeling, requirements
+                    'Development Models', // Items 11-20: SDLC security, gates, threat modeling, requirements management
+                    'Application Vulnerabilities', // Items 21-30: SQLi, XSS, CSRF, buffer overflow, SSRF, path traversal
+                    'Security Testing', // Items 31-40: Functional, QA, security testing methods (SAST, DAST, IAST)
+                    'Secure Coding', // Items 41-50: Input validation, output encoding, session management, error handling
                 ],
             ],
             [
@@ -293,16 +244,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Cloud computing security across different service and deployment models. Understanding shared responsibility is crucial.',
                 'learning_objectives' => 'Apply cloud security principles across IaaS, PaaS, and SaaS. Implement cloud-native security controls.',
                 'topics' => [
-                    'Cloud Service Models', // SaaS, PaaS, IaaS
-                    'Cloud Deployment Models', // Public, Private, Hybrid
-                    'Shared Responsibility Model', // CSP vs Customer duties
-                    'Virtual Private Cloud (VPC)', // Isolated cloud networks
-                    'Cloud Access Security Broker (CASB)', // Visibility/control
-                    'Secure Access Service Edge (SASE)', // Edge-based enforcement
-                    'Virtualisation & Hypervisor Security', // Type 1, Type 2
-                    'Container & Serverless Security', // Isolation, image control
-                    'Key Management Service (KMS) vs Cloud HSM', // Cloud crypto options
-                    'Cloud Security Frameworks', // CSA CCM, ISO 27017
+                    'Cloud Fundamentals', // Items 1-10: Service characteristics, cloud actors, benefits & risks
+                    'Cloud Models', // Items 11-20: Service models (IaaS, PaaS, SaaS), deployment models, service categories
+                    'Cloud Governance', // Items 21-30: Shared responsibility model, contracts, risk management, audits
+                    'Cloud Security Controls', // Items 31-40: CASB, SASE, IAM, data protection controls
+                    'Cloud Infrastructure Security', // Items 41-50: Multi-cloud, VPC, virtualization, key management
                 ],
             ],
             [
@@ -315,11 +261,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Security for endpoints including desktops, mobile devices, and IoT. Critical as attack surfaces expand.',
                 'learning_objectives' => 'Secure various endpoint types and implement mobile device management. Address IoT security challenges.',
                 'topics' => [
-                    'Endpoint Security', // EPP & EDR, XDR, Whitelisting & baselines, Configuration management
-                    'Device Security', // Encryption & TPM, Secure boot & firmware, Hardware security
-                    'Mobile Security', // MDM & EMM, BYOD & COPE, Mobile threats
-                    'IoT Security', // Device challenges, Constrained environments, Network segmentation
-                    'Operational Technology (OT)', // ICS & SCADA, PLCs, Air-gapping & safety
+                    'Endpoint Security', // Items 1-10: EPP, EDR, XDR, whitelisting, baselines, configuration management
+                    'Device Security', // Items 11-20: Encryption, secure boot, TPM, firmware integrity, hardware features
+                    'Mobile Security', // Items 21-30: MDM, EMM, BYOD, COPE, mobile threat protection
+                    'IoT Security', // Items 31-40: Device challenges, embedded systems, constrained environments, segmentation
+                    'OT Security', // Items 41-50: ICS, SCADA, PLCs, air-gapping, safety vs security priorities
                 ],
             ],
             [
@@ -332,11 +278,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Human aspects of security including awareness training and social engineering defense. People are often the weakest link.',
                 'learning_objectives' => 'Design security awareness programs and mitigate human-factor risks. Implement policies for secure behavior.',
                 'topics' => [
-                    'Social Engineering', // Phishing, vishing, smishing, tailgating, pretexting, baiting
-                    'Security Awareness & Training', // Training lifecycle, phishing simulation, education programs
-                    'Human Behavior & Psychology', // Behavioral analytics, security culture, cognitive biases
-                    'Personnel Security Controls', // SoD, Dual Control, Split Knowledge, Job Rotation, Mandatory Vacation
-                    'Security Policies & Agreements', // NDA, Clear Desk/Screen Policy, AUP, Security Briefings
+                    'Social Engineering', // Items 1-10: Phishing, vishing, smishing, tailgating, pretexting, baiting techniques
+                    'Security Awareness & Training', // Items 11-20: Training lifecycle, delivery methods, program design
+                    'Human Resource Security', // Items 21-30: Screening, onboarding, termination procedures
+                    'Personnel Safety', // Items 31-40: Duress codes, emergency response, travel security, social media guidelines
+                    'Personnel Security Controls', // Items 41-50: SoD, dual control, job rotation, clear desk policies
                 ],
             ],
             [
@@ -349,19 +295,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Physical security controls and environmental protection. Often overlooked but critical for comprehensive security.',
                 'learning_objectives' => 'Design physical security controls and implement environmental safeguards. Understand facility security requirements.',
                 'topics' => [
-                    'Human Safety & Emergency Procedures', // Evacuation, first aid, drills
-                    'Crime Prevention Through Environmental Design (CPTED)', // Natural surveillance, territoriality
-                    'Site Selection & Security Considerations', // Location risk analysis
-                    'Perimeter Security Controls', // Fences, gates, barriers
-                    'Facility Layout & Security Zones', // Reception, restricted areas
-                    'Physical Access Control Systems (PACS)', // Smart cards, biometrics
-                    'Tailgating and Piggybacking Prevention', // Turnstiles, mantraps
-                    'Security Guards & Visitor Management', // Screening and escorting
-                    'Surveillance Systems (CCTV)', // Deterrence, monitoring
-                    'Lighting & Deterrence Principles', // Illumination for visibility
-                    'Environmental Controls', // HVAC, temperature, humidity
-                    'Fire Prevention, Detection & Suppression', // Alarms, extinguishers, sprinklers
-                    'Power Management & Redundancy', // UPS, generators
+                    'Physical Access Control', // Items 1-10: Physical barriers, security personnel, procedures
+                    'Fire', // Items 11-20: Prevention, detection, suppression systems
+                    'Power', // Items 21-30: Power issues, preventive measures, backup systems
+                    'Site Design', // Items 31-40: Site selection, CPTED principles, facility layout
+                    'Environmental Controls', // Items 41-50: HVAC, monitoring, lighting, surveillance
                 ],
             ],
             [
@@ -374,17 +312,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Day-to-day security operations including monitoring, detection, and response. The front line of security defense.',
                 'learning_objectives' => 'Implement security monitoring and manage security operations centers. Use SIEM and other operational tools effectively.',
                 'topics' => [
-                    'Security Operations Center (SOC)', // Centralized monitoring
-                    'Operational Metrics', // MTTD, MTTR
-                    'Log & Event Management', // Collection, retention, analysis
-                    'Patch & Configuration Management', // Vulnerability remediation
-                    'Change Management', // Risk-aware change implementation
-                    'Intrusion Detection & Prevention (IDS/IPS)', // Network and host-based
-                    'Security Alerts & Tuning', // False positive/negative reduction
-                    'Security Information & Event Management (SIEM)', // Log aggregation & analysis
-                    'User & Entity Behavior Analytics (UEBA)', // Anomaly detection
-                    'Security Orchestration, Automation & Response (SOAR)', // Workflow automation
-                    'Continuous Monitoring & Threat Hunting', // Proactive detection
+                    'Security Operations Center (SOC)', // Items 1-10: SOC structure, governance, roles, responsibilities, workflows
+                    'Log Management', // Items 11-20: Collection, aggregation, correlation, analysis, retention
+                    'Detection', // Items 21-30: IDS/IPS, SIEM, UEBA systems and technologies
+                    'Response', // Items 31-40: SOAR, incident response procedures, threat containment
+                    'Monitoring', // Items 41-50: Real-time monitoring, alerting, metrics, performance measurement
                 ],
             ],
             [
@@ -397,13 +329,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Incident response procedures and digital forensics. Critical for minimizing damage and learning from security events.',
                 'learning_objectives' => 'Execute incident response plans and conduct forensic investigations. Preserve evidence and perform root cause analysis.',
                 'topics' => [
-                    'Incident Response Phases', // Prep → Detect → Analyze → Contain → Eradicate → Recover → Lessons
-                    'Playbooks & Runbooks', // Standardized response procedures
-                    'Reporting & Communication (Breach Notice)', // Stakeholder & regulator notification
-                    'Forensic Investigation', // Evidence gathering
-                    'Evidence Handling & Chain of Custody', // Integrity & admissibility
-                    'Root-Cause & Post-Incident Analysis', // Lessons learned
-                    'Digital Forensics Tools & Order of Volatility', // Tool usage and memory-first rule
+                    'Preparation', // Items 1-10: IR plans, tools, training, communication procedures
+                    'Detection, Triage & Analysis', // Items 11-20: Event identification, classification, technical analysis
+                    'Containment', // Items 21-30: Short-term & long-term containment strategies
+                    'Eradication & Recovery', // Items 31-40: System restoration and vulnerability remediation
+                    'Post-Incident Activity', // Items 41-50: Lessons learned, documentation, process improvement
                 ],
             ],
             [
@@ -416,14 +346,11 @@ class DiagnosticsSeeder extends Seeder
                 'description' => 'Ensuring business resilience through continuity planning and disaster recovery. Essential for organizational survival.',
                 'learning_objectives' => 'Develop business continuity and disaster recovery plans. Conduct BIA and establish recovery objectives.',
                 'topics' => [
-                    'Business Impact Analysis (BIA)', // Determine critical assets/functions
-                    'Maximum Tolerable Downtime (MTD)', // Max duration business can survive outage
-                    'Recovery Time & Recovery Point Objectives (RTO/RPO)', // Timeliness and data loss tolerance
-                    'Business Continuity Plan (BCP)', // Continuity framework
-                    'Disaster Recovery Plan (DRP)', // IT recovery playbook
-                    'BCP/DRP Testing Methods', // Table-top, Parallel, Full-interruption
-                    'Alternate Sites', // Hot, Warm, Cold
-                    'Backup Strategies', // 3-2-1 rule, online/offsite retention
+                    'Business Impact Analysis (BIA)', // Critical functions identification, impact quantification, recovery objectives (RTO/RPO/MTD), dependency mapping
+                    'Business Continuity Planning', // Emergency response procedures, alternate work arrangements, process continuity, crisis communications
+                    'Disaster Recovery', // DR sites (hot/warm/cold), site selection criteria, cloud DR, reciprocal agreements
+                    'Recovery Strategy', // 3-2-1 backup rule, GFS rotation, backup types (full/incremental/differential), verification & testing
+                    'Testing', // Testing methods (tabletop/walkthrough/simulation/full-scale), documentation, continuous improvement
                 ],
             ],
         ];

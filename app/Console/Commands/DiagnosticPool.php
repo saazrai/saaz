@@ -29,7 +29,7 @@ class DiagnosticPool extends Command
 
         if ($diagnosticId) {
             // Show domains from specific diagnostic
-            $diagnostic = Diagnostic::with(['responses.diagnosticItem.topic.domain'])
+            $diagnostic = Diagnostic::with(['responses.diagnosticItem.subtopic.topic.domain'])
                 ->find($diagnosticId);
 
             if (!$diagnostic) {
@@ -41,9 +41,9 @@ class DiagnosticPool extends Command
             
             // Get unique domains from diagnostic
             $domainNames = $diagnostic->responses()
-                ->with('diagnosticItem.topic.domain')
+                ->with('diagnosticItem.subtopic.topic.domain')
                 ->get()
-                ->pluck('diagnosticItem.topic.domain.name')
+                ->pluck('diagnosticItem.subtopic.topic.domain.name')
                 ->filter()
                 ->unique();
 
@@ -77,7 +77,7 @@ class DiagnosticPool extends Command
             for ($level = 1; $level <= 6; $level++) {
                 $count = DiagnosticItem::where('status', 'published')
                     ->where('bloom_level', $level)
-                    ->whereHas('topic.domain', function($query) use ($domain) {
+                    ->whereHas('subtopic.topic.domain', function($query) use ($domain) {
                         $query->where('id', $domain->id);
                     })
                     ->count();
@@ -148,8 +148,17 @@ class DiagnosticPool extends Command
         $phases = collect($poolStats)->groupBy('phase');
 
         foreach ($phases as $phaseId => $phaseStats) {
-            $phase = \App\Models\DiagnosticPhase::find($phaseId);
-            $this->info("Phase {$phaseId}: {$phase->name}");
+            // Handle NULL phase_id (unassigned domains)
+            if ($phaseId === null || $phaseId === '') {
+                $this->info("Unassigned Domains (No Phase)");
+            } else {
+                $phase = \App\Models\DiagnosticPhase::find($phaseId);
+                if ($phase) {
+                    $this->info("Phase {$phaseId}: {$phase->name}");
+                } else {
+                    $this->info("Phase {$phaseId}: Unknown Phase");
+                }
+            }
             
             $this->table(
                 ['ID', 'Domain', 'Total', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'Status'],

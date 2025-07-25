@@ -2,1308 +2,1377 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-
-
-use Illuminate\Database\Seeder;
-
-class D4PrivacySeeder extends Seeder
+class D4PrivacySeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Privacy';
+    
+    protected function getQuestions(): array
     {
-        // Clear existing items for this domain to prevent duplicates
-        DiagnosticItem::whereHas('topic.domain', function($query) {
-            $query->where('name', 'Privacy');
-        })->forceDelete();
-        
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Privacy');
-        })->pluck('id', 'name');
-        
-        
-        $items = [
-            // PII - Item 1
+        return [
+            // Topic 1: Personal Information (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 1 - L1 - Remember
             [
-                'topic_id' => $topics['Personally Identifiable Information (PII)'] ?? 88,
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which of the following is considered Personally Identifiable Information (PII)?',
+                'question' => 'Which of the following BEST defines Personally Identifiable Information (PII)?',
                 'options' => [
-                    'Company revenue figures',
-                    'Employee social security number',
-                    'Building floor plans',
-                    'Software version numbers'
+                    'Information used to track user behavior on a website',
+                    'Any information that can directly or indirectly identify an individual',
+                    'Any government-issued identification number',
+                    'Only information that can uniquely identify an individual on its own'
                 ],
-                'correct_options' => ['Employee social security number'],
+                'correct_options' => ['Any information that can directly or indirectly identify an individual'],
                 'justifications' => [
-                    'Company revenue is business information, not personal',
-                    'Correct - SSN uniquely identifies an individual',
-                    'Floor plans are facility information, not personal',
-                    'Software versions are technical information, not personal'
+                    'Tracking data may or may not be PII depending on whether it can be linked to an individual. Anonymous behavioral data alone is not PII.',
+                    'Correct - PII includes any information that can be used alone or in combination with other data to identify an individual, whether directly (like a name) or indirectly (like a combination of zip code, birth date, and gender).',
+                    'Government-issued IDs are examples of PII, but PII encompasses much more than just government identifiers.',
+                    'This definition is too narrow. PII includes indirect identifiers that may need to be combined with other information to identify someone, not just standalone unique identifiers.'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.2,
+                'irt_c' => 0.25
             ],
             
-            // PII - Item 2
+            // Item 2 - L1 - Remember
             [
-                'topic_id' => $topics['Personally Identifiable Information (PII)'] ?? 88,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the items that are considered PII to the drop zone:',
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'Which of the following is a direct identifier?',
                 'options' => [
+                    'Gender',
+                    'ZIP Code',
                     'Email address',
-                    'Server IP address',
-                    'Date of birth',
-                    'Application logs',
+                    'Date of birth'
+                ],
+                'correct_options' => ['Email address'],
+                'justifications' => [
+                    'Gender is an indirect identifier',
+                    'ZIP Code is an indirect identifier',
+                    'Correct - Email address is a direct identifier',
+                    'Date of birth is an indirect identifier'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.7,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 3 - L1 - Remember
+            [
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'Is an IP address considered personal information under GDPR?',
+                'options' => [
+                    'No, IP addresses only identify devices',
+                    'Only static IP addresses are personal information',
+                    'Yes, IP addresses are personal information',
+                    'Only dynamic IP addresses are personal information'
+                ],
+                'correct_options' => ['Yes, IP addresses are personal information'],
+                'justifications' => [
+                    'IP addresses can be linked to individuals',
+                    'Both static and dynamic IP addresses are personal information',
+                    'Correct - GDPR considers IP addresses as personal information',
+                    'Both types of IP addresses are considered personal information'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 4 - L3 - Apply
+            [
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'A fitness app collects step count, heart rate, and GPS location. How should this data be classified under privacy frameworks?',
+                'options' => [
+                    'Non-personal data since it\'s just device measurements',
+                    'Personal data requiring standard privacy protections',
+                    'Sensitive personal data requiring heightened protection due to health information',
+                    'Public data since users voluntarily share it'
+                ],
+                'correct_options' => ['Sensitive personal data requiring heightened protection due to health information'],
+                'justifications' => [
+                    'Device measurements linked to individuals constitute personal data',
+                    'While personal, health-related data typically requires higher protection',
+                    'Correct - Heart rate and health metrics are sensitive personal data under most privacy frameworks',
+                    'Voluntary sharing doesn\'t make data public or exempt from privacy protections'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 5 - L3 - Apply
+            [
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'Which of the following is MOST likely to be considered indirect personal information?',
+                'options' => [
                     'Passport number',
-                    'Company policy document'
+                    'Retina scan',
+                    'IP address',
+                    'Social Security Number'
                 ],
-                'correct_options' => ['Email address', 'Date of birth', 'Passport number'],
+                'correct_options' => ['IP address'],
                 'justifications' => [
-                    'Email addresses can identify individuals',
-                    'Server IPs identify machines, not people',
-                    'Date of birth combined with other data identifies individuals',
-                    'Application logs typically contain system data',
-                    'Passport numbers uniquely identify individuals',
-                    'Policy documents are organizational information'
+                    'A passport number is a direct identifier as it uniquely identifies an individual and is officially issued for that specific person.',
+                    'A retina scan is biometric data that directly and uniquely identifies an individual. It is considered a direct identifier and often classified as sensitive personal data.',
+                    'Correct - An IP address is typically considered indirect personal information because while it can help identify an individual, it usually requires additional information (like ISP records or other data points) to definitively link it to a specific person.',
+                    'A Social Security Number is a direct identifier as it is uniquely assigned to an individual and can directly identify them without additional information.'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25
             ],
             
-            // ePHI - Item 3
+            // Item 6
             [
-                'topic_id' => $topics['Electronic Protected Health Information (ePHI)'] ?? 89,
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Under HIPAA, which of the following would be classified as ePHI?',
+                'question' => 'How should you handle a request for data portability when the individual\'s data is intermingled with other individuals\' data?',
                 'options' => [
-                    'Patient medical record number',
-                    'Hospital cafeteria menu',
-                    'Doctor\'s vacation schedule',
-                    'Medical equipment inventory'
+                    'Deny the request since the data cannot be separated',
+                    'Provide all data including other individuals\' information',
+                    'Extract and provide only the requesting individual\'s data',
+                    'Provide a summary report instead of raw data'
                 ],
-                'correct_options' => ['Patient medical record number'],
+                'correct_options' => ['Extract and provide only the requesting individual\'s data'],
                 'justifications' => [
-                    'Correct - Medical record numbers identify patients and their health information',
-                    'Cafeteria menus are not health information',
-                    'Staff schedules are operational data, not patient health data',
-                    'Equipment inventory is facility management data'
+                    'Technical complexity doesn\'t override data portability rights',
+                    'Providing others\' data would violate their privacy rights',
+                    'Correct - Extract only the requester\'s data while protecting others\' information',
+                    'Data portability requires machine-readable data, not just summaries'
                 ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25
             ],
             
-            // Collection Limitation - Item 4
+            // Item 7 - L3 - Apply
             [
-                'topic_id' => $topics['Collection Limitation'] ?? 90,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Under the principle of Collection Limitation, organizations can collect any personal data they might find useful in the future.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'Collection Limitation requires that personal data collection be limited to what is necessary for specified, explicit, and legitimate purposes. Organizations cannot collect data "just in case" it might be useful later.'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Purpose Limitation - Item 5
-            [
-                'topic_id' => $topics['Purpose Limitation'] ?? 91,
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company collects customer email addresses for order confirmations. The marketing department wants to use these emails for promotional campaigns. What privacy principle does this violate?',
+                'question' => 'An organization wants to retain purchase history and demographics for future analytics. Which factor MOST influences whether the dataset qualifies as personal data?',
                 'options' => [
-                    'Data Minimisation',
+                    'Whether users have given consent',
+                    'Whether any record can be linked to a living individual',
+                    'Whether the data is encrypted at rest',
+                    'Whether it was collected via a website or app'
+                ],
+                'correct_options' => ['Whether any record can be linked to a living individual'],
+                'justifications' => [
+                    'Consent relates to the lawfulness of processing but does not determine whether data is personal data. Data remains personal data regardless of consent status.',
+                    'Correct - The fundamental test for personal data is whether it relates to an identified or identifiable living individual. If purchase history and demographics can be linked to specific individuals, it constitutes personal data.',
+                    'Encryption is a security measure that protects data but does not change its classification as personal data. Encrypted personal data is still personal data.',
+                    'The collection method does not determine whether data is personal. Personal data collected through any channel (website, app, phone, in-person) remains personal data.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 8
+            [
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'What is the fundamental challenge in defining personal information in IoT and smart device ecosystems?',
+                'options' => [
+                    'IoT devices are too small to store meaningful data',
+                    'Sensor data patterns can reveal personal behaviors even without direct identifiers',
+                    'IoT devices only collect technical performance metrics',
+                    'Privacy laws don\'t apply to IoT devices'
+                ],
+                'correct_options' => ['Sensor data patterns can reveal personal behaviors even without direct identifiers'],
+                'justifications' => [
+                    'Modern IoT devices have significant storage and processing capabilities',
+                    'Correct - Behavioral patterns from sensors can identify individuals without traditional identifiers',
+                    'IoT devices collect extensive personal and behavioral data beyond technical metrics',
+                    'Privacy laws increasingly address IoT data collection'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 9 - L5 - Evaluate
+            [
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'A social media company argues that "public posts" are not personal data since users made them public. Evaluate this position.',
+                'options' => [
+                    'Correct - public information loses personal data protections',
+                    'Incorrect - the data subject relationship makes it personal data regardless of visibility',
+                    'Correct only if users explicitly waived privacy rights',
+                    'Incorrect only for sensitive categories like health information'
+                ],
+                'correct_options' => ['Incorrect - the data subject relationship makes it personal data regardless of visibility'],
+                'justifications' => [
+                    'Public visibility doesn\'t remove personal data status under privacy laws',
+                    'Correct - Data remains personal if it relates to an identifiable individual, regardless of public visibility',
+                    'Public posting doesn\'t constitute a blanket privacy waiver',
+                    'All personal data retains protection, not just sensitive categories'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.3,
+                'irt_c' => 0.15
+            ],
+            
+            // Item 10
+            [
+                'topic' => 'Personal Information',
+                'subtopic' => 'Personal Information',
+                'type_id' => 1,
+                'question' => 'Evaluate the privacy implications of using "synthetic data" generated from real personal data for AI training.',
+                'options' => [
+                    'Synthetic data eliminates all privacy concerns since it\'s artificially generated',
+                    'Privacy risks remain if synthetic data can be reverse-engineered to original data',
+                    'Synthetic data is only problematic if it contains direct identifiers',
+                    'Privacy laws don\'t apply to synthetic data regardless of source'
+                ],
+                'correct_options' => ['Privacy risks remain if synthetic data can be reverse-engineered to original data'],
+                'justifications' => [
+                    'Synthetic data may still contain patterns that reveal original data',
+                    'Correct - Re-identification risks exist if synthetic data preserves too many original data characteristics',
+                    'Privacy risks can exist without direct identifiers through pattern analysis',
+                    'Legal applicability depends on re-identification risk and data generation methods'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15
+            ],
+            
+            // Topic 2: Privacy Principles (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            
+            // Item 11 - L1 - Remember
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'Which of the following is NOT a core GDPR principle regarding the use of personal data?',
+                'options' => [
+                    'Lawfulness, Fairness, and Transparency',
+                    'Data Minimization',
                     'Purpose Limitation',
-                    'Storage Limitation',
-                    'Security Safeguards'
+                    'Data Portability'
+                ],
+                'correct_options' => ['Data Portability'],
+                'justifications' => [
+                    'This is a core GDPR principle that ensures personal data is processed lawfully, fairly, and in a transparent manner in relation to the data subject.',
+                    'This is a core GDPR principle that ensures personal data is adequate, relevant, and limited to what is necessary in relation to the purposes for which they are processed.',
+                    'This is a core GDPR principle that ensures personal data is collected for specified, explicit, and legitimate purposes and not further processed in a manner that is incompatible with those purposes.',
+                    'While data portability is a right under the GDPR, it is not considered a core principle. The core principles focus on the broader guidelines and restrictions on the processing of personal data, whereas data portability is a specific right provided to data subjects.'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.8,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 12 - L2 - Understand
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'An organization determines that processing certain personal data is necessary to comply with an anti-money laundering law. What is the most appropriate legal basis for this processing?',
+                'options' => [
+                    'Consent, as individuals should agree to financial monitoring',
+                    'Contract, as it\'s part of doing business',
+                    'Legal obligation, as it\'s mandated by law',
+                    'Legitimate interest, for business security'
+                ],
+                'correct_options' => ['Legal obligation, as it\'s mandated by law'],
+                'justifications' => [
+                    'Consent is inappropriate for legally mandated processing. Organizations cannot make compliance with legal obligations dependent on consent, which can be withdrawn.',
+                    'While financial services involve contracts, anti-money laundering compliance is a legal requirement independent of contractual relationships.',
+                    'Correct - When processing is necessary to comply with a legal obligation (such as anti-money laundering laws), Article 6(1)(c) provides the appropriate legal basis. The organization has no choice but to process the data.',
+                    'Legitimate interest is not appropriate when there is a specific legal obligation. The processing is mandatory, not based on a balance of interests.'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 13 - L1 - Remember
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'Which GDPR principle requires organizations to demonstrate compliance?',
+                'options' => [
+                    'Transparency',
+                    'Fairness',
+                    'Accountability',
+                    'Lawfulness'
+                ],
+                'correct_options' => ['Accountability'],
+                'justifications' => [
+                    'Transparency relates to informing data subjects',
+                    'Fairness relates to how data is processed',
+                    'Correct - Accountability requires demonstrating compliance',
+                    'Lawfulness relates to having legal basis for processing'
+                ],
+                'bloom_level' => 1,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 14 - L3 - Apply
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'A data controller processes personal data for a task carried out in the public interest. To determine if this processing is lawful, which of the following is most crucial?',
+                'options' => [
+                    'Obtaining explicit consent from all data subjects',
+                    'Ensuring the processing is based on a specific provision in law',
+                    'Conducting a comprehensive Data Protection Impact Assessment (DPIA) only',
+                    'Demonstrating a clear commercial benefit for the controller'
+                ],
+                'correct_options' => ['Ensuring the processing is based on a specific provision in law'],
+                'justifications' => [
+                    'Public interest processing does not require consent. In fact, relying on consent when processing is necessary for public interest tasks can be problematic.',
+                    'Correct - Under GDPR Article 6(1)(e), processing for public interest tasks must be based on Union or Member State law. The public interest task must have a clear legal basis.',
+                    'While a DPIA may be required for high-risk processing, it alone does not establish the lawfulness of public interest processing. The legal basis must exist independently.',
+                    'Public interest processing is not about commercial benefits. It relates to tasks that serve the public good and must be grounded in law, not commercial interests.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 15 - L3 - Apply
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'A tech startup is developing a new social networking app. To enhance user experience, the app automatically collects users\' precise location data even when the app is in the background, without a clear, specific, and easily understandable notice. Which GDPR principle is MOST likely to be violated by this practice?',
+                'options' => [
+                    'Data minimization',
+                    'Storage limitation',
+                    'Transparency',
+                    'Accuracy'
+                ],
+                'correct_options' => ['Transparency'],
+                'justifications' => [
+                    'While collecting precise location data continuously might raise data minimization concerns, the primary violation here is the lack of clear notice about this collection.',
+                    'Storage limitation relates to how long data is kept, not how it\'s collected or whether users are informed about the collection.',
+                    'Correct - The transparency principle requires that data subjects be informed about data collection in a clear, specific, and easily understandable manner. Collecting location data without proper notice directly violates this principle.',
+                    'The accuracy principle relates to keeping personal data correct and up to date, which is not the issue in this scenario.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 16 - L3 - Apply
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'An EU citizen is traveling in the United States and requires medical attention. During the visit, a U.S.-based hospital collects the individual\'s personal and medical data for treatment purposes. Which of the following statements is TRUE regarding the hospital\'s data protection obligations?',
+                'options' => [
+                    'The U.S. hospital must comply with the EU GDPR because the patient is an EU citizen',
+                    'The U.S. hospital must adhere to both GDPR and HIPAA due to the dual nature of the data (EU citizenship and medical information)',
+                    'The U.S. hospital must comply with HIPAA, not GDPR, as the data processing occurs in the U.S. for domestic healthcare purposes',
+                    'The U.S. hospital can share the data with third parties without consent since the patient is a foreign national'
+                ],
+                'correct_options' => ['The U.S. hospital must comply with HIPAA, not GDPR, as the data processing occurs in the U.S. for domestic healthcare purposes'],
+                'justifications' => [
+                    'GDPR does not automatically apply to U.S.-based organizations solely because the data belongs to an EU citizen. GDPR applies when data is processed within the EU or by entities targeting EU residents, which is not the case here.',
+                    'While HIPAA governs medical data in the U.S., GDPR does not apply to data processed domestically in the U.S., even if the individual is an EU citizen.',
+                    'Correct - HIPAA governs healthcare data protection within the U.S., and since the data processing occurs locally for healthcare purposes, GDPR does not apply.',
+                    'HIPAA strictly prohibits sharing patient data without consent or legal justification, regardless of nationality.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 17 - L5 - Evaluate
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'Evaluate the optimal balance between transparency and security when implementing privacy programs in high-risk environments.',
+                'options' => [
+                    'Always prioritize transparency over security concerns',
+                    'Security should always override transparency requirements',
+                    'Risk-based approach balancing transparency obligations with security needs',
+                    'Separate systems eliminate any conflicts between these principles'
+                ],
+                'correct_options' => ['Risk-based approach balancing transparency obligations with security needs'],
+                'justifications' => [
+                    'Absolute transparency can create security vulnerabilities',
+                    'Security cannot completely override legal transparency requirements',
+                    'Correct - Risk-based approaches balance legal obligations with security imperatives',
+                    'System separation does not resolve the fundamental tension between these principles'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.7,
+                'irt_b' => 0.9,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 18
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'What is the fundamental challenge in applying "purpose limitation" to machine learning systems?',
+                'options' => [
+                    'Machine learning models are too complex to audit',
+                    'ML systems can discover purposes not originally intended or foreseeable',
+                    'Purpose limitation doesn\'t apply to automated decision-making',
+                    'Machine learning only uses public datasets'
+                ],
+                'correct_options' => ['ML systems can discover purposes not originally intended or foreseeable'],
+                'justifications' => [
+                    'Complexity is a challenge but not the fundamental issue with purpose limitation',
+                    'Correct - ML can reveal insights and enable uses beyond original collection purposes',
+                    'Purpose limitation applies to all processing including automated decisions',
+                    'ML systems use various data types, not just public datasets'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.1,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 19 - L5 - Evaluate
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'A medical research institute collects genetic data from volunteers for a specific study on cancer. After the study concludes, they de-identify the data but decide to retain the raw genetic samples indefinitely, citing "potential future research." As a privacy professional, what is the MOST appropriate recommendation?',
+                'options' => [
+                    'Allow retention of raw samples since they are de-identified and pose no privacy risks',
+                    'Require explicit re-consent from participants for future research uses',
+                    'Limit retention and dispose of raw genetic samples unless a new, specific purpose is identified and approved',
+                    'Store the samples indefinitely under the basis of legitimate interest in medical innovation'
+                ],
+                'correct_options' => ['Limit retention and dispose of raw genetic samples unless a new, specific purpose is identified and approved'],
+                'justifications' => [
+                    'De-identification of genetic data is extremely difficult if not impossible, and raw genetic samples can always be re-identified. They pose significant privacy risks.',
+                    'While re-consent is good practice, the fundamental issue is indefinite retention without a specific purpose, which violates data minimization and storage limitation principles.',
+                    'Correct - This approach aligns with purpose limitation and storage limitation principles. Genetic data should only be retained as long as necessary for the specified purpose, and new research purposes require proper justification and approval.',
+                    'Legitimate interest is rarely if ever appropriate for processing genetic data, which is special category data requiring explicit consent. Indefinite retention for vague future purposes violates core privacy principles.'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 2.0,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15
+            ],
+            
+            // Item 20 - L3 - Apply
+            [
+                'topic' => 'Privacy Principles',
+                'subtopic' => 'Privacy Principles',
+                'type_id' => 1,
+                'question' => 'A popular fitness app collects users\' precise location data, heart rate, and sleep patterns. Initially, the app\'s privacy policy states this data is for "personalized fitness recommendations." Later, the company considers selling aggregated, but still linkable, activity data to insurance providers to inform health policy premiums. This shift in usage directly challenges which GDPR principle?',
+                'options' => [
+                    'Data Minimization',
+                    'Accuracy',
+                    'Purpose Limitation',
+                    'Storage Limitation'
                 ],
                 'correct_options' => ['Purpose Limitation'],
                 'justifications' => [
-                    'Data Minimisation relates to amount of data collected',
-                    'Correct - Using data for marketing when collected for order confirmations violates Purpose Limitation',
-                    'Storage Limitation relates to retention periods',
-                    'Security Safeguards relate to protection measures'
+                    'Incorrect. Data minimization relates to collecting only necessary data, not changing how it\'s used after collection.',
+                    'Incorrect. Accuracy principle ensures data is correct and up-to-date, which is not the issue here.',
+                    'Correct. Purpose limitation principle requires that personal data collected for specified purposes should not be further processed in a manner incompatible with those purposes. Using fitness data for insurance assessment is incompatible with the original purpose.',
+                    'Incorrect. Storage limitation relates to how long data is kept, not how it\'s used.'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 3,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.20
             ],
             
-            // Data Minimisation - Item 6
-            [
-                'topic_id' => $topics['Data Minimisation'] ?? 92,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An online retailer requires customers to provide their date of birth, mother\'s maiden name, and social security number to create an account for purchasing books. This practice violates which principle?',
-                'options' => [
-                    'Data Minimisation',
-                    'Storage Limitation',
-                    'Data Portability',
-                    'Security Safeguards'
-                ],
-                'correct_options' => ['Data Minimisation'],
-                'justifications' => [
-                    'Correct - Collecting excessive personal data beyond what\'s necessary for book purchases violates Data Minimisation',
-                    'Storage Limitation relates to how long data is kept',
-                    'Data Portability relates to transferring data between services',
-                    'Security Safeguards relate to protecting collected data'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
+            // Topic 3: Data Subject Rights (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
             
-            // Storage Limitation - Item 7
+            // Item 21 - L2 - Understand
             [
-                'topic_id' => $topics['Storage Limitation'] ?? 93,
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Under GDPR\'s Storage Limitation principle, personal data should be kept:',
+                'question' => 'Which of the following statements accurately describes the Right to be Forgotten under the GDPR?',
                 'options' => [
-                    'Indefinitely for historical purposes',
-                    'For 7 years as standard practice',
-                    'No longer than necessary for the specified purpose',
-                    'Until the data subject requests deletion'
+                    'The data subject can demand the immediate deletion of their personal data by the data controller without any conditions',
+                    'The data subject has the right to obtain from the data controller the erasure of personal data concerning them without undue delay, under certain conditions',
+                    'The data subject can request the deletion of their personal data, and the data controller must comply only if the data is inaccurate',
+                    'The data subject\'s request for erasure of their personal data must always be approved by a supervisory authority before the data controller can act on it'
                 ],
-                'correct_options' => ['No longer than necessary for the specified purpose'],
+                'correct_options' => ['The data subject has the right to obtain from the data controller the erasure of personal data concerning them without undue delay, under certain conditions'],
                 'justifications' => [
-                    'Indefinite storage violates Storage Limitation',
-                    'Fixed periods without justification violate the principle',
-                    'Correct - Data must be deleted when no longer needed for its original purpose',
-                    'While deletion rights exist, Storage Limitation requires proactive deletion'
+                    'This statement is not accurate. The Right to be Forgotten under GDPR is not unconditional and is subject to specific conditions.',
+                    'This statement accurately describes the Right to be Forgotten. The right allows data subjects to request the erasure of their personal data under specific conditions, such as when the data is no longer necessary for the purpose it was collected, if the data subject withdraws consent, or if the data has been unlawfully processed.',
+                    'This statement is incorrect because the Right to be Forgotten encompasses more conditions than just the inaccuracy of data. Other conditions include the data no longer being necessary for the purposes for which it was collected, the data subject withdrawing consent, and the data being processed unlawfully.',
+                    'This statement is incorrect. The data controller does not require the approval of a supervisory authority to act on a data subject\'s request for erasure. The data controller must comply with the request under the specified conditions without needing external approval.'
                 ],
-                'difficulty_level' => 1,
                 'bloom_level' => 2,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
             ],
             
-            // Security Safeguards - Item 8
+            // Item 22
             [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select appropriate security safeguards for protecting personal data:',
-                'options' => [
-                    'Encryption at rest and in transit',
-                    'Public disclosure for transparency',
-                    'Access controls and authentication',
-                    'Sharing with all departments',
-                    'Regular security assessments',
-                    'Storing in plain text for easy access'
-                ],
-                'correct_options' => ['Encryption at rest and in transit', 'Access controls and authentication', 'Regular security assessments'],
-                'justifications' => [
-                    'Encryption protects data confidentiality',
-                    'Public disclosure violates privacy',
-                    'Access controls limit data to authorized users',
-                    'Unrestricted sharing violates need-to-know',
-                    'Assessments identify security gaps',
-                    'Plain text storage is a security vulnerability'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Data Subject Rights - Item 9
-            [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Under GDPR, which of the following is NOT a data subject right?',
+                'question' => 'What information must be provided in response to a data subject access request?',
                 'options' => [
-                    'Right to be informed',
-                    'Right to sell personal data',
-                    'Right to rectification',
-                    'Right to erasure'
+                    'Only the raw data stored about the individual',
+                    'Data categories, processing purposes, recipients, and retention periods',
+                    'Just a summary of data processing activities',
+                    'Only data that was explicitly consented to'
                 ],
-                'correct_options' => ['Right to sell personal data'],
+                'correct_options' => ['Data categories, processing purposes, recipients, and retention periods'],
                 'justifications' => [
-                    'Right to be informed is a fundamental GDPR right',
-                    'Correct - GDPR does not grant individuals the right to sell their personal data',
-                    'Right to rectification allows correction of inaccurate data',
-                    'Right to erasure (right to be forgotten) is a key GDPR right'
+                    'Access requests require comprehensive information beyond just raw data',
+                    'Correct - Full transparency about data processing activities must be provided',
+                    'Summaries alone don\'t fulfill access request requirements',
+                    'All personal data must be disclosed regardless of legal basis'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 1,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.1,
+                'irt_c' => 0.25
             ],
             
-            // Data Portability - Item 10
+            // Item 23 - L3 - Apply
             [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'The right to data portability allows individuals to:',
+                'question' => 'If an individual withdraws their specific permission (consent) for particular data processing, what is the immediate implication for the organization?',
                 'options' => [
-                    'Delete their data from all systems',
-                    'Receive their data in a structured, machine-readable format',
-                    'Prevent processing of their data',
-                    'Access company source code'
+                    'The organization must immediately delete all personal data of the individual',
+                    'The organization must stop processing based on that specific consent going forward',
+                    'The withdrawal of consent has retroactive effect and makes all prior processing unlawful',
+                    'The organization can continue processing for 30 days while seeking alternative legal basis'
                 ],
-                'correct_options' => ['Receive their data in a structured, machine-readable format'],
+                'correct_options' => ['The organization must stop processing based on that specific consent going forward'],
                 'justifications' => [
-                    'Deletion is covered by the right to erasure',
-                    'Correct - Data portability enables transfer of personal data between services',
-                    'Prevention of processing relates to consent withdrawal',
-                    'Source code access is not a privacy right'
+                    'Incorrect. Withdrawal of consent for specific processing does not automatically require deletion of all data; other legal bases may exist.',
+                    'Correct. Organizations must stop processing activities that relied on the withdrawn consent, but this does not affect the lawfulness of prior processing.',
+                    'Incorrect. Under GDPR Article 7(3), withdrawal of consent does not affect the lawfulness of processing based on consent before its withdrawal.',
+                    'Incorrect. Processing must stop immediately upon consent withdrawal; there is no grace period to find alternative legal bases.'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Privacy by Design - Item 11
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which of the following best demonstrates "Privacy by Default"?',
-                'options' => [
-                    'Adding privacy features after product launch',
-                    'Social media profiles set to private unless users change them',
-                    'Collecting all available data by default',
-                    'Requiring users to read privacy policies'
-                ],
-                'correct_options' => ['Social media profiles set to private unless users change them'],
-                'justifications' => [
-                    'Privacy by Design requires building in privacy from the start',
-                    'Correct - Privacy by Default means the strictest privacy settings are applied automatically',
-                    'Maximum data collection violates privacy principles',
-                    'Reading policies doesn\'t implement privacy controls'
-                ],
-                'difficulty_level' => 2,
                 'bloom_level' => 3,
-                'status' => 'published'
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.1,
+                'irt_c' => 0.2
             ],
             
-            // Data Sovereignty - Item 12
+            // Item 24 - L2 - Understand
             [
-                'topic_id' => $topics['Data Sovereignty & Cross-Border Transfer (SCC, BCR, DPF)'] ?? 97,
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A European company wants to transfer personal data to a US-based cloud provider. Which mechanism would NOT be appropriate under GDPR?',
+                'question' => 'A cloud storage provider holds a user\'s personal files. The user decides to switch to a different provider and wants to smoothly transfer their data directly to the new service. Which right facilitates this direct transfer where technically feasible?',
                 'options' => [
-                    'Standard Contractual Clauses (SCCs)',
-                    'Binding Corporate Rules (BCRs)',
-                    'Informal email agreement',
-                    'EU-US Data Privacy Framework'
+                    'Right to Access',
+                    'Right to Move Data',
+                    'Right to Data Portability',
+                    'Right to Transfer Data'
                 ],
-                'correct_options' => ['Informal email agreement'],
+                'correct_options' => ['Right to Data Portability'],
                 'justifications' => [
-                    'SCCs are approved transfer mechanisms',
-                    'BCRs are valid for intra-group transfers',
-                    'Correct - Informal agreements don\'t meet GDPR requirements for international transfers',
-                    'The Data Privacy Framework is a recognized adequacy mechanism'
+                    'Incorrect. The Right to Access allows individuals to obtain a copy of their data but doesn\'t specifically address direct transfer between controllers.',
+                    'Incorrect. "Right to Move Data" is not a formally recognized right under GDPR or other major privacy regulations.',
+                    'Correct. The Right to Data Portability specifically enables individuals to receive their personal data and transmit it directly from one controller to another where technically feasible.',
+                    'Incorrect. "Right to Transfer Data" is not the formal name of this right under privacy regulations.'
                 ],
+                'bloom_level' => 2,
                 'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.6,
+                'irt_c' => 0.25
             ],
             
-            // Data Controller vs Processor - Item 13
+            // Item 25 - L3 - Apply
             [
-                'topic_id' => $topics['Roles: Data Controller & Data Processor'] ?? 98,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each scenario with the appropriate role:',
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
+                'type_id' => 1,
+                'question' => 'An organization receives a request to correct inaccuracies in personal data. Upon review, they confirm the data is indeed incorrect. What is their primary obligation, beyond just updating the data in their own system?',
                 'options' => [
-                    'items' => [
-                        'Hospital determining patient data retention periods',
-                        'Cloud provider storing data on behalf of clients',
-                        'Marketing company deciding what customer data to collect',
-                        'Payroll service processing employee salaries'
-                    ],
-                    'responses' => [
-                        'Data Controller',
-                        'Data Processor',
-                        'Data Controller',
-                        'Data Processor'
-                    ]
+                    'To inform all third parties to whom the incorrect data was previously shared',
+                    'To immediately delete all other personal data related to the individual',
+                    'To provide the individual with financial compensation for the inaccuracy',
+                    'To anonymize the inaccurate data rather than correcting it'
                 ],
-                'correct_options' => [
-                    'Data Controller',
+                'correct_options' => ['To inform all third parties to whom the incorrect data was previously shared'],
+                'justifications' => [
+                    'Correct - Under GDPR Article 19, data controllers must communicate any rectification of personal data to each recipient to whom the data has been disclosed, unless this proves impossible or involves disproportionate effort.',
+                    'The right to rectification is separate from the right to erasure. Correcting inaccurate data does not require deleting all other data.',
+                    'Data protection laws do not generally require financial compensation for data inaccuracies unless specific damages can be proven through legal proceedings.',
+                    'Anonymizing incorrect data does not fulfill the rectification right. The individual has the right to have inaccurate data corrected, not anonymized.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.5,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 26
+            [
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
+                'type_id' => 1,
+                'question' => 'How should you handle a data portability request when it involves proprietary algorithms or trade secrets?',
+                'options' => [
+                    'Refuse the request to protect intellectual property',
+                    'Provide the personal data while protecting proprietary methods',
+                    'Require a court order before providing any information',
+                    'Only provide data if the individual signs an NDA'
+                ],
+                'correct_options' => ['Provide the personal data while protecting proprietary methods'],
+                'justifications' => [
+                    'IP protection doesn\'t override data portability rights',
+                    'Correct - Provide personal data without revealing proprietary processing methods',
+                    'Court orders aren\'t required for standard portability requests',
+                    'NDAs cannot be a condition for exercising privacy rights'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 27 - L4 - Analyze
+            [
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
+                'type_id' => 1,
+                'question' => 'A research institution processes personal health data for a public health study, citing a legal basis related to public interest. An individual participating in the research objects to this processing. Under privacy regulations, the institution might still be able to continue processing the data if:',
+                'options' => [
+                    'They obtain explicit permission after the objection.',
+                    'They can demonstrate compelling legitimate grounds for the processing that override the individual\'s interests or rights.',
+                    'The data has been made anonymous.',
+                    'The individual cannot prove significant personal harm.'
+                ],
+                'correct_options' => ['They can demonstrate compelling legitimate grounds for the processing that override the individual\'s interests or rights.'],
+                'justifications' => [
+                    'Incorrect. Obtaining permission after an objection would essentially be seeking new consent, which is a different legal basis than public interest.',
+                    'Correct. Under GDPR Article 21, when processing is based on public interest, the controller can continue if they demonstrate compelling legitimate grounds that override the interests, rights, and freedoms of the data subject.',
+                    'Incorrect. If data is truly anonymous, it no longer constitutes personal data and privacy regulations wouldn\'t apply. However, health data is difficult to fully anonymize.',
+                    'Incorrect. The burden is on the controller to demonstrate compelling grounds, not on the individual to prove harm.'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 28 - L4 - Analyze
+            [
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
+                'type_id' => 1,
+                'question' => 'Analyze the challenge of implementing data subject rights in distributed microservices architectures.',
+                'options' => [
+                    'Microservices make individual rights easier to implement',
+                    'Data fragmentation across services complicates rights fulfillment',
+                    'Individual rights only apply to user-facing services',
+                    'Microservices automatically handle privacy rights'
+                ],
+                'correct_options' => ['Data fragmentation across services complicates rights fulfillment'],
+                'justifications' => [
+                    'Distributed architectures typically increase complexity for rights implementation',
+                    'Correct - Fragmented data across services requires coordination for complete rights fulfillment',
+                    'Rights apply to all personal data regardless of service architecture',
+                    'Microservices require explicit privacy rights implementation'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 29
+            [
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
+                'type_id' => 1,
+                'question' => 'What is the fundamental tension between the right to rectification and data integrity in shared databases?',
+                'options' => [
+                    'Rectification always improves data quality',
+                    'Individual corrections might conflict with system-wide data consistency',
+                    'Data integrity is more important than individual rights',
+                    'Shared databases are exempt from rectification requirements'
+                ],
+                'correct_options' => ['Individual corrections might conflict with system-wide data consistency'],
+                'justifications' => [
+                    'Rectification can introduce inconsistencies if not properly managed',
+                    'Correct - Individual changes may create conflicts with interconnected data systems',
+                    'Individual rights must be balanced with, not subordinated to, system integrity',
+                    'Shared databases must still comply with rectification rights'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 30 - L5 - Evaluate
+            [
+                'topic' => 'Data Subject Rights',
+                'subtopic' => 'Data Subject Rights',
+                'type_id' => 1,
+                'question' => 'A social media platform argues that providing data portability would enable spam and harassment by making user data easily transferable. Evaluate this position.',
+                'options' => [
+                    'Valid concern that justifies refusing portability requests',
+                    'Invalid - technical measures should address abuse while preserving rights',
+                    'Valid only for high-risk user categories',
+                    'Invalid - security concerns never override individual rights'
+                ],
+                'correct_options' => ['Invalid - technical measures should address abuse while preserving rights'],
+                'justifications' => [
+                    'Abuse risks don\'t eliminate portability obligations',
+                    'Correct - Platforms should implement safeguards without denying fundamental rights',
+                    'Rights apply equally to all users regardless of risk categories',
+                    'Some security considerations can limit rights, but not eliminate them entirely'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15
+            ],
+            
+            // Topic 4: Privacy Governance (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 31 - L2 - Understand
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'An organization has appointed a Data Protection Officer (DPO). The DPO reports directly to the highest management level, has adequate resources, and is protected from dismissal or penalty for performing their tasks. These provisions primarily ensure the DPO\'s:',
+                'options' => [
+                    'Technical expertise.',
+                    'Independent functioning.',
+                    'Ability to act as a data controller.',
+                    'Involvement in marketing decisions.'
+                ],
+                'correct_options' => ['Independent functioning.'],
+                'justifications' => [
+                    'Incorrect. While DPOs need expertise, these specific provisions relate to organizational positioning, not technical skills.',
+                    'Correct. GDPR Articles 38-39 require these safeguards specifically to ensure DPOs can perform their duties independently without conflicts of interest or undue influence.',
+                    'Incorrect. DPOs advise and monitor compliance; they do not act as data controllers who determine processing purposes and means.',
+                    'Incorrect. DPO involvement in processing activities is about privacy compliance oversight, not specific business functions like marketing.'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 32 - L2 - Understand
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'What is the PRIMARY purpose of a Privacy Impact Assessment (DPIA)?',
+                'options' => [
+                    'To prevent all future data breaches',
+                    'To assess and mitigate privacy risks of processing activities',
+                    'To establish data retention timelines',
+                    'To enforce encryption and pseudonymization'
+                ],
+                'correct_options' => ['To assess and mitigate privacy risks of processing activities'],
+                'justifications' => [
+                    'Incorrect. While DPIAs help reduce breach risks, they cannot prevent all future breaches and that\'s not their primary purpose.',
+                    'Correct. DPIAs are designed to identify and minimize privacy risks before processing begins, helping organizations meet compliance requirements and protect individual privacy.',
+                    'Incorrect. Data retention timelines are established through retention policies, not primarily through DPIAs.',
+                    'Incorrect. While DPIAs may recommend security measures, their primary purpose is risk assessment, not enforcement of specific technical controls.'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 33 - L2 - Understand
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'Why is privacy governance important beyond just legal compliance?',
+                'options' => [
+                    'It\'s only important for legal compliance purposes',
+                    'Privacy governance builds consumer trust and competitive advantage',
+                    'Privacy governance is required by all security frameworks',
+                    'It\'s only necessary for companies that process payment data'
+                ],
+                'correct_options' => ['Privacy governance builds consumer trust and competitive advantage'],
+                'justifications' => [
+                    'Privacy governance extends beyond mere compliance',
+                    'Correct - Good privacy practices build trust and can differentiate organizations',
+                    'Not all security frameworks mandate privacy governance',
+                    'Privacy governance applies to all personal data, not just payment information'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 34 - L2 - Understand
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'A third-party vendor is contracted to manage payroll data on behalf of a company. Based on GDPR roles, which is TRUE?',
+                'options' => [
+                    'The vendor is the data controller',
+                    'The vendor becomes a joint controller',
+                    'The vendor is the processor; the company is the controller',
+                    'Both are processors'
+                ],
+                'correct_options' => ['The vendor is the processor; the company is the controller'],
+                'justifications' => [
+                    'Incorrect. The vendor processes data on behalf of the company but doesn\'t determine the purposes and means of processing.',
+                    'Incorrect. Joint controllership requires both parties to jointly determine purposes and means, which isn\'t the case in typical vendor relationships.',
+                    'Correct. The company determines why and how employee data is processed (controller), while the vendor processes data according to the company\'s instructions (processor).',
+                    'Incorrect. There must be a controller who determines the purposes and means of processing; both cannot be only processors.'
+                ],
+                'bloom_level' => 2,
+                'difficulty_level' => 2,
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.4,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 35 - L3 - Apply
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'An organization is undertaking a new project that involves extensive profiling of individuals based on their online behavior to target advertising. This activity carries a high risk to individuals\' rights and freedoms. Which privacy governance requirement is mandatory for this project before processing begins?',
+                'options' => [
+                    'Obtaining explicit consent from all data subjects.',
+                    'Appointing a Data Protection Officer.',
+                    'Conducting a Data Protection Impact Assessment (DPIA).',
+                    'Establishing a new legal basis for processing.'
+                ],
+                'correct_options' => ['Conducting a Data Protection Impact Assessment (DPIA).'],
+                'justifications' => [
+                    'Incorrect. While consent may be needed as a legal basis, it\'s not the mandatory governance requirement for high-risk processing.',
+                    'Incorrect. DPO appointment depends on the organization\'s overall activities, not individual projects.',
+                    'Correct. Under GDPR Article 35, a DPIA is mandatory when processing is likely to result in high risk to rights and freedoms, especially for systematic profiling.',
+                    'Incorrect. A legal basis is needed for any processing, but the question asks about the specific mandatory governance requirement for high-risk activities.'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.2,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 36
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'How should privacy responsibilities be integrated into different organizational roles?',
+                'options' => [
+                    'Only the DPO should have privacy responsibilities',
+                    'Embed privacy responsibilities throughout relevant job descriptions and KPIs',
+                    'Privacy should be handled entirely by legal department',
+                    'Only senior executives need to worry about privacy'
+                ],
+                'correct_options' => ['Embed privacy responsibilities throughout relevant job descriptions and KPIs'],
+                'justifications' => [
+                    'Privacy requires organization-wide involvement beyond the DPO',
+                    'Correct - Privacy accountability should be distributed across relevant roles',
+                    'Legal departments support but don\'t own all privacy responsibilities',
+                    'Privacy responsibilities extend throughout the organization'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.3,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 37
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'What is the most effective approach for privacy training in a large organization?',
+                'options' => [
+                    'One-time training for all employees using the same content',
+                    'Role-based training with relevant scenarios and regular updates',
+                    'Only train employees who directly handle customer data',
+                    'Provide training materials but don\'t require completion'
+                ],
+                'correct_options' => ['Role-based training with relevant scenarios and regular updates'],
+                'justifications' => [
+                    'One-size-fits-all training lacks relevance for different roles',
+                    'Correct - Tailored training with role-specific scenarios improves effectiveness',
+                    'All employees need privacy awareness appropriate to their roles',
+                    'Mandatory completion ensures organization-wide privacy awareness'
+                ],
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.5,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 38 - L4 - Analyze
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'A facial recognition AI model is deployed in public spaces. A citizen requests that their image data be permanently removed from the system\'s training and operational databases. Which data subject right would be the most applicable, and what is a key challenge for the organization in fulfilling it for an active AI model?',
+                'options' => [
+                    'Right to Data Portability; Challenge of data format conversion.',
+                    'Right to Erasure; Challenge of "unlearning" data from complex, deployed models.',
+                    'Right to Object; Challenge of proving legitimate interest overrides.',
+                    'Right of Access; Challenge of providing all copies of images.'
+                ],
+                'correct_options' => ['Right to Erasure; Challenge of "unlearning" data from complex, deployed models.'],
+                'justifications' => [
+                    'Incorrect. Data portability relates to receiving personal data in a transferable format, not removal from systems.',
+                    'Correct. The Right to Erasure (Right to be Forgotten) applies to deletion requests. The key challenge is that AI models learn patterns from training data, making it technically difficult to "unlearn" specific individuals\' data from already-trained models.',
+                    'Incorrect. While the right to object could apply, the citizen is specifically requesting data removal, not objecting to processing.',
+                    'Incorrect. Right of access is about obtaining information about data processing, not removal of data.'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 39 - L4 - Analyze
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'An AI system used for hiring analyzes video interviews to infer candidates\' emotions and personality traits. This processing of potentially sensitive biometric and inferred data, without explicit and specific consent, primarily raises concerns related to which privacy principle?',
+                'options' => [
+                    'Storage Limitation',
+                    'Data Minimization',
+                    'Purpose Limitation',
+                    'Fairness and Transparency'
+                ],
+                'correct_options' => ['Fairness and Transparency'],
+                'justifications' => [
+                    'Incorrect. Storage limitation relates to retention periods, not the nature of processing or consent requirements.',
+                    'Incorrect. While collecting biometric data for hiring may exceed what\'s necessary, the primary issue is the lack of transparency about AI inference.',
+                    'Incorrect. The purpose (hiring) is clear; the issue is the undisclosed methods and lack of consent for sensitive processing.',
+                    'Correct. Using AI to infer emotions and personality traits without clear disclosure violates transparency (individuals don\'t know how they\'re being assessed) and fairness (automated decisions based on inferred traits without consent).'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.7,
+                'irt_b' => 0.8,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 40 - L5 - Evaluate
+            [
+                'topic' => 'Privacy Governance',
+                'subtopic' => 'Privacy Governance',
+                'type_id' => 1,
+                'question' => 'A company\'s board argues that privacy governance should be "outsourced" to external legal counsel to avoid internal resource costs. Evaluate this approach.',
+                'options' => [
+                    'Effective since external lawyers have specialized expertise',
+                    'Ineffective - privacy governance requires internal integration and ongoing management',
+                    'Effective only for small companies without internal resources',
+                    'Effective if combined with privacy insurance coverage'
+                ],
+                'correct_options' => ['Ineffective - privacy governance requires internal integration and ongoing management'],
+                'justifications' => [
+                    'External expertise helps but cannot replace internal governance',
+                    'Correct - Privacy governance must be embedded in daily operations, not outsourced',
+                    'Even small companies need internal privacy accountability',
+                    'Insurance doesn\'t replace the need for active governance'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.4,
+                'irt_c' => 0.15
+            ],
+            
+            // Topic 5: Privacy Protection (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - L1 - Remember
+            [
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
+                'type_id' => 1,
+                'question' => 'Under GDPR, who is responsible for determining the purpose and means of personal data processing?',
+                'options' => [
+                    'Data Subject',
                     'Data Processor',
                     'Data Controller',
-                    'Data Processor'
+                    'Supervisory Authority'
                 ],
+                'correct_options' => ['Data Controller'],
                 'justifications' => [
-                    'Hospital determining patient data retention periods' => 'Controllers determine purposes and means of processing',
-                    'Cloud provider storing data on behalf of clients' => 'Processors act on controller instructions',
-                    'Marketing company deciding what customer data to collect' => 'Controllers make decisions about data use',
-                    'Payroll service processing employee salaries' => 'Processors handle data for controllers'
+                    'Incorrect. The data subject is the individual whose personal data is being processed, not the entity determining how it\'s processed.',
+                    'Incorrect. The data processor processes data on behalf of the controller but doesn\'t determine the purpose and means.',
+                    'Correct. Under GDPR Article 4(7), the data controller is the entity that determines the purposes and means of processing personal data.',
+                    'Incorrect. Supervisory authorities oversee compliance but don\'t determine processing purposes and means.'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'bloom_level' => 1,
+                'difficulty_level' => 1,
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.0,
+                'irt_c' => 0.25
             ],
             
-            // Privacy Impact Assessment - Item 14
+            // Item 42 - L2 - Understand
             [
-                'topic_id' => $topics['Privacy Impact Assessment (PIA) / DPIA'] ?? 99,
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When is a Data Protection Impact Assessment (DPIA) mandatory under GDPR?',
+                'question' => 'A company decides to encrypt all personal data stored in its cloud databases. What is the primary benefit of encryption as a technical safeguard in the event of a data breach?',
                 'options' => [
-                    'For any processing of personal data',
-                    'Only when requested by data subjects',
-                    'For high-risk processing activities',
-                    'Only for government organizations'
+                    'It prevents unauthorized access to the data.',
+                    'It renders the data unintelligible and unusable to unauthorized parties.',
+                    'It eliminates the need for any other security controls.',
+                    'It ensures data accuracy and integrity.'
                 ],
-                'correct_options' => ['For high-risk processing activities'],
+                'correct_options' => ['It renders the data unintelligible and unusable to unauthorized parties.'],
                 'justifications' => [
-                    'Not all processing requires a DPIA',
-                    'DPIAs are not triggered by data subject requests',
-                    'Correct - DPIAs are required when processing likely results in high risk to individuals',
-                    'Both private and public organizations may need DPIAs'
+                    'Incorrect. Encryption doesn\'t prevent access to encrypted data; it prevents understanding of the data content.',
+                    'Correct. The primary benefit of encryption is that even if unauthorized parties gain access to the data, they cannot read or use it without the decryption key.',
+                    'Incorrect. Encryption is one layer of defense; other controls like access management and monitoring are still necessary.',
+                    'Incorrect. While some encryption methods include integrity checks, the primary purpose is confidentiality, not accuracy.'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Advanced Privacy Scenario - Item 15
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A healthcare app developer is designing a new patient monitoring system. Which Privacy by Design principle would be violated if the app continuously uploads all sensor data to the cloud when only abnormal readings need to be transmitted?',
-                'options' => [
-                    'Proactive not reactive',
-                    'Privacy embedded into design',
-                    'Positive-sum, not zero-sum',
-                    'Privacy as the default setting'
-                ],
-                'correct_options' => ['Privacy embedded into design'],
-                'justifications' => [
-                    'This relates to being preventative, not the issue here',
-                    'Correct - Unnecessary data transmission violates the principle of embedding privacy into the system design through data minimization',
-                    'This principle is about win-win scenarios',
-                    'While related, the core issue is the design choice, not default settings'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Complex Cross-Border Transfer - Item 16
-            [
-                'topic_id' => $topics['Data Sovereignty & Cross-Border Transfer (SCC, BCR, DPF)'] ?? 97,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A multinational corporation with subsidiaries in the EU, US, and Asia needs to share employee data globally for HR management. They implemented Binding Corporate Rules (BCRs) but a new subsidiary in Brazil needs access. What additional measures are required?',
-                'options' => [
-                    'BCRs automatically cover all new subsidiaries globally',
-                    'The Brazilian subsidiary must be added to the BCR scope through an update process',
-                    'Separate Standard Contractual Clauses are required for Brazil',
-                    'No additional measures needed if Brazil has adequacy decision'
-                ],
-                'correct_options' => ['The Brazilian subsidiary must be added to the BCR scope through an update process'],
-                'justifications' => [
-                    'BCRs must explicitly include entities to be covered',
-                    'Correct - New entities must be formally incorporated into existing BCRs through the proper update and approval process',
-                    'SCCs are for third parties, not intra-group transfers covered by BCRs',
-                    'Brazil doesn\'t have EU adequacy decision, and BCRs still need updating'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // PII in Different Contexts - Item 17
-            [
-                'topic_id' => $topics['Personally Identifiable Information (PII)'] ?? 88,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization publishes a dataset with ZIP codes, birth dates, and gender. Research shows this combination can identify 87% of the US population. What type of PII is this?',
-                'options' => [
-                    'Direct identifiers',
-                    'Quasi-identifiers',
-                    'Non-identifiable information',
-                    'Sensitive personal data'
-                ],
-                'correct_options' => ['Quasi-identifiers'],
-                'justifications' => [
-                    'Direct identifiers like names explicitly identify individuals',
-                    'Correct - Quasi-identifiers can identify individuals when combined, even without direct identifiers',
-                    'This combination has been proven to be identifiable',
-                    'While potentially sensitive, the term describes the identification risk'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // DPIA Requirements - Item 18
-            [
-                'topic_id' => $topics['Privacy Impact Assessment (PIA) / DPIA'] ?? 99,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select the scenarios that would require a mandatory DPIA under GDPR:',
-                'options' => [
-                    'Large-scale processing of biometric data',
-                    'Employee email system for 50 staff',
-                    'Public area CCTV surveillance',
-                    'Online contact form',
-                    'Automated credit scoring system',
-                    'Company phone directory'
-                ],
-                'correct_options' => ['Large-scale processing of biometric data', 'Public area CCTV surveillance', 'Automated credit scoring system'],
-                'justifications' => [
-                    'Biometric data is special category data requiring DPIA at scale',
-                    'Small-scale routine employee data doesn\'t require DPIA',
-                    'Systematic monitoring of public areas requires DPIA',
-                    'Simple contact forms are low risk',
-                    'Automated decision-making with legal effects requires DPIA',
-                    'Internal directories are routine, low-risk processing'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Privacy Engineering - Item 19
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'Which privacy-enhancing technology (PET) would be most appropriate for analyzing customer purchase patterns without exposing individual transactions?',
-                'options' => [
-                    'Differential privacy',
-                    'Full disk encryption',
-                    'Multi-factor authentication',
-                    'Firewall rules'
-                ],
-                'correct_options' => ['Differential privacy'],
-                'justifications' => [
-                    'Correct - Differential privacy adds noise to protect individual data while preserving statistical utility',
-                    'Disk encryption protects data at rest but doesn\'t help with analysis',
-                    'MFA is for access control, not privacy-preserving analysis',
-                    'Firewalls control network traffic, not data analysis privacy'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Data Anonymization - Item 20
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the primary purpose of applying k-anonymity to a dataset containing personal information?',
-                'options' => [
-                    'To completely remove all personal identifiers',
-                    'To ensure each record is indistinguishable from at least k-1 other records',
-                    'To encrypt all sensitive data fields',
-                    'To comply with data retention requirements'
-                ],
-                'correct_options' => ['To ensure each record is indistinguishable from at least k-1 other records'],
-                'justifications' => [
-                    'K-anonymity generalizes quasi-identifiers but doesn\'t remove all personal data',
-                    'Correct - K-anonymity creates groups where each individual cannot be distinguished from k-1 others',
-                    'K-anonymity is a privacy technique, not an encryption method',
-                    'K-anonymity addresses privacy protection, not data retention compliance'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Consent Management - Item 21
-            [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Under GDPR, pre-ticked boxes can be used to obtain valid consent for marketing communications.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'GDPR requires clear affirmative action for valid consent. Pre-ticked boxes do not demonstrate active consent and are explicitly prohibited. Users must actively opt-in.'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Children's Privacy - Item 22
-            [
-                'topic_id' => $topics['Collection Limitation'] ?? 90,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Under GDPR, what is the default minimum age for a child to consent to information society services without parental approval?',
-                'options' => [
-                    '13 years',
-                    '16 years',
-                    '18 years',
-                    '21 years'
-                ],
-                'correct_options' => ['16 years'],
-                'justifications' => [
-                    'Some countries lower it to 13, but this isn\'t the default',
-                    'Correct - GDPR sets 16 as the default, though member states can lower to 13',
-                    '18 is adult age, not the child consent threshold',
-                    '21 is not relevant to GDPR consent ages'
-                ],
                 'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.7,
+                'irt_c' => 0.25
             ],
             
-            // Privacy Notice Requirements - Item 23
+            // Item 43 - L2 - Understand
             [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Select the mandatory elements that must be included in a GDPR privacy notice:',
-                'options' => [
-                    'Identity of the data controller',
-                    'Company financial statements',
-                    'Legal basis for processing',
-                    'Employee salaries',
-                    'Data retention periods',
-                    'Marketing strategies'
-                ],
-                'correct_options' => ['Identity of the data controller', 'Legal basis for processing', 'Data retention periods'],
-                'justifications' => [
-                    'Controller identity is mandatory for transparency',
-                    'Financial statements aren\'t privacy-related',
-                    'Legal basis must be specified for each processing purpose',
-                    'Employee salaries aren\'t required in privacy notices',
-                    'Retention periods inform data subjects how long data is kept',
-                    'Marketing strategies aren\'t privacy notice requirements'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Legitimate Interest Assessment - Item 24
-            [
-                'topic_id' => $topics['Purpose Limitation'] ?? 91,
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company wants to use legitimate interest as the legal basis for direct marketing. What must they conduct first?',
+                'question' => 'An e-commerce platform stores customer payment card numbers. To minimize risk, they replace the actual card numbers with randomly generated non-sensitive equivalents in their main database, keeping the real numbers in a separate, highly secured vault. When processing payments, the non-sensitive equivalents are exchanged for real numbers. This approach is an example of:',
                 'options' => [
-                    'Data Protection Impact Assessment',
-                    'Legitimate Interest Assessment',
-                    'Privacy Impact Assessment',
-                    'Security Risk Assessment'
-                ],
-                'correct_options' => ['Legitimate Interest Assessment'],
-                'justifications' => [
-                    'DPIA is for high-risk processing',
-                    'Correct - LIA balances controller interests against data subject rights and freedoms',
-                    'PIA is a general privacy review, not specific to legitimate interest',
-                    'Security assessments don\'t address legal basis'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Right to Erasure Exceptions - Item 25
-            [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A customer requests deletion of their data under GDPR\'s right to erasure. In which situation can the company refuse?',
-                'options' => [
-                    'The data is stored in backup systems',
-                    'The data is needed for compliance with legal obligations',
-                    'The company finds the data useful for analytics',
-                    'Deletion would be technically difficult'
-                ],
-                'correct_options' => ['The data is needed for compliance with legal obligations'],
-                'justifications' => [
-                    'Backups must be addressed in erasure procedures',
-                    'Correct - Legal obligations override erasure rights',
-                    'Business usefulness doesn\'t override erasure rights',
-                    'Technical difficulty doesn\'t exempt from GDPR requirements'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Privacy Breach Notification - Item 26
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Under GDPR, within what timeframe must a data controller notify the supervisory authority of a personal data breach?',
-                'options' => [
-                    '24 hours',
-                    '72 hours',
-                    '7 days',
-                    '30 days'
-                ],
-                'correct_options' => ['72 hours'],
-                'justifications' => [
-                    '24 hours is too short for GDPR requirements',
-                    'Correct - GDPR requires notification within 72 hours of becoming aware',
-                    '7 days exceeds the GDPR deadline',
-                    '30 days is far too long under GDPR'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Special Category Data - Item 27
-            [
-                'topic_id' => $topics['Personally Identifiable Information (PII)'] ?? 88,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Identify which types of data are considered "special category" data under GDPR:',
-                'options' => [
-                    'Racial or ethnic origin',
-                    'Email addresses',
-                    'Religious beliefs',
-                    'Purchase history',
-                    'Sexual orientation',
-                    'Job title'
-                ],
-                'correct_options' => ['Racial or ethnic origin', 'Religious beliefs', 'Sexual orientation'],
-                'justifications' => [
-                    'Race/ethnicity is explicitly special category',
-                    'Email addresses are regular personal data',
-                    'Religious beliefs are special category requiring extra protection',
-                    'Purchase history is regular personal data',
-                    'Sexual orientation is special category data',
-                    'Job titles are regular personal data'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Privacy Program Maturity - Item 28
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization has documented privacy policies but only conducts privacy reviews when problems arise. At what maturity level is their privacy program?',
-                'options' => [
-                    'Ad hoc',
-                    'Reactive',
-                    'Proactive',
-                    'Optimized'
-                ],
-                'correct_options' => ['Reactive'],
-                'justifications' => [
-                    'Ad hoc implies no formal processes',
-                    'Correct - Having policies but only acting on problems indicates reactive maturity',
-                    'Proactive would involve regular reviews before issues occur',
-                    'Optimized involves continuous improvement and innovation'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Data Processor Obligations - Item 29
-            [
-                'topic_id' => $topics['Roles: Data Controller & Data Processor'] ?? 98,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A data processor discovers a security vulnerability in their systems. Under GDPR, what is their primary obligation?',
-                'options' => [
-                    'Fix the vulnerability and document the fix',
-                    'Notify the data controller without undue delay',
-                    'Notify the supervisory authority within 72 hours',
-                    'Inform all affected data subjects immediately'
-                ],
-                'correct_options' => ['Notify the data controller without undue delay'],
-                'justifications' => [
-                    'Fixing is important but notification is the primary obligation',
-                    'Correct - Processors must notify controllers who then assess notification requirements',
-                    'Controllers, not processors, notify supervisory authorities',
-                    'Controllers, not processors, determine data subject notification'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // International Transfer Scenario - Item 30
-            [
-                'topic_id' => $topics['Data Sovereignty & Cross-Border Transfer (SCC, BCR, DPF)'] ?? 97,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An EU company uses a US cloud provider that is certified under the EU-US Data Privacy Framework. The provider wants to use servers in India for backup. What additional measures are needed?',
-                'options' => [
-                    'No additional measures - DPF covers all provider operations',
-                    'New assessment for India transfer with appropriate safeguards',
-                    'India automatically inherits US adequacy status',
-                    'Only notification to data subjects is required'
-                ],
-                'correct_options' => ['New assessment for India transfer with appropriate safeguards'],
-                'justifications' => [
-                    'DPF only covers US operations, not third countries',
-                    'Correct - Onward transfers to India require separate assessment and safeguards like SCCs',
-                    'Adequacy decisions don\'t transfer between countries',
-                    'Notification alone doesn\'t satisfy transfer requirements'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Privacy Technology Implementation - Item 31
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A company wants to perform analytics on customer data while preserving privacy. They need to ensure that removing a single customer\'s data doesn\'t significantly change the analysis results. Which technique is most appropriate?',
-                'options' => [
+                    'Encryption',
+                    'Hashing',
                     'Tokenization',
-                    'Format-preserving encryption',
-                    'Differential privacy',
-                    'Data masking'
+                    'Anonymization'
                 ],
-                'correct_options' => ['Differential privacy'],
+                'correct_options' => ['Tokenization'],
                 'justifications' => [
-                    'Tokenization replaces values but doesn\'t address analysis impact',
-                    'FPE maintains format but doesn\'t address statistical privacy',
-                    'Correct - Differential privacy specifically limits the impact of individual records on results',
-                    'Masking obscures data but doesn\'t provide mathematical privacy guarantees'
+                    'Incorrect. Encryption transforms data using cryptographic algorithms but maintains a mathematical relationship between original and encrypted data.',
+                    'Incorrect. Hashing is a one-way transformation that cannot be reversed to retrieve the original data.',
+                    'Correct. Tokenization replaces sensitive data with non-sensitive tokens that have no mathematical relationship to the original data, with the mapping stored separately.',
+                    'Incorrect. Anonymization removes the ability to identify individuals and is typically irreversible, unlike this token-based system.'
                 ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Consent Withdrawal - Item 32
-            [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Under GDPR, withdrawing consent must be as easy as giving consent.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'explanation' => 'GDPR Article 7(3) explicitly states that it must be as easy to withdraw consent as to give it. This means if consent was given with one click, withdrawal should also be possible with one click.'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Privacy vs Security - Item 33
-            [
-                'topic_id' => $topics['Personally Identifiable Information (PII)'] ?? 88,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A security team wants to implement employee monitoring software that captures all keystrokes to detect insider threats. The privacy team objects. This represents a conflict between:',
-                'options' => [
-                    'Confidentiality and integrity',
-                    'Security and privacy',
-                    'Availability and confidentiality',
-                    'Compliance and operations'
-                ],
-                'correct_options' => ['Security and privacy'],
-                'justifications' => [
-                    'Both are aspects of information protection, not in conflict here',
-                    'Correct - Security goals (threat detection) conflict with privacy rights (employee privacy)',
-                    'Availability isn\'t the issue in this scenario',
-                    'While related, the core conflict is security vs privacy'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Privacy Budget - Item 34
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'What is the fundamental goal of differential privacy in data protection?',
-                'options' => [
-                    'To encrypt all personal data in databases',
-                    'To ensure individual privacy while allowing statistical analysis',
-                    'To prevent any mathematical analysis of datasets',
-                    'To remove all identifying information from data'
-                ],
-                'correct_options' => ['To ensure individual privacy while allowing statistical analysis'],
-                'justifications' => [
-                    'Differential privacy uses statistical noise, not encryption',
-                    'Correct - Differential privacy allows useful statistical insights while protecting individual privacy',
-                    'The goal is to enable analysis while protecting privacy, not prevent it',
-                    'Differential privacy uses mathematical techniques beyond simple de-identification'
-                ],
-                'difficulty_level' => 5,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // DPIA Consultation - Item 35
-            [
-                'topic_id' => $topics['Privacy Impact Assessment (PIA) / DPIA'] ?? 99,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'After conducting a DPIA, an organization cannot mitigate the identified high risks. What must they do under GDPR?',
-                'options' => [
-                    'Proceed with enhanced monitoring',
-                    'Abandon the processing activity',
-                    'Consult the supervisory authority',
-                    'Accept the risk and document it'
-                ],
-                'correct_options' => ['Consult the supervisory authority'],
-                'justifications' => [
-                    'Monitoring doesn\'t address unmitigated high risks',
-                    'While an option, GDPR requires consultation first',
-                    'Correct - Prior consultation with supervisory authority is mandatory for unmitigated high risks',
-                    'High risks cannot simply be accepted without consultation'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Privacy-Preserving Analytics - Item 36
-            [
-                'topic_id' => $topics['Data Minimisation'] ?? 92,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A healthcare organization wants to share patient data with researchers while preserving privacy. They apply k-anonymity (k=10) and l-diversity (l=3). What additional protection does l-diversity provide?',
-                'options' => [
-                    'Ensures 10 identical records exist',
-                    'Protects against homogeneity attacks on sensitive attributes',
-                    'Adds random noise to the data',
-                    'Encrypts sensitive fields'
-                ],
-                'correct_options' => ['Protects against homogeneity attacks on sensitive attributes'],
-                'justifications' => [
-                    'K-anonymity already ensures this',
-                    'Correct - L-diversity ensures each k-anonymous group has at least l different sensitive values',
-                    'L-diversity doesn\'t add noise, it ensures diversity',
-                    'It\'s about diversity, not encryption'
-                ],
-                'difficulty_level' => 5,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Automated Decision Making - Item 37
-            [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A bank uses fully automated credit scoring to approve or deny loan applications. Under GDPR, what right do applicants have?',
-                'options' => [
-                    'Right to know the exact algorithm used',
-                    'Right to human intervention and to contest the decision',
-                    'Right to have their application automatically approved',
-                    'Right to see other applicants\' scores'
-                ],
-                'correct_options' => ['Right to human intervention and to contest the decision'],
-                'justifications' => [
-                    'GDPR requires meaningful information, not exact algorithms',
-                    'Correct - Article 22 provides rights regarding automated decision-making including human review',
-                    'There\'s no right to approval',
-                    'This would violate other applicants\' privacy'
-                ],
                 'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.5,
+                'irt_c' => 0.25
             ],
             
-            // Privacy Incident Response - Item 38
+            // Item 44
             [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company discovers that customer passwords were stored in plaintext logs accessible to all employees for the past year. No evidence of misuse exists. What are their obligations?',
+                'question' => 'Why might homomorphic encryption be valuable for privacy protection?',
                 'options' => [
-                    'No action needed since no misuse occurred',
-                    'Fix the issue and monitor for misuse',
-                    'Notify supervisory authority and affected individuals',
-                    'Only notify if customers ask about it'
+                    'It\'s faster than traditional encryption methods',
+                    'It allows computation on encrypted data without decryption',
+                    'It\'s required by privacy regulations',
+                    'It\'s easier to implement than other encryption'
                 ],
-                'correct_options' => ['Notify supervisory authority and affected individuals'],
+                'correct_options' => ['It allows computation on encrypted data without decryption'],
                 'justifications' => [
-                    'Breach notification isn\'t dependent on proven misuse',
-                    'Fixing is required but notification obligations exist',
-                    'Correct - High risk to individuals (plaintext passwords) requires both authority and individual notification',
-                    'Proactive notification is required for high-risk breaches'
+                    'Homomorphic encryption is typically slower than traditional methods',
+                    'Correct - Enables processing without exposing plaintext data',
+                    'No regulations specifically require homomorphic encryption',
+                    'Homomorphic encryption is complex to implement'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Cross-Functional Privacy - Item 39
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each Privacy by Design principle with its implementation example:',
-                'options' => [
-                    'items' => [
-                        'End-to-end encryption for messaging app',
-                        'Privacy settings defaulted to most restrictive',
-                        'Regular privacy training for all developers',
-                        'Privacy features that enhance user experience'
-                    ],
-                    'responses' => [
-                        'Full functionality',
-                        'Privacy as default',
-                        'Visibility and transparency',
-                        'Positive-sum approach'
-                    ]
-                ],
-                'correct_options' => [
-                    'Full functionality',
-                    'Privacy as default',
-                    'Visibility and transparency',
-                    'Positive-sum approach'
-                ],
-                'justifications' => [
-                    'End-to-end encryption for messaging app' => 'Full lifecycle protection demonstrates full functionality',
-                    'Privacy settings defaulted to most restrictive' => 'Automatic maximum privacy exemplifies privacy as default',
-                    'Regular privacy training for all developers' => 'Training ensures transparent privacy practices',
-                    'Privacy features that enhance user experience' => 'Win-win shows positive-sum thinking'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Modern Privacy Challenge - Item 40
-            [
-                'topic_id' => $topics['Data Sovereignty & Cross-Border Transfer (SCC, BCR, DPF)'] ?? 97,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Following the Schrems II decision, what is the primary concern with using Standard Contractual Clauses (SCCs) for EU-US data transfers?',
-                'options' => [
-                    'SCCs are no longer valid for any transfers',
-                    'US surveillance laws may override SCC protections',
-                    'SCCs are too expensive to implement',
-                    'The EU no longer recognizes SCCs'
-                ],
-                'correct_options' => ['US surveillance laws may override SCC protections'],
-                'justifications' => [
-                    'SCCs remain valid but require additional assessment',
-                    'Correct - The court found US surveillance laws could prevent companies from meeting SCC obligations',
-                    'Cost wasn\'t a factor in the decision',
-                    'The EU still recognizes SCCs with supplementary measures'
-                ],
-                'difficulty_level' => 5,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Privacy Metrics - Item 41
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which metric would best indicate the effectiveness of a privacy awareness program?',
-                'options' => [
-                    'Number of privacy policies published',
-                    'Reduction in privacy-related incidents',
-                    'Count of privacy training hours delivered',
-                    'Number of privacy officers hired'
-                ],
-                'correct_options' => ['Reduction in privacy-related incidents'],
-                'justifications' => [
-                    'Policy count doesn\'t measure effectiveness',
-                    'Correct - Fewer incidents indicate better privacy practices and awareness',
-                    'Training hours measure activity, not effectiveness',
-                    'Staffing levels don\'t directly indicate program success'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Pseudonymization vs Anonymization - Item 42
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A dataset has all direct identifiers replaced with random codes, with a separate key file linking codes to identities. Under GDPR, this data is:',
-                'options' => [
-                    'Anonymous and outside GDPR scope',
-                    'Pseudonymous and still personal data',
-                    'Encrypted and requires notification',
-                    'Public data with no restrictions'
-                ],
-                'correct_options' => ['Pseudonymous and still personal data'],
-                'justifications' => [
-                    'Re-identification is possible with the key, so not anonymous',
-                    'Correct - Pseudonymization is a security measure but data remains personal under GDPR',
-                    'It\'s pseudonymization, not encryption',
-                    'Still personal data subject to GDPR'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Purpose Limitation - Item 43 (L2)
-            [
-                'topic_id' => $topics['Purpose Limitation'] ?? 91,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Under Purpose Limitation, customer data collected for warranty registration can be used for product improvement research without additional consent.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'Purpose Limitation requires that personal data be processed only for the specific, explicit, and legitimate purposes for which it was originally collected. Using warranty data for research requires additional consent or a compatible purpose assessment.'
-                ],
-                'difficulty_level' => 1,
                 'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Data Minimisation - Item 44 (L2)
-            [
-                'topic_id' => $topics['Data Minimisation'] ?? 92,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A mobile app collects location data every second for fitness tracking. Users only need daily step counts. This violates Data Minimisation because:',
-                'options' => [
-                    'Location data is sensitive personal data',
-                    'The frequency of collection exceeds what is necessary',
-                    'Fitness tracking requires explicit consent',
-                    'Mobile apps cannot collect location data'
-                ],
-                'correct_options' => ['The frequency of collection exceeds what is necessary'],
-                'justifications' => [
-                    'While location can be sensitive, the specific issue is frequency',
-                    'Correct - Collecting data every second when daily summaries suffice violates minimisation',
-                    'Consent is separate from the minimisation principle',
-                    'Mobile apps can collect location with proper basis'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Collection Limitation - Item 45 (L2)
-            [
-                'topic_id' => $topics['Collection Limitation'] ?? 90,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which scenario best demonstrates proper application of Collection Limitation?',
-                'options' => [
-                    'Collecting all available social media data for future analysis',
-                    'Gathering only delivery address and contact info for shipping',
-                    'Requesting extensive personal history for a simple newsletter signup',
-                    'Collecting biometric data for all employees regardless of role'
-                ],
-                'correct_options' => ['Gathering only delivery address and contact info for shipping'],
-                'justifications' => [
-                    'Collecting data for unspecified future use violates Collection Limitation',
-                    'Correct - Only collecting necessary data for the specific shipping purpose',
-                    'Extensive data for simple services violates the principle',
-                    'Biometric collection must be justified for specific roles'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Security Safeguards - Item 46 (L3)
-            [
-                'topic_id' => $topics['Security Safeguards'] ?? 94,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'An organization implements role-based access controls for personal data. Employees can access data for multiple departments. How should they apply the principle of least privilege?',
-                'options' => [
-                    'Grant access to all department data for efficiency',
-                    'Limit access to data needed for specific job functions',
-                    'Allow temporary elevated access when requested',
-                    'Provide read-only access to all personal data'
-                ],
-                'correct_options' => ['Limit access to data needed for specific job functions'],
-                'justifications' => [
-                    'Broad department access exceeds necessity',
-                    'Correct - Least privilege means minimum access required for job duties',
-                    'Temporary elevation should be rare and controlled',
-                    'Read-only to all data still violates least privilege'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Privacy by Design - Item 47 (L3)
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A developer is designing a contact tracing app. How should they implement Privacy by Design to minimize personal data collection?',
-                'options' => [
-                    'Store all contact interactions in a central database',
-                    'Use decentralized storage with cryptographic identifiers',
-                    'Collect full identity information for contact accuracy',
-                    'Share data with multiple health authorities automatically'
-                ],
-                'correct_options' => ['Use decentralized storage with cryptographic identifiers'],
-                'justifications' => [
-                    'Central storage creates privacy risks and single points of failure',
-                    'Correct - Decentralized approach with crypto IDs minimizes data exposure',
-                    'Full identity collection violates data minimisation',
-                    'Automatic sharing without consent violates privacy principles'
-                ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => -0.1,
+                'irt_c' => 0.25
             ],
             
-            // Data Subject Rights - Item 48 (L3)
+            // Item 45 - L3 - Apply
             [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A data subject requests rectification of their personal data. The organization discovers the incorrect data has already been shared with third parties. What must they do?',
+                'question' => 'An organization is designing a new customer analytics platform. To comply with Privacy by Design, they prioritize a technique where unique identifiers (e.g., customer IDs) are replaced with reversible, random values at the database level, allowing analysts to work with the data without directly seeing personal identifiers, but still permitting re-linkage for specific purposes. This approach aligns with which technique?',
                 'options' => [
-                    'Only correct the data in their own systems',
-                    'Notify the data subject that correction is impossible',
-                    'Inform third parties about the correction where feasible',
-                    'Wait for third parties to discover the error themselves'
+                    'Anonymization',
+                    'Encryption at rest',
+                    'Pseudonymization',
+                    'Data Masking'
                 ],
-                'correct_options' => ['Inform third parties about the correction where feasible'],
+                'correct_options' => ['Pseudonymization'],
                 'justifications' => [
-                    'Correcting only own systems leaves incorrect data elsewhere',
-                    'GDPR requires reasonable efforts to inform third parties',
-                    'Correct - Organizations must inform recipients where feasible and proportionate',
-                    'Passive waiting doesn\'t fulfill GDPR obligations'
+                    'Incorrect. Anonymization is irreversible and would not allow re-linkage for specific purposes.',
+                    'Incorrect. Encryption at rest protects stored data but doesn\'t specifically replace identifiers with random values for analytics.',
+                    'Correct. Pseudonymization replaces identifying information with pseudonyms (random values) that can be reversed using additional information kept separately, exactly as described.',
+                    'Incorrect. Data masking typically obscures data for display purposes but isn\'t necessarily reversible or designed for analytics workflows.'
                 ],
-                'difficulty_level' => 2,
                 'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // PII Handling - Item 49 (L3)
-            [
-                'topic_id' => $topics['Personally Identifiable Information (PII)'] ?? 88,
-                'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'An analytics system needs to track user behavior without storing PII. Which approach best achieves this goal?',
-                'options' => [
-                    'Hash email addresses with a random salt',
-                    'Use session-based temporary identifiers',
-                    'Store only the last 4 digits of phone numbers',
-                    'Encrypt all personal data with reversible encryption'
-                ],
-                'correct_options' => ['Use session-based temporary identifiers'],
-                'justifications' => [
-                    'Hashed emails can still be considered personal data under GDPR',
-                    'Correct - Temporary session IDs avoid storing PII while enabling analytics',
-                    'Partial phone numbers may still identify individuals',
-                    'Reversible encryption still constitutes PII storage'
-                ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.1,
+                'irt_c' => 0.25
             ],
             
-            // Data Sovereignty - Item 50 (L3)
+            // Item 46 - L4 - Analyze
             [
-                'topic_id' => $topics['Data Sovereignty & Cross-Border Transfer (SCC, BCR, DPF)'] ?? 97,
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A European SaaS company wants to implement disaster recovery using cloud services in Japan. What is the most appropriate approach for GDPR compliance?',
+                'question' => 'A healthcare provider wants to share patient treatment data with a research institute for statistical analysis, ensuring individual patients cannot be identified. They remove direct identifiers like names and addresses, but retain dates of birth and postal codes. What data protection technique has been applied, and what is a primary residual risk?',
                 'options' => [
-                    'Proceed without restrictions as disaster recovery is essential',
-                    'Implement Standard Contractual Clauses with additional safeguards',
-                    'Only use anonymized data for disaster recovery',
-                    'Wait for Japan to receive an adequacy decision'
+                    'Anonymization; Risk of re-identification through unique combinations of remaining data.',
+                    'Pseudonymization; Risk of re-identification through the remaining identifiers.',
+                    'Data Masking; Risk of original data being restored easily.',
+                    'Encryption; Risk of encryption keys being compromised.'
                 ],
-                'correct_options' => ['Implement Standard Contractual Clauses with additional safeguards'],
+                'correct_options' => ['Anonymization; Risk of re-identification through unique combinations of remaining data.'],
                 'justifications' => [
-                    'Essential services still require GDPR compliance for transfers',
-                    'Correct - SCCs with supplementary measures enable compliant disaster recovery',
-                    'Anonymization may not preserve system functionality',
-                    'Adequacy decisions are unpredictable and may never occur'
+                    'Correct. The removal of direct identifiers without replacing them with pseudonyms is anonymization. However, quasi-identifiers like birth dates and postal codes can create unique combinations that allow re-identification.',
+                    'Incorrect. Pseudonymization involves replacing identifiers with pseudonyms, not removing them entirely.',
+                    'Incorrect. Data masking is typically used for non-production environments and doesn\'t fit this research sharing scenario.',
+                    'Incorrect. Encryption protects data in transit/storage but doesn\'t remove identifiers for analysis purposes.'
                 ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Additional Level 4 question to reach perfect 7-10-16-10-7 distribution
-            [
-                'topic_id' => $topics['Privacy by Design & by Default'] ?? 96,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company designs a new mobile app that requires location data for core functionality but also collects browsing history for advertising. Analyzing this against privacy by design principles, what is the PRIMARY concern?',
-                'options' => [
-                    'Insufficient encryption of location data',
-                    'Lack of user consent for location tracking',
-                    'Violation of data minimization principle',
-                    'Inadequate data retention policies'
-                ],
-                'correct_options' => ['Violation of data minimization principle'],
-                'justifications' => [
-                    'Encryption is important but not the primary design principle violation',
-                    'Consent is required but the fundamental issue is unnecessary data collection',
-                    'Correct - Collecting browsing history for advertising violates data minimization when only location is needed for core functionality',
-                    'Retention policies are important but secondary to collection limitation'
-                ],
+                'bloom_level' => 4,
                 'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.6,
+                'irt_c' => 0.20
             ],
             
-            // Additional Level 4 question to reach exactly 50 with 7-10-16-10-7
+            // Item 47 - L3 - Apply
             [
-                'topic_id' => $topics['Data Subject Rights & Data Portability'] ?? 95,
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A data subject requests deletion of their personal data, but your organization needs to retain some data for legal compliance. How should you analyze this conflicting requirement?',
+                'question' => 'A company has highly sensitive personal data. They implement a process where the data is first encrypted, then certain fields are pseudonymized, and finally, direct identifiers are removed to create aggregated reports. This layered approach best exemplifies adherence to which privacy principle?',
                 'options' => [
-                    'Deny the deletion request entirely',
-                    'Delete all data regardless of legal requirements',
-                    'Assess whether legal basis for retention overrides right to erasure',
-                    'Delay response until legal requirements expire'
+                    'Transparency',
+                    'Data Minimization',
+                    'Storage Limitation',
+                    'Accountability'
                 ],
-                'correct_options' => ['Assess whether legal basis for retention overrides right to erasure'],
+                'correct_options' => ['Data Minimization'],
                 'justifications' => [
-                    'Outright denial may violate data subject rights',
-                    'Ignoring legal requirements creates compliance risks',
-                    'Correct - Must analyze and balance legal obligations against data subject rights',
-                    'Delays may violate response timeframes'
+                    'Incorrect. Transparency relates to informing data subjects about processing, not the technical protection measures.',
+                    'Correct. Data minimization principle includes processing data in ways that reduce privacy risks. The layered approach progressively reduces data identifiability, ensuring only necessary data is available for each purpose.',
+                    'Incorrect. Storage limitation relates to retention periods, not processing techniques.',
+                    'Incorrect. While this approach may demonstrate accountability, it primarily exemplifies data minimization through progressive de-identification.'
                 ],
-                'difficulty_level' => 4,
+                'bloom_level' => 3,
+                'difficulty_level' => 3,
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 0.4,
+                'irt_c' => 0.25
+            ],
+            
+            // Item 48 - L4 - Analyze
+            [
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
+                'type_id' => 1,
+                'question' => 'A security architect proposes using tokenization for payment card data and pseudonymization for customer demographic data in an application. What is the key distinction in how these two techniques primarily protect the original sensitive data?',
+                'options' => [
+                    'Tokenization typically replaces data with a non-sensitive equivalent, while pseudonymization only hides direct identifiers.',
+                    'Tokenization is reversible, while pseudonymization is irreversible.',
+                    'Tokenization requires encryption, while pseudonymization does not.',
+                    'Tokenization is for data at rest, while pseudonymization is for data in transit.'
+                ],
+                'correct_options' => ['Tokenization typically replaces data with a non-sensitive equivalent, while pseudonymization only hides direct identifiers.'],
+                'justifications' => [
+                    'Correct. Tokenization replaces sensitive data with non-sensitive tokens that have no mathematical relationship to the original data. Pseudonymization replaces identifying fields but the data remains personal data under GDPR.',
+                    'Incorrect. Both techniques are reversible - tokenization through the token vault, pseudonymization through the mapping table.',
+                    'Incorrect. Tokenization doesn\'t necessarily require encryption; it uses random value substitution. Pseudonymization may or may not use encryption.',
+                    'Incorrect. Both techniques can be applied to data at rest or in transit; this is not their distinguishing characteristic.'
+                ],
                 'bloom_level' => 4,
-                'status' => 'published'
-            ]
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.6,
+                'irt_b' => 0.7,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 49
+            [
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
+                'type_id' => 1,
+                'question' => 'What is the fundamental challenge in applying privacy protection techniques to real-time data streams?',
+                'options' => [
+                    'Real-time systems are too fast for privacy protection',
+                    'Balancing privacy protection with system performance and utility',
+                    'Privacy protection doesn\'t apply to streaming data',
+                    'Real-time data is automatically anonymous'
+                ],
+                'correct_options' => ['Balancing privacy protection with system performance and utility'],
+                'justifications' => [
+                    'Speed is a challenge but not insurmountable',
+                    'Correct - The key challenge is maintaining utility while applying protection in real-time',
+                    'Privacy requirements apply equally to streaming data',
+                    'Real-time data often contains highly identifiable information'
+                ],
+                'bloom_level' => 4,
+                'difficulty_level' => 4,
+                'status' => 'published',
+                'irt_a' => 1.8,
+                'irt_b' => 1.0,
+                'irt_c' => 0.20
+            ],
+            
+            // Item 50 - L5 - Evaluate
+            [
+                'topic' => 'Privacy Protection',
+                'subtopic' => 'Privacy Protection',
+                'type_id' => 1,
+                'question' => 'A cloud service provider offers "zero-knowledge" encryption but requires plaintext access for search functionality. Evaluate this contradiction.',
+                'options' => [
+                    'This is standard practice and poses no privacy concerns',
+                    'This undermines the zero-knowledge claim and creates privacy risks',
+                    'Zero-knowledge only applies to data storage, not processing',
+                    'Search functionality always requires plaintext access'
+                ],
+                'correct_options' => ['This undermines the zero-knowledge claim and creates privacy risks'],
+                'justifications' => [
+                    'Plaintext access contradicts zero-knowledge principles',
+                    'Correct - True zero-knowledge means the provider never has plaintext access',
+                    'Zero-knowledge should apply to all aspects of data handling',
+                    'Encrypted search technologies exist that don\'t require plaintext'
+                ],
+                'bloom_level' => 5,
+                'difficulty_level' => 5,
+                'status' => 'published',
+                'irt_a' => 1.9,
+                'irt_b' => 1.5,
+                'irt_c' => 0.15
+            ],
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 4 (Privacy) diagnostic items seeded successfully!');
     }
 }

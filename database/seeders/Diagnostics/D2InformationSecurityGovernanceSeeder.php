@@ -2,1660 +2,1398 @@
 
 namespace Database\Seeders\Diagnostics;
 
-use App\Models\DiagnosticItem;
-use App\Models\DiagnosticTopic;
-
-
-use Illuminate\Database\Seeder;
-
-class D2InformationSecurityGovernanceSeeder extends Seeder
+class D2InformationSecurityGovernanceSeeder extends BaseDiagnosticSeeder
 {
-    public function run(): void
+    protected string $domainName = 'Information Security Governance';
+    
+    protected function getQuestions(): array
     {
-        // Clear existing items for this domain to prevent duplicates
-        DiagnosticItem::whereHas('topic.domain', function($query) {
-            $query->where('name', 'Information Security Governance');
-        })->forceDelete();
-        
-        // Get reference data
-        $topics = DiagnosticTopic::whereHas('domain', function($query) {
-            $query->where('name', 'Information Security Governance');
-        })->pluck('id', 'name');
-        
-        
-        $items = [
-            // Security Roles & Responsibilities - Item 1
+        return [
+            // Topic 1: Information Security Program (10 questions)
+            // Bloom Distribution: L1:2, L2:3, L3:4, L4:2, L5:1
+            
+            // Item 1 - Information Security Program - L1 Knowledge
             [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Security Program Establishment',
+                'question' => 'What is the primary purpose of an information security program charter?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Who is ULTIMATELY responsible for information security in an organization?',
                 'options' => [
-                    'Chief Information Security Officer (CISO)',
-                    'Board of Directors and Senior Management',
-                    'IT Department',
-                    'All employees'
+                    'To define security tools and technologies',
+                    'To establish authority, scope, and responsibilities',
+                    'To document security incidents',
+                    'To manage security budgets'
                 ],
-                'correct_options' => ['Board of Directors and Senior Management'],
+                'correct_options' => ['To establish authority, scope, and responsibilities'],
                 'justifications' => [
-                    'The CISO executes security strategy but is not ultimately responsible',
-                    'Correct - The board and senior management have ultimate accountability for all organizational risks including security',
-                    'IT implements security but does not have ultimate responsibility',
-                    'While everyone has security responsibilities, ultimate accountability rests at the top'
+                    'Security tools and technologies are implemented later, not defined in the charter',
+                    'Correct - The charter establishes the program\'s authority, scope, and responsibilities',
+                    'Incident documentation is an operational activity, not a charter purpose',
+                    'Budget management is a function enabled by the charter, not its primary purpose'
                 ],
                 'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.5,
+                'irt_c' => 0.2
             ],
             
-            // Security Roles & Responsibilities - Item 2
+            // Item 2 - Information Security Program - L2 Comprehension
             [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Program Governance Structure',
+                'question' => 'Which governance body typically provides strategic oversight for the information security program?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the PRIMARY role of a Data Protection Officer (DPO) under GDPR?',
                 'options' => [
-                    'Implementing technical security controls',
-                    'Monitoring compliance with data protection regulations',
-                    'Managing the IT security team',
-                    'Conducting security awareness training'
+                    'Help desk team',
+                    'Security operations center',
+                    'Information security steering committee',
+                    'Network administrators'
                 ],
-                'correct_options' => ['Monitoring compliance with data protection regulations'],
+                'correct_options' => ['Information security steering committee'],
                 'justifications' => [
-                    'DPOs focus on compliance, not technical implementation',
-                    'Correct - The DPO ensures the organization complies with data protection laws and regulations',
-                    'DPOs are independent and do not manage security teams',
-                    'While DPOs may support awareness, their primary role is compliance monitoring'
+                    'Help desk teams provide operational support, not strategic oversight',
+                    'SOCs handle tactical security operations, not governance',
+                    'Correct - Steering committees provide strategic oversight and governance',
+                    'Network administrators focus on technical implementation, not strategy'
                 ],
                 'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.5,
+                'irt_c' => 0.2
             ],
             
-            // Security Roles & Responsibilities - Item 3
+            // Item 3 - Information Security Program - L3 Application
             [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each security role with their primary responsibility:',
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Gap Analysis',
+                'question' => 'You are conducting a gap analysis for your security program. Which approach would be most effective?',
+                'type_id' => 1,
                 'options' => [
-                    'items' => [
-                        'CISO',
-                        'Data Owner',
-                        'Data Custodian',
-                        'Security Auditor'
-                    ],
-                    'responses' => [
-                        'Implements security controls for data',
-                        'Determines data classification and access',
-                        'Develops security strategy and policies',
-                        'Independently assesses security effectiveness'
-                    ]
+                    'Compare current state against industry framework requirements',
+                    'Review recent security incidents',
+                    'Focus on technical vulnerabilities',
+                    'Examine competitor security programs'
                 ],
-                'correct_options' => [
-                    'CISO' => 'Develops security strategy and policies',
-                    'Data Owner' => 'Determines data classification and access',
-                    'Data Custodian' => 'Implements security controls for data',
-                    'Security Auditor' => 'Independently assesses security effectiveness'
-                ],
+                'correct_options' => ['Compare current state against industry framework requirements'],
                 'justifications' => [
-                    'CISO' => 'The CISO is responsible for overall security strategy and policy development',
-                    'Data Owner' => 'Data owners make decisions about data classification and who can access it',
-                    'Data Custodian' => 'Custodians implement the controls specified by data owners',
-                    'Security Auditor' => 'Auditors provide independent assessment of security controls'
+                    'Correct - Gap analysis requires comparing current state to established frameworks',
+                    'Incident review provides limited scope, not comprehensive gap analysis',
+                    'Technical vulnerabilities are only one aspect of security program maturity',
+                    'Competitor analysis doesn\'t reveal internal program gaps'
                 ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Security Roles & Responsibilities - Item 4
-            [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** The Chief Information Officer (CIO) and Chief Information Security Officer (CISO) roles should be combined to ensure better coordination.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. These roles should be separate to avoid conflicts of interest. The CIO focuses on IT service delivery and efficiency, while the CISO focuses on security and risk management. Combining them could compromise security decisions in favor of operational efficiency.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Security Roles & Responsibilities - Item 5
-            [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these roles in order of accountability hierarchy from HIGHEST to LOWEST:',
-                'options' => [
-                    'Security Administrator',
-                    'Chief Executive Officer',
-                    'Data Custodian',
-                    'Board of Directors',
-                    'Chief Information Security Officer'
-                ],
-                'correct_options' => [
-                    'Board of Directors',
-                    'Chief Executive Officer',
-                    'Chief Information Security Officer',
-                    'Security Administrator',
-                    'Data Custodian'
-                ],
-                'justifications' => ['The board has ultimate accountability, followed by CEO, then CISO who reports to executive management, then administrators and custodians who implement controls.'],
                 'difficulty_level' => 3,
-                'bloom_level' => 2,
-                'status' => 'published'
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.2,
+                'irt_c' => 0.2
             ],
             
-            // Policy, Standard, Procedure, Guideline - Item 6
+            // Item 4 - Information Security Program - L2 Comprehension
             [
-                'topic_id' => $topics['Policy, Standard, Procedure, Guideline'] ?? 12,
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Maturity Models',
+                'question' => 'What is the primary purpose of using maturity models in information security programs?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which document type is MANDATORY and specifies high-level security requirements?',
                 'options' => [
-                    'Security guidelines',
-                    'Security procedures',
-                    'Security policies',
-                    'Security baselines'
+                    'To compare security budgets across organizations',
+                    'To assess current capabilities and identify improvement paths',
+                    'To eliminate all security risks immediately',
+                    'To standardize security tools across industries'
                 ],
-                'correct_options' => ['Security policies'],
+                'correct_options' => ['To assess current capabilities and identify improvement paths'],
                 'justifications' => [
-                    'Guidelines are recommended practices, not mandatory',
-                    'Procedures are mandatory but detail how to implement policies',
-                    'Correct - Policies are mandatory high-level statements of management intent',
-                    'Baselines are specific standards, not high-level requirements'
+                    'Maturity models focus on capability assessment, not budget comparisons',
+                    'Correct - Maturity models help organizations understand their current state and plan systematic improvements',
+                    'Maturity models guide gradual improvement, not immediate risk elimination',
+                    'Maturity models assess processes and capabilities, not tool standardization'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.5,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 5 - Information Security Program - L4 Analysis
+            [
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Program Improvement Planning',
+                'question' => 'When developing a security program improvement roadmap, which factor should receive the highest priority?',
+                'type_id' => 1,
+                'options' => [
+                    'Most expensive initiatives',
+                    'Risk reduction impact',
+                    'Easiest to implement',
+                    'Vendor recommendations'
+                ],
+                'correct_options' => ['Risk reduction impact'],
+                'justifications' => [
+                    'Cost alone shouldn\'t drive prioritization without risk consideration',
+                    'Correct - Risk reduction impact ensures resources address highest threats',
+                    'Ease of implementation may not address critical risks',
+                    'Vendor recommendations may not align with organizational risks'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.5,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 6 - Information Security Program - L4 Analysis
+            [
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Program Effectiveness Measurement',
+                'question' => 'Which metric best indicates the effectiveness of security governance implementation?',
+                'type_id' => 1,
+                'options' => [
+                    'Number of policies published',
+                    'Alignment between security initiatives and business objectives',
+                    'Security budget size relative to IT budget',
+                    'Frequency of board security briefings'
+                ],
+                'correct_options' => ['Alignment between security initiatives and business objectives'],
+                'justifications' => [
+                    'Policy count doesn\'t measure governance effectiveness',
+                    'Correct - Business-security alignment demonstrates effective governance implementation',
+                    'Budget size alone doesn\'t indicate governance quality',
+                    'Meeting frequency doesn\'t guarantee effective governance'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.8,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 7 - Information Security Program - L3 Application
+            [
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Security Program Establishment',
+                'question' => 'A newly appointed CISO needs to establish a security program. What should be their first step?',
+                'type_id' => 1,
+                'options' => [
+                    'Purchase security tools',
+                    'Hire security staff',
+                    'Obtain executive mandate and charter',
+                    'Implement security controls'
+                ],
+                'correct_options' => ['Obtain executive mandate and charter'],
+                'justifications' => [
+                    'Tools come after strategy and governance are established',
+                    'Staff hiring follows program establishment and strategy',
+                    'Correct - Executive mandate and charter provide necessary authority',
+                    'Controls implementation requires established program structure'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 8 - Information Security Program - L5 Evaluation
+            [
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Program Governance Structure',
+                'question' => 'Evaluate the effectiveness of quarterly security steering committee meetings that consistently lack executive attendance.',
+                'type_id' => 1,
+                'options' => [
+                    'Highly effective due to regular schedule',
+                    'Ineffective due to lack of decision-making authority',
+                    'Effective if detailed minutes are taken',
+                    'Neutral impact on governance'
+                ],
+                'correct_options' => ['Ineffective due to lack of decision-making authority'],
+                'justifications' => [
+                    'Regular schedule alone doesn\'t ensure effectiveness',
+                    'Correct - Without executives, committees lack decision authority',
+                    'Minutes cannot replace executive participation and decisions',
+                    'Governance requires active executive involvement, not neutrality'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 1.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 9 - Information Security Program - L2 Comprehension
+            [
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Gap Analysis',
+                'question' => 'What is the primary benefit of using a recognized framework for gap analysis?',
+                'type_id' => 1,
+                'options' => [
+                    'Reduces assessment costs',
+                    'Provides comprehensive and industry-accepted baseline',
+                    'Eliminates need for customization',
+                    'Guarantees regulatory compliance'
+                ],
+                'correct_options' => ['Provides comprehensive and industry-accepted baseline'],
+                'justifications' => [
+                    'Cost reduction is a benefit but not the primary one',
+                    'Correct - Frameworks provide comprehensive, validated baselines',
+                    'Frameworks require customization for organizational context',
+                    'Frameworks guide but don\'t guarantee compliance'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.3,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 10 - Information Security Program - L3 Application
+            [
+                'topic' => 'Information Security Program',
+                'subtopic' => 'Program Effectiveness Measurement',
+                'question' => 'You need to implement a security program effectiveness measurement system. Which approach would be most appropriate?',
+                'type_id' => 1,
+                'options' => [
+                    'Focus only on counting security incidents',
+                    'Measure only technical vulnerability metrics',
+                    'Combine leading and lagging indicators across people, process, and technology',
+                    'Track only compliance audit findings'
+                ],
+                'correct_options' => ['Combine leading and lagging indicators across people, process, and technology'],
+                'justifications' => [
+                    'Incident counts alone are reactive, not comprehensive',
+                    'Technical metrics miss people and process dimensions',
+                    'Correct - Balanced metrics across all dimensions provide complete view',
+                    'Compliance findings are point-in-time, not continuous'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.4,
+                'irt_c' => 0.2
+            ],
+            
+            // Topic 2: Strategic Alignment (10 questions)
+            // Bloom Distribution: L1:1, L2:1, L3:4, L4:2, L5:2
+            
+            // Item 11 - Strategic Alignment - L2 Comprehension
+            [
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Business-Security Alignment',
+                'question' => 'How does information security best support business objectives?',
+                'type_id' => 1,
+                'options' => [
+                    'By preventing all risks',
+                    'By enabling secure business operations',
+                    'By maximizing security spending',
+                    'By restricting business activities'
+                ],
+                'correct_options' => ['By enabling secure business operations'],
+                'justifications' => [
+                    'Preventing all risks is impossible and would halt business',
+                    'Correct - Security enables business operations to function securely',
+                    'Maximizing spending doesn\'t equate to effective support',
+                    'Restrictions should enable, not hinder business objectives'
                 ],
                 'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.0,
+                'irt_c' => 0.2
             ],
             
-            // Policy, Standard, Procedure, Guideline - Item 7
+            // Item 12 - Strategic Alignment - L3 Application
             [
-                'topic_id' => $topics['Policy, Standard, Procedure, Guideline'] ?? 12,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the document types that are MANDATORY to the drop zone:',
-                'options' => [
-                    'Information Security Policy',
-                    'Security Best Practices Guide',
-                    'Password Standards',
-                    'Security Awareness Tips',
-                    'Incident Response Procedures',
-                    'Encryption Guidelines'
-                ],
-                'correct_options' => [
-                    'Information Security Policy',
-                    'Password Standards',
-                    'Incident Response Procedures'
-                ],
-                'justifications' => [
-                    'Policies are mandatory high-level requirements',
-                    'Best practices are recommendations, not mandatory',
-                    'Standards are mandatory specific requirements',
-                    'Tips are helpful suggestions, not requirements',
-                    'Procedures are mandatory step-by-step instructions',
-                    'Guidelines are recommended approaches, not mandatory'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Policy, Standard, Procedure, Guideline - Item 8
-            [
-                'topic_id' => $topics['Policy, Standard, Procedure, Guideline'] ?? 12,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each example with the correct document type:',
-                'options' => [
-                    'items' => [
-                        '"All systems must use AES-256 encryption"',
-                        '"The organization shall protect information assets"',
-                        '"Consider using passphrases for better security"',
-                        '"To reset a password: 1) Click forgot password 2) Enter email..."'
-                    ],
-                    'responses' => [
-                        'Policy',
-                        'Standard',
-                        'Procedure',
-                        'Guideline'
-                    ]
-                ],
-                'correct_options' => [
-                    '"All systems must use AES-256 encryption"' => 'Standard',
-                    '"The organization shall protect information assets"' => 'Policy',
-                    '"Consider using passphrases for better security"' => 'Guideline',
-                    '"To reset a password: 1) Click forgot password 2) Enter email..."' => 'Procedure'
-                ],
-                'justifications' => [
-                    '"All systems must use AES-256 encryption"' => 'Standards specify exact technical requirements',
-                    '"The organization shall protect information assets"' => 'Policies state high-level management intentions',
-                    '"Consider using passphrases for better security"' => 'Guidelines offer recommendations and best practices',
-                    '"To reset a password: 1) Click forgot password 2) Enter email..."' => 'Procedures provide step-by-step instructions'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Security Frameworks - Item 9
-            [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Security Strategy Development',
+                'question' => 'What should drive the development of an information security strategy?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which framework is specifically designed for cybersecurity and consists of Identify, Protect, Detect, Respond, and Recover functions?',
                 'options' => [
-                    'ISO 27001',
-                    'COBIT',
-                    'NIST Cybersecurity Framework',
-                    'ITIL'
+                    'Latest security technologies',
+                    'Business strategy and risk appetite',
+                    'Industry best practices only',
+                    'Regulatory requirements alone'
                 ],
-                'correct_options' => ['NIST Cybersecurity Framework'],
+                'correct_options' => ['Business strategy and risk appetite'],
                 'justifications' => [
-                    'ISO 27001 is an ISMS standard, not organized by these five functions',
-                    'COBIT is for IT governance, not specifically cybersecurity',
-                    'Correct - NIST CSF is organized into these five core functions',
-                    'ITIL is for IT service management, not cybersecurity'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Security Frameworks - Item 10
-            [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization wants to achieve third-party certification for their Information Security Management System. Which framework should they implement?',
-                'options' => [
-                    'NIST CSF',
-                    'ISO 27001',
-                    'CIS Controls',
-                    'OWASP Top 10'
-                ],
-                'correct_options' => ['ISO 27001'],
-                'justifications' => [
-                    'NIST CSF is a framework but not certifiable',
-                    'Correct - ISO 27001 is the international standard for ISMS certification',
-                    'CIS Controls are security best practices but not certifiable',
-                    'OWASP Top 10 is for web application security awareness, not certification'
+                    'Technology should support strategy, not drive it',
+                    'Correct - Security strategy must align with business strategy and risk tolerance',
+                    'Best practices should be adapted to organizational context',
+                    'Regulations are one input, not the sole driver'
                 ],
                 'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.2,
+                'irt_c' => 0.2
             ],
             
-            // Security Frameworks - Item 11
+            // Item 13 - Strategic Alignment - L3 Application
             [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Business Case Development',
+                'question' => 'When building a business case for a new security initiative, what is the most important element to ensure stakeholder buy-in?',
                 'type_id' => 1,
-                'dimension' => 'Technical',
-                'content' => 'A retail company processes credit card transactions and stores cardholder data. Which security framework would be MOST appropriate for ensuring compliance?',
                 'options' => [
-                    'ISO 27001',
-                    'NIST CSF',
-                    'PCI DSS',
-                    'HIPAA Security Rule'
+                    'Projected timeline for implementation',
+                    'Technical specifications of the proposed solution',
+                    'Alignment with business objectives and risk reduction',
+                    'Number of security incidents in the last fiscal year'
                 ],
-                'correct_options' => ['PCI DSS'],
+                'correct_options' => ['Alignment with business objectives and risk reduction'],
                 'justifications' => [
-                    'ISO 27001 is comprehensive but not payment card specific',
-                    'NIST CSF is general cybersecurity, not payment focused',
-                    'Correct - PCI DSS is specifically required for payment card processing',
-                    'HIPAA is for healthcare data, not payment cards'
-                ],
-                'settings' => [
-                    'shell' => 'framework-analyzer',
-                    'commands' => [
-                        [
-                            'pattern' => '^analyze --requirements$',
-                            'response' => "Analyzing organizational requirements...\n[INFO] Industry: E-commerce\n[INFO] Data types: Customer names, payment card numbers\n[INFO] Annual transaction volume: 10 million\n[REQUIREMENT] Must be compliant for credit card processing\n[REQUIREMENT] Must protect cardholder data",
-                            'isError' => false
-                        ]
-                    ],
-                    'scenario' => 'E-commerce company processing credit card payments'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // IT Governance vs IT Management - Item 12
-            [
-                'topic_id' => $topics['IT Governance vs IT Management'] ?? 14,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which activity is an example of IT Governance rather than IT Management?',
-                'options' => [
-                    'Monitoring server performance',
-                    'Setting IT investment priorities aligned with business strategy',
-                    'Installing security patches',
-                    'Managing help desk tickets'
-                ],
-                'correct_options' => ['Setting IT investment priorities aligned with business strategy'],
-                'justifications' => [
-                    'Server monitoring is operational IT management',
-                    'Correct - Setting strategic priorities and alignment is governance',
-                    'Patch management is operational IT management',
-                    'Help desk operations are IT management activities'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // IT Governance vs IT Management - Item 13
-            [
-                'topic_id' => $topics['IT Governance vs IT Management'] ?? 14,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** IT Governance focuses on doing things right, while IT Management focuses on doing the right things.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. It\'s the opposite: IT Governance focuses on doing the RIGHT things (strategic direction, value delivery), while IT Management focuses on doing things RIGHT (operational efficiency, service delivery).'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Three Lines of Defense - Item 14
-            [
-                'topic_id' => $topics['Three Lines of Defense'] ?? 15,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'In the Three Lines of Defense model, who represents the FIRST line of defense?',
-                'options' => [
-                    'Internal audit',
-                    'Risk management and compliance functions',
-                    'Operational management and staff',
-                    'Board of directors'
-                ],
-                'correct_options' => ['Operational management and staff'],
-                'justifications' => [
-                    'Internal audit is the third line of defense',
-                    'Risk and compliance functions are the second line',
-                    'Correct - Operational management who own and manage risks are the first line',
-                    'The board provides oversight but is not a line of defense'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
-            ],
-            
-            // Three Lines of Defense - Item 15
-            [
-                'topic_id' => $topics['Three Lines of Defense'] ?? 15,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each function with its line of defense:',
-                'options' => [
-                    'items' => [
-                        'Business unit implementing controls',
-                        'Chief Risk Officer monitoring risks',
-                        'Internal auditors reviewing effectiveness',
-                        'Security operations center'
-                    ],
-                    'responses' => [
-                        'First Line',
-                        'Second Line',
-                        'Third Line'
-                    ]
-                ],
-                'correct_options' => [
-                    'Business unit implementing controls' => 'First Line',
-                    'Chief Risk Officer monitoring risks' => 'Second Line',
-                    'Internal auditors reviewing effectiveness' => 'Third Line',
-                    'Security operations center' => 'First Line'
-                ],
-                'justifications' => [
-                    'Business unit implementing controls' => 'Business units managing daily operations are first line',
-                    'Chief Risk Officer monitoring risks' => 'Risk management functions providing oversight are second line',
-                    'Internal auditors reviewing effectiveness' => 'Internal audit providing independent assurance is third line',
-                    'Security operations center' => 'SOC operates controls daily, making them first line'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Three Lines of Defense - Item 16
-            [
-                'topic_id' => $topics['Three Lines of Defense'] ?? 15,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange the Three Lines of Defense from CLOSEST to FURTHEST from daily operations:',
-                'options' => [
-                    'Internal Audit',
-                    'Risk Management & Compliance',
-                    'Operational Management'
-                ],
-                'correct_options' => [
-                    'Operational Management',
-                    'Risk Management & Compliance',
-                    'Internal Audit'
-                ],
-                'justifications' => ['First line (operational management) is closest to daily operations, second line provides oversight, and third line (internal audit) maintains the most independence.'],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Key Performance / Risk / Control Indicators - Item 17
-            [
-                'topic_id' => $topics['Key Performance / Risk / Control Indicators (KPI/KRI/KCI)'] ?? 16,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An indicator showing "Number of unpatched critical vulnerabilities" is BEST classified as a:',
-                'options' => [
-                    'Key Performance Indicator (KPI)',
-                    'Key Risk Indicator (KRI)',
-                    'Key Control Indicator (KCI)',
-                    'Key Goal Indicator (KGI)'
-                ],
-                'correct_options' => ['Key Risk Indicator (KRI)'],
-                'justifications' => [
-                    'KPIs measure performance achievement, not risk exposure',
-                    'Correct - Unpatched vulnerabilities indicate risk exposure level',
-                    'KCIs measure control effectiveness, not vulnerability status',
-                    'KGIs measure goal achievement, not risk factors'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Key Performance / Risk / Control Indicators - Item 18
-            [
-                'topic_id' => $topics['Key Performance / Risk / Control Indicators (KPI/KRI/KCI)'] ?? 16,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which type of security metric measures the effectiveness of implemented security controls?',
-                'options' => [
-                    'KPI (Key Performance Indicator)',
-                    'KRI (Key Risk Indicator)', 
-                    'KCI (Key Control Indicator)',
-                    'KQI (Key Quality Indicator)'
-                ],
-                'correct_options' => ['KCI (Key Control Indicator)'],
-                'justifications' => [
-                    'KPIs measure performance against objectives, not control effectiveness',
-                    'KRIs measure risk levels and potential threats',
-                    'Correct - KCIs specifically measure how well security controls are functioning',
-                    'KQIs measure quality aspects, not security control effectiveness'
+                    'Important but not the most critical. Timeline affects delivery planning but not the strategic justification',
+                    'Too detailed for early stakeholder decisions. Business cases must speak in business value and risk, not tech jargon',
+                    'Correct - Security initiatives must clearly demonstrate how they support business goals and mitigate risk to gain executive and board-level approval',
+                    'May support the case, but historical data alone does not justify new investment unless linked to business impact or risk'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.3,
+                'irt_c' => 0.2
             ],
             
-            // Due Care & Due Diligence - Item 19
+            // Item 14 - Strategic Alignment - L3 Application
             [
-                'topic_id' => $topics['Due Care & Due Diligence'] ?? 17,
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Strategic Planning',
+                'question' => 'A 3-year security strategic plan should be reviewed and updated:',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Conducting a thorough security assessment before acquiring another company is an example of:',
                 'options' => [
-                    'Due care',
-                    'Due diligence',
-                    'Due process',
-                    'Duty of care'
-                ],
-                'correct_options' => ['Due diligence'],
-                'justifications' => [
-                    'Due care is about implementing controls, not investigation',
-                    'Correct - Due diligence involves investigating and understanding risks before decisions',
-                    'Due process relates to fair procedures, not security assessment',
-                    'Duty of care is a legal obligation, not an assessment activity'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Due Care & Due Diligence - Item 20
-            [
-                'topic_id' => $topics['Due Care & Due Diligence'] ?? 17,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Due care is about researching and understanding risks, while due diligence is about taking action to address those risks.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. It\'s the opposite: Due diligence is about researching, investigating, and understanding risks (doing your homework), while due care is about taking reasonable actions to address and manage those risks (implementing appropriate controls).'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Due Care & Due Diligence - Item 21
-            [
-                'topic_id' => $topics['Due Care & Due Diligence'] ?? 17,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the activities that demonstrate DUE CARE to the drop zone:',
-                'options' => [
-                    'Implementing security controls based on risk assessment',
-                    'Researching vendor security practices',
-                    'Maintaining and updating security systems',
-                    'Conducting background checks on vendors',
-                    'Regular security awareness training',
-                    'Reviewing third-party audit reports'
-                ],
-                'correct_options' => [
-                    'Implementing security controls based on risk assessment',
-                    'Maintaining and updating security systems',
-                    'Regular security awareness training'
-                ],
-                'justifications' => [
-                    'Implementing controls is taking action (due care)',
-                    'Research is investigation (due diligence)',
-                    'Maintenance is ongoing action (due care)',
-                    'Background checks are investigation (due diligence)',
-                    'Training is taking action to reduce risk (due care)',
-                    'Reviewing reports is investigation (due diligence)'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Security Culture & Tone at the Top - Item 22
-            [
-                'topic_id' => $topics['Security Culture & Tone at the Top'] ?? 18,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which action BEST demonstrates "tone at the top" for security culture?',
-                'options' => [
-                    'Publishing comprehensive security policies',
-                    'CEO personally attending security training with employees',
-                    'Increasing the security budget',
-                    'Hiring a qualified CISO'
-                ],
-                'correct_options' => ['CEO personally attending security training with employees'],
-                'justifications' => [
-                    'Policies alone don\'t demonstrate leadership commitment',
-                    'Correct - Leaders participating shows security is important to everyone',
-                    'Budget increases don\'t necessarily show cultural commitment',
-                    'Hiring experts doesn\'t demonstrate personal leadership commitment'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Security Culture & Tone at the Top - Item 23
-            [
-                'topic_id' => $topics['Security Culture & Tone at the Top'] ?? 18,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization\'s executives frequently bypass security controls for convenience. What is the MOST likely outcome?',
-                'options' => [
-                    'Improved operational efficiency',
-                    'Employees will follow security controls more strictly',
-                    'Widespread disregard for security policies',
-                    'Better understanding of security importance'
-                ],
-                'correct_options' => ['Widespread disregard for security policies'],
-                'justifications' => [
-                    'Short-term efficiency gains are offset by security risks',
-                    'Employees follow leadership examples, not official policies',
-                    'Correct - Employees will model leadership behavior and bypass controls too',
-                    'This demonstrates security is not important, reducing understanding'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Security Strategy Development - Item 24
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What should be the FIRST step in developing an information security strategy?',
-                'options' => [
-                    'Define security controls to implement',
-                    'Determine the security budget',
-                    'Understand business objectives and risk appetite',
-                    'Select security technologies'
-                ],
-                'correct_options' => ['Understand business objectives and risk appetite'],
-                'justifications' => [
-                    'Controls come after understanding what needs protection',
-                    'Budget follows strategy, not the other way around',
-                    'Correct - Security strategy must align with business objectives',
-                    'Technology selection comes after strategy is defined'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Security Strategy Development - Item 25
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these security strategy development steps in the CORRECT order:',
-                'options' => [
-                    'Define security initiatives and roadmap',
-                    'Assess current security posture',
-                    'Identify business objectives and requirements',
-                    'Perform gap analysis',
-                    'Obtain executive approval'
-                ],
-                'correct_options' => [
-                    'Identify business objectives and requirements',
-                    'Assess current security posture',
-                    'Perform gap analysis',
-                    'Define security initiatives and roadmap',
-                    'Obtain executive approval'
-                ],
-                'justifications' => ['Start with business objectives, assess current state, identify gaps, develop initiatives to close gaps, then get approval for the strategy.'],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Security Strategy Development - Item 26
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'For a financial technology company with limited security budget and critical intellectual property, which strategic approach is MOST appropriate?',
-                'options' => [
-                    'Risk-based approach focusing on critical assets',
-                    'Compliance-driven approach meeting all regulations',
-                    'Technology-first approach with latest tools',
-                    'Cost-optimization approach minimizing expenses'
-                ],
-                'correct_options' => ['Risk-based approach focusing on critical assets'],
-                'justifications' => [
-                    'Correct - With limited resources and critical assets, risk-based prioritization is most effective',
-                    'Compliance is important but not the primary driver for this organization',
-                    'Technology without strategy alignment wastes resources',
-                    'Pure cost minimization compromises necessary security'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Third-Party Governance - Item 27
-            [
-                'topic_id' => $topics['Third-Party Governance'] ?? 20,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the MOST important consideration when outsourcing data processing to a cloud provider?',
-                'options' => [
-                    'Cost savings from outsourcing',
-                    'Technical capabilities of the provider',
-                    'Ensuring data protection requirements are maintained',
-                    'Geographic location of data centers'
-                ],
-                'correct_options' => ['Ensuring data protection requirements are maintained'],
-                'justifications' => [
-                    'Cost is important but not the primary security concern',
-                    'Technical capabilities matter but security requirements are paramount',
-                    'Correct - Organizations remain responsible for data protection regardless of outsourcing',
-                    'Location matters for compliance but overall protection is most critical'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Third-Party Governance - Item 28
-            [
-                'topic_id' => $topics['Third-Party Governance'] ?? 20,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the controls that should be included in third-party governance to the drop zone:',
-                'options' => [
-                    'Right to audit clauses',
-                    'Unlimited liability acceptance',
-                    'Security requirements in contracts',
-                    'Blanket trust agreements',
-                    'Incident notification requirements',
-                    'Periodic security assessments'
-                ],
-                'correct_options' => [
-                    'Right to audit clauses',
-                    'Security requirements in contracts',
-                    'Incident notification requirements',
-                    'Periodic security assessments'
-                ],
-                'justifications' => [
-                    'Right to audit ensures ongoing compliance verification',
-                    'Unlimited liability is unrealistic and won\'t be accepted',
-                    'Contracts must specify security requirements',
-                    'Blanket trust violates security principles',
-                    'Notification ensures timely incident response',
-                    'Regular assessments verify ongoing compliance'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Third-Party Governance - Item 29
-            [
-                'topic_id' => $topics['Third-Party Governance'] ?? 20,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** Once a vendor passes initial security assessment, no further monitoring is needed if they have security certifications.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['False'],
-                'justifications' => [
-                    'explanation' => 'False. Continuous monitoring is essential for third-party governance. Security certifications provide a point-in-time assessment, but ongoing monitoring is needed to ensure continued compliance, identify new risks, and verify that security controls remain effective.'
-                ],
-                'difficulty_level' => 1,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Third-Party Governance - Item 30
-            [
-                'topic_id' => $topics['Third-Party Governance'] ?? 20,
-                'type_id' => 5,
-                'dimension' => 'Managerial',
-                'content' => 'Match each third-party risk management activity with its lifecycle phase:',
-                'options' => [
-                    'items' => [
-                        'Security questionnaire and assessment',
-                        'Continuous monitoring and audits',
-                        'Secure data destruction verification',
-                        'Contract security requirements negotiation'
-                    ],
-                    'responses' => [
-                        'Vendor selection',
-                        'Ongoing management',
-                        'Vendor termination',
-                        'Contract negotiation'
-                    ]
-                ],
-                'correct_options' => [
-                    'Security questionnaire and assessment' => 'Vendor selection',
-                    'Continuous monitoring and audits' => 'Ongoing management',
-                    'Secure data destruction verification' => 'Vendor termination',
-                    'Contract security requirements negotiation' => 'Contract negotiation'
-                ],
-                'justifications' => [
-                    'Security questionnaire and assessment' => 'Assessments help evaluate vendors during selection',
-                    'Continuous monitoring and audits' => 'Ongoing activities ensure continued compliance',
-                    'Secure data destruction verification' => 'Critical during termination to prevent data exposure',
-                    'Contract security requirements negotiation' => 'Security terms must be established during contracting'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Mixed Topics - Advanced Questions
-            
-            // Item 31 - Integrating multiple governance concepts
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A newly appointed CISO finds that security policies exist but are not followed, executives bypass controls, and security is seen as IT\'s problem. What should be their FIRST priority?',
-                'options' => [
-                    'Implement stricter technical controls',
-                    'Rewrite all security policies',
-                    'Work with leadership to establish tone at the top',
-                    'Increase security awareness training'
-                ],
-                'correct_options' => ['Work with leadership to establish tone at the top'],
-                'justifications' => [
-                    'Technical controls won\'t help if culture doesn\'t support them',
-                    'Policies already exist; the issue is compliance',
-                    'Correct - Without leadership support and example, other efforts will fail',
-                    'Training alone won\'t overcome poor leadership example'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 32 - Framework selection scenario
-            [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A multinational organization needs to comply with GDPR, SOX, and various national privacy laws. Which framework approach would be MOST effective?',
-                'options' => [
-                    'Implement each regulation\'s requirements separately',
-                    'Use ISO 27001 as an overarching framework with specific controls for each regulation',
-                    'Focus only on the strictest regulation',
-                    'Implement NIST CSF for all requirements'
-                ],
-                'correct_options' => ['Use ISO 27001 as an overarching framework with specific controls for each regulation'],
-                'justifications' => [
-                    'Separate implementation creates redundancy and gaps',
-                    'Correct - ISO 27001 provides a comprehensive base that can be extended for specific requirements',
-                    'Other regulations still apply and need compliance',
-                    'NIST CSF is good but ISO 27001 better supports international compliance'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 33 - KPI/KRI/KCI scenario
-            [
-                'topic_id' => $topics['Key Performance / Risk / Control Indicators (KPI/KRI/KCI)'] ?? 16,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'The board wants a single metric to understand overall security posture. Which would be MOST appropriate?',
-                'options' => [
-                    'Number of security incidents',
-                    'Percentage of systems patched within SLA',
-                    'Composite security score based on multiple KPIs, KRIs, and KCIs',
-                    'Total security budget spent'
-                ],
-                'correct_options' => ['Composite security score based on multiple KPIs, KRIs, and KCIs'],
-                'justifications' => [
-                    'Incident count alone doesn\'t show control effectiveness',
-                    'Patching is important but only one aspect of security',
-                    'Correct - A balanced composite score provides comprehensive view',
-                    'Budget spent doesn\'t indicate security effectiveness'
-                ],
-                'difficulty_level' => $difficulties['Very Hard'] ?? 5,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 34 - Three Lines of Defense failure
-            [
-                'topic_id' => $topics['Three Lines of Defense'] ?? 15,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A major breach occurred despite having all three lines of defense. Investigation shows: operations didn\'t follow procedures, risk management didn\'t detect non-compliance, and audit only reviewed documentation. This represents a failure of:',
-                'options' => [
-                    'First line only',
-                    'Second and third lines only',
-                    'All three lines of defense',
-                    'The governance model itself'
-                ],
-                'correct_options' => ['All three lines of defense'],
-                'justifications' => [
-                    'First line failed but others should have detected this',
-                    'Second and third failed but first line started the failure',
-                    'Correct - Each line failed its responsibility: first didn\'t execute, second didn\'t monitor, third didn\'t verify',
-                    'The model is sound; implementation failed'
-                ],
-                'difficulty_level' => $difficulties['Very Hard'] ?? 5,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 35 - Integrated governance scenario
-            [
-                'topic_id' => $topics['IT Governance vs IT Management'] ?? 14,
-                'type_id' => 6,
-                'dimension' => 'Managerial',
-                'content' => 'Click on the governance structure element that is MISSING in this scenario: "The CISO reports to the CIO, who prioritizes operational efficiency. Security incidents are handled by IT operations. The board receives quarterly IT reports that focus on uptime and help desk metrics."',
-                'options' => [
-                    ['x' => 100, 'y' => 100], // 'Independent security reporting to board'
-                    ['x' => 300, 'y' => 100], // 'Security operations team'
-                    ['x' => 200, 'y' => 200], // 'Risk committee'
-                    ['x' => 200, 'y' => 300]  // 'Security awareness program'
-                ],
-                'correct_options' => ['x' => 100, 'y' => 100],
-                'justifications' => ['The scenario lacks independent security reporting to the board. The CISO reports through the CIO, creating a conflict of interest and preventing the board from receiving unfiltered security risk information.'],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 36 - Policy hierarchy
-            [
-                'topic_id' => $topics['Policy, Standard, Procedure, Guideline'] ?? 12,
-                'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these documents in order from MOST GENERAL to MOST SPECIFIC:',
-                'options' => [
-                    'Password configuration standard',
-                    'Information security policy',
-                    'Security best practices guideline',
-                    'Password reset procedure',
-                    'Acceptable use policy'
-                ],
-                'correct_options' => [
-                    'Information security policy',
-                    'Acceptable use policy',
-                    'Password configuration standard',
-                    'Password reset procedure',
-                    'Security best practices guideline'
-                ],
-                'justifications' => ['Information security policy is the highest level, followed by specific policies (AUP), then standards, procedures, and finally guidelines which provide additional recommendations.'],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 37 - Due care vs due diligence scenario
-            [
-                'topic_id' => $topics['Due Care & Due Diligence'] ?? 17,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'After a breach, investigation reveals the organization had conducted risk assessments, implemented controls, maintained them properly, but hadn\'t researched emerging threats in their industry. This represents a failure of:',
-                'options' => [
-                    'Due care only',
-                    'Due diligence only',
-                    'Both due care and due diligence',
-                    'Neither - they met their obligations'
-                ],
-                'correct_options' => ['Due diligence only'],
-                'justifications' => [
-                    'They took appropriate actions (due care) by implementing and maintaining controls',
-                    'Correct - They failed to research and stay informed about emerging threats (due diligence)',
-                    'Due care was demonstrated through control implementation',
-                    'They failed due diligence by not researching industry threats'
-                ],
-                'difficulty_level' => $difficulties['Very Hard'] ?? 5,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 38 - Security culture measurement
-            [
-                'topic_id' => $topics['Security Culture & Tone at the Top'] ?? 18,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which indicator BEST measures the maturity of an organization\'s security culture?',
-                'options' => [
-                    'Number of security policies published',
-                    'Employees proactively reporting security concerns',
-                    'Security budget size',
-                    'Mandatory training completion rates'
-                ],
-                'correct_options' => ['Employees proactively reporting security concerns'],
-                'justifications' => [
-                    'Policy count doesn\'t indicate cultural adoption or employee engagement',
-                    'Correct - Proactive reporting shows security is valued, trusted, and psychologically safe to discuss',
-                    'Budget size doesn\'t reflect cultural maturity or employee behavior',
-                    'Mandatory completion shows compliance, not genuine cultural adoption'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 39 - Role conflict scenario
-            [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'The IT Director is assigned as both Data Owner for customer data and Data Custodian for implementing controls. What is the PRIMARY concern?',
-                'options' => [
-                    'Too much workload for one person',
-                    'Conflict of interest between making rules and implementing them',
-                    'Lack of technical skills for both roles',
-                    'Violation of separation of duties'
-                ],
-                'correct_options' => ['Conflict of interest between making rules and implementing them'],
-                'justifications' => [
-                    'Workload is a concern but not the primary issue',
-                    'Correct - The same person deciding controls and implementing them creates conflict',
-                    'Technical skills aren\'t the main concern',
-                    'While related to separation of duties, the specific issue is conflict of interest'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 40 - Comprehensive governance assessment
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 7,
-                'dimension' => 'Managerial',
-                'content' => 'An organization has implemented multiple technical security controls and maintains current policies, but struggles with strategic security direction and lacks executive engagement. What is the MOST critical governance gap?',
-                'options' => [
-                    'Lack of technical security controls',
-                    'Absence of board-level security oversight',
-                    'Insufficient security budget',
-                    'Outdated security policies'
-                ],
-                'correct_options' => ['Absence of board-level security oversight'],
-                'justifications' => [
-                    'Technical controls are mentioned as already implemented',
-                    'Correct - Without board oversight, security lacks strategic governance and executive engagement',
-                    'Budget issues are secondary to governance structure',
-                    'Policies are mentioned as current, governance oversight is missing'
-                ],
-                'settings' => [
-                    'shell' => 'governance-assess',
-                    'commands' => [
-                        [
-                            'pattern' => '^assess --current-state$',
-                            'response' => "Assessing governance maturity...\n[OK] Security policies: Updated 2024\n[OK] Technical controls: Industry standard\n[OK] Security team: Qualified CISO and staff\n[WARNING] Board reporting: Through CIO only\n[FAIL] Board security committee: None\n[FAIL] Independent security oversight: None\n[OK] Security budget: 8% of IT budget",
-                            'isError' => false
-                        ]
-                    ]
-                ],
-                'difficulty_level' => $difficulties['Very Hard'] ?? 5,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Additional questions to ensure comprehensive coverage
-            
-            // Item 41 - RACI matrix
-            [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'In a RACI matrix for security incident response, who should be "Accountable" for the overall process?',
-                'options' => [
-                    'Security Operations Center analyst',
-                    'CISO or Security Manager',
-                    'IT Help Desk',
-                    'External incident response consultant'
-                ],
-                'correct_options' => ['CISO or Security Manager'],
-                'justifications' => [
-                    'SOC analysts are responsible for execution, not accountability',
-                    'Correct - Senior security leadership must be accountable for incident response',
-                    'Help desk may be informed but not accountable',
-                    'Consultants can be responsible but not accountable for organizational processes'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 42 - Governance metrics
-            [
-                'topic_id' => $topics['Key Performance / Risk / Control Indicators (KPI/KRI/KCI)'] ?? 16,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which metric would BEST indicate the effectiveness of security governance?',
-                'options' => [
-                    'Number of security incidents per month',
-                    'Percentage of projects with security review in design phase',
-                    'Time to patch critical vulnerabilities',
-                    'Security training completion rate'
-                ],
-                'correct_options' => ['Percentage of projects with security review in design phase'],
-                'justifications' => [
-                    'Incident count shows operational metrics, not governance',
-                    'Correct - Security integration in project lifecycle indicates governance effectiveness',
-                    'Patching time is operational, not governance',
-                    'Training completion is important but doesn\'t show governance integration'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 43 - Framework implementation
-            [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
-                'type_id' => 2,
-                'dimension' => 'Managerial',
-                'content' => '**True or False:** An organization can be compliant with ISO 27001 without being certified.',
-                'options' => [
-                    'True',
-                    'False'
-                ],
-                'correct_options' => ['True'],
-                'justifications' => [
-                    'explanation' => 'True. Organizations can implement ISO 27001 requirements and be compliant without pursuing formal certification. Certification requires external audit and is optional, while compliance means meeting the standard\'s requirements regardless of certification status.'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 44 - Strategic alignment
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A security strategy states "Implement latest AI-powered security tools" but the business strategy focuses on "Cost optimization and operational efficiency." This represents a failure in:',
-                'options' => [
-                    'Technical planning',
-                    'Strategic alignment',
-                    'Risk assessment',
-                    'Budget allocation'
-                ],
-                'correct_options' => ['Strategic alignment'],
-                'justifications' => [
-                    'Technical planning isn\'t the issue',
-                    'Correct - Security strategy must align with business strategy',
-                    'Risk assessment wouldn\'t fix the misalignment',
-                    'Budget is a symptom, not the root cause'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 45 - Policy lifecycle
-            [
-                'topic_id' => $topics['Policy, Standard, Procedure, Guideline'] ?? 12,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How often should information security policies typically be reviewed?',
-                'options' => [
-                    'Only when regulations change',
+                    'Only at the end of 3 years',
                     'Annually or when significant changes occur',
-                    'Every 3-5 years',
-                    'Monthly'
+                    'Monthly',
+                    'Only when requested by executives'
                 ],
                 'correct_options' => ['Annually or when significant changes occur'],
                 'justifications' => [
-                    'Waiting for regulations is reactive, not proactive',
-                    'Correct - Annual review ensures currency, with updates for significant changes',
-                    '3-5 years is too long in changing threat landscape',
-                    'Monthly is excessive and impractical for policy-level documents'
+                    'Waiting 3 years risks the plan becoming obsolete',
+                    'Correct - Annual reviews with updates for significant changes maintain relevance',
+                    'Monthly reviews are excessive for strategic planning',
+                    'Reviews should be scheduled, not reactive to executive requests'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 15 - Strategic Alignment - L4 Analysis
+            [
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Business-Security Integration',
+                'question' => 'Which of the following is the MOST important prerequisite for establishing information security management within an enterprise?',
+                'type_id' => 1,
+                'options' => [
+                    'Procurement of security tools and technologies',
+                    'Appointment of a Chief Information Security Officer (CISO)',
+                    'Alignment of security initiatives with business objectives',
+                    'Classification of information assets'
+                ],
+                'correct_options' => ['Alignment of security initiatives with business objectives'],
+                'justifications' => [
+                    'Tools and technologies are implementation details that come after strategy is established',
+                    'CISO appointment is important but ineffective without business alignment',
+                    'Correct - Security must align with business objectives to gain support and deliver value',
+                    'Asset classification is a tactical activity that follows strategic alignment'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.5,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 16 - Strategic Alignment - L4 Analysis
+            [
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Business-Security Alignment',
+                'question' => 'Analyze why a technically excellent security program might fail to gain business support.',
+                'type_id' => 1,
+                'options' => [
+                    'Insufficient security controls',
+                    'Lack of alignment with business priorities',
+                    'Too few security personnel',
+                    'Outdated technology'
+                ],
+                'correct_options' => ['Lack of alignment with business priorities'],
+                'justifications' => [
+                    'Technical excellence doesn\'t lack controls',
+                    'Correct - Without business alignment, technical excellence is irrelevant',
+                    'Personnel count doesn\'t determine business support',
+                    'Technical excellence implies current technology'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.8,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 17 - Strategic Alignment - L5 Evaluation
+            [
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Security Strategy Development',
+                'question' => 'Evaluate a security strategy that prioritizes compliance over risk reduction for a fast-growing technology company.',
+                'type_id' => 1,
+                'options' => [
+                    'Excellent approach ensuring legal protection',
+                    'Misaligned strategy that may not address actual business risks',
+                    'Best practice for all technology companies',
+                    'Optimal for maximizing security effectiveness'
+                ],
+                'correct_options' => ['Misaligned strategy that may not address actual business risks'],
+                'justifications' => [
+                    'Compliance doesn\'t guarantee protection from all risks',
+                    'Correct - Fast-growing tech companies need risk-based, not compliance-driven security',
+                    'No single approach is best practice for all companies',
+                    'Compliance focus may miss critical business risks'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 1.1,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 18 - Strategic Alignment - L1 Knowledge
+            [
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Business-Security Integration',
+                'question' => 'Effective governance of enterprise IT requires that:',
+                'type_id' => 1,
+                'options' => [
+                    'IT strategy be an extension of enterprise strategy',
+                    'Enterprise strategy be an extension of IT strategy',
+                    'IT operations managed independently',
+                    'IT department drives organizational strategy'
+                ],
+                'correct_options' => ['IT strategy be an extension of enterprise strategy'],
+                'justifications' => [
+                    'Correct - IT must align with and support business objectives',
+                    'Business drives IT, not the reverse',
+                    'Independent IT management creates misalignment',
+                    'IT supports business strategy, not drives it'
                 ],
                 'difficulty_level' => 1,
-                'bloom_level' => 1,
-                'status' => 'published'
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.2,
+                'irt_c' => 0.2
             ],
             
-            // Item 46 - Third-party integration
+            // Item 19 - Strategic Alignment - L5 Evaluation
             [
-                'topic_id' => $topics['Third-Party Governance'] ?? 20,
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Strategic Planning',
+                'question' => 'Value delivery from IT to the business is MOST effectively achieved by:',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A cloud provider suffers a breach affecting your organization\'s data. Who is liable to regulators for the data breach?',
                 'options' => [
-                    'The cloud provider only',
-                    'Your organization only',
-                    'Both parties equally',
-                    'Your organization primarily, with potential recourse against provider'
+                    'Aligning the IT strategy with the enterprise strategy',
+                    'Ensuring the IT department is responsible for all technology purchases',
+                    'Implementing best-of-breed technical solutions across departments',
+                    'Increasing the IT budget to expand infrastructure capacity'
                 ],
-                'correct_options' => ['Your organization primarily, with potential recourse against provider'],
+                'correct_options' => ['Aligning the IT strategy with the enterprise strategy'],
                 'justifications' => [
-                    'Providers have liability but organizations retain regulatory responsibility',
-                    'Organizations cannot fully transfer regulatory liability',
-                    'Liability isn\'t necessarily equal',
-                    'Correct - Organizations remain liable to regulators but may seek compensation from providers'
+                    'Correct - Value delivery is maximized when IT initiatives directly support business goals. Alignment ensures IT resources are focused on what matters most to the enterprise',
+                    'Centralizing procurement alone does not ensure value delivery unless purchases align with strategic needs',
+                    'Using top-tier solutions may increase cost or complexity if they don\'t align with enterprise priorities',
+                    'Budget increases alone do not ensure value unless aligned with targeted outcomes and business strategy'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 1.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 20 - Strategic Alignment - L3 Application
+            [
+                'topic' => 'Strategic Alignment',
+                'subtopic' => 'Business Case Development',
+                'question' => 'The MOST likely effect of a lack of senior management commitment to IT strategic planning is:',
+                'type_id' => 1,
+                'options' => [
+                    'Lack of investment in technology',
+                    'Delays in technology implementation projects',
+                    'Technology not aligning with organizational objectives',
+                    'Increased demand for technical staff'
+                ],
+                'correct_options' => ['Technology not aligning with organizational objectives'],
+                'justifications' => [
+                    'Investment may still occur but without strategic direction',
+                    'Project delays are possible but not the primary concern',
+                    'Correct - Without senior management commitment, IT initiatives lack business context and fail to support organizational goals',
+                    'Staff demand is unrelated to management commitment to planning'
                 ],
                 'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.2,
+                'irt_c' => 0.2
             ],
             
-            // Item 47 - Governance maturity
+            // Topic 3: Leadership & Accountability (10 questions)
+            // Bloom Distribution: L1:2, L2:1, L3:3, L4:2, L5:2
+            
+            // Item 21 - Leadership & Accountability - L1 Knowledge
             [
-                'topic_id' => $topics['IT Governance vs IT Management'] ?? 14,
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Board and Senior Management',
+                'question' => 'What is the board of directors\' primary security responsibility?',
+                'type_id' => 1,
+                'options' => [
+                    'Implementing security controls',
+                    'Oversight and risk governance',
+                    'Managing security operations',
+                    'Selecting security technologies'
+                ],
+                'correct_options' => ['Oversight and risk governance'],
+                'justifications' => [
+                    'Implementation is management\'s responsibility, not the board\'s',
+                    'Correct - Boards provide oversight and govern enterprise risk',
+                    'Operations are handled by security teams, not board members',
+                    'Technology selection is a tactical decision below board level'
+                ],
+                'difficulty_level' => 1,
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 22 - Leadership & Accountability - L1 Knowledge
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'C-Suite Responsibilities',
+                'question' => 'Who is ultimately responsible for the protection and proper management of an enterprise\'s information?',
+                'type_id' => 1,
+                'options' => [
+                    'Chief Information Security Officer (CISO)',
+                    'Data Owner',
+                    'Chief Executive Officer (CEO)',
+                    'System Administrator'
+                ],
+                'correct_options' => ['Chief Executive Officer (CEO)'],
+                'justifications' => [
+                    'The CISO is responsible for developing and managing the security program but is not ultimately accountable for all enterprise information',
+                    'Data owners are accountable for specific sets of data, but not at the enterprise level',
+                    'Correct - The CEO holds ultimate accountability for the organization, including its information and associated risks, even if responsibilities are delegated',
+                    'System admins implement technical controls but are not accountable for business-level risk or information governance'
+                ],
+                'difficulty_level' => 1,
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.3,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 23 - Leadership & Accountability - L5 Evaluation
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Governance Bodies',
+                'question' => 'Evaluate the effectiveness of a security steering committee composed only of IT leaders without business representation.',
+                'type_id' => 1,
+                'options' => [
+                    'Highly effective due to technical expertise',
+                    'Ineffective due to lack of business perspective and buy-in',
+                    'Optimal for rapid decision making',
+                    'Best practice for technical organizations'
+                ],
+                'correct_options' => ['Ineffective due to lack of business perspective and buy-in'],
+                'justifications' => [
+                    'Technical expertise alone misses business context',
+                    'Correct - Business representation is essential for effective governance',
+                    'Rapid decisions without business input create risk',
+                    'Even technical organizations need business perspective'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 1.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 24 - Leadership & Accountability - L2 Comprehension
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Board and Senior Management',
+                'question' => 'An enterprise suffered a significant loss due to a weakness in a general information systems (IS) control. The IT process in question was designed by the IT manager and approved by the Chief Information Officer (CIO). Who is ULTIMATELY accountable for ensuring that corrective measures are completed?',
+                'type_id' => 1,
+                'options' => [
+                    'Chief Information Officer (CIO)',
+                    'IT Manager',
+                    'Chief Executive Officer (CEO)',
+                    'Board of Directors'
+                ],
+                'correct_options' => ['Board of Directors'],
+                'justifications' => [
+                    'While the CIO is responsible for IT operations and strategy, accountability for enterprise-level risk ultimately resides higher',
+                    'The IT manager is operationally responsible for implementing the process but does not hold executive accountability',
+                    'The CEO is accountable for overall performance, but governance and assurance responsibilities are formally assigned to the board',
+                    'Correct - The board has ultimate accountability for ensuring the enterprise addresses material risks, including those related to IS controls, as part of governance oversight. They must ensure corrective actions are implemented and effective'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 25 - Leadership & Accountability - L3 Application
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Governance Bodies',
+                'question' => 'Which of the following benefits is the MOST important for senior management to understand the value of governance of enterprise IT?',
+                'type_id' => 1,
+                'options' => [
+                    'It allows senior management to make key IT-related decisions',
+                    'It enables IT to operate independently from business functions',
+                    'It ensures IT investments are selected by the CIO and IT department',
+                    'It reduces the need for senior management involvement in day-to-day IT operations'
+                ],
+                'correct_options' => ['It allows senior management to make key IT-related decisions'],
+                'justifications' => [
+                    'Correct - Effective IT governance provides senior management with decision-making authority and visibility to ensure IT strategies support business goals and manage risk effectively',
+                    'IT governance emphasizes business-IT alignment, not IT independence. IT must operate in partnership with business functions',
+                    'IT governance promotes business-driven IT decisions, not decisions made solely by the CIO or IT department',
+                    'Governance does not eliminate the need for oversight — it ensures appropriate involvement at the strategic level, not operational micromanagement'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 26 - Leadership & Accountability - L3 Application
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Security Culture Leadership',
+                'question' => 'How can executive leadership best demonstrate commitment to security culture?',
+                'type_id' => 1,
+                'options' => [
+                    'Delegating all security decisions to IT',
+                    'Active participation and visible support',
+                    'Increasing security budget only',
+                    'Hiring more security staff'
+                ],
+                'correct_options' => ['Active participation and visible support'],
+                'justifications' => [
+                    'Delegation without involvement shows lack of commitment',
+                    'Correct - Visible leadership participation drives cultural change',
+                    'Budget increases alone don\'t demonstrate personal commitment',
+                    'Staffing changes without leadership involvement are insufficient'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => -0.1,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 27 - Leadership & Accountability - L4 Analysis
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Board and Senior Management',
+                'question' => 'Analyze the risks when board members lack cybersecurity expertise.',
+                'type_id' => 1,
+                'options' => [
+                    'No significant impact on governance',
+                    'Inadequate risk oversight and poor decision-making',
+                    'Improved delegation to management',
+                    'Reduced compliance costs'
+                ],
+                'correct_options' => ['Inadequate risk oversight and poor decision-making'],
+                'justifications' => [
+                    'Cyber risks are too significant to ignore at board level',
+                    'Correct - Lack of expertise impairs oversight and strategic decisions',
+                    'Uninformed delegation increases rather than reduces risk',
+                    'Lack of expertise typically increases compliance costs'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.8,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 28 - Leadership & Accountability - L3 Application
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Security Culture Leadership',
+                'question' => 'How should you implement tone at the top for security culture in a large organization?',
+                'type_id' => 1,
+                'options' => [
+                    'Send annual email from CEO about security',
+                    'Regular executive communications and visible security behaviors',
+                    'Delegate all communications to security team',
+                    'Focus only on technical security training'
+                ],
+                'correct_options' => ['Regular executive communications and visible security behaviors'],
+                'justifications' => [
+                    'Annual emails are too infrequent to establish culture',
+                    'Correct - Consistent communication and modeling behaviors shape culture',
+                    'Delegation undermines the "tone at the top" concept',
+                    'Technical training alone doesn\'t address cultural aspects'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.3,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 29 - Leadership & Accountability - L5 Evaluation
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'CISO Role',
+                'question' => 'The involvement of senior management is MOST important in the development of:',
+                'type_id' => 1,
+                'options' => [
+                    'System configuration standards',
+                    'Audit plan',
+                    'Information security strategy',
+                    'IT procedures'
+                ],
+                'correct_options' => ['Information security strategy'],
+                'justifications' => [
+                    'Configuration standards are technical details best left to IT specialists',
+                    'While audit planning benefits from management input, it\'s not the most critical area for their involvement',
+                    'Correct - Security strategy requires senior management involvement to ensure alignment with business objectives and appropriate risk appetite',
+                    'IT procedures are operational details that don\'t require senior management involvement'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 1.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 30 - Leadership & Accountability - L4 Analysis - Type 5 Matching
+            [
+                'topic' => 'Leadership & Accountability',
+                'subtopic' => 'Accountability Frameworks',
+                'question' => 'Match each RACI responsibility with the appropriate role in the context of rolling out a data classification policy.',
+                'type_id' => 5,
+                'options' => [
+                    'items' => ['Accountable', 'Responsible', 'Consulted', 'Informed'],
+                    'responses' => ['CISO', 'Data Owner', 'Compliance Officer', 'End Users']
+                ],
+                'correct_options' => [
+                    'Accountable' => 'CISO',
+                    'Responsible' => 'Data Owner',
+                    'Consulted' => 'Compliance Officer',
+                    'Informed' => 'End Users'
+                ],
+                'justifications' => [
+                    'Accountable' => 'The CISO holds ultimate accountability as the senior executive responsible for information security strategy and policy implementation success',
+                    'Responsible' => 'Data Owners are responsible for implementing classification requirements for their specific data sets',
+                    'Consulted' => 'Compliance Officer is consulted to ensure policy meets regulatory requirements and standards',
+                    'Informed' => 'End Users are informed about the policy and their obligations but are not decision-makers in the rollout'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.5,
+                'irt_c' => 0.2
+            ],
+            
+            // Topic 4: Security Policy Framework (10 questions)
+            // Bloom Distribution: L1:1, L2:3, L3:3, L4:2, L5:1
+            
+            // Item 31 - Security Policy Framework - L1 Knowledge
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Policy Hierarchy',
+                'question' => 'What is the correct hierarchical order of security documentation?',
+                'type_id' => 1,
+                'options' => [
+                    'Guideline → Policy → Standard → Procedure',
+                    'Policy → Standard → Procedure → Guideline',
+                    'Procedure → Standard → Policy → Guideline',
+                    'Standard → Policy → Guideline → Procedure'
+                ],
+                'correct_options' => ['Policy → Standard → Procedure → Guideline'],
+                'justifications' => [
+                    'Guidelines are recommendations, not the top of hierarchy',
+                    'Correct - Policies set direction, standards specify requirements, procedures detail steps, guidelines advise',
+                    'Procedures are tactical, not strategic documents',
+                    'Standards derive from policies, not vice versa'
+                ],
+                'difficulty_level' => 1,
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 32 - Security Policy Framework - L2 Comprehension
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Policy Types',
+                'question' => 'Which statement best describes the difference between mandatory and advisory policies?',
+                'type_id' => 1,
+                'options' => [
+                    'Mandatory policies are suggestions, advisory are requirements',
+                    'Mandatory policies must be followed, advisory provide guidance',
+                    'Both types are equally enforceable',
+                    'Advisory policies override mandatory ones'
+                ],
+                'correct_options' => ['Mandatory policies must be followed, advisory provide guidance'],
+                'justifications' => [
+                    'This reverses the actual definitions',
+                    'Correct - Mandatory policies require compliance, advisory policies recommend',
+                    'Only mandatory policies are enforceable',
+                    'Mandatory policies take precedence over advisory'
+                ],
+                'difficulty_level' => 1,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -0.8,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 33 - Security Policy Framework - L2 Comprehension
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Documentation Standards',
+                'question' => 'What elements must be included in a well-structured security policy?',
+                'type_id' => 1,
+                'options' => [
+                    'Technical specifications only',
+                    'Purpose, scope, roles, and requirements',
+                    'Vendor contact information',
+                    'Budget details'
+                ],
+                'correct_options' => ['Purpose, scope, roles, and requirements'],
+                'justifications' => [
+                    'Technical specifications belong in standards or procedures',
+                    'Correct - These core elements define what, why, who, and how',
+                    'Vendor information is operational, not policy content',
+                    'Budget details are separate from policy requirements'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.3,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 34 - Security Policy Framework - L2 Comprehension
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Policy Templates',
+                'question' => 'Why are standardized policy templates important?',
+                'type_id' => 1,
+                'options' => [
+                    'They reduce writing effort only',
+                    'They ensure consistency and completeness',
+                    'They are required by law',
+                    'They eliminate need for reviews'
+                ],
+                'correct_options' => ['They ensure consistency and completeness'],
+                'justifications' => [
+                    'Effort reduction is a benefit, not the primary purpose',
+                    'Correct - Templates ensure all policies contain required elements consistently',
+                    'Templates are best practice, not legal requirements',
+                    'All policies require review regardless of template use'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => -0.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 35 - Security Policy Framework - L3 Application
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Regulatory Mapping',
+                'question' => 'You need to map security policies to multiple regulatory requirements. What approach is most effective?',
+                'type_id' => 1,
+                'options' => [
+                    'Create separate policies for each regulation',
+                    'Use a unified control framework with regulatory mapping',
+                    'Ignore overlapping requirements',
+                    'Focus on the strictest regulation only'
+                ],
+                'correct_options' => ['Use a unified control framework with regulatory mapping'],
+                'justifications' => [
+                    'Separate policies create duplication and conflicts',
+                    'Correct - Unified frameworks prevent redundancy while ensuring compliance',
+                    'Ignoring requirements creates compliance gaps',
+                    'Other regulations may have unique requirements not covered'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.8,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 36 - Security Policy Framework - L3 Application
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Policy Hierarchy',
+                'question' => 'An employee asks for specific steps to encrypt a laptop. Which document type should they consult?',
+                'type_id' => 1,
+                'options' => [
+                    'Policy',
+                    'Standard',
+                    'Procedure',
+                    'Guideline'
+                ],
+                'correct_options' => ['Procedure'],
+                'justifications' => [
+                    'Policies state requirements but not implementation steps',
+                    'Standards specify what to use, not how to use it',
+                    'Correct - Procedures provide step-by-step instructions',
+                    'Guidelines offer recommendations, not specific steps'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 37 - Security Policy Framework - L4 Analysis
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Policy Types',
+                'question' => 'Analyze the impact of having only advisory security policies in a regulated industry.',
+                'type_id' => 1,
+                'options' => [
+                    'Provides maximum flexibility',
+                    'Creates compliance risks and enforcement challenges',
+                    'Improves employee satisfaction',
+                    'Reduces documentation needs'
+                ],
+                'correct_options' => ['Creates compliance risks and enforcement challenges'],
+                'justifications' => [
+                    'Flexibility cannot justify non-compliance in regulated industries',
+                    'Correct - Regulations require enforceable policies, not recommendations',
+                    'Employee satisfaction doesn\'t outweigh compliance requirements',
+                    'Advisory policies still require documentation'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.9,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 38 - Security Policy Framework - L4 Analysis
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Regulatory Mapping',
+                'question' => 'Analyze the impact of conflicting security policies between global and regional requirements.',
+                'type_id' => 1,
+                'options' => [
+                    'No significant impact on operations',
+                    'Creates compliance risks and operational confusion',
+                    'Improves security through redundancy',
+                    'Automatically resolves through hierarchy'
+                ],
+                'correct_options' => ['Creates compliance risks and operational confusion'],
+                'justifications' => [
+                    'Conflicts significantly impact operations and compliance',
+                    'Correct - Conflicting policies create confusion and potential violations',
+                    'Conflicts don\'t improve security, they create gaps',
+                    'Conflicts require active resolution, not automatic hierarchy'
+                ],
+                'difficulty_level' => 4,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.4,
+                'irt_b' => 0.9,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 39 - Security Policy Framework - L5 Evaluation
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Documentation Standards',
+                'question' => 'A multinational organization is implementing a unified data retention policy across all its global offices. While the head office is in the United States, it also operates in the European Union, Brazil, and the Middle East. Each region has distinct data protection regulations (e.g., GDPR, LGPD, local data localization laws). The Chief Risk Officer (CRO) is leading the initiative and wants to ensure that the policy is enforceable globally while remaining compliant with local laws. Which of the following is the MOST appropriate approach to implementing the corporate policy?',
+                'type_id' => 1,
+                'options' => [
+                    'Enforce a single, global data retention period based on U.S. standards for consistency across all regions',
+                    'Allow each regional office to draft its own retention policy based solely on local regulatory requirements, without central oversight',
+                    'Develop a centralized data retention policy framework that sets minimum standards while allowing regional customization based on applicable legal requirements',
+                    'Defer implementation of the policy until global regulatory alignment is achieved to avoid legal conflicts'
+                ],
+                'correct_options' => ['Develop a centralized data retention policy framework that sets minimum standards while allowing regional customization based on applicable legal requirements'],
+                'justifications' => [
+                    'U.S. standards may violate stricter regulations in other regions like the EU under GDPR',
+                    'Lack of central oversight creates inconsistency and governance gaps across the organization',
+                    'Correct - A framework approach balances global consistency with local compliance requirements, ensuring both governance and legal adherence',
+                    'Global regulatory alignment is unlikely to occur, and deferring implementation leaves the organization exposed to compliance risks'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.4,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 40 - Security Policy Framework - L3 Application - Type 5 Matching
+            [
+                'topic' => 'Security Policy Framework',
+                'subtopic' => 'Policy Templates',
+                'question' => 'An organization decides to replace its aging firewall with another vendor. Match each document type with the expected level of change.',
+                'type_id' => 5,
+                'options' => [
+                    'items' => ['Policy', 'Standard', 'Procedures'],
+                    'responses' => ['No changes', 'Major changes', 'Maximum changes']
+                ],
+                'correct_options' => [
+                    'Policy' => 'No changes',
+                    'Standard' => 'Major changes',
+                    'Procedures' => 'Maximum changes'
+                ],
+                'justifications' => [
+                    'Policy' => 'Policies define high-level requirements (e.g., "perimeter security must be implemented") and are vendor-agnostic, so they remain unchanged',
+                    'Standard' => 'Standards specify technical requirements (e.g., firewall capabilities, logging standards) that may need significant updates for the new vendor',
+                    'Procedures' => 'Procedures contain step-by-step instructions specific to the firewall model and interface, requiring complete rewriting for the new vendor'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.3,
+                'irt_c' => 0.2
+            ],
+            
+            // Topic 5: Policy Governance and Management (10 questions)
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            
+            // Item 41 - Policy Governance and Management - L1 Knowledge
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Lifecycle Management',
+                'question' => 'What is the recommended review cycle for security policies?',
+                'type_id' => 1,
+                'options' => [
+                    'Every 5 years',
+                    'Annually or upon significant changes',
+                    'Only when regulations change',
+                    'Never, if well-written initially'
+                ],
+                'correct_options' => ['Annually or upon significant changes'],
+                'justifications' => [
+                    'Five years is too long given changing threats and technology',
+                    'Correct - Annual reviews with updates for significant changes maintain relevance',
+                    'Business and technology changes also require policy updates',
+                    'Even well-written policies need updates as environments change'
+                ],
+                'difficulty_level' => 1,
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.8,
+                'irt_b' => -1.0,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 42 - Policy Governance and Management - L2 Comprehension
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Approval Workflows',
+                'question' => 'Who should have final approval authority for enterprise security policies?',
+                'type_id' => 1,
+                'options' => [
+                    'Security analyst',
+                    'Senior management or board',
+                    'IT help desk',
+                    'Any employee'
+                ],
+                'correct_options' => ['Senior management or board'],
+                'justifications' => [
+                    'Analysts lack organizational authority for policy approval',
+                    'Correct - Senior leadership ensures policies align with business objectives',
+                    'Help desk is operational, not strategic',
+                    'Policy approval requires appropriate authority levels'
+                ],
+                'difficulty_level' => 1,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -0.8,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 43 - Policy Governance and Management - L3 Application
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Governance',
+                'question' => 'What is the most effective method to monitor policy compliance?',
+                'type_id' => 1,
+                'options' => [
+                    'Annual self-attestation only',
+                    'Combination of automated controls and periodic audits',
+                    'Trust-based system',
+                    'Complaints-driven review'
+                ],
+                'correct_options' => ['Combination of automated controls and periodic audits'],
+                'justifications' => [
+                    'Self-attestation alone is insufficient for verification',
+                    'Correct - Automated controls provide continuous monitoring, audits verify effectiveness',
+                    'Trust without verification creates compliance gaps',
+                    'Reactive approaches miss proactive compliance issues'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.3,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 44 - Policy Governance and Management - L3 Application
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Enforcement',
+                'question' => 'How should policy exceptions be managed?',
+                'type_id' => 1,
+                'options' => [
+                    'Deny all exceptions',
+                    'Document, approve, and time-limit exceptions',
+                    'Allow informal exceptions',
+                    'Grant permanent exceptions freely'
+                ],
+                'correct_options' => ['Document, approve, and time-limit exceptions'],
+                'justifications' => [
+                    'Absolute denial ignores legitimate business needs',
+                    'Correct - Formal process ensures exceptions are justified and reviewed',
+                    'Informal exceptions create unmanaged risks',
+                    'Permanent exceptions undermine policy effectiveness'
+                ],
+                'difficulty_level' => 2,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.1,
+                'irt_b' => 0.1,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 45 - Policy Governance and Management - L4 Analysis
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Effectiveness Measurement',
+                'question' => 'Which metric best indicates policy effectiveness?',
+                'type_id' => 1,
+                'options' => [
+                    'Number of policies published',
+                    'Reduction in policy-related incidents',
+                    'Policy page views',
+                    'Policy word count'
+                ],
+                'correct_options' => ['Reduction in policy-related incidents'],
+                'justifications' => [
+                    'Quantity doesn\'t indicate quality or effectiveness',
+                    'Correct - Fewer incidents show policies are preventing problems',
+                    'Views don\'t indicate understanding or compliance',
+                    'Length has no correlation with effectiveness'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.5,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 46 - Policy Governance and Management - L3 Application
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Effectiveness Measurement',
+                'question' => 'Which of the following is the BEST objective method to measure the effectiveness of a newly implemented security policy?',
+                'type_id' => 1,
+                'options' => [
+                    'Tracking the number of users who acknowledged reading the policy',
+                    'Comparing the number of detected policy violations before and after implementation',
+                    'Sharing compliance reports with senior management',
+                    'Ensuring the policy aligns with industry standards and frameworks'
+                ],
+                'correct_options' => ['Comparing the number of detected policy violations before and after implementation'],
+                'justifications' => [
+                    'Acknowledgment only confirms receipt, not understanding or compliance',
+                    'Correct - Violation metrics provide quantifiable evidence of behavioral change and policy effectiveness',
+                    'Sharing reports is a communication activity, not a measurement method',
+                    'Alignment with standards indicates quality but not actual effectiveness in practice'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 3, // Apply
+                'status' => 'published',
+                'irt_a' => 1.3,
+                'irt_b' => 0.2,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 47 - Policy Governance and Management - L4 Analysis
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Enforcement',
+                'question' => 'In which of the following situations is it MOST appropriate to grant a formal exception to an established security policy?',
+                'type_id' => 1,
+                'options' => [
+                    'When the policy is technically difficult to implement',
+                    'When the business benefit of the exception clearly outweighs the associated risk',
+                    'When end-users complain that the policy hinders productivity',
+                    'When end-users have not read and understood the policy'
+                ],
+                'correct_options' => ['When the business benefit of the exception clearly outweighs the associated risk'],
+                'justifications' => [
+                    'Technical difficulty alone doesn\'t justify exceptions; solutions should be sought',
+                    'Correct - Risk-based decisions that consider business value are the appropriate basis for formal exceptions, provided risks are documented and accepted',
+                    'User complaints without risk analysis don\'t justify exceptions',
+                    'Lack of user understanding requires training, not exceptions'
+                ],
+                'difficulty_level' => 3,
+                'bloom_level' => 4, // Analyze
+                'status' => 'published',
+                'irt_a' => 1.2,
+                'irt_b' => 0.4,
+                'irt_c' => 0.2
+            ],
+            
+            // Item 48 - Policy Governance and Management - L5 Evaluation - Type 4 Ordering
+            [
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Lifecycle Management',
+                'question' => 'Arrange the following policy lifecycle steps in the correct order from first to last:',
                 'type_id' => 4,
-                'dimension' => 'Managerial',
-                'content' => 'Arrange these governance maturity indicators from LEAST to MOST mature:',
                 'options' => [
-                    'Security integrated into enterprise risk management',
-                    'Basic security policies exist',
-                    'Regular board reporting on security metrics',
-                    'Ad hoc security decisions',
-                    'Security part of strategic planning'
+                    'Monitoring and Compliance',
+                    'Review and Approval',
+                    'Communication and Training',
+                    'Development/Drafting',
+                    'Implementation and Enforcement',
+                    'Initiation/Identify Need',
+                    'Periodic Review and Update',
+                    'Retirement/Decommissioning'
                 ],
                 'correct_options' => [
-                    'Ad hoc security decisions',
-                    'Basic security policies exist',
-                    'Regular board reporting on security metrics',
-                    'Security integrated into enterprise risk management',
-                    'Security part of strategic planning'
-                ],
-                'justifications' => ['Maturity progresses from ad hoc decisions, to basic policies, to governance reporting, to risk integration, and finally to strategic planning integration.'],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 48 - Cultural transformation
-            [
-                'topic_id' => $topics['Security Culture & Tone at the Top'] ?? 18,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the MOST effective way to improve security culture in an organization with poor security practices?',
-                'options' => [
-                    'Implement punitive measures for security violations',
-                    'Increase security awareness training frequency',
-                    'Get visible executive sponsorship and participation',
-                    'Deploy more security monitoring tools'
-                ],
-                'correct_options' => ['Get visible executive sponsorship and participation'],
-                'justifications' => [
-                    'Punishment creates fear, not positive culture',
-                    'Training alone won\'t overcome poor leadership example',
-                    'Correct - Visible leadership commitment drives cultural change',
-                    'Tools don\'t change culture, people do'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Item 49 - Integrated scenario
-            [
-                'topic_id' => $topics['Three Lines of Defense'] ?? 15,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Internal audit discovers that the risk management function hasn\'t been monitoring key security controls for six months. This represents a breakdown in which line of defense?',
-                'options' => [
-                    'First line',
-                    'Second line',
-                    'Third line',
-                    'All lines'
-                ],
-                'correct_options' => ['Second line'],
-                'justifications' => [
-                    'First line implements controls, not monitors them',
-                    'Correct - Second line (risk management) failed to monitor controls',
-                    'Third line (audit) detected the issue, so it\'s working',
-                    'Only the second line failed in this scenario'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 4,
-                'status' => 'published'
-            ],
-            
-            // Item 50 - Governance effectiveness
-            [
-                'topic_id' => $topics['Key Performance / Risk / Control Indicators (KPI/KRI/KCI)'] ?? 16,
-                'type_id' => 3,
-                'dimension' => 'Managerial',
-                'content' => 'Drag the indicators that demonstrate EFFECTIVE security governance (not just management) to the drop zone:',
-                'options' => [
-                    'Security considered in board decisions',
-                    '99.9% firewall uptime',
-                    'Risk appetite defined and communicated',
-                    'All servers patched monthly',
-                    'Security investment aligned to business value',
-                    'Zero security incidents'
-                ],
-                'correct_options' => [
-                    'Security considered in board decisions',
-                    'Risk appetite defined and communicated',
-                    'Security investment aligned to business value'
+                    'Initiation/Identify Need',
+                    'Development/Drafting',
+                    'Review and Approval',
+                    'Communication and Training',
+                    'Implementation and Enforcement',
+                    'Monitoring and Compliance',
+                    'Periodic Review and Update',
+                    'Retirement/Decommissioning'
                 ],
                 'justifications' => [
-                    'Board integration shows governance maturity',
-                    'Firewall uptime is operational management',
-                    'Risk appetite is a governance function',
-                    'Patching is operational management',
-                    'Investment alignment shows strategic governance',
-                    'Zero incidents is unrealistic and operational'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Additional questions to reach 50 total with 7-10-16-10-7 distribution
-            // Need: +2 Level 2, +6 Level 3, +2 Level 4, +1 Level 5
-            
-            // Item 51 - Level 2 (Understand)
-            [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'What is the main difference between data owner and data steward roles?',
-                'options' => [
-                    'Data owners handle technical aspects, stewards handle business aspects',
-                    'Data owners make policy decisions, stewards ensure day-to-day compliance',
-                    'Data owners are temporary, stewards are permanent',
-                    'Data owners are external, stewards are internal'
-                ],
-                'correct_options' => ['Data owners make policy decisions, stewards ensure day-to-day compliance'],
-                'justifications' => [
-                    'Both roles can involve technical and business aspects',
-                    'Correct - Owners set policies and make decisions, stewards ensure ongoing compliance',
-                    'Role duration isn\'t the key difference',
-                    'Both roles are typically internal'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 52 - Level 2 (Understand)
-            [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which framework is specifically designed for IT service management but includes security management processes?',
-                'options' => [
-                    'COBIT',
-                    'ITIL',
-                    'ISO 27001',
-                    'NIST CSF'
-                ],
-                'correct_options' => ['ITIL'],
-                'justifications' => [
-                    'COBIT is for IT governance, not service management',
-                    'Correct - ITIL includes security management as part of service management',
-                    'ISO 27001 is for information security management specifically',
-                    'NIST CSF is for cybersecurity risk management'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 2,
-                'status' => 'published'
-            ],
-            
-            // Item 53 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Policy, Standard, Procedure, Guideline'] ?? 12,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Your organization needs to implement a new password policy. What is the FIRST step?',
-                'options' => [
-                    'Research industry best practices',
-                    'Analyze current password-related incidents',
-                    'Assess business requirements and risk tolerance',
-                    'Select password management tools'
-                ],
-                'correct_options' => ['Assess business requirements and risk tolerance'],
-                'justifications' => [
-                    'Research comes after understanding organizational needs',
-                    'Incident analysis is important but comes after understanding requirements',
-                    'Correct - Policy development must start with business requirements and risk context',
-                    'Tool selection comes after policy is defined'
-                ],
-                'difficulty_level' => 2,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 54 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Third-Party Governance'] ?? 20,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A critical vendor fails their security assessment. What is the MOST appropriate immediate action?',
-                'options' => [
-                    'Terminate the vendor relationship immediately',
-                    'Implement additional monitoring and risk controls',
-                    'Reduce the vendor\'s access to non-critical systems only',
-                    'Require the vendor to obtain security certification'
-                ],
-                'correct_options' => ['Implement additional monitoring and risk controls'],
-                'justifications' => [
-                    'Immediate termination may not be practical for critical vendors',
-                    'Correct - Additional controls can mitigate risks while addressing issues',
-                    'Reducing access may not be sufficient for critical services',
-                    'Certification takes time and doesn\'t provide immediate risk reduction'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 55 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Security Culture & Tone at the Top'] ?? 18,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'How should a CISO respond when executives consistently bypass security procedures?',
-                'options' => [
-                    'Implement technical controls to prevent bypass',
-                    'Escalate to the board of directors',
-                    'Document the violations and continue enforcement',
-                    'Meet with executives to understand their concerns and find solutions'
-                ],
-                'correct_options' => ['Meet with executives to understand their concerns and find solutions'],
-                'justifications' => [
-                    'Technical controls alone won\'t address cultural issues',
-                    'Escalation should come after attempting direct resolution',
-                    'Documentation is important but doesn\'t solve the problem',
-                    'Correct - Understanding concerns enables collaborative solutions'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 56 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Key Performance / Risk / Control Indicators (KPI/KRI/KCI)'] ?? 16,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Which approach is MOST effective for establishing security metrics baselines?',
-                'options' => [
-                    'Use industry benchmarks as baselines',
-                    'Set baselines based on regulatory requirements',
-                    'Collect 3-6 months of organizational data',
-                    'Use vendor-recommended baseline values'
-                ],
-                'correct_options' => ['Collect 3-6 months of organizational data'],
-                'justifications' => [
-                    'Industry benchmarks may not reflect organizational specifics',
-                    'Regulations provide minimums, not operational baselines',
-                    'Correct - Organizational data provides realistic and relevant baselines',
-                    'Vendor recommendations may not fit organizational context'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 57 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Due Care & Due Diligence'] ?? 17,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'When evaluating a new cloud service, what demonstrates BOTH due care and due diligence?',
-                'options' => [
-                    'Implementing multi-factor authentication only',
-                    'Researching the provider\'s security practices and implementing appropriate controls',
-                    'Relying on the provider\'s security certifications',
-                    'Conducting only a cost-benefit analysis'
-                ],
-                'correct_options' => ['Researching the provider\'s security practices and implementing appropriate controls'],
-                'justifications' => [
-                    'MFA alone shows due care but not due diligence',
-                    'Correct - Research shows due diligence, controls show due care',
-                    'Relying on certifications shows neither thorough research nor action',
-                    'Cost analysis doesn\'t address security due diligence or care'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 58 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A security strategy review reveals that 80% of security incidents are caused by outdated systems. What should be the strategic response?',
-                'options' => [
-                    'Increase incident response team size',
-                    'Prioritize system modernization and lifecycle management',
-                    'Implement more monitoring tools',
-                    'Enhance security awareness training'
-                ],
-                'correct_options' => ['Prioritize system modernization and lifecycle management'],
-                'justifications' => [
-                    'Increasing response team treats symptoms, not causes',
-                    'Correct - Addressing root cause through modernization is strategic',
-                    'More monitoring doesn\'t fix vulnerable systems',
-                    'Training doesn\'t address technical vulnerabilities'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 59 - Level 4 (Analyze)
-            [
-                'topic_id' => $topics['Three Lines of Defense'] ?? 15,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization has strong technical controls (1st line) and active risk management (2nd line), but still experiences repeated compliance failures. What is the MOST likely cause?',
-                'options' => [
-                    'Inadequate technical controls',
-                    'Ineffective risk management processes',
-                    'Weak third line of defense (internal audit)',
-                    'Lack of board oversight'
-                ],
-                'correct_options' => ['Weak third line of defense (internal audit)'],
-                'justifications' => [
-                    'Technical controls are described as strong',
-                    'Risk management is described as active',
-                    'Correct - If 1st and 2nd lines are strong but failures persist, 3rd line isn\'t providing effective oversight',
-                    'Board oversight is important but 3rd line weakness is more direct'
+                    'The policy lifecycle begins with identifying the need for a new or updated policy',
+                    'Once the need is identified, the policy is drafted with stakeholder input',
+                    'The draft policy must be reviewed and approved by appropriate authorities',
+                    'After approval, the policy is communicated to all affected parties with training',
+                    'Implementation puts the policy into practice with supporting procedures',
+                    'Ongoing monitoring ensures compliance and identifies violations',
+                    'Periodic reviews keep the policy current with changing requirements',
+                    'Eventually, obsolete policies are retired and archived'
                 ],
                 'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
+                'bloom_level' => 5, // Evaluate
+                'status' => 'published',
+                'irt_a' => 1.5,
+                'irt_b' => 1.0,
+                'irt_c' => 0.2
             ],
             
-            // Item 60 - Level 4 (Analyze)
+            // Item 49 - Policy Governance and Management - L2 Comprehension
             [
-                'topic_id' => $topics['IT Governance vs IT Management'] ?? 14,
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Approval Workflows',
+                'question' => 'Which of the following issues represents the HIGHEST potential risk to an organization\'s security governance framework?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A company has excellent IT operations (99.9% uptime, fast response times) but struggles with security incidents and regulatory compliance. This suggests a weakness in:',
                 'options' => [
-                    'IT Management',
-                    'IT Governance',
-                    'Technical capabilities',
-                    'Resource allocation'
+                    'The security policy is approved by the Security Administrator',
+                    'The policy is distributed to staff only via email without confirmation of receipt',
+                    'The policy omits references to regulatory compliance requirements',
+                    'The policy has not been reviewed in over 12 months'
                 ],
-                'correct_options' => ['IT Governance'],
+                'correct_options' => ['The security policy is approved by the Security Administrator'],
                 'justifications' => [
-                    'IT Management appears strong based on operational metrics',
-                    'Correct - Governance ensures strategy, risk management, and compliance alignment',
-                    'Technical capabilities seem adequate for operations',
-                    'Resources aren\'t necessarily the issue'
+                    'Correct - Security administrators lack the organizational authority to approve enterprise policies. This creates a fundamental governance flaw where policies lack business alignment and executive endorsement',
+                    'While distribution tracking is important, it\'s a procedural issue that can be remedied',
+                    'Missing regulatory references is concerning but can be addressed through policy updates',
+                    'Annual reviews are recommended but a 12-month gap doesn\'t invalidate the governance structure itself'
                 ],
-                'difficulty_level' => 4,
-                'bloom_level' => 4,
-                'status' => 'published'
+                'difficulty_level' => 2,
+                'bloom_level' => 2, // Understand
+                'status' => 'published',
+                'irt_a' => 1.0,
+                'irt_b' => 0.0,
+                'irt_c' => 0.2
             ],
             
-            // Item 61 - Level 5 (Evaluate)
+            // Item 50 - Policy Governance and Management - L1 Knowledge
             [
-                'topic_id' => $topics['Security Strategy Development'] ?? 19,
+                'topic' => 'Policy Governance and Management',
+                'subtopic' => 'Policy Communication',
+                'question' => 'What is the purpose of a policy exception process?',
                 'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A security strategy has been in place for 2 years with limited progress. Stakeholders cite unclear priorities and competing objectives. What is the MOST critical evaluation criterion?',
                 'options' => [
-                    'Budget adequacy',
-                    'Technical solution effectiveness',
-                    'Strategic alignment and stakeholder buy-in',
-                    'Compliance with security frameworks'
+                    'To bypass all security controls',
+                    'To provide controlled flexibility when business needs conflict with policy',
+                    'To eliminate the need for policies',
+                    'To allow unlimited policy violations'
                 ],
-                'correct_options' => ['Strategic alignment and stakeholder buy-in'],
+                'correct_options' => ['To provide controlled flexibility when business needs conflict with policy'],
                 'justifications' => [
-                    'Budget issues are symptoms, not root causes',
-                    'Technical solutions can\'t succeed without strategic clarity',
-                    'Correct - Unclear priorities and competing objectives indicate alignment and buy-in failures',
-                    'Framework compliance doesn\'t address stakeholder alignment issues'
+                    'Exceptions don\'t bypass controls, they manage risks',
+                    'Correct - Exception processes balance security with business needs',
+                    'Exceptions complement policies, not replace them',
+                    'Exceptions must be controlled and limited'
                 ],
-                'difficulty_level' => 5,
-                'bloom_level' => 5,
-                'status' => 'published'
-            ],
-            
-            // Final 3 questions to reach perfect 7-10-16-10-7 distribution
-            
-            // Item 62 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Security Roles & Responsibilities'] ?? 11,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'A data breach affects customer information across multiple business units. Which role should coordinate the overall response?',
-                'options' => [
-                    'Data Protection Officer',
-                    'Chief Information Security Officer',
-                    'Business unit managers',
-                    'Legal counsel'
-                ],
-                'correct_options' => ['Chief Information Security Officer'],
-                'justifications' => [
-                    'DPO focuses on regulatory compliance aspects',
-                    'Correct - CISO coordinates overall incident response across business units',
-                    'Business unit managers handle unit-specific aspects',
-                    'Legal counsel provides legal guidance but doesn\'t coordinate response'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 63 - Level 3 (Apply)
-            [
-                'topic_id' => $topics['Security Frameworks'] ?? 13,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'An organization wants to demonstrate security maturity to customers and investors. Which framework implementation would be MOST valuable?',
-                'options' => [
-                    'Internal security assessment using NIST CSF',
-                    'ISO 27001 certification through third-party audit',
-                    'Completion of cybersecurity awareness training',
-                    'Implementation of technical security controls'
-                ],
-                'correct_options' => ['ISO 27001 certification through third-party audit'],
-                'justifications' => [
-                    'Internal assessments lack third-party validation',
-                    'Correct - Third-party certification provides credible external validation',
-                    'Training is important but doesn\'t demonstrate overall maturity',
-                    'Technical controls are necessary but certification shows comprehensive management'
-                ],
-                'difficulty_level' => 3,
-                'bloom_level' => 3,
-                'status' => 'published'
-            ],
-            
-            // Item 64 - Level 5 (Evaluate)
-            [
-                'topic_id' => $topics['Security Culture & Tone at the Top'] ?? 18,
-                'type_id' => 1,
-                'dimension' => 'Managerial',
-                'content' => 'Two years after implementing a security culture program, metrics show high training completion (95%) but continued policy violations. What is the MOST likely root cause?',
-                'options' => [
-                    'Insufficient training content quality',
-                    'Lack of consequences for violations',
-                    'Misalignment between stated values and leadership behavior',
-                    'Inadequate communication of policies'
-                ],
-                'correct_options' => ['Misalignment between stated values and leadership behavior'],
-                'justifications' => [
-                    'Training completion is high, suggesting content is delivered',
-                    'Consequences alone don\'t create positive culture',
-                    'Correct - High training completion with continued violations indicates leadership behavior contradicts stated values',
-                    'Communication seems adequate given high completion rates'
-                ],
-                'difficulty_level' => 5,
-                'bloom_level' => 5,
-                'status' => 'published'
+                'difficulty_level' => 1,
+                'bloom_level' => 1, // Remember
+                'status' => 'published',
+                'irt_a' => 0.9,
+                'irt_b' => -1.1,
+                'irt_c' => 0.2
             ]
         ];
-        
-        // Insert all items
-        foreach ($items as $item) {
-            DiagnosticItem::create($item);
-        }
-        
-        $this->command->info('Domain 2 (Information Security Governance) diagnostic items seeded successfully!');
     }
 }
