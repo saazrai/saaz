@@ -277,7 +277,7 @@ class DiagnosticTestCase extends Command
             // Get current unanswered question
             $currentResponse = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
                 ->whereNull('user_answer')
-                ->with(['diagnosticItem.topic.domain'])
+                ->with(['diagnosticItem.subtopic.topic.domain'])
                 ->first();
 
             if (! $currentResponse) {
@@ -395,10 +395,10 @@ class DiagnosticTestCase extends Command
 
         // Get the domain used for testing
         $responses = $diagnostic->responses()
-            ->with('diagnosticItem.topic.domain')
+            ->with('diagnosticItem.subtopic.topic.domain')
             ->get();
 
-        $domainId = $responses->first()->diagnosticItem->topic->domain->id ?? null;
+        $domainId = $responses->first()->diagnosticItem->subtopic->topic->domain->id ?? null;
 
         if ($domainId) {
             $adaptiveService = new AdaptiveDiagnosticService;

@@ -75,7 +75,7 @@ class DiagnosticBot extends Command
             // Get current question
             $currentResponse = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
                 ->whereNull('user_answer')
-                ->with(['diagnosticItem.topic.domain', 'diagnosticItem'])
+                ->with(['diagnosticItem.subtopic.topic.domain', 'diagnosticItem'])
                 ->first();
 
             if (! $currentResponse) {
@@ -231,7 +231,7 @@ class DiagnosticBot extends Command
     {
         // Get all responses for this domain in chronological order
         $responses = DiagnosticResponse::where('diagnostic_id', $diagnosticId)
-            ->whereHas('diagnosticItem.topic.domain', function ($query) use ($domainName) {
+            ->whereHas('diagnosticItem.subtopic.topic.domain', function ($query) use ($domainName) {
                 $query->where('name', $domainName);
             })
             ->with('diagnosticItem')

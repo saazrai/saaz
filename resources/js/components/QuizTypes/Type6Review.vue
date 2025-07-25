@@ -143,7 +143,24 @@
 
 <script lang="ts">
 export default {
-    props: ["question", "answer", "isReview"],
+    props: {
+        question: {
+            type: Object,
+            required: true
+        },
+        answer: {
+            type: Object,
+            default: () => ({})
+        },
+        isReview: {
+            type: Boolean,
+            default: false
+        },
+        isDark: {
+            type: Boolean,
+            default: null
+        }
+    },
     data() {
         return {
             selectedOptions: [],
@@ -185,6 +202,17 @@ export default {
         },
     },
     computed: {
+        isThemeDark() {
+            // Use prop if provided, otherwise fallback to detection methods
+            if (this.isDark !== null) {
+                return this.isDark;
+            }
+            // Fallback detection for backward compatibility
+            return document.documentElement.classList.contains('dark') ||
+                   this.$el?.classList?.contains('dark-mode') ||
+                   this.$parent?.$el?.classList?.contains('dark-mode') ||
+                   window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        },
         correctOptionIndex() {
             const target = this.question.correct_options;
             return this.question.options.findIndex(

@@ -318,7 +318,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
 
             ],
 
-            // Item 12 - L2 - Understand
+            // Item 12 - L1 - Remember
             [
                 'topic' => 'Evidence Gathering',
                 'subtopic' => 'Evidence Gathering',
@@ -336,7 +336,7 @@ class D6SecurityAuditsAssessmentsSeeder extends BaseDiagnosticSeeder
                     'Incorrect - This is too absolute or limiting',
                     'Incorrect - This is too absolute or limiting',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 3,
                 'irt_a' => 1.2,
                 'irt_b' => -0.4,

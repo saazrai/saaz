@@ -36,7 +36,7 @@ class AnalyzeDiagnostic extends Command
     public function handle()
     {
         $diagnosticId = $this->argument('diagnostic');
-        $diagnostic = Diagnostic::with(['user', 'responses.diagnosticItem.topic.domain'])
+        $diagnostic = Diagnostic::with(['user', 'responses.diagnosticItem.subtopic.topic.domain'])
             ->find($diagnosticId);
 
         if (! $diagnostic) {
@@ -127,7 +127,7 @@ class AnalyzeDiagnostic extends Command
                 continue;
             }
 
-            $domain = $item->topic->domain->name ?? 'Unknown';
+            $domain = $item->subtopic->topic->domain->name ?? 'Unknown';
             $bloomLevel = $item->bloom_level ?? 3;
             $isCorrect = $response->is_correct;
 
@@ -228,12 +228,12 @@ class AnalyzeDiagnostic extends Command
 
         foreach ($responses as $response) {
             $item = $response->diagnosticItem;
-            if (! $item || ! $item->topic || ! $item->topic->domain) {
+            if (! $item || ! $item->subtopic || ! $item->subtopic->topic || ! $item->subtopic->topic->domain) {
                 continue;
             }
 
-            $domain = $item->topic->domain->name;
-            $domainId = $item->topic->domain->id;
+            $domain = $item->subtopic->topic->domain->name;
+            $domainId = $item->subtopic->topic->domain->id;
 
             if (! isset($domainStats[$domain])) {
                 $domainStats[$domain] = [
@@ -341,14 +341,14 @@ class AnalyzeDiagnostic extends Command
 
         // 4. Domain coverage
         $domains = $responses->map(function ($r) {
-            return $r->diagnosticItem->topic->domain->name ?? null;
+            return $r->diagnosticItem->subtopic->topic->domain->name ?? null;
         })->filter()->unique();
 
         $minQuestionsPerDomain = 5;
         $domainCoverage = [];
         foreach ($domains as $domain) {
             $count = $responses->filter(function ($r) use ($domain) {
-                return ($r->diagnosticItem->topic->domain->name ?? null) === $domain;
+                return ($r->diagnosticItem->subtopic->topic->domain->name ?? null) === $domain;
             })->count();
 
             if ($count >= $minQuestionsPerDomain) {
@@ -409,7 +409,7 @@ class AnalyzeDiagnostic extends Command
                 continue;
             }
 
-            $domain = $item->topic->domain->name ?? 'Unknown';
+            $domain = $item->subtopic->topic->domain->name ?? 'Unknown';
             $topic = $item->topic->name ?? 'Unknown';
 
             // Truncate long names
@@ -522,8 +522,8 @@ class AnalyzeDiagnostic extends Command
                 continue;
             }
 
-            $domain = $item->topic->domain->name ?? 'Unknown';
-            $domainId = $item->topic->domain->id ?? 0;
+            $domain = $item->subtopic->topic->domain->name ?? 'Unknown';
+            $domainId = $item->subtopic->topic->domain->id ?? 0;
             $domainShort = strlen($domain) > 20 ? substr($domain, 0, 17).'...' : $domain;
 
             // Store domain ID mapping
@@ -591,7 +591,7 @@ class AnalyzeDiagnostic extends Command
             if (! $item || ! $response->user_answer) {
                 continue;
             }
-            $domain = $item->topic->domain->name ?? 'Unknown';
+            $domain = $item->subtopic->topic->domain->name ?? 'Unknown';
             $domainInitial = substr($domain, 0, 3);
             $domainPattern[] = $domainInitial;
         }
@@ -676,7 +676,7 @@ class AnalyzeDiagnostic extends Command
 
         // 4. Check domain count
         $domainCount = $responses->map(function ($r) {
-            return $r->diagnosticItem->topic->domain->name ?? null;
+            return $r->diagnosticItem->subtopic->topic->domain->name ?? null;
         })->filter()->unique()->count();
         if ($domainCount >= 5) {
             $reasons[] = "• Testing many domains ({$domainCount}) requires more questions";
@@ -734,12 +734,12 @@ class AnalyzeDiagnostic extends Command
         // Group responses by domain
         foreach ($responses as $response) {
             $item = $response->diagnosticItem;
-            if (! $item || ! $item->topic || ! $item->topic->domain) {
+            if (! $item || ! $item->subtopic || ! $item->subtopic->topic || ! $item->subtopic->topic->domain) {
                 continue;
             }
 
-            $domainId = $item->topic->domain->id;
-            $domainName = $item->topic->domain->name;
+            $domainId = $item->subtopic->topic->domain->id;
+            $domainName = $item->subtopic->topic->domain->name;
 
             if (! isset($domainProficiencies[$domainId])) {
                 $domainProficiencies[$domainId] = [

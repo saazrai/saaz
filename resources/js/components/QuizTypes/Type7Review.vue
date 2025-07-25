@@ -125,6 +125,10 @@ export default {
                 is_correct: false,
                 commands: []
             })
+        },
+        isDark: {
+            type: Boolean,
+            default: null
         }
     },
 
@@ -142,6 +146,17 @@ export default {
     },
 
     computed: {
+        isThemeDark() {
+            // Use prop if provided, otherwise fallback to detection methods
+            if (this.isDark !== null) {
+                return this.isDark;
+            }
+            // Fallback detection for backward compatibility
+            return document.documentElement.classList.contains('dark') ||
+                   this.$el?.classList?.contains('dark-mode') ||
+                   this.$parent?.$el?.classList?.contains('dark-mode') ||
+                   window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        },
         options() {
             return this.question.options || [];
         },

@@ -414,6 +414,143 @@ Total: 8 questions
 
 ---
 
+## Progress Calculation Logic
+
+### Business Requirements
+
+**Core Principle**: Progress is calculated domain-by-domain with each domain contributing equally to the total assessment progress.
+
+```javascript
+const PROGRESS_CONFIG = {
+    DOMAINS_PER_PHASE: 5,           // Each phase has 5 domains
+    DOMAIN_WEIGHT: 20,              // Each domain = 20% of total progress
+    AVERAGE_QUESTIONS_PER_DOMAIN: 10, // Expected average questions
+    QUESTION_VALUE: 2,              // Each question = 2% within domain
+    DOMAIN_CAP: 18,                 // Cap progress at 18% until domain complete
+    DOMAIN_COMPLETE: 20,            // Full 20% when domain stops/completes
+};
+```
+
+### Per-Domain Progress Calculation
+
+Each domain's progress is calculated independently:
+
+```javascript
+function calculateDomainProgress(domain) {
+    const questionsAnswered = domain.questions_answered;
+    const isDomainComplete = domain.is_complete; // From adaptive service
+    
+    if (isDomainComplete) {
+        return 20; // Full domain weight when complete
+    }
+    
+    // Cap at 18% to prevent showing 100% when domain isn't complete
+    const progressFromQuestions = Math.min(18, questionsAnswered * 2);
+    
+    return progressFromQuestions;
+}
+```
+
+### Total Progress Calculation
+
+Total progress is the sum of all domain progress:
+
+```javascript
+function calculateTotalProgress(domains) {
+    let totalProgress = 0;
+    
+    domains.forEach(domain => {
+        totalProgress += calculateDomainProgress(domain);
+    });
+    
+    return Math.round(totalProgress); // 0-100%
+}
+```
+
+### Progress Examples
+
+**Example 1: Early in Assessment**
+- Domain 1: 3 questions answered, not complete → 6% (3 × 2%)
+- Domain 2: 2 questions answered, not complete → 4% (2 × 2%)
+- Domains 3-5: Not started → 0%
+- **Total Progress: 10%**
+
+**Example 2: One Domain Complete**
+- Domain 1: Complete → 20%
+- Domain 2: 5 questions answered, not complete → 10% (5 × 2%)
+- Domain 3: 1 question answered, not complete → 2% (1 × 2%)
+- Domains 4-5: Not started → 0%
+- **Total Progress: 32%**
+
+**Example 3: Domain with Many Questions**
+- Domain 1: 12 questions answered, not complete → 18% (capped)
+- Domain 2: Complete → 20%
+- Domain 3: 4 questions answered, not complete → 8% (4 × 2%)
+- Domains 4-5: Not started → 0%
+- **Total Progress: 46%**
+
+**Example 4: All Domains Complete**
+- All 5 domains: Complete → 20% each
+- **Total Progress: 100%**
+
+### Implementation Requirements
+
+#### Domain Progress Tracking
+```php
+// Track per domain in diagnostic_responses
+function getDomainProgress($diagnosticId, $domainId) {
+    $questionsAnswered = DiagnosticResponse::where('diagnostic_id', $diagnosticId)
+        ->whereHas('diagnosticItem.subtopic.topic.domain', function($query) use ($domainId) {
+            $query->where('id', $domainId);
+        })
+        ->whereNotNull('user_answer')
+        ->count();
+    
+    $isDomainComplete = $this->adaptiveService->isDomainComplete($diagnosticId, $domainId);
+    
+    if ($isDomainComplete) {
+        return 20;
+    }
+    
+    return min(18, $questionsAnswered * 2);
+}
+```
+
+#### Total Progress Calculation
+```php
+function calculateProgress($diagnostic) {
+    $currentPhase = $diagnostic->phase;
+    $totalProgress = 0;
+    
+    foreach ($currentPhase->domains as $domain) {
+        $domainProgress = $this->getDomainProgress($diagnostic->id, $domain->id);
+        $totalProgress += $domainProgress;
+    }
+    
+    return round($totalProgress);
+}
+```
+
+### Why This Design?
+
+1. **Predictable & Fair**: Each domain contributes equally (20%) regardless of question count
+2. **Mental Model**: Simple 5×20% = 100% calculation users can understand
+3. **Prevents Gaming**: Can't rush through easy domains for quick progress
+4. **18% Safety Cap**: Prevents misleading "100%" when domains aren't actually complete
+5. **2% Per Question**: Provides meaningful incremental progress feedback
+
+### Progress Jump Examples
+
+When users see large progress jumps, it's because they've moved to a new domain:
+
+- **Q2 → Q3**: From "General Security Concepts" (Domain 1) to "Information Security Governance" (Domain 2)
+- **Jump**: ~10% because 2% for new question + ~8% credit for entering second domain
+- **User sees**: 11% → 21% (perfectly normal behavior)
+
+This large jump is **by design** - it rewards comprehensive assessment across all security domains rather than deep-diving into one area.
+
+---
+
 ## Bot Protection
 
 ### Requirements

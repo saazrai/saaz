@@ -10,7 +10,7 @@ class D8CryptographyKeyManagementSeeder extends BaseDiagnosticSeeder
     {
         return [
             // Topic 1: Cryptographic Fundamentals (10 questions)
-            // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
+            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
 
             // Item 1 - L3 - Apply
             [
@@ -42,7 +42,7 @@ If 10 users are part of a symmetric encryption system where each pair needs a un
 
             ],
 
-            // Item 2 - L1 - Remember
+            // Item 2 - L3 - Apply
             [
                 'topic' => 'Cryptography Algorithms',
                 'subtopic' => 'Symmetric Encryption',
@@ -61,7 +61,7 @@ If 10 users are part of a symmetric encryption system where each pair needs a un
                     'Incorrect - Diffie-Hellman is a key exchange protocol used to establish a shared secret, not an encryption algorithm',
                     'Incorrect - DSA (Digital Signature Algorithm) is used for digital signatures, not encryption',
                 ],
-                'bloom_level' => 1,
+                'bloom_level' => 3,
                 'difficulty_level' => 1,
                 'irt_a' => 0.8,
                 'irt_b' => -1.2,
@@ -321,7 +321,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
             // Topic 2: Encryption Implementation (10 questions)
             // Bloom Distribution: L1:1, L2:2, L3:3, L4:2, L5:2
 
-            // Item 11 - L2 - Understand
+            // Item 11 - L1 - Remember
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Digital Signatures',
@@ -340,7 +340,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Hashing provides integrity checking but does not ensure authenticity of the sender; anyone can compute a hash',
                     'Incorrect - Decryption is the process of converting encrypted data back to readable form; it does not provide authenticity or integrity assurance',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.1,
                 'irt_b' => -0.8,
@@ -349,7 +349,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 12 - L2 - Understand
+            // Item 12 - L1 - Remember
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Hash Functions',
@@ -368,7 +368,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Creating public-private key pairs is the function of key generation algorithms in asymmetric cryptography, not hash functions',
                     'Incorrect - Hash functions do not decrypt messages; they create fixed-size digests of input data for integrity verification',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.0,
                 'irt_b' => -0.6,
@@ -377,7 +377,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 13 - L2 - Understand
+            // Item 13 - L3 - Apply
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Authentication vs Integrity',
@@ -395,7 +395,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - This option does not accurately describe the concept',
                     'Incorrect - This option does not accurately describe the concept',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'irt_a' => 1.4,
                 'irt_b' => -0.1,
@@ -405,7 +405,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 14 - L3 - Apply
+            // Item 14 - L4 - Analyze
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Message Authentication Codes',
@@ -423,7 +423,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - This option does not accurately describe the concept',
                     'Incorrect - This option does not accurately describe the concept',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.5,
                 'irt_b' => 0.2,
@@ -461,7 +461,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 16 - L3 - Apply
+            // Item 16 - L4 - Analyze
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Cryptographic Applications',
@@ -479,7 +479,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - This option does not accurately describe the concept',
                     'Incorrect - This overstates the capability or scope',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.6,
                 'irt_b' => 0.6,
@@ -489,7 +489,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 17 - L4 - Analyze
+            // Item 17 - L5 - Evaluate
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Cryptographic Applications',
@@ -507,7 +507,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - This is too absolute or limiting',
                     'Incorrect - This option does not accurately describe the concept',
                 ],
-                'bloom_level' => 4,
+                'bloom_level' => 5,
                 'difficulty_level' => 4,
                 'irt_a' => 1.7,
                 'irt_b' => 0.9,
@@ -517,7 +517,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 18 - L4 - Analyze
+            // Item 18 - L5 - Evaluate
             [
                 'topic' => 'Cryptographic Applications',
                 'subtopic' => 'Cryptographic Applications',
@@ -535,7 +535,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - This option does not accurately describe the concept',
                     'Incorrect - This option does not accurately describe the concept',
                 ],
-                'bloom_level' => 4,
+                'bloom_level' => 5,
                 'difficulty_level' => 4,
                 'irt_a' => 1.8,
                 'irt_b' => 1.1,
@@ -602,9 +602,9 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
             ],
 
             // Topic 3: Digital Signatures & PKI (10 questions)
-            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            // Bloom Distribution: L1:2, L2:2, L3:4, L4:2, L5:0
 
-            // Item 21 - L2 - Understand
+            // Item 21 - L1 - Remember
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Public Key Infrastructure (PKI)',
@@ -623,7 +623,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - CAs do not store private keys securely for others; private keys must remain under the control of their owners. CAs only use their own private keys for signing certificates',
                     'Incorrect - While CAs may use hashing as part of the certificate signing process, their primary role is certificate issuance and verification, not general data hashing',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.1,
                 'irt_b' => -0.4,
@@ -632,7 +632,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 22 - L3 - Apply
+            // Item 22 - L4 - Analyze
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Public Key Infrastructure (PKI)',
@@ -650,7 +650,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - This is too absolute or limiting',
                     'Incorrect - This option does not accurately describe the concept',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.4,
                 'irt_b' => 0.2,
@@ -688,7 +688,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 24 - L2 - Understand
+            // Item 24 - L3 - Apply
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Digital Signatures',
@@ -706,7 +706,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Digital signatures are document-specific, not file-type-specific; each signature is mathematically bound to a specific document\'s content',
                     'Correct - Digital signatures are cryptographically bound to specific document content; moving a signature to a different document would fail verification because the hash would not match, ensuring document integrity and preventing signature reuse',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'irt_a' => 1.3,
                 'irt_b' => -0.2,
@@ -716,7 +716,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 25 - L2 - Understand
+            // Item 25 - L1 - Remember
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Non-repudiation',
@@ -735,7 +735,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Preventing unauthorized access is confidentiality, not non-repudiation; non-repudiation is about proving who performed an action',
                     'Incorrect - Ensuring data is not modified during transmission is integrity, not non-repudiation; non-repudiation proves the origin of the data',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.3,
                 'irt_b' => -0.1,
@@ -744,7 +744,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 26 - L3 - Apply
+            // Item 26 - L4 - Analyze
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Asymmetric Encryption',
@@ -762,7 +762,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Dual-key RSA schemes do not provide quantum resistance. RSA\'s underlying mathematical problem (integer factorization) remains vulnerable to Shor\'s algorithm regardless of how the keys are structured or used.',
                     'Incorrect - While increasing ECC key sizes improves security against classical attacks, ECC is still vulnerable to Shor\'s algorithm on quantum computers. No amount of key size increase can protect ECC against quantum attacks.',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.6,
                 'irt_b' => 0.5,
@@ -772,7 +772,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 27 - L2 - Understand
+            // Item 27 - L3 - Apply
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Hash Functions',
@@ -791,7 +791,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Correct - MD5\'s primary vulnerability is its susceptibility to collision attacks, where attackers can find two different inputs that produce the same hash output, compromising integrity verification',
                     'Incorrect - MD5 has low computational requirements, making it fast but also making brute-force attacks more feasible',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 3,
                 'difficulty_level' => 2,
                 'irt_a' => 1.3,
                 'irt_b' => -0.2,
@@ -828,7 +828,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 29 - L3 - Apply
+            // Item 29 - L4 - Analyze
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Hash Functions',
@@ -846,7 +846,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Correct - Salting adds a unique random value to each password before hashing. In the /etc/shadow format, the salt appears after the algorithm identifier ($6$ indicates SHA-512). Each user gets a different salt (a1fG, h3Kx, Z9tW), so identical passwords produce different hash values, preventing rainbow table attacks and making identical passwords less obvious.',
                     'Incorrect - While hashing is the general process being used, it does not explain why identical passwords produce different hash outputs. Without salting, identical passwords would produce identical hashes.',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.5,
                 'irt_b' => 0.2,
@@ -856,7 +856,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 30 - L3 - Apply
+            // Item 30 - L4 - Analyze
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Hash Functions',
@@ -874,7 +874,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Neither technique relies on random combinations. Dictionary attacks use probable passwords from wordlists, while rainbow tables use precomputed hash-to-plaintext mappings. Both are systematic rather than random approaches.',
                     'Incorrect - Both techniques can be used in offline scenarios where the attacker has obtained password hashes. The online/offline distinction is not the primary difference between dictionary attacks and rainbow table attacks.',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.6,
                 'irt_b' => 0.4,
@@ -885,9 +885,9 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
             ],
 
             // Topic 4: Key Management (10 questions)
-            // Bloom Distribution: L1:2, L2:2, L3:3, L4:2, L5:1
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:3, L5:1
 
-            // Item 31 - L3 - Apply
+            // Item 31 - L4 - Analyze
             [
                 'topic' => 'Key Management',
                 'subtopic' => 'Key Management',
@@ -905,7 +905,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Correct - Increasing key length exponentially increases the computational effort required for brute-force attacks (each additional bit doubles the keyspace). Rate-limiting restricts the number of attempts an attacker can make per unit time, making brute-force attacks impractical by extending the time required to try all possible keys.',
                     'Incorrect - Using outdated algorithms typically means using cryptographically weak or broken algorithms that may have known vulnerabilities or reduced key spaces. This makes systems more vulnerable to attacks, not less.',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.5,
                 'irt_b' => 0.3,
@@ -915,7 +915,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 32 - L2 - Understand
+            // Item 32 - L3 - Apply
             [
                 'topic' => 'Key Management',
                 'subtopic' => 'Key Management',
@@ -933,7 +933,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - Grover\'s algorithm provides a quadratic speedup for searching unsorted databases, which affects symmetric key lengths (requiring them to be doubled) but does not directly break RSA or ECC. Shor\'s algorithm is the specific threat to these public-key systems.',
                     'Incorrect - Quantum computers do not bypass encryption entirely. They use specific quantum algorithms like Shor\'s to solve particular mathematical problems more efficiently than classical computers, but they still require computational effort and do not instantly break all encryption.',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 3,
                 'difficulty_level' => 3,
                 'irt_a' => 1.5,
                 'irt_b' => 0.0,
@@ -943,7 +943,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 33 - L2 - Understand
+            // Item 33 - L1 - Remember
             [
                 'topic' => 'Key Management',
                 'subtopic' => 'Key Management',
@@ -962,7 +962,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Correct - The purpose of Diffie-Hellman key exchange is to allow two parties to securely establish a shared cryptographic key over an insecure public channel without transmitting the key directly',
                     'Incorrect - Diffie-Hellman is not used for digital signatures; digital signature algorithms like DSA or RSA are used for authentication purposes',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.2,
                 'irt_b' => -0.3,
@@ -1027,7 +1027,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 36 - L3 - Apply
+            // Item 36 - L4 - Analyze
             [
                 'topic' => 'Key Management',
                 'subtopic' => 'Key Management',
@@ -1045,7 +1045,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - While both can support authentication functions, their primary purposes differ significantly. TPMs focus on platform security, while HSMs specialize in protecting critical organizational keys. Performance is not the key differentiator.',
                     'Incorrect - This describes deployment models, not the fundamental differences in their security capabilities and use cases. Both can be deployed in various environments depending on the specific implementation.',
                 ],
-                'bloom_level' => 3,
+                'bloom_level' => 4,
                 'difficulty_level' => 3,
                 'irt_a' => 1.6,
                 'irt_b' => 0.4,
@@ -1167,10 +1167,10 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Topic 5: Cryptanalysis & Attacks (10 questions)
-            // Bloom Distribution: L1:2, L2:2, L3:4, L4:2, L5:0
+            // Topic 5: PKI Advanced Applications (10 questions)
+            // Bloom Distribution: L1:1, L2:2, L3:3, L4:1, L5:3
 
-            // Item 41 - L2 - Understand
+            // Item 41 - L1 - Remember
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Digital Signatures & PKI',
@@ -1188,7 +1188,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Incorrect - SAN does not provide backup certificate authority functionality. The certificate authority information is specified in the Issuer field, and backup CAs would require separate certificates or cross-certification arrangements.',
                     'Incorrect - Certificate revocation is not handled by the SAN field. Revocation is managed through Certificate Revocation Lists (CRLs) or Online Certificate Status Protocol (OCSP), and expiration is handled by the validity dates in the certificate.',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.3,
                 'irt_b' => -0.2,
@@ -1198,7 +1198,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
 
             ],
 
-            // Item 42 - L2 - Understand
+            // Item 42 - L1 - Remember
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Digital Signatures & PKI',
@@ -1216,7 +1216,7 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
                     'Correct - The primary function of a Certificate Authority is to issue digital certificates that bind public keys to identities, and then digitally sign these certificates with the CA\'s private key. This establishes a chain of trust, allowing others to verify the authenticity of public keys.',
                     'Incorrect - Session key generation is typically handled by the communicating endpoints during key exchange protocols (like TLS handshake). CAs provide the certificates used to establish trust, but do not generate session keys.',
                 ],
-                'bloom_level' => 2,
+                'bloom_level' => 1,
                 'difficulty_level' => 2,
                 'irt_a' => 1.2,
                 'irt_b' => -0.3,

@@ -52,6 +52,7 @@ Route::prefix('diagnostics')->name('assessments.diagnostics.')->group(function (
         Route::post('/{diagnostic}/answer', [DiagnosticController::class, 'answer'])->name('answer');
         Route::post('/{diagnostic}/submit', [DiagnosticController::class, 'submit'])->name('submit');
         Route::get('/{diagnostic}/results', [DiagnosticController::class, 'results'])->name('results');
+        Route::get('/{diagnostic}/review', [DiagnosticController::class, 'review'])->name('review');
         Route::get('/{diagnostic}/report', [DiagnosticController::class, 'report'])->name('report');
         Route::get('/{diagnostic}/phase/{phase}/results', [DiagnosticController::class, 'phaseResults'])->name('phase-results');
         Route::post('/{diagnostic}/continue-phase', [DiagnosticController::class, 'continuePhase'])->name('continue-phase');

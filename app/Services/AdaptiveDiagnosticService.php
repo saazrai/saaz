@@ -76,7 +76,7 @@ class AdaptiveDiagnosticService
      */
     public function processAnswer(array $state, DiagnosticItem $item, bool $isCorrect, ?int $userId = null): array
     {
-        $domainId = $item->topic->domain_id;
+        $domainId = $item->subtopic->topic->domain_id;
 
         // Initialize domain if first time
         if (! isset($state['domain_bloom_levels'][$domainId])) {
@@ -687,6 +687,48 @@ class AdaptiveDiagnosticService
     }
 
     /**
+     * Check if a domain assessment is complete (public interface)
+     * 
+     * @param int $diagnosticId Diagnostic ID to check
+     * @param int $domainId Domain ID to check
+     * @return bool True if domain assessment is complete
+     */
+    public function isDomainComplete(int $diagnosticId, int $domainId): bool
+    {
+        // Get the diagnostic and its adaptive state
+        $diagnostic = \App\Models\Diagnostic::find($diagnosticId);
+        if (!$diagnostic) {
+            return false;
+        }
+
+        $state = json_decode($diagnostic->adaptive_state, true) ?: [];
+        
+        return $this->isDomainCompleteFromState($domainId, $state);
+    }
+
+    /**
+     * Check if a domain assessment is complete based on adaptive state
+     * 
+     * @param int $domainId Domain ID to check
+     * @param array $state Current adaptive state
+     * @return bool True if domain assessment is complete
+     */
+    public function isDomainCompleteFromState(int $domainId, array $state): bool
+    {
+        // Get domain question count
+        $questionsInDomain = count($state['domain_history'][$domainId] ?? []);
+        
+        // If no questions asked in this domain, it's not complete
+        if ($questionsInDomain === 0) {
+            return false;
+        }
+        
+        // Use the existing shouldContinueDomain logic (inverted)
+        // shouldContinueDomain returns true if we should continue, false if we should stop
+        return !$this->shouldContinueDomain($domainId, $questionsInDomain, $state);
+    }
+
+    /**
      * Check if we've hit the ceiling for a domain (3+ failures at level)
      */
     private function hasFoundCeiling(int $domainId, int $bloomLevel, array $state): bool
@@ -1120,13 +1162,13 @@ class AdaptiveDiagnosticService
     public function calculateDomainPerformance(int $diagnosticId): array
     {
         $responses = DiagnosticResponse::where('diagnostic_id', $diagnosticId)
-            ->with('diagnosticItem.topic.domain')
+            ->with('diagnosticItem.subtopic.topic.domain')
             ->get();
 
         $performance = [];
 
         foreach ($responses as $response) {
-            $domainId = $response->diagnosticItem->topic->domain_id;
+            $domainId = $response->diagnosticItem->subtopic->topic->domain_id;
             $bloomLevel = $response->diagnosticItem->bloom_level;
 
             if (! isset($performance[$domainId])) {
@@ -1241,7 +1283,8 @@ class AdaptiveDiagnosticService
             }
 
             if (! empty($domainsLackingConfidence)) {
-                $targetDomainId = $domainsLackingConfidence[0]; // Take first one needing confidence
+                // Use round-robin among domains lacking statistical confidence
+                $targetDomainId = $this->getNextRoundRobinDomain($domainsLackingConfidence, $lastTestedDomain);
                 $targetBloomLevel = $state['domain_bloom_levels'][$targetDomainId] ?? 3;
 
                 // Determine the reason for selection
@@ -1262,6 +1305,9 @@ class AdaptiveDiagnosticService
                     'minimum_required' => $minQuestionsAtLevel,
                     'reason' => $reason,
                     'selection_priority' => 'CRITICAL - statistical confidence',
+                    'round_robin_used' => true,
+                    'candidates' => $domainsLackingConfidence,
+                    'last_tested_domain' => $lastTestedDomain,
                 ]);
             } else {
                 // PERFECT OPTIMIZATION: PRIORITY 0.1 - Domains with advancement possibilities
@@ -1409,32 +1455,53 @@ class AdaptiveDiagnosticService
                                 // Priority 1: Domains with uncertain performance (40-70% at current level)
                                 $uncertainDomains = $this->getUncertainDomains($phaseDomainIds, $state);
                                 if (! empty($uncertainDomains)) {
-                                    $targetDomainId = $uncertainDomains[0]; // Take first uncertain domain
+                                    // Use round-robin among uncertain domains for balanced coverage
+                                    $targetDomainId = $this->getNextRoundRobinDomain($uncertainDomains, $lastTestedDomain);
+                                    
+                                    Log::info('🎯 SELECTION REASON: Uncertain Performance (Round-Robin)', [
+                                        'domain_id' => $targetDomainId,
+                                        'selection_priority' => 'HIGH - uncertain performance',
+                                        'round_robin_used' => true,
+                                        'candidates' => $uncertainDomains,
+                                        'last_tested_domain' => $lastTestedDomain,
+                                    ]);
                                 }
 
                                 // Priority 2: Domains showing excellence that haven't reached L5
                                 if (! $targetDomainId) {
                                     $excellentDomains = $this->getExcellentDomains($phaseDomainIds, $state);
                                     if (! empty($excellentDomains)) {
-                                        // Prioritize L4 domains ready for L5 testing
+                                        // Prioritize L4 domains ready for L5 testing, then apply round-robin within same priority level
                                         usort($excellentDomains, function ($a, $b) use ($state) {
                                             $levelA = $state['domain_bloom_levels'][$a] ?? 3;
                                             $levelB = $state['domain_bloom_levels'][$b] ?? 3;
 
                                             return $levelB <=> $levelA; // Higher levels first
                                         });
-                                        $targetDomainId = $excellentDomains[0];
+                                        
+                                        // Group by bloom level and apply round-robin within highest priority group
+                                        $highestLevel = $state['domain_bloom_levels'][$excellentDomains[0]] ?? 3;
+                                        $highestPriorityDomains = array_filter($excellentDomains, function($domainId) use ($state, $highestLevel) {
+                                            return ($state['domain_bloom_levels'][$domainId] ?? 3) === $highestLevel;
+                                        });
+                                        
+                                        $targetDomainId = $this->getNextRoundRobinDomain($highestPriorityDomains, $lastTestedDomain);
                                     }
                                 }
 
                                 // Priority 3: Any domain that should continue testing
                                 if (! $targetDomainId) {
+                                    $continuingDomains = [];
                                     foreach ($phaseDomainIds as $domainId) {
                                         $count = $domainQuestionCounts[$domainId] ?? 0;
                                         if ($this->shouldContinueDomain($domainId, $count, $state)) {
-                                            $targetDomainId = $domainId;
-                                            break;
+                                            $continuingDomains[] = $domainId;
                                         }
+                                    }
+                                    
+                                    if (! empty($continuingDomains)) {
+                                        // Use round-robin among domains that should continue
+                                        $targetDomainId = $this->getNextRoundRobinDomain($continuingDomains, $lastTestedDomain);
                                     }
                                 }
 
@@ -1514,7 +1581,7 @@ class AdaptiveDiagnosticService
                     // For now, attempt fallback to find ANY L5 question even if previously used
                     $emergencyQuestions = DiagnosticItem::where('status', 'published')
                         ->where('bloom_level', 5)
-                        ->whereHas('topic.domain', function ($query) use ($targetDomainId) {
+                        ->whereHas('subtopic.topic.domain', function ($query) use ($targetDomainId) {
                             $query->where('id', $targetDomainId);
                         })
                         ->get();
@@ -1581,7 +1648,7 @@ class AdaptiveDiagnosticService
         $questions = DiagnosticItem::where('status', 'published')
             ->whereNotIn('id', $excludeIds)
             ->where('bloom_level', $targetBloomLevel)
-            ->whereHas('topic.domain', function ($query) use ($domainId) {
+            ->whereHas('subtopic.topic.domain', function ($query) use ($domainId) {
                 $query->where('id', $domainId);
             })
             ->get();
@@ -1612,7 +1679,7 @@ class AdaptiveDiagnosticService
             $questions = DiagnosticItem::where('status', 'published')
                 ->whereNotIn('id', $excludeIds)
                 ->whereIn('bloom_level', $higherLevels)
-                ->whereHas('topic.domain', function ($query) use ($domainId) {
+                ->whereHas('subtopic.topic.domain', function ($query) use ($domainId) {
                     $query->where('id', $domainId);
                 })
                 ->orderBy('bloom_level') // Prefer closest higher level
@@ -1760,7 +1827,7 @@ class AdaptiveDiagnosticService
     public function getDomainBloomProgression(int $diagnosticId, int $domainId): array
     {
         $responses = DiagnosticResponse::where('diagnostic_id', $diagnosticId)
-            ->whereHas('diagnosticItem.topic', function ($query) use ($domainId) {
+            ->whereHas('diagnosticItem.subtopic.topic', function ($query) use ($domainId) {
                 $query->where('domain_id', $domainId);
             })
             ->with('diagnosticItem')

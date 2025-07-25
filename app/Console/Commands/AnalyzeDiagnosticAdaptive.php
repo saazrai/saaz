@@ -15,7 +15,7 @@ class AnalyzeDiagnosticAdaptive extends Command
     public function handle()
     {
         $diagnosticId = $this->argument('diagnostic');
-        $diagnostic = Diagnostic::with(['user', 'phase', 'responses.diagnosticItem.topic.domain'])
+        $diagnostic = Diagnostic::with(['user', 'phase', 'responses.diagnosticItem.subtopic.topic.domain'])
             ->find($diagnosticId);
 
         if (! $diagnostic) {
@@ -32,7 +32,7 @@ class AnalyzeDiagnosticAdaptive extends Command
 
         $responses = $diagnostic->responses()
             ->whereNotNull('user_answer')
-            ->with('diagnosticItem.topic.domain')
+            ->with('diagnosticItem.subtopic.topic.domain')
             ->orderBy('created_at')
             ->get();
 

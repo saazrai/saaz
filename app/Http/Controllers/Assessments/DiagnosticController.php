@@ -257,7 +257,134 @@ class DiagnosticController extends Controller
     }
 
     /**
-     * Calculate progress based on phase completion
+     * Calculate domain-based progress according to business logic:
+     * - 5 domains = 100% (each domain = 20%)
+     * - Each question = 2% within domain
+     * - Cap at 18% until domain complete, then 20%
+     */
+    private function calculateProgress(Diagnostic $diagnostic): int
+    {
+        $currentPhase = $diagnostic->phase;
+        if (!$currentPhase || $currentPhase->domains->isEmpty()) {
+            return 0;
+        }
+
+        // Validate expected domain count for business logic consistency
+        $expectedDomains = 5;
+        if ($currentPhase->domains->count() !== $expectedDomains) {
+            \Log::warning('Domain count mismatch in progress calculation', [
+                'diagnostic_id' => $diagnostic->id,
+                'phase_id' => $currentPhase->id,
+                'expected_domains' => $expectedDomains,
+                'actual_domains' => $currentPhase->domains->count(),
+            ]);
+        }
+
+        // Parse adaptive state once for efficiency
+        $adaptiveState = json_decode($diagnostic->adaptive_state, true) ?? [];
+        
+        // Pre-load all diagnostic responses with domain information to avoid N+1 queries
+        $responsesByDomain = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
+            ->whereNotNull('user_answer')
+            ->with('diagnosticItem.subtopic.topic.domain')
+            ->get()
+            ->groupBy(function ($response) {
+                return $response->diagnosticItem?->subtopic?->topic?->domain?->id;
+            });
+
+        $totalProgress = 0.0;
+        $domainProgressDetails = [];
+        
+        foreach ($currentPhase->domains as $domain) {
+            $domainProgress = $this->calculateDomainProgress(
+                $domain,
+                $responsesByDomain->get($domain->id, collect()),
+                $adaptiveState
+            );
+            
+            $totalProgress += $domainProgress;
+            $domainProgressDetails[] = [
+                'domain_id' => $domain->id,
+                'domain_name' => $domain->name,
+                'progress' => $domainProgress,
+            ];
+        }
+
+        // Apply bounds checking
+        $finalProgress = max(0, min(100, round($totalProgress)));
+
+        \Log::info('Domain-based Progress Calculation', [
+            'diagnostic_id' => $diagnostic->id,
+            'phase_id' => $currentPhase->id,
+            'domain_details' => $domainProgressDetails,
+            'total_progress' => $totalProgress,
+            'final_progress' => $finalProgress,
+        ]);
+
+        return $finalProgress;
+    }
+
+    /**
+     * Calculate progress for a specific domain using pre-loaded data:
+     * - Each question = 2% of domain progress
+     * - Cap at 18% until domain is complete
+     * - Full 20% when domain is marked complete by adaptive service
+     */
+    private function calculateDomainProgress(
+        $domain,
+        $domainResponses,
+        array $adaptiveState
+    ): float {
+        $questionsAnswered = $domainResponses->count();
+        
+        // Check if domain is complete using pre-parsed adaptive state
+        $isDomainComplete = $this->adaptiveService->isDomainCompleteFromState($domain->id, $adaptiveState);
+
+        if ($isDomainComplete) {
+            return 20.0; // Full domain weight when complete
+        }
+
+        // Cap at 18% to prevent showing 100% when domain isn't complete
+        // Use integer arithmetic to avoid floating point precision issues
+        $progressPoints = min(18, $questionsAnswered * 2);
+        $progressFromQuestions = (float) $progressPoints;
+
+        \Log::debug('Domain Progress Detail', [
+            'domain_id' => $domain->id,
+            'domain_name' => $domain->name,
+            'questions_answered' => $questionsAnswered,
+            'is_complete' => $isDomainComplete,
+            'progress' => $progressFromQuestions,
+        ]);
+
+        return $progressFromQuestions;
+    }
+
+    /**
+     * Legacy method for backward compatibility - now optimized
+     * @deprecated Use calculateDomainProgress with pre-loaded data instead
+     */
+    private function getDomainProgress(int $diagnosticId, int $domainId): float
+    {
+        // For backward compatibility, fall back to individual queries
+        $questionsAnswered = DiagnosticResponse::where('diagnostic_id', $diagnosticId)
+            ->whereHas('diagnosticItem.subtopic.topic.domain', function($query) use ($domainId) {
+                $query->where('id', $domainId);
+            })
+            ->whereNotNull('user_answer')
+            ->count();
+
+        $isDomainComplete = $this->adaptiveService->isDomainComplete($diagnosticId, $domainId);
+
+        if ($isDomainComplete) {
+            return 20.0;
+        }
+
+        return (float) min(18, $questionsAnswered * 2);
+    }
+
+    /**
+     * Calculate progress based on phase completion (legacy - keeping for backward compatibility)
      */
     private function calculatePhaseProgress(int $currentPhaseOrder, int $domainsCompleted): float
     {
@@ -823,10 +950,10 @@ class DiagnosticController extends Controller
             $phaseResults[$phase->order_sequence] = $phaseData;
         }
 
-        // Generate career recommendations if all phases completed
-        $careerRecommendations = null;
+        // Generate subtopic analysis if all phases completed
+        $subtopicAnalysis = null;
         if ($allPhasesCompleted) {
-            $careerRecommendations = $this->generateCareerRecommendations($phaseResults);
+            $subtopicAnalysis = $this->generateSubtopicAnalysis($phaseResults);
         }
 
         // Debug: Log the phase results structure
@@ -847,7 +974,7 @@ class DiagnosticController extends Controller
         return Inertia::render('Diagnostics/AllResults', [
             'phases' => $phaseResults,
             'all_phases_completed' => $allPhasesCompleted,
-            'career_recommendations' => $careerRecommendations,
+            'subtopic_analysis' => $subtopicAnalysis,
         ]);
     }
 
@@ -928,54 +1055,11 @@ class DiagnosticController extends Controller
         $currentPhase = $adaptiveState['current_phase'] ?? 1;
         $totalPhases = 4; // 4-phase system
 
-        // Calculate progress based on diagnostic completion criteria
+        // Calculate progress using domain-based logic
         if ($diagnostic->status === 'completed') {
             $progress = 100;
         } else {
-            // Get the number of domains tested
-            $testedDomainIds = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
-                ->whereNotNull('user_answer')
-                ->with('diagnosticItem.topic')
-                ->get()
-                ->pluck('diagnosticItem.subtopic.topic.domain_id')
-                ->unique()
-                ->count();
-
-            // Progress is based on two factors:
-            // 1. Domain coverage (up to 5 domains = 50% progress)
-            // 2. Question count (up to 100 questions = 50% progress)
-
-            // Domain progress (0-50%)
-            $domainProgress = min(50, ($testedDomainIds / 5) * 50);
-
-            // Question progress (0-50%)
-            // If < 50 questions: scale from 0-35%
-            // If 50-100 questions: scale from 35-50%
-            if ($totalAnswered < 50) {
-                $questionProgress = ($totalAnswered / 50) * 35;
-            } else {
-                $questionProgress = 35 + (($totalAnswered - 50) / 50) * 15;
-            }
-
-            // Combined progress
-            $progress = round($domainProgress + $questionProgress);
-
-            // Ensure minimum progress for user feedback
-            if ($totalAnswered > 0) {
-                $progress = max(5, $progress);
-            }
-
-            // Cap at 95% until actually complete
-            $progress = min(95, $progress);
-
-            \Log::info('Diagnostic Progress Calculation', [
-                'diagnostic_id' => $diagnostic->id,
-                'total_answered' => $totalAnswered,
-                'tested_domains' => $testedDomainIds,
-                'domain_progress' => round($domainProgress, 2),
-                'question_progress' => round($questionProgress, 2),
-                'final_progress' => $progress,
-            ]);
+            $progress = $this->calculateProgress($diagnostic);
         }
 
         return Inertia::render('Diagnostics/Test/Quiz', [
@@ -984,6 +1068,80 @@ class DiagnosticController extends Controller
             'progress' => $progress,
             'totalQuestions' => null, // Adaptive - unknown total
             'currentQuestionNumber' => $totalAnswered + 1,
+        ]);
+    }
+
+    /**
+     * Review diagnostic questions and answers.
+     */
+    public function review(Diagnostic $diagnostic): Response
+    {
+        // Check ownership for authenticated users
+        if ($diagnostic->user_id !== auth()->id()) {
+            abort(403, 'You can only review your own assessments.');
+        }
+
+        // Check if diagnostic is completed
+        if ($diagnostic->status !== 'completed') {
+            return redirect()->route('assessments.diagnostics.show', $diagnostic)
+                ->with('error', 'You can only review completed assessments.');
+        }
+
+        // Load diagnostic with all responses and questions
+        $diagnostic->load([
+            'responses' => function ($query) {
+                $query->whereNotNull('user_answer')
+                      ->orderBy('created_at')
+                      ->with([
+                          'diagnosticItem.subtopic.topic.domain',
+                          'diagnosticItem' => function ($itemQuery) {
+                              $itemQuery->select([
+                                  'id', 'subtopic_id', 'content', 'options', 'correct_options', 
+                                  'justifications', 'type_id', 'difficulty_level', 'bloom_level'
+                              ]);
+                          }
+                      ]);
+            }
+        ]);
+
+        // Transform the data structure for the Review component
+        $transformedResponses = $diagnostic->responses->map(function ($response) {
+            return [
+                'id' => $response->id,
+                'user_answer' => $response->user_answer,
+                'is_correct' => $response->is_correct,
+                'response_time_seconds' => $response->response_time_seconds,
+                'item' => [
+                    'id' => $response->diagnosticItem->id,
+                    'content' => $response->diagnosticItem->content,
+                    'question' => $response->diagnosticItem->content, // For Type1Review compatibility
+                    'options' => $response->diagnosticItem->options,
+                    'correct_options' => $response->diagnosticItem->correct_options,
+                    'justifications' => $response->diagnosticItem->justifications,
+                    'type_id' => $response->diagnosticItem->type_id ?? 1,
+                    'difficulty' => $response->diagnosticItem->difficulty_level,
+                    'bloom' => $response->diagnosticItem->bloom_level,
+                    'topic' => [
+                        'id' => $response->diagnosticItem->subtopic->topic->id,
+                        'name' => $response->diagnosticItem->subtopic->topic->name,
+                        'domain' => [
+                            'id' => $response->diagnosticItem->subtopic->topic->domain->id,
+                            'name' => $response->diagnosticItem->subtopic->topic->domain->name,
+                        ]
+                    ]
+                ]
+            ];
+        });
+
+        $diagnosticData = [
+            'id' => $diagnostic->id,
+            'status' => $diagnostic->status,
+            'score' => $diagnostic->score,
+            'responses' => $transformedResponses,
+        ];
+
+        return Inertia::render('Diagnostics/Test/Review', [
+            'diagnostic' => $diagnosticData,
         ]);
     }
 
@@ -1077,117 +1235,114 @@ class DiagnosticController extends Controller
     }
 
     /**
-     * Generate career recommendations based on all phase results.
+     * Generate subtopic-based performance analysis based on all phase results.
      */
-    private function generateCareerRecommendations($phaseResults): array
+    private function generateSubtopicAnalysis($phaseResults): array
     {
-        $careerPaths = [];
-        $overallStrengths = [];
-        $overallWeaknesses = [];
+        $subtopicPerformance = [];
+        $overallStats = [
+            'total_subtopics' => 0,
+            'mastered_subtopics' => 0,
+            'developing_subtopics' => 0,
+            'needs_improvement_subtopics' => 0,
+        ];
 
-        // Analyze performance across all phases
-        $phaseScores = [];
+        // Collect all diagnostic responses across all phases
+        $allResponses = collect();
         foreach ($phaseResults as $phase) {
             if ($phase['completed']) {
-                $phaseScores[$phase['name']] = $phase['score'];
-
-                // Collect strong domains (>= 80%)
-                foreach ($phase['domain_performance'] as $domain) {
-                    if ($domain['score'] >= 80) {
-                        $overallStrengths[] = $domain['name'];
-                    } elseif ($domain['score'] < 60) {
-                        $overallWeaknesses[] = $domain['name'];
+                foreach ($phase['attempts'] as $attempt) {
+                    $diagnostic = Diagnostic::with([
+                        'responses.diagnosticItem.subtopic.topic.domain'
+                    ])->find($attempt['id']);
+                    
+                    if ($diagnostic) {
+                        $allResponses = $allResponses->merge($diagnostic->responses);
                     }
                 }
             }
         }
 
-        // Calculate average score
-        $avgScore = count($phaseScores) > 0 ? array_sum($phaseScores) / count($phaseScores) : 0;
+        // Group responses by subtopic
+        $subtopicGroups = $allResponses->groupBy(function ($response) {
+            return $response->diagnosticItem->subtopic->id ?? 'unknown';
+        });
 
-        // Determine career paths based on strengths
-        if ($avgScore >= 85) {
-            $careerPaths[] = [
-                'title' => 'Chief Information Security Officer (CISO)',
-                'match' => '95%',
-                'description' => 'Your exceptional performance across all domains positions you for executive security leadership.',
-                'next_steps' => ['Pursue executive leadership training', 'Gain board-level communication skills'],
+        foreach ($subtopicGroups as $subtopicId => $responses) {
+            if ($subtopicId === 'unknown') continue;
+
+            $firstResponse = $responses->first();
+            $subtopic = $firstResponse->diagnosticItem->subtopic;
+            
+            $totalQuestions = $responses->count();
+            $correctAnswers = $responses->where('is_correct', true)->count();
+            $accuracy = $totalQuestions > 0 ? ($correctAnswers / $totalQuestions) * 100 : 0;
+            
+            // Calculate bloom level distribution
+            $bloomLevels = $responses->map(function ($response) {
+                return $response->diagnosticItem->bloom_level ?? 3;
+            });
+            
+            $avgBloomLevel = $bloomLevels->avg();
+            $maxBloomLevel = $bloomLevels->max();
+            
+            // Determine proficiency level
+            $proficiencyLevel = 'Needs Improvement';
+            if ($accuracy >= 80) {
+                $proficiencyLevel = 'Mastered';
+                $overallStats['mastered_subtopics']++;
+            } elseif ($accuracy >= 60) {
+                $proficiencyLevel = 'Developing';
+                $overallStats['developing_subtopics']++;
+            } else {
+                $overallStats['needs_improvement_subtopics']++;
+            }
+
+            $subtopicPerformance[] = [
+                'id' => $subtopic->id,
+                'name' => $subtopic->name,
+                'topic_name' => $subtopic->topic->name,
+                'domain_name' => $subtopic->topic->domain->name,
+                'description' => $subtopic->description,
+                'total_questions' => $totalQuestions,
+                'correct_answers' => $correctAnswers,
+                'accuracy' => round($accuracy, 1),
+                'avg_bloom_level' => round($avgBloomLevel, 1),
+                'max_bloom_level' => $maxBloomLevel,
+                'proficiency_level' => $proficiencyLevel,
             ];
+            
+            $overallStats['total_subtopics']++;
         }
 
-        if (in_array('Security Architecture & Design', $overallStrengths)) {
-            $careerPaths[] = [
-                'title' => 'Security Architect',
-                'match' => '90%',
-                'description' => 'Your strong architectural skills make you ideal for designing secure systems.',
-                'next_steps' => ['Get cloud security certifications', 'Study enterprise architecture frameworks'],
-            ];
-        }
+        // Sort by accuracy descending
+        usort($subtopicPerformance, function ($a, $b) {
+            return $b['accuracy'] <=> $a['accuracy'];
+        });
 
-        if (in_array('Incident Management & Forensics', $overallStrengths)) {
-            $careerPaths[] = [
-                'title' => 'Incident Response Manager',
-                'match' => '88%',
-                'description' => 'Your incident handling expertise suits you for leading response teams.',
-                'next_steps' => ['Gain forensics certifications', 'Practice crisis management'],
-            ];
-        }
+        // Get top strengths and areas for improvement
+        $strengths = array_slice(array_filter($subtopicPerformance, function ($subtopic) {
+            return $subtopic['proficiency_level'] === 'Mastered';
+        }), 0, 5);
 
-        if (in_array('Risk Management', $overallStrengths)) {
-            $careerPaths[] = [
-                'title' => 'Risk Management Specialist',
-                'match' => '85%',
-                'description' => 'Your risk assessment skills are valuable for enterprise risk management roles.',
-                'next_steps' => ['Study quantitative risk analysis', 'Learn business continuity planning'],
-            ];
-        }
+        $improvements = array_slice(array_filter($subtopicPerformance, function ($subtopic) {
+            return $subtopic['proficiency_level'] === 'Needs Improvement';
+        }), 0, 5);
 
-        // Default recommendations if no specific strengths
-        if (empty($careerPaths)) {
-            $careerPaths[] = [
-                'title' => 'Security Analyst',
-                'match' => '75%',
-                'description' => 'A great starting point to build your security expertise across domains.',
-                'next_steps' => ['Focus on weak domains', 'Gain hands-on experience', 'Pursue Security+ certification'],
-            ];
-        }
+        // Calculate overall mastery percentage
+        $masteryPercentage = $overallStats['total_subtopics'] > 0 
+            ? round(($overallStats['mastered_subtopics'] / $overallStats['total_subtopics']) * 100, 1) 
+            : 0;
 
         return [
-            'career_paths' => array_slice($careerPaths, 0, 3),
-            'strengths' => array_unique($overallStrengths),
-            'improvement_areas' => array_unique($overallWeaknesses),
-            'overall_readiness' => $avgScore,
-            'recommended_certifications' => $this->getRecommendedCertifications($avgScore, $overallStrengths),
+            'subtopic_performance' => $subtopicPerformance,
+            'overall_stats' => $overallStats,
+            'mastery_percentage' => $masteryPercentage,
+            'top_strengths' => $strengths,
+            'improvement_areas' => $improvements,
         ];
     }
 
-    /**
-     * Get recommended certifications based on performance.
-     */
-    private function getRecommendedCertifications($avgScore, $strengths): array
-    {
-        $certifications = [];
-
-        if ($avgScore < 70) {
-            $certifications[] = 'CompTIA Security+';
-        } elseif ($avgScore < 80) {
-            $certifications[] = 'CompTIA CySA+';
-            $certifications[] = 'Systems Security Certified Practitioner (SSCP)';
-        } else {
-            $certifications[] = 'Certified Information Systems Security Professional (CISSP)';
-            $certifications[] = 'Certified Information Security Manager (CISM)';
-        }
-
-        // Add specialized certs based on strengths
-        if (in_array('Cloud Security', $strengths)) {
-            $certifications[] = 'AWS Certified Security - Specialty';
-        }
-        if (in_array('Network & Communication Security', $strengths)) {
-            $certifications[] = 'Certified Ethical Hacker (CEH)';
-        }
-
-        return array_slice($certifications, 0, 3);
-    }
 
     /**
      * Generate a diagnostic question based on current domain and phase
@@ -1375,6 +1530,16 @@ class DiagnosticController extends Controller
             return;
         }
 
+        // Update adaptive state with last tested domain for round-robin tracking
+        $firstQuestionWithRelations = $firstQuestion->load('subtopic.topic.domain');
+        $domainId = $firstQuestionWithRelations->subtopic->topic->domain_id;
+        
+        $adaptiveState = json_decode($diagnostic->adaptive_state, true) ?: [];
+        $adaptiveState['last_tested_domain'] = $domainId;
+        $diagnostic->update([
+            'adaptive_state' => json_encode($adaptiveState),
+        ]);
+
         // Store the question in diagnostic_responses table
         DiagnosticResponse::create([
             'diagnostic_id' => $diagnostic->id,
@@ -1471,6 +1636,14 @@ class DiagnosticController extends Controller
             'target_bloom' => $questionSelection['target_bloom_level'],
             'actual_bloom' => $questionSelection['bloom_level'],
         ]);
+
+        // Update adaptive state with last tested domain for round-robin tracking
+        if (isset($questionSelection['last_tested_domain'])) {
+            $adaptiveState['last_tested_domain'] = $questionSelection['last_tested_domain'];
+            $diagnostic->update([
+                'adaptive_state' => json_encode($adaptiveState),
+            ]);
+        }
 
         // Store the question in diagnostic_responses table
         DiagnosticResponse::create([

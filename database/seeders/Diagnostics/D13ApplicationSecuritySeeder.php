@@ -674,14 +674,14 @@ class D13ApplicationSecuritySeeder extends BaseDiagnosticSeeder
                 'options' => [
                     'john.doe@example.com',
                     'Robert\'); DROP TABLE students;--',
-                    '<script>alert(\'XSS\')</script>',
+                    '&lt;script&gt;alert(\'XSS\')&lt;/script&gt;',
                     '../../etc/passwd',
                 ],
                 'correct_options' => ['Robert\'); DROP TABLE students;--'],
                 'justifications' => [
                     'Incorrect - "john.doe@example.com" is a legitimate email address format with no malicious SQL syntax. This input follows standard email formatting conventions and contains no SQL injection indicators such as quotes, semicolons, SQL keywords, or comment markers.',
                     'Correct - "Robert\'); DROP TABLE students;--" is a classic SQL injection payload. It contains a single quote to break out of the expected string parameter, a semicolon to terminate the current SQL statement, the DROP TABLE command to delete data, and double dashes (--) to comment out the rest of the original query. This pattern is designed to manipulate SQL queries and execute unauthorized database operations.',
-                    'Incorrect - "<script>alert(\'XSS\')</script>" is a Cross-Site Scripting (XSS) payload, not SQL injection. This input contains HTML/JavaScript tags designed to execute client-side scripts in web browsers, but it has no SQL syntax or database manipulation commands that would indicate SQL injection.',
+                    'Incorrect - "&lt;script&gt;alert(\'XSS\')&lt;/script&gt;" is a Cross-Site Scripting (XSS) payload, not SQL injection. This input contains HTML/JavaScript tags designed to execute client-side scripts in web browsers, but it has no SQL syntax or database manipulation commands that would indicate SQL injection.',
                     'Incorrect - "../../etc/passwd" is a path traversal payload, not SQL injection. This input uses directory traversal sequences (../) to navigate file systems and access unauthorized files, but contains no SQL syntax, quotes, or database commands that would indicate SQL injection attempts.',
                 ],
                 'bloom_level' => 3,
@@ -893,14 +893,14 @@ class D13ApplicationSecuritySeeder extends BaseDiagnosticSeeder
                 'options' => [
                     'search=report1',
                     'file=../../etc/shadow',
-                    'user=<script>alert(1)</script>',
+                    'user=&lt;script&gt;alert(1)&lt;/script&gt;',
                     'id=123; DROP TABLE users',
                 ],
                 'correct_options' => ['file=../../etc/shadow'],
                 'justifications' => [
                     'Incorrect - "search=report1" is a benign search parameter with a simple alphanumeric value. This input contains no directory traversal sequences (../) or attempts to access files outside the intended directory structure. It represents normal application functionality for searching content.',
                     'Correct - "file=../../etc/shadow" is a classic path traversal payload that uses directory traversal sequences (../) to navigate up the directory tree and attempt to access the /etc/shadow file, which contains password hashes on Unix/Linux systems. The "../" sequences are designed to break out of the intended file directory and access sensitive system files outside the application\'s intended scope.',
-                    'Incorrect - "user=<script>alert(1)</script>" is a Cross-Site Scripting (XSS) payload designed to execute JavaScript in web browsers, not a path traversal attack. This input contains HTML/JavaScript tags rather than file path manipulation sequences, making it unsuitable for exploiting path traversal vulnerabilities.',
+                    'Incorrect - "user=&lt;script&gt;alert(1)&lt;/script&gt;" is a Cross-Site Scripting (XSS) payload designed to execute JavaScript in web browsers, not a path traversal attack. This input contains HTML/JavaScript tags rather than file path manipulation sequences, making it unsuitable for exploiting path traversal vulnerabilities.',
                     'Incorrect - "id=123; DROP TABLE users" is a SQL injection payload designed to manipulate database queries, not file system paths. This input contains SQL syntax (semicolon, DROP TABLE command) rather than directory traversal sequences, making it ineffective against path traversal vulnerabilities.',
                 ],
                 'bloom_level' => 2,
@@ -916,7 +916,7 @@ class D13ApplicationSecuritySeeder extends BaseDiagnosticSeeder
             [
                 'topic' => 'API Security',
                 'subtopic' => 'Security Testing',
-                'question' => 'A web application displays user-submitted comments directly on a webpage without proper encoding. An attacker submits a comment containing <script>alert(\'XSSed!\');</script>. When other users view this comment, they see a pop-up alert. This is an example of what type of XSS?',
+                'question' => 'A web application displays user-submitted comments directly on a webpage without proper encoding. An attacker submits a comment containing &lt;script&gt;alert(\'XSSed!\');&lt;/script&gt;. When other users view this comment, they see a pop-up alert. This is an example of what type of XSS?',
                 'options' => [
                     'Reflected XSS',
                     'Stored XSS',
