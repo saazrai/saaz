@@ -41,7 +41,7 @@
                         
                         <!-- Theme Toggle - iOS style -->
                         <button
-                            @click="toggleTheme"
+                            @click="() => toggleTheme(false)"
                             class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             :class="isDark ? 'bg-blue-600' : 'bg-gray-300'"
                             aria-label="Toggle theme"
@@ -275,12 +275,10 @@ export default {
         milestoneConfig: Object
     },
     setup(props) {
-        const { isDark, toggleTheme, setTheme } = useTheme()
+        const { isDark, toggleTheme, setTheme, initializeTheme } = useTheme()
         
-        // Initialize dark theme immediately
-        if (!localStorage.getItem('theme')) {
-            setTheme('dark');
-        }
+        // Initialize theme properly using the composable
+        initializeTheme()
         
         // Reactive data
         const selectedOptions = ref([])
@@ -313,22 +311,6 @@ export default {
         let totalTimer = null
         
         onMounted(() => {
-            // Initialize theme - ensure dark theme is applied
-            if (!localStorage.getItem('theme')) {
-                // Apply dark theme as default
-                localStorage.setItem('theme', 'dark');
-            }
-            
-            // Always ensure the theme classes match the stored preference
-            const currentStoredTheme = localStorage.getItem('theme') || 'dark';
-            if (currentStoredTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.documentElement.classList.remove('light');
-            } else {
-                document.documentElement.classList.add('light');
-                document.documentElement.classList.remove('dark');
-            }
-            
             // Start timers
             questionTimer = setInterval(() => {
                 questionTime.value++
