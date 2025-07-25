@@ -76,6 +76,16 @@ class AdaptiveDiagnosticService
      */
     public function processAnswer(array $state, DiagnosticItem $item, bool $isCorrect, ?int $userId = null): array
     {
+        // Ensure the item has the required relationships loaded
+        if (!$item->subtopic || !$item->subtopic->topic) {
+            $item->load('subtopic.topic.domain');
+        }
+        
+        // Handle case where subtopic/topic is still null (shouldn't happen in normal flow)
+        if (!$item->subtopic || !$item->subtopic->topic) {
+            throw new \InvalidArgumentException("DiagnosticItem {$item->id} is missing required subtopic/topic relationship");
+        }
+        
         $domainId = $item->subtopic->topic->domain_id;
 
         // Initialize domain if first time

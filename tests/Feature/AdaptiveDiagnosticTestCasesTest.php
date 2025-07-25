@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\DiagnosticDomain;
 use App\Models\DiagnosticItem;
+use App\Models\DiagnosticSubtopic;
 use App\Models\DiagnosticTopic;
 use App\Services\AdaptiveDiagnosticService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -301,18 +302,25 @@ class AdaptiveDiagnosticTestCasesTest extends TestCase
             ['description' => 'Test topic']
         );
 
+        $subtopic = DiagnosticSubtopic::firstOrCreate(
+            ['topic_id' => $topic->id, 'name' => "Subtopic for Domain $domainId"],
+            ['description' => 'Test subtopic', 'sort_order' => 1]
+        );
+
         $item = new DiagnosticItem;
         $item->id = rand(10000, 99999);
         $item->bloom_level = $bloomLevel;
-        $item->topic_id = $topic->id;
+        $item->subtopic_id = $subtopic->id;
         $item->content = 'Test question';
         $item->options = ['A', 'B', 'C', 'D'];
         $item->correct_options = ['A'];
         $item->justifications = ['A' => 'Correct', 'B' => 'Wrong', 'C' => 'Wrong', 'D' => 'Wrong'];
-        $item->difficulty_id = 3;
+        $item->difficulty_level = 3;
         $item->dimension = 'Technical';
         $item->exists = true;
-        $item->setRelation('topic', $topic);
+        $item->setRelation('subtopic', $subtopic);
+        $subtopic->setRelation('topic', $topic);
+        $topic->setRelation('domain', $domain);
 
         return $item;
     }
