@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('avatar')->nullable(); // OAuth: User avatar URL
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable(); // Nullable for OAuth users
+            $table->json('ui_preferences')->nullable(); // Added 2025-07-17: User interface preferences
             $table->rememberToken();
             $table->timestamps();
         });
