@@ -146,7 +146,6 @@ return new class extends Migration
         // Individual diagnostic questions with IRT parameters
         Schema::create('diagnostic_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('topic_id')->nullable()->constrained('diagnostic_topics')->onDelete('cascade'); // Added 2025-07-25: Topic mapping for compatibility
             $table->foreignId('subtopic_id')->nullable()->constrained('diagnostic_subtopics')->onDelete('cascade'); // Added 2025-07-22: Granular subtopic mapping
             $table->foreignId('type_id')->nullable()->constrained('question_types')->onDelete('set null');
 
@@ -179,7 +178,6 @@ return new class extends Migration
             $table->timestamps();
 
             // Performance indexes for question selection
-            $table->index(['topic_id', 'status']); // Added 2025-07-25: Topic-based queries
             $table->index(['subtopic_id', 'status']); // Added 2025-07-22: Subtopic-based queries
             $table->index(['difficulty_level', 'bloom_level']);
         });

@@ -10,7 +10,6 @@ class DiagnosticItem extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'topic_id',
         'subtopic_id',
         'type_id',
         'dimension',
@@ -36,11 +35,6 @@ class DiagnosticItem extends BaseModel
         'irt_b' => 'decimal:2',
         'irt_c' => 'decimal:2',
     ];
-
-    public function topic(): BelongsTo
-    {
-        return $this->belongsTo(DiagnosticTopic::class, 'topic_id');
-    }
 
     public function subtopic(): BelongsTo
     {

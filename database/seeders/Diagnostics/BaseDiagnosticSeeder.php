@@ -22,7 +22,7 @@ abstract class BaseDiagnosticSeeder extends Seeder
         // Get subtopics for this domain
         $subtopics = DiagnosticSubtopic::whereHas('topic.domain', function ($query) {
             $query->where('name', $this->domainName);
-        })->get()->keyBy('name');
+        })->with('topic')->get()->keyBy('name');
 
         $questions = $this->getQuestions();
 

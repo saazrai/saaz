@@ -350,6 +350,7 @@ class DiagnosticSubtopicsSeeder extends Seeder
                 ],
                 'Network Services' => [
                     ['name' => 'Network Services', 'description' => 'DNS, DHCP, NTP, directory services, load balancing, and other essential network services'],
+                    ['name' => 'Network Diagnostic Tools', 'description' => 'Using ping, traceroute, nslookup, tcpdump, dig, netstat, ip/ifconfig, arp, and nmap for network troubleshooting'],
                 ],
                 'Communication Protocols' => [
                     ['name' => 'Communication Protocols', 'description' => 'HTTP/HTTPS, FTP, SMTP, POP3, IMAP, and routing protocols for data transmission'],
@@ -369,9 +370,6 @@ class DiagnosticSubtopicsSeeder extends Seeder
                 ],
                 'Wireless Security' => [
                     ['name' => 'Wireless Security', 'description' => 'Enterprise WiFi security (WPA3, 802.1X), wireless threats, and enterprise wireless architecture design'],
-                ],
-                'Network Diagnostic Tools' => [
-                    ['name' => 'Network Diagnostic Tools', 'description' => 'Using ping, traceroute, nslookup, tcpdump, dig, netstat, ip/ifconfig, arp, and nmap for network troubleshooting'],
                 ],
             ],
 

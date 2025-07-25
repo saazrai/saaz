@@ -17,7 +17,7 @@ class DiagnosticItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'topic_id' => \App\Models\DiagnosticTopic::factory(),
+            'subtopic_id' => \App\Models\DiagnosticSubtopic::factory(),
             'type_id' => 1, // Default to MCQ (Multiple Choice Question)
             'dimension' => $this->faker->randomElement(['Technical', 'Managerial']),
             'content' => $this->faker->sentence().'?',

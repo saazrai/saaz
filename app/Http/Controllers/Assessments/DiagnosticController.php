@@ -88,8 +88,8 @@ class DiagnosticController extends Controller
      */
     public function start(Request $request): Response|RedirectResponse
     {
-        // Check if a specific phase is requested
-        $requestedPhase = $request->query('phase');
+        // Check if a specific phase is requested (now from POST body)
+        $requestedPhase = $request->input('phase');
 
         if ($requestedPhase) {
             // Validate phase number
@@ -285,9 +285,9 @@ class DiagnosticController extends Controller
 
         // Get domains tested from responses
         $testedDomainIds = $diagnostic->responses()
-            ->with('diagnosticItem.topic.domain')
+            ->with('diagnosticItem.subtopic.topic.domain')
             ->get()
-            ->pluck('diagnosticItem.topic.domain.id')
+            ->pluck('diagnosticItem.subtopic.topic.domain.id')
             ->unique()
             ->values()
             ->toArray();
@@ -466,7 +466,7 @@ class DiagnosticController extends Controller
         // Log state before processing
         \Log::info('Adaptive state before processing answer', [
             'diagnostic_id' => $diagnostic->id,
-            'domain_id' => $diagnosticItem->topic->domain_id,
+            'domain_id' => $diagnosticItem->subtopic->topic->domain_id,
             'is_correct' => $isCorrect,
             'state_before' => $adaptiveState,
         ]);
@@ -477,7 +477,7 @@ class DiagnosticController extends Controller
         // Log state after processing
         \Log::info('Adaptive state after processing answer', [
             'diagnostic_id' => $diagnostic->id,
-            'domain_id' => $diagnosticItem->topic->domain_id,
+            'domain_id' => $diagnosticItem->subtopic->topic->domain_id,
             'state_after' => $adaptiveState,
         ]);
 
@@ -602,7 +602,7 @@ class DiagnosticController extends Controller
         }
 
         $responses = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
-            ->with(['diagnosticItem.topic.domain'])
+            ->with(['diagnosticItem.subtopic.topic.domain'])
             ->get();
 
         $domainPerformance = $responses->groupBy(function ($response) {
@@ -722,7 +722,7 @@ class DiagnosticController extends Controller
             $phaseDiagnostics = Diagnostic::where('user_id', auth()->id())
                 ->where('phase_id', $phase->id)
                 ->whereIn('status', ['completed', 'paused', 'in_progress'])
-                ->with(['responses.diagnosticItem.topic.domain'])
+                ->with(['responses.diagnosticItem.subtopic.topic.domain'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -771,7 +771,7 @@ class DiagnosticController extends Controller
                 // Get detailed data for the latest attempt
                 $latestDiagnostic = $validDiagnostics->first();
                 $responses = $latestDiagnostic->responses()->whereNotNull('user_answer')
-                    ->with(['diagnosticItem.topic.domain'])
+                    ->with(['diagnosticItem.subtopic.topic.domain'])
                     ->get();
 
                 $correctCount = $responses->where('is_correct', true)->count();
@@ -869,7 +869,7 @@ class DiagnosticController extends Controller
         // Get current unanswered question from diagnostic_responses
         $currentResponse = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
             ->whereNull('user_answer')
-            ->with('diagnosticItem.topic.domain')
+            ->with('diagnosticItem.subtopic.topic.domain')
             ->orderBy('created_at')
             ->first();
 
@@ -897,8 +897,8 @@ class DiagnosticController extends Controller
             'difficulty' => ['name' => $this->getDifficultyName($diagnosticItem->difficulty_level)],
             'bloom' => ['level' => $this->getBloomName($diagnosticItem->bloom_level)],
             'topic' => [
-                'name' => $diagnosticItem->topic->name ?? 'General Topic',
-                'domain' => ['name' => $diagnosticItem->topic->domain->name ?? 'General Domain'],
+                'name' => $diagnosticItem->subtopic->topic->name ?? 'General Topic',
+                'domain' => ['name' => $diagnosticItem->subtopic->topic->domain->name ?? 'General Domain'],
             ],
         ];
 
@@ -937,7 +937,7 @@ class DiagnosticController extends Controller
                 ->whereNotNull('user_answer')
                 ->with('diagnosticItem.topic')
                 ->get()
-                ->pluck('diagnosticItem.topic.domain_id')
+                ->pluck('diagnosticItem.subtopic.topic.domain_id')
                 ->unique()
                 ->count();
 
@@ -1004,7 +1004,7 @@ class DiagnosticController extends Controller
         }
 
         $responses = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
-            ->with(['diagnosticItem.topic.domain'])
+            ->with(['diagnosticItem.subtopic.topic.domain'])
             ->get();
 
         $domainPerformance = $responses->groupBy(function ($response) {
@@ -1208,7 +1208,7 @@ class DiagnosticController extends Controller
         $domainName = $this->getDomainName($domainIndex);
 
         // Load diagnostic items for the current domain
-        $diagnosticItems = \App\Models\DiagnosticItem::whereHas('topic.domain', function ($query) use ($domainName) {
+        $diagnosticItems = \App\Models\DiagnosticItem::whereHas('subtopic.topic.domain', function ($query) use ($domainName) {
             $query->where('name', $domainName);
         })->where('status', 'published')->get();
 
@@ -1349,7 +1349,7 @@ class DiagnosticController extends Controller
         // Get a question from domains in the current phase only
         $firstQuestion = DiagnosticItem::where('status', 'published')
             ->where('bloom_level', 3) // Start at Apply level (3)
-            ->whereHas('topic.domain', function ($query) use ($currentPhaseId) {
+            ->whereHas('subtopic.topic.domain', function ($query) use ($currentPhaseId) {
                 $query->where('phase_id', $currentPhaseId)
                     ->where('is_active', true);
             })
@@ -1360,7 +1360,7 @@ class DiagnosticController extends Controller
         if (! $firstQuestion) {
             $firstQuestion = DiagnosticItem::where('status', 'published')
                 ->where('bloom_level', 2)
-                ->whereHas('topic.domain', function ($query) use ($currentPhaseId) {
+                ->whereHas('subtopic.topic.domain', function ($query) use ($currentPhaseId) {
                     $query->where('phase_id', $currentPhaseId)
                         ->where('is_active', true);
                 })

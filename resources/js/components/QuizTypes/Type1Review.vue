@@ -6,73 +6,83 @@
                 : 'bg-white border-gray-200'
          ]">
         <!-- Question Section -->
-        <div class="p-8">
+        <div class="p-4">
             <div
-                class="text-lg font-medium mb-8"
+                class="text-base font-medium mb-4"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'"
                 v-html="renderedQuestion"
             ></div>
 
-            <!-- Options -->
+            <!-- Options with Contextual Justifications -->
             <div class="space-y-3">
                 <div
                     v-for="(option, i) in options"
                     :key="i"
-                    :class="['relative rounded-xl transition-all duration-200', getOptionContainerClasses(option, i)]"
+                    :class="['relative rounded-lg transition-all duration-200', getOptionContainerClasses(option, i)]"
                 >
-                    <div class="flex items-center p-4">
-                        <!-- Radio/Checkbox -->
-                        <div class="mr-4">
-                            <input
-                                :type="question.type == 2 ? 'checkbox' : 'radio'"
-                                :id="'option' + i"
-                                :checked="isSelectedOptionInReview(option)"
-                                disabled
-                                class="w-5 h-5 cursor-not-allowed"
-                                :class="getInputClasses(option, i)"
-                            />
-                        </div>
-                        
+                    <!-- Option Header -->
+                    <div class="flex items-center justify-between p-3">
                         <!-- Option Content -->
-                        <label
-                            :for="'option' + i"
-                            class="flex-1 flex items-center cursor-default"
-                        >
-                            <span class="font-semibold mr-3 text-lg"
-                                  :class="isThemeDark ? 'text-white' : 'text-black'">
-                                {{ bullets[i] }}.
-                            </span>
-                            <span class="text-lg" 
+                        <div class="flex-1 mr-3">
+                            <span class="text-base" 
                                   :class="getOptionTextClasses(option, i)"
                                   v-html="renderMarkdown(option)">
                             </span>
-                        </label>
+                        </div>
                         
-                        <!-- Result Indicator -->
-                        <div class="ml-4">
+                        <!-- Status Indicator -->
+                        <div class="flex items-center space-x-2 flex-shrink-0">
+                            <!-- Status Indicator -->
                             <div v-if="isCorrectOption(i)" 
-                                 :class="[
-                                     'w-8 h-8 rounded-full flex items-center justify-center',
-                                     isThemeDark 
-                                         ? 'bg-green-500/20 text-green-400' 
-                                         : 'bg-green-500/20 text-green-600'
-                                 ]">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                 class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
                             <div v-else-if="isIncorrectOption(option)" 
-                                 :class="[
-                                     'w-8 h-8 rounded-full flex items-center justify-center',
-                                     isThemeDark 
-                                         ? 'bg-red-500/20 text-red-400' 
-                                         : 'bg-red-500/20 text-red-600'
-                                 ]">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                 class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contextual Justification -->
+                    <div 
+                        v-if="shouldShowJustification(i)"
+                        class="px-3 pb-3 pt-2"
+                    >
+                        <div class="flex items-start space-x-3">
+                            <!-- Subtle Icon Indicator -->
+                            <div :class="[
+                                'w-1 h-4 rounded-full flex-shrink-0 mt-0.5',
+                                isCorrectOption(i)
+                                    ? 'bg-green-500'
+                                    : 'bg-blue-500'
+                            ]"></div>
+                            
+                            <!-- Clean Explanation Text -->
+                            <div class="flex-1 min-w-0">
+                                <div 
+                                    v-if="getJustificationForOption(i)"
+                                    :class="[
+                                        'text-sm leading-relaxed',
+                                        isCorrectOption(i)
+                                            ? (isThemeDark ? 'text-green-200' : 'text-green-700')
+                                            : (isThemeDark ? 'text-blue-200' : 'text-blue-700')
+                                    ]"
+                                    v-html="renderMarkdown(getJustificationForOption(i))"
+                                ></div>
+                                <div 
+                                    v-else
+                                    class="text-sm italic"
+                                    :class="isThemeDark ? 'text-gray-500' : 'text-gray-500'"
+                                >
+                                    No explanation available
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -85,112 +95,73 @@
             :class="[
                 'border-t',
                 answer.is_correct
-                    ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
-                    : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-500')
+                    ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-50 border-green-300')
+                    : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-50 border-red-300')
             ]"
         >
-            <div class="p-8">
-                <!-- Section Header -->
-                <div class="flex items-center mb-6">
+            <div class="p-4">
+                <!-- Result Summary -->
+                <div class="flex items-center mb-4">
                     <div :class="[
-                            'w-10 h-10 rounded-xl flex items-center justify-center mr-3',
+                            'w-8 h-8 rounded-lg flex items-center justify-center mr-3',
                             answer.is_correct
-                                ? (isThemeDark ? 'bg-green-500/20' : 'bg-green-500/20')
-                                : (isThemeDark ? 'bg-red-500/20' : 'bg-red-500/20')
+                                ? 'bg-green-500'
+                                : 'bg-red-500'
                         ]">
-                        <svg v-if="answer.is_correct" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg v-if="answer.is_correct" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
-                        <svg v-else class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg v-else class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold"
-                        :class="isThemeDark ? 'text-white' : 'text-gray-900'">
-                        Answer Review
-                    </h3>
+                    <div>
+                        <p :class="[
+                            'font-semibold text-base',
+                            answer.is_correct
+                                ? (isThemeDark ? 'text-green-400' : 'text-green-700')
+                                : (isThemeDark ? 'text-red-400' : 'text-red-700')
+                        ]">
+                            {{ answer.is_correct ? 'Correct!' : 'Incorrect' }}
+                        </p>
+                        <p :class="isThemeDark ? 'text-gray-300 text-sm' : 'text-gray-600 text-sm'">
+                            {{ answer.is_correct 
+                                ? 'Well done!' 
+                                : 'Review the correct answer below.' }}
+                        </p>
+                    </div>
                 </div>
                 
-                <!-- Result Message -->
-                <div class="mb-6">
-                    <p :class="[
-                        'font-semibold text-lg mb-2',
-                        answer.is_correct
-                            ? (isThemeDark ? 'text-green-400' : 'text-green-700')
-                            : (isThemeDark ? 'text-red-400' : 'text-red-700')
-                    ]">
-                        {{ answer.is_correct ? '✓ Correct!' : '✗ Incorrect' }}
-                    </p>
-                    <p :class="isThemeDark ? 'text-gray-300 text-lg' : 'text-gray-700 text-lg'">
-                        {{ answer.is_correct 
-                            ? 'Great job! You selected the right answer.' 
-                            : 'The correct answer is highlighted below.' }}
-                    </p>
-                </div>
-                
-                <!-- Option Explanations -->
-                <div class="space-y-3">
-                    <div
-                        v-for="(option, index) in question.options"
-                        :key="index"
-                        :class="[
-                            'rounded-xl p-4 transition-all relative',
-                            isCorrectOption(index) 
-                                ? (isThemeDark 
-                                    ? 'bg-green-500/20 border border-green-500/60 ring-2 ring-green-500/30' 
-                                    : 'bg-green-50 border border-green-500 ring-2 ring-green-200')
-                                : (isThemeDark 
-                                    ? 'bg-gray-700/30 border border-gray-600' 
-                                    : 'bg-white border border-gray-300')
-                        ]"
-                    >
-                        <!-- Correct Badge -->
-                        <div v-if="isCorrectOption(index)" class="absolute -top-2 -right-2">
-                            <div :class="[
-                                'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider',
-                                isThemeDark 
-                                    ? 'bg-green-500 text-white' 
-                                    : 'bg-green-500 text-white'
-                            ]">
-                                Correct
-                            </div>
+                <!-- Correct Answer Highlight -->
+                <div
+                    v-for="correctAnswer in correctAnswers"
+                    :key="correctAnswer.index"
+                    :class="[
+                        'rounded-lg p-3 mb-3',
+                        isThemeDark 
+                            ? 'bg-green-500/20 border border-green-500/50' 
+                            : 'bg-green-50 border border-green-300'
+                    ]"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="font-medium text-sm mb-1"
+                               :class="isThemeDark ? 'text-green-300' : 'text-green-800'">
+                                Correct Answer:
+                            </p>
+                            <p class="text-base"
+                               :class="isThemeDark ? 'text-green-200' : 'text-green-700'">
+                                {{ correctAnswer.option }}
+                            </p>
                         </div>
-                        
-                        <div class="flex items-start">
-                            <span class="font-bold mr-3 text-lg shrink-0"
-                                  :class="isCorrectOption(index) 
-                                      ? (isThemeDark ? 'text-green-400' : 'text-green-700')
-                                      : (isThemeDark ? 'text-white' : 'text-black')">
-                                {{ bullets[index] }}.
-                            </span>
-                            <div class="flex-1">
-                                <div class="font-medium mb-2 text-lg flex items-center"
-                                     :class="[
-                                         isCorrectOption(index)
-                                             ? (isThemeDark ? 'text-green-300' : 'text-green-800')
-                                             : (isThemeDark ? 'text-gray-300' : 'text-gray-700')
-                                     ]">
-                                    {{ option }}
-                                    <svg v-if="isCorrectOption(index)" class="w-5 h-5 ml-2 inline-block" 
-                                         :class="isThemeDark ? 'text-green-400' : 'text-green-600'"
-                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </div>
-                                <div 
-                                    v-if="question.justifications && question.justifications[index]" 
-                                    class="text-lg"
-                                    :class="[
-                                        isCorrectOption(index)
-                                            ? (isThemeDark ? 'text-green-200' : 'text-green-700')
-                                            : (isThemeDark ? 'text-gray-400' : 'text-gray-600')
-                                    ]"
-                                    v-html="renderMarkdown(question.justifications[index])"
-                                ></div>
-                            </div>
+                        <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center ml-3">
+                            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                            </svg>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -214,11 +185,16 @@ export default {
         isDark: {
             type: Boolean,
             default: null
+        },
+        showExplanations: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return {
-            bullets: ["A", "B", "C", "D", "E", "F", "G", "H"],
+            showDetailedExplanations: false,
+            windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024
         };
     },
     computed: {
@@ -234,19 +210,20 @@ export default {
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
         },
         options() {
-            return this.question.options;
+            return this.question?.options || [];
         },
         isMultiChoice() {
             return this.question.type == 2;
         },
         correctOptionIndexes() {
-            if (!this.question?.correct_options) return [];
+            if (!this.question?.correct_options || this.question.correct_options.length === 0) return [];
             // Check if correct_options contains indexes (numbers) or values (strings)
             if (typeof this.question.correct_options[0] === 'number') {
                 // Already contains indexes
                 return this.question.correct_options;
             } else {
                 // Contains values, need to find indexes
+                if (!this.question.options) return [];
                 return this.question.correct_options.map((answer) =>
                     this.question.options.indexOf(answer)
                 );
@@ -255,55 +232,57 @@ export default {
         renderedQuestion() {
              if (!this.question?.content) return '';
              return marked(this.question.content);
+        },
+        hasAnyJustifications() {
+            return this.question?.justifications && 
+                   Object.values(this.question.justifications).some(justification => 
+                       typeof justification === 'string' && justification.trim() !== '');
+        },
+        correctAnswers() {
+            if (!this.options || !this.correctOptionIndexes || this.correctOptionIndexes.length === 0) return [];
+            
+            return this.correctOptionIndexes.map(index => ({
+                index: index,
+                option: this.options[index]
+            })).filter(item => item.option !== undefined && item.option !== null);
+        },
+        shouldShowExplanations() {
+            // Desktop: always show if explanations exist
+            // Mobile: show only if parent component says to show them
+            if (this.windowWidth >= 1024) {
+                return this.hasAnyJustifications;
+            } else {
+                return this.showExplanations && this.hasAnyJustifications;
+            }
         }
     },
     methods: {
         getOptionContainerClasses(option, i) {
-            // Container classes for the option div
+            // Simplified container classes for clean mobile design
             if (this.isCorrectOption(i)) {
                 return this.isThemeDark 
-                    ? 'border bg-green-500/10 border-green-500/50' 
-                    : 'border bg-green-100 border-green-500';
+                    ? 'bg-green-500/10 border border-green-500/30' 
+                    : 'bg-green-50 border border-green-300';
             } else if (this.isSelectedOptionInReview(option) && this.isIncorrectOption(option)) {
                 return this.isThemeDark 
-                    ? 'border bg-red-500/10 border-red-500/50' 
-                    : 'border bg-red-100 border-red-500';
+                    ? 'bg-red-500/10 border border-red-500/30' 
+                    : 'bg-red-50 border border-red-300';
             } else {
                 return this.isThemeDark 
-                    ? 'border border-gray-700 hover:bg-gray-700/20' 
-                    : 'border border-gray-200 hover:bg-gray-50';
-            }
-        },
-        getInputClasses(option, i) {
-            // Classes for the radio/checkbox input
-            if (this.isCorrectOption(i)) {
-                return this.isThemeDark 
-                    ? 'accent-green-500 border-green-500' 
-                    : 'accent-green-600 border-green-600';
-            } else if (this.isSelectedOptionInReview(option) && this.isIncorrectOption(option)) {
-                return this.isThemeDark 
-                    ? 'accent-red-500 border-red-500' 
-                    : 'accent-red-600 border-red-600';
-            } else {
-                return this.isThemeDark 
-                    ? 'border-gray-600' 
-                    : 'border-gray-400';
+                    ? 'bg-gray-800/50 border border-gray-700' 
+                    : 'bg-gray-50 border border-gray-200';
             }
         },
         getOptionTextClasses(option, i) {
-            // Classes for the option text
+            // Simplified text classes for better readability
             if (this.isCorrectOption(i)) {
                 return this.isThemeDark 
-                    ? 'text-green-300' 
-                    : 'text-green-700';
+                    ? 'text-green-300 font-medium' 
+                    : 'text-green-700 font-medium';
             } else if (this.isSelectedOptionInReview(option) && this.isIncorrectOption(option)) {
                 return this.isThemeDark 
-                    ? 'text-red-300' 
-                    : 'text-red-700';
-            } else if (!this.isSelectedOptionInReview(option) && !this.isCorrectOption(i)) {
-                return this.isThemeDark 
-                    ? 'text-gray-500' 
-                    : 'text-gray-500';
+                    ? 'text-red-300 font-medium' 
+                    : 'text-red-700 font-medium';
             } else {
                 return this.isThemeDark 
                     ? 'text-gray-300' 
@@ -352,6 +331,72 @@ export default {
         renderMarkdown(text) {
              if (!text) return '';
              return marked(text);
+        },
+        shouldShowJustification(optionIndex) {
+            // Use the global explanation visibility state
+            return this.shouldShowExplanations && this.hasJustificationForOption(optionIndex);
+        },
+        hasJustificationForOption(optionIndex) {
+            if (!this.question?.justifications) return false;
+            
+            // Check if justifications is an array (indexed by option index)
+            if (Array.isArray(this.question.justifications)) {
+                const justification = this.question.justifications[optionIndex];
+                return justification && typeof justification === 'string' && justification.trim() !== '';
+            }
+            
+            // Check if justifications is an object (keyed by option index or option text)
+            if (typeof this.question.justifications === 'object') {
+                // Try by index first
+                let justification = this.question.justifications[optionIndex];
+                
+                // If not found by index, try by option content
+                if (!justification && this.options[optionIndex]) {
+                    justification = this.question.justifications[this.options[optionIndex]];
+                }
+                
+                return justification && typeof justification === 'string' && justification.trim() !== '';
+            }
+            
+            return false;
+        },
+        getJustificationForOption(optionIndex) {
+            if (!this.question?.justifications) return null;
+            
+            // Check if justifications is an array (indexed by option index)
+            if (Array.isArray(this.question.justifications)) {
+                return this.question.justifications[optionIndex] || null;
+            }
+            
+            // Check if justifications is an object (keyed by option index or option text)
+            if (typeof this.question.justifications === 'object') {
+                // Try by index first
+                let justification = this.question.justifications[optionIndex];
+                
+                // If not found by index, try by option content
+                if (!justification && this.options[optionIndex]) {
+                    justification = this.question.justifications[this.options[optionIndex]];
+                }
+                
+                return justification || null;
+            }
+            
+            return null;
+        }
+    },
+    mounted() {
+        // Add window resize listener for responsive behavior
+        if (typeof window !== 'undefined') {
+            this.handleWindowResize = () => {
+                this.windowWidth = window.innerWidth;
+            };
+            window.addEventListener('resize', this.handleWindowResize);
+        }
+    },
+    beforeUnmount() {
+        // Clean up window resize listener
+        if (typeof window !== 'undefined' && this.handleWindowResize) {
+            window.removeEventListener('resize', this.handleWindowResize);
         }
     }
 };

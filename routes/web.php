@@ -45,7 +45,7 @@ Route::prefix('diagnostics')->name('assessments.diagnostics.')->group(function (
     // Protected routes (require authentication)
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/results', [DiagnosticController::class, 'allResults'])->name('all-results');
-        Route::get('/start', [DiagnosticController::class, 'start'])->name('start');
+        Route::post('/start', [DiagnosticController::class, 'start'])->name('start');
         Route::post('/begin', [DiagnosticController::class, 'begin'])->name('begin');
         Route::post('/store', [DiagnosticController::class, 'store'])->name('store');
         Route::get('/{diagnostic}', [DiagnosticController::class, 'show'])->name('show');

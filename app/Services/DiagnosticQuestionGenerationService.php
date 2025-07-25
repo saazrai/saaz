@@ -35,19 +35,10 @@ class DiagnosticQuestionGenerationService
         $cacheKey = "diagnostic_questions_{$domainId}_{$bloomLevel}_{$count}";
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($domainId, $bloomLevel, $count) {
-            // Get topics for this domain
-            $topicIds = DiagnosticTopic::where('domain_id', $domainId)
-                ->pluck('id')
-                ->toArray();
-
-            if (empty($topicIds)) {
-                Log::warning('No topics found for domain', ['domain_id' => $domainId]);
-
-                return [];
-            }
-
-            // Retrieve questions from seeded data
-            $questions = DiagnosticItem::whereIn('topic_id', $topicIds)
+            // Retrieve questions from seeded data using subtopic->topic->domain relationship
+            $questions = DiagnosticItem::whereHas('subtopic.topic', function ($query) use ($domainId) {
+                $query->where('domain_id', $domainId);
+            })
                 ->where('bloom_level', $bloomLevel)
                 ->where('status', 'published')
                 ->inRandomOrder()
@@ -71,11 +62,9 @@ class DiagnosticQuestionGenerationService
      */
     public function needsMoreQuestions(int $domainId, int $bloomLevel, array $excludedIds = []): bool
     {
-        $topicIds = DiagnosticTopic::where('domain_id', $domainId)
-            ->pluck('id')
-            ->toArray();
-
-        $availableCount = DiagnosticItem::whereIn('topic_id', $topicIds)
+        $availableCount = DiagnosticItem::whereHas('subtopic.topic', function ($query) use ($domainId) {
+            $query->where('domain_id', $domainId);
+        })
             ->where('bloom_level', $bloomLevel)
             ->where('status', 'published')
             ->whereNotIn('id', $excludedIds)
@@ -117,11 +106,9 @@ class DiagnosticQuestionGenerationService
      */
     public function getQuestionPoolSize(int $domainId, int $bloomLevel): int
     {
-        $topicIds = DiagnosticTopic::where('domain_id', $domainId)
-            ->pluck('id')
-            ->toArray();
-
-        return DiagnosticItem::whereIn('topic_id', $topicIds)
+        return DiagnosticItem::whereHas('subtopic.topic', function ($query) use ($domainId) {
+            $query->where('domain_id', $domainId);
+        })
             ->where('bloom_level', $bloomLevel)
             ->where('status', 'published')
             ->count();
