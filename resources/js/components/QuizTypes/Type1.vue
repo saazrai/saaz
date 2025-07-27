@@ -1,7 +1,7 @@
 <template>
     <!-- Question Panel -->
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl',
+            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl p-3 lg:p-6',
             isThemeDark 
                 ? 'bg-gray-800 border-gray-700' 
                 : 'bg-white border-slate-300 shadow-slate-200'
@@ -9,61 +9,51 @@
          :data-theme="isThemeDark ? 'dark' : 'light'">
         <div>
             <div
-                class="px-6 pt-8 rounded text-lg font-medium"
+                class="rounded text-base lg:text-lg font-medium leading-tight lg:leading-normal"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-slate-900'"
                 v-html="renderedQuestion"
             ></div>
 
-            <ol class="pb-2 my-6">
-                <li
+            <div class="pb-2 my-4 lg:my-6 space-y-2">
+                <div
                     v-for="(option, i) in options"
                     :key="i"
-                    class="p-3 mx-5 my-2 rounded-lg min-h-12.5 flex items-center transition-all"
+                    class="relative p-4 rounded-xl transition-all duration-200 ease-in-out active:scale-98"
                     :class="[
-                        getDarkModeClasses(option),
-                        isOptionDisabled(option) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                        getCardClasses(option),
+                        isOptionDisabled(option) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:shadow-lg'
                     ]"
                     @click="handleOptionClick(option)"
+                    role="button"
+                    :aria-pressed="isSelectedOption(option)"
+                    :aria-disabled="isOptionDisabled(option)"
                 >
-                    <span class="flex items-center w-full pointer-events-none">
-                        <input
-                            :type="isMultiSelect ? 'checkbox' : 'radio'"
-                            name="option"
-                            :id="'option' + i"
-                            :value="option"
-                            :checked="isSelectedOption(option)"
-                            :disabled="isOptionDisabled(option)"
-                            class="form-check-input w-5 h-5 mr-3 transition duration-150 ease-in-out"
+                    <!-- Option Content -->
+                    <div class="flex items-start space-x-3">
+                        <!-- Option Label (Desktop only) -->
+                        <span 
+                            class="hidden lg:inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors"
+                            :class="isSelectedOption(option)
+                                ? (isThemeDark ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white')
+                                : (isThemeDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600')"
+                        >
+                            {{ bullets[i] }}
+                        </span>
+                        
+                        <!-- Option Text -->
+                        <div 
+                            class="flex-1 text-base lg:text-lg leading-relaxed"
                             :class="[
-                                isMultiSelect
-                                    ? 'rounded-[0.35rem]'
-                                    : 'rounded-full',
-                                getInputClasses(option)
+                                isSelectedOption(option) ? 'font-semibold' : 'font-medium',
+                                isThemeDark ? 'text-white' : 'text-gray-900'
                             ]"
-                            tabindex="-1"
-                        />
-                        <label
-                            :for="'option' + i"
-                            class="lg:text-lg w-full"
-                        >
-                            <div class="flex space-x-2">
-                                <span class="w-4 font-semibold">{{ bullets[i] }}.</span>
-                                <span class="flex-1" v-html="renderMarkdown(option)"></span>
-                            </div>
-                        </label>
-                        <span
-                            v-if="isSelectedOption(option)"
-                            class="ml-auto font-bold text-lg"
-                            :class="isThemeDark 
-                                ? 'text-blue-300' 
-                                : 'text-blue-700'"
-                            >✓</span
-                        >
-                    </span>
-                </li>
-            </ol>
+                            v-html="renderMarkdown(option)"
+                        ></div>
+                    </div>
+                </div>
+            </div>
             
             <!-- Max Selection Message -->
             <div v-if="showMaxSelectionMessage" 
@@ -160,39 +150,26 @@ export default {
                    Array.isArray(this.selectedOptions) && 
                    this.selectedOptions.length >= this.maxSelectable;
         },
-        getDarkModeClasses(option) {
+        getCardClasses(option) {
             const isSelected = this.isSelectedOption(option);
             const isDisabled = this.isOptionDisabled(option);
             
             if (this.isThemeDark) {
                 if (isSelected) {
-                    return 'bg-blue-900/40 text-white font-medium border border-blue-400 shadow-lg shadow-blue-400/20';
+                    return 'bg-blue-600/20 border-2 border-blue-400 shadow-xl shadow-blue-400/30 ring-1 ring-blue-300/50';
                 } else if (isDisabled) {
-                    return 'bg-gray-700/20 text-gray-500 border border-gray-700';
+                    return 'bg-gray-800/40 border border-gray-700 text-gray-500';
                 } else {
-                    return 'bg-gray-700/40 text-gray-300 border border-gray-600 hover:bg-gray-700/60 hover:border-gray-500 hover:shadow-lg';
+                    return 'bg-gray-800/60 border border-gray-600 hover:bg-gray-800/80 hover:border-gray-500';
                 }
             } else {
                 if (isSelected) {
-                    return 'bg-blue-50 text-gray-900 font-medium border border-blue-500 shadow-md';
+                    return 'bg-blue-50 border-2 border-blue-500 shadow-xl shadow-blue-200/50 ring-1 ring-blue-200';
                 } else if (isDisabled) {
-                    return 'bg-gray-50 text-gray-400 border border-gray-200';
+                    return 'bg-gray-50 border border-gray-200 text-gray-400';
                 } else {
-                    return 'bg-gray-100 text-slate-800 border border-gray-300 hover:bg-gray-300 hover:border-gray-400 hover:shadow-lg';
+                    return 'bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm';
                 }
-            }
-        },
-        getInputClasses(option) {
-            const isSelected = this.isSelectedOption(option);
-                
-            if (this.isThemeDark) {
-                return isSelected
-                    ? 'bg-blue-500 border-blue-400 ring-2 ring-blue-400/30 text-white'
-                    : 'bg-gray-600 border-gray-500 hover:border-gray-400 text-gray-300';
-            } else {
-                return isSelected
-                    ? 'bg-blue-600 border-blue-600 ring-2 ring-blue-200'
-                    : 'bg-white border-gray-500 hover:border-gray-600';
             }
         },
         handleOptionClick(option) {
@@ -288,10 +265,7 @@ export default {
 </script>
 
 <style scoped>
-.form-check-input:focus {
-    outline: none;
-    box-shadow: none;
-}
+/* No form inputs - pure card-based selection */
 
 /* Markdown styles - Dark theme */
 [data-theme="dark"] :deep(strong) {
@@ -341,12 +315,5 @@ export default {
     color: #111827;
 }
 
-/* Radio button customization for dark mode */
-.dark-mode input[type="radio"] {
-    accent-color: #3b82f6;
-}
-
-.dark-mode input[type="checkbox"] {
-    accent-color: #3b82f6;
-}
+/* Card-based selection - no form inputs needed */
 </style>

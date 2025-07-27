@@ -1,147 +1,127 @@
 <template>
-    <div class="flex flex-col lg:flex-row bg-gray-300 p-2 lg:p-4">
-        <div
-            class="transition-all duration-300 bg-white backdrop-blur-md rounded-2xl w-full lg:w-4/6"
-        >
-            <div
-                :class="[
-                    'border1',
-                    {
-                        'border-[#999]': !isReview,
-                        'border-[#8addae]': answer.is_correct,
-                        'border-[#cb7d75]': !answer.is_correct && isReview,
-                    },
-                ]"
-            >
+    <div :class="[
+            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
+            isThemeDark 
+                ? 'bg-gray-800 border-gray-700' 
+                : 'bg-white border-gray-200'
+         ]">
+        <div>
+            <div class="text-lg font-medium mb-6"
+                :class="isThemeDark 
+                    ? 'text-white' 
+                    : 'text-gray-800'"
+                v-html="renderedQuestion">
+            </div>
+            
+            <div class="overflow-x-auto">
+                <div class="relative inline-block">
+                <!-- Image with white background outline -->
+                <img 
+                    v-if="imageUrl"
+                    :src="imageUrl" 
+                    class="block mx-auto"
+                    :style="{ 
+                        boxShadow: isThemeDark ? '0 0 0 8px white, 0 0 0 10px rgba(0,0,0,0.1)' : 'none',
+                        borderRadius: '8px',
+                        width: 'auto',
+                        height: 'auto',
+                        maxWidth: 'none',
+                        maxHeight: 'none'
+                    }"
+                />
+                <div v-else :class="[
+                    'flex items-center justify-center h-96 w-full rounded-lg',
+                    isThemeDark ? 'bg-gray-700' : 'bg-gray-100'
+                ]">
+                    <p :class="isThemeDark ? 'text-gray-400' : 'text-gray-500'">
+                        Image not available
+                    </p>
+                </div>
+                
+                <!-- Hotspot overlays for review -->
                 <div
-                    class="p-8 rounded font-medium"
-                    v-html="question.content"
+                    v-for="(option, i) in question.options"
+                    :key="`review-${i}`"
+                    :class="getReviewOptionClasses(i, option)"
+                    :style="{
+                        position: 'absolute',
+                        top: option.y + 'px',
+                        left: option.x + 'px',
+                        marginLeft: '-35px',
+                        marginTop: '-35px'
+                    }"
                 ></div>
-                <div class="relative overflow-hidden mb-8">
-                    <img v-if="question.image && question.image.path" :src="question.image.path" class="pl-8" />
-                    <template v-if="isReview">
-                        <div
-                            v-for="(option, i) in question.options"
-                            :key="`option-${i}`"
-                            :class="[
-                                'h-[70px] w-[70px] absolute rounded-none z-200 ml-[-35px] mt-[-35px]',
-                                {
-                                    'bg-[#8addae] border-[#22c55d] border bg-opacity-50':
-                                        isCorrectOption(i),
-                                    'bg-[#f8e7e6] border border-[#cb7d75] bg-opacity-50':
-                                        isIncorrectOption(option),
-                                },
-                            ]"
-                        :style="
-                            'top:' + option.y + 'px; left:' + option.x + 'px'
-                        "
-                    ></div>
-                    </template>
-                    <template v-else>
-                        <div
-                            v-for="(option, i) in question.options"
-                            :key="`interactive-${i}`"
-                            :class="[
-                                'h-[70px] w-[70px] absolute rounded-none cursor-pointer z-200 ml-[-35px] mt-[-35px]',
-                                selectedOptions == option
-                                    ? 'bg-blue-500 border border-blue-700 bg-opacity-50'
-                                    : 'hover:bg-blue-500 hover:bg-opacity-50 hover:border hover:border-blue-700',
-                            ]"
-                            :style="
-                                'top:' + option.y + 'px; left:' + option.x + 'px'
-                            "
-                            @click="select(option)"
-                        ></div>
-                    </template>
                 </div>
             </div>
-            <div
-                v-if="isReview"
-                :class="[
-                    'py-6 rounded-b-2xl shadow-md',
-                    {
-                        'bg-[#dcffdc] border-[#aaddae]': answer.is_correct,
-                        'bg-[#f8e7e6] border-[#ab7d75]': !answer.is_correct,
-                    },
-                ]"
-            >
-                <span class="m-5">
-                    <span class="font-semibold">Correct Answer is: </span>
-                    <span class="font-semibold">
-                        {{ bullets[correctOptionIndex] }}.
-                    </span>
-                    <div class="p-1.25 m-5">Justification</div>
-                </span>
-                <ul class="list-disc list-outside">
-                    <li
-                        v-for="(option, i) in question.justifications"
-                        :key="`justification-${i}`"
-                        class="m-5"
-                        :class="{ 'font-semibold': isCorrectOption(i) }"
-                    >
-                        {{ bullets[i] }}. {{ option }}
-                    </li>
-                </ul>
-            </div>
         </div>
-        <div class="my-4 lg:hidden flex justify-end px-4">
-            <button
-                @click="showMetadata = !showMetadata"
-                class="bg-white text-gray-800 font-semibold px-4 py-2 border border-gray-300 rounded-full shadow-xs hover:bg-gray-100 transition duration-200"
-                aria-label="Toggle Question Details"
-            >
-                {{
-                    showMetadata
-                        ? "Hide Question Details"
-                        : "Show Question Details"
-                }}
-            </button>
-        </div>
-
-        <div
-            v-show="showMetadata || isDesktop"
-            class="bg-white backdrop-blur-md rounded-2xl w-full lg:w-2/6 p-6 lg:ml-4"
+        
+        <!-- Answer Review Section -->
+        <div v-if="answer"
+            :class="[
+                'border-t -mx-3 lg:-mx-6 -mb-3 lg:-mb-6 mt-6 rounded-b-2xl',
+                answer.is_correct
+                    ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
+                    : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-300')
+            ]"
         >
-            <div class="mb-3 font-semibold text-lg text-gray-700">
-                Question Details
-            </div>
-            <div class="mb-2">
-                <span class="font-semibold">Type:</span>
-                {{ question.type.name }}
-            </div>
-            <div class="mb-2">
-                <span class="font-semibold">Difficulty:</span>
-                {{ question.difficulty.name }}
-            </div>
-            <div class="mb-2">
-                <span class="font-semibold">Bloom Level:</span>
-                {{ question.bloom?.name || 'Unknown' }}
-            </div>
-            <div v-if="question.topics && question.topics.length > 0">
-                <span class="font-semibold">Topics:</span>
-                {{ question.topics.map(topic => topic.name).join(', ') }}
-            </div>
-
-            <div
-                v-if="
-                    selectedOptions &&
-                    selectedOptions.x !== undefined &&
-                    selectedOptions.y !== undefined
-                "
-                class="mt-3"
-            >
-                <div class="font-semibold">Your Answer:</div>
-                <ul class="list-disc ml-6 mt-1">
-                    <li v-if="!isMultiChoice">
-                        {{ bullets[selectedOptionIndex()] }}
-                    </li>
-                </ul>
+            <div class="p-6 lg:p-8">
+                <!-- Section Header -->
+                <div class="flex items-center mb-6">
+                    <div :class="[
+                            'w-10 h-10 rounded-xl flex items-center justify-center mr-3',
+                            answer.is_correct
+                                ? (isThemeDark ? 'bg-green-500/20' : 'bg-green-500/20')
+                                : (isThemeDark ? 'bg-red-500/20' : 'bg-red-500/20')
+                        ]">
+                        <svg v-if="answer.is_correct" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <svg v-else class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold"
+                        :class="isThemeDark ? 'text-white' : 'text-gray-900'">
+                        Answer Review
+                    </h3>
+                </div>
+                
+                <!-- Result Message -->
+                <div class="mb-6">
+                    <p :class="[
+                        'font-semibold text-lg mb-2',
+                        answer.is_correct
+                            ? (isThemeDark ? 'text-green-400' : 'text-green-700')
+                            : (isThemeDark ? 'text-red-400' : 'text-red-700')
+                    ]">
+                        {{ answer.is_correct ? '✓ Correct!' : '✗ Incorrect' }}
+                    </p>
+                    <p :class="isThemeDark ? 'text-gray-300 text-lg' : 'text-gray-700 text-lg'">
+                        {{ answer.is_correct 
+                            ? 'Great job! You identified the correct placement.' 
+                            : 'Not quite right. See the correct placement below.' }}
+                    </p>
+                </div>
+                
+                <!-- Justification/Explanation -->
+                <div v-if="question.justifications || question.explanation">
+                    <h4 class="font-semibold text-lg mb-2"
+                        :class="isThemeDark ? 'text-white' : 'text-gray-900'">
+                        Explanation:
+                    </h4>
+                    <div class="text-lg"
+                         :class="isThemeDark ? 'text-gray-300' : 'text-gray-700'"
+                         v-html="renderJustification()">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
+import { marked } from 'marked';
+
 export default {
     props: {
         question: {
@@ -152,25 +132,84 @@ export default {
             type: Object,
             default: () => ({})
         },
-        isReview: {
-            type: Boolean,
-            default: false
-        },
         isDark: {
             type: Boolean,
             default: null
         }
     },
-    data() {
-        return {
-            selectedOptions: [],
-            bullets: ["A", "B", "C", "D", "E", "F", "G", "H"],
-            showMetadata: false,
-        };
+    computed: {
+        renderedQuestion() {
+            if (!this.question?.content) return '';
+            return marked(this.question.content);
+        },
+        isThemeDark() {
+            // Use prop if provided, otherwise fallback to detection methods
+            if (this.isDark !== null) {
+                return this.isDark;
+            }
+            // Fallback detection for backward compatibility
+            return document.documentElement.classList.contains('dark') ||
+                   this.$el?.classList?.contains('dark-mode') ||
+                   this.$parent?.$el?.classList?.contains('dark-mode') ||
+                   window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        },
+        imageUrl() {
+            // Check if image is provided as a path
+            if (this.question.image) {
+                if (typeof this.question.image === 'string') {
+                    return this.question.image;
+                }
+                if (this.question.image.path) {
+                    return this.question.image.path;
+                }
+            }
+            // Check if image URL is embedded in content as markdown
+            const imgMatch = this.question.content?.match(/!\[.*?\]\((.*?)\)/);
+            if (imgMatch && imgMatch[1]) {
+                return imgMatch[1];
+            }
+            return null;
+        },
+        correctOptionIndex() {
+            const target = this.question.correct_options;
+            return this.question.options.findIndex(
+                (item) => item.x === target.x && item.y === target.y
+            );
+        }
     },
     methods: {
-        select(option) {
-            this.selectedOptions = option;
+        renderJustification() {
+            try {
+                // Handle justifications field
+                if (this.question?.justifications) {
+                    // Check if it's a string
+                    if (typeof this.question.justifications === 'string') {
+                        return marked(this.question.justifications);
+                    }
+                    // Check if it's an array
+                    else if (Array.isArray(this.question.justifications) && this.question.justifications.length > 0) {
+                        // Get the justification for the correct answer
+                        const correctIndex = this.correctOptionIndex;
+                        if (correctIndex >= 0 && this.question.justifications[correctIndex]) {
+                            return marked(this.question.justifications[correctIndex]);
+                        }
+                        // Fallback to first justification if available
+                        if (this.question.justifications[0]) {
+                            return marked(this.question.justifications[0]);
+                        }
+                    }
+                }
+                
+                // Fallback to explanation field if justifications not available
+                if (this.question?.explanation) {
+                    return marked(this.question.explanation);
+                }
+                
+                return '';
+            } catch (error) {
+                console.error('Error rendering justification:', error);
+                return '';
+            }
         },
         isCorrectOption(index) {
             return this.correctOptionIndex == index;
@@ -184,59 +223,16 @@ export default {
                 !(correct?.x === option.x && correct?.y === option.y)
             );
         },
-        selectedOptionIndex() {
-            return this.question.options.findIndex(
-                (option) =>
-                    this.selectedOptions.x === option.x &&
-                    this.selectedOptions.y === option.y
-            );
-        },
-        findArrayIndex(mainArray, searchArray) {
-            return mainArray.findIndex(
-                (arr) =>
-                    arr.length === searchArray.length &&
-                    arr.every(
-                        (element, index) => element === searchArray[index]
-                    )
-            );
-        },
-    },
-    computed: {
-        isThemeDark() {
-            // Use prop if provided, otherwise fallback to detection methods
-            if (this.isDark !== null) {
-                return this.isDark;
+        getReviewOptionClasses(i, option) {
+            const baseClasses = 'h-[70px] w-[70px] rounded-lg z-200 border-2';
+            
+            if (this.isCorrectOption(i)) {
+                return `${baseClasses} ${this.isThemeDark ? 'bg-green-500/40 border-green-400' : 'bg-green-400/40 border-green-600'}`;
+            } else if (this.isIncorrectOption(option)) {
+                return `${baseClasses} ${this.isThemeDark ? 'bg-red-500/40 border-red-400' : 'bg-red-400/40 border-red-600'}`;
             }
-            // Fallback detection for backward compatibility
-            return document.documentElement.classList.contains('dark') ||
-                   this.$el?.classList?.contains('dark-mode') ||
-                   this.$parent?.$el?.classList?.contains('dark-mode') ||
-                   window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-        },
-        correctOptionIndex() {
-            const target = this.question.correct_options;
-            return this.question.options.findIndex(
-                (item) => item.x === target.x && item.y === target.y
-            );
-        },
-        isMultiChoice() {
-            return (
-                Array.isArray(this.question.correct_options) &&
-                this.question.correct_options.length > 1
-            );
-        },
-        isDesktop() {
-            // A basic check for desktop, can be improved or replaced with a better approach
-            return window.innerWidth >= 1024;
-        },
-    },
-    watch: {
-        question() {
-            this.selectedOptions = [];
-        },
-        selectedOptions() {
-            this.$emit("selected", this.selectedOptions);
-        },
-    },
+            return `${baseClasses} ${this.isThemeDark ? 'bg-gray-600/20 border-gray-500' : 'bg-gray-300/20 border-gray-400'}`;
+        }
+    }
 };
 </script>

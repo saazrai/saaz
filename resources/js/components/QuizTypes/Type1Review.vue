@@ -1,9 +1,9 @@
 <template>
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl overflow-hidden',
+            'transition-all duration-300 w-full backdrop-blur-md rounded-3xl border-0 overflow-hidden',
             isThemeDark 
-                ? 'bg-gray-800 border-gray-700' 
-                : 'bg-white border-gray-200'
+                ? 'bg-gray-800/90' 
+                : 'bg-white/90'
          ]">
         <!-- Question Section -->
         <div class="p-4">
@@ -90,80 +90,6 @@
             </div>
         </div>
         
-        <!-- Answer Explanations Section -->
-        <div
-            :class="[
-                'border-t',
-                answer.is_correct
-                    ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-50 border-green-300')
-                    : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-50 border-red-300')
-            ]"
-        >
-            <div class="p-4">
-                <!-- Result Summary -->
-                <div class="flex items-center mb-4">
-                    <div :class="[
-                            'w-8 h-8 rounded-lg flex items-center justify-center mr-3',
-                            answer.is_correct
-                                ? 'bg-green-500'
-                                : 'bg-red-500'
-                        ]">
-                        <svg v-if="answer.is_correct" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <svg v-else class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </div>
-                    <div>
-                        <p :class="[
-                            'font-semibold text-base',
-                            answer.is_correct
-                                ? (isThemeDark ? 'text-green-400' : 'text-green-700')
-                                : (isThemeDark ? 'text-red-400' : 'text-red-700')
-                        ]">
-                            {{ answer.is_correct ? 'Correct!' : 'Incorrect' }}
-                        </p>
-                        <p :class="isThemeDark ? 'text-gray-300 text-sm' : 'text-gray-600 text-sm'">
-                            {{ answer.is_correct 
-                                ? 'Well done!' 
-                                : 'Review the correct answer below.' }}
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Correct Answer Highlight -->
-                <div
-                    v-for="correctAnswer in correctAnswers"
-                    :key="correctAnswer.index"
-                    :class="[
-                        'rounded-lg p-3 mb-3',
-                        isThemeDark 
-                            ? 'bg-green-500/20 border border-green-500/50' 
-                            : 'bg-green-50 border border-green-300'
-                    ]"
-                >
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <p class="font-medium text-sm mb-1"
-                               :class="isThemeDark ? 'text-green-300' : 'text-green-800'">
-                                Correct Answer:
-                            </p>
-                            <p class="text-base"
-                               :class="isThemeDark ? 'text-green-200' : 'text-green-700'">
-                                {{ correctAnswer.option }}
-                            </p>
-                        </div>
-                        <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center ml-3">
-                            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
     </div>
 </template>
 

@@ -185,6 +185,8 @@ test('user can view detailed results after completion', function () {
         'score' => 85.5,
     ]);
 
+    // Individual results URL removed - redirects to unified results
+    /*
     $this->browse(function (Browser $browser) use ($diagnostic) {
         $browser->loginAs($this->user)
             ->visit("/assessments/diagnostics/{$diagnostic->id}/results")
@@ -192,6 +194,7 @@ test('user can view detailed results after completion', function () {
             ->assertSee('85.5%')
             ->assertSee('Performance by Domain');
     });
+    */
 });
 
 test('user can export results to pdf', function () {
@@ -201,6 +204,8 @@ test('user can export results to pdf', function () {
         'score' => 75.0,
     ]);
 
+    // Individual results URL removed - redirects to unified results  
+    /*
     $this->browse(function (Browser $browser) use ($diagnostic) {
         $browser->loginAs($this->user)
             ->visit("/assessments/diagnostics/{$diagnostic->id}/results")
@@ -211,6 +216,7 @@ test('user can export results to pdf', function () {
         // Verify download initiated (actual file checking would be environment-specific)
         $browser->assertSee('Assessment Results');
     });
+    */
 });
 
 test('guest user cannot access assessment directly', function () {

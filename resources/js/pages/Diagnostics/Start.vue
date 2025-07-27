@@ -226,7 +226,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ diagnostic.responses.length }} / {{ diagnostic.total_questions }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatTime(diagnostic.total_duration) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <Link v-if="diagnostic.status === 'completed'" :href="route('assessments.diagnostics.results', diagnostic.id)" class="text-blue-600 hover:text-blue-900 mr-3">Review</Link>
+                                <Link v-if="diagnostic.status === 'completed'" :href="route('assessments.diagnostics.all-results')" class="text-blue-600 hover:text-blue-900 mr-3">Review</Link>
                                 <Link v-if="diagnostic.status === 'in_progress' || diagnostic.status === 'paused'" :href="route('assessments.diagnostics.show', diagnostic.id)" class="text-green-600 hover:text-green-900">Resume</Link>
                             </td>
                         </tr>

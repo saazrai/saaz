@@ -87,19 +87,6 @@
                     
                     <!-- Result Message -->
                     <div class="mb-6">
-                        <p :class="[
-                            'font-semibold text-lg mb-2',
-                            answer.is_correct
-                                ? (isThemeDark ? 'text-green-400' : 'text-green-700')
-                                : (isThemeDark ? 'text-red-400' : 'text-red-700')
-                        ]">
-                            {{ answer.is_correct ? '✓ Correct!' : '✗ Incorrect' }}
-                        </p>
-                        <p :class="isThemeDark ? 'text-gray-300 text-lg' : 'text-gray-700 text-lg'">
-                            {{ answer.is_correct 
-                                ? 'Great job! You selected all the correct items.' 
-                                : 'Some of your selections were incorrect.' }}
-                        </p>
                     </div>
                     
                     <!-- Correct Answer -->

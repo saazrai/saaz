@@ -1,25 +1,143 @@
 <template>
     <div :class="[
-        'min-h-screen flex flex-col pb-40',
+        'flex flex-col',
         isDark ? 'bg-gray-900' : 'bg-gray-300'
     ]">
-        <!-- Top Navbar -->
-        <div :class="[
-            'backdrop-blur-xl border-b px-4 sm:px-8 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-4',
+        <!-- Mobile: Ultra-Minimal Header -->
+        <div class="lg:hidden relative" :class="[
+            'backdrop-blur-xl border-b px-3 py-2 flex items-center justify-between',
             isDark 
                 ? 'bg-gray-800/90 border-gray-700' 
                 : 'bg-white/90 border-gray-200'
         ]">
-            <div class="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
-                <div :class="[
-                    'flex-1 min-w-[50%] md:text-base xl:text-2xl font-semibold truncate',
-                    isDark ? 'text-white' : 'text-gray-900'
+            <!-- Left Side: Back Button + Status -->
+            <div class="flex items-center space-x-3">
+                <button @click="showExitConfirmation = true" :class="[
+                    'p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors',
+                ]" aria-label="Back">
+                    <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <!-- Status Indicator -->
+                <div v-if="isReviewMode && getCurrentAnswer()" :class="[
+                    'flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide',
+                    getCurrentAnswer().is_correct 
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                 ]">
-                    Sample Diagnostic Quiz
+                    <span :class="getCurrentAnswer().is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                        {{ getCurrentAnswer().is_correct ? '✓' : '✗' }}
+                    </span>
+                    <span>{{ getCurrentAnswer().is_correct ? 'CORRECT' : 'INCORRECT' }}</span>
                 </div>
-                <div class="sm:w-auto flex items-center gap-4">
-                    <!-- Timer -->
-                    <div class="hidden sm:block">
+            </div>
+            
+            <!-- Question Number - Centered -->
+            <div class="absolute left-1/2 transform -translate-x-1/2">
+                <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                    Q{{ currentQuestionIndex + 1 }}/{{ sampleQuestions.length }}
+                </span>
+            </div>
+            
+            <!-- Status & Actions (Right) -->
+            <div class="flex items-center space-x-1">
+                <!-- Timer Container (Hidden in Review Mode) -->
+                <div v-if="!isReviewMode" :class="[
+                    'px-2 py-1 rounded-lg backdrop-blur-sm border text-xs font-medium w-24 text-center whitespace-nowrap',
+                    isDark 
+                        ? 'bg-white/10 border-white/20 text-gray-300'
+                        : 'bg-black/10 border-black/20 text-gray-600'
+                ]">
+                    <QuizTimer :isReview="isReviewMode" :isDark="isDark" @question-tick="onQuestionTick" ref="mobileTimer" :compact="true" />
+                </div>
+                
+                <!-- Explain Button (Review Mode Only) -->
+                <button v-if="isReviewMode" @click="showAllExplanations = !showAllExplanations" :class="[
+                    'transition-all duration-200 flex items-center',
+                    'portrait:p-1.5 portrait:rounded-full portrait:justify-center',
+                    'landscape:px-3 landscape:py-1.5 landscape:rounded-full landscape:space-x-1.5',
+                    showAllExplanations
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
+                        : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
+                ]" :aria-label="showAllExplanations ? 'Hide explanations' : 'Show explanations'">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 17.25h.01" />
+                    </svg>
+                    <span class="landscape:inline portrait:hidden text-xs tracking-wide">
+                        {{ showAllExplanations ? 'Hide' : 'Explain' }}
+                    </span>
+                </button>
+                
+                <!-- Theme Toggle -->
+                <button @click="toggleTheme" :class="[
+                    'p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors',
+                ]" aria-label="Toggle theme">
+                    <SunIcon v-if="isDark" class="w-5 h-5 text-yellow-500" />
+                    <MoonIcon v-else class="w-5 h-5 text-gray-600" />
+                </button>
+                
+                <!-- Exit Button -->
+                <button @click="showExitConfirmation = true" :class="[
+                    'p-1 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors',
+                ]" aria-label="Exit quiz">
+                    <XMarkIcon class="w-5 h-5" />
+                </button>
+            </div>
+        </div>
+
+        <!-- Desktop: Compact Header with Inline Progress -->
+        <div class="hidden lg:block" :class="[
+            'backdrop-blur-xl border-b px-4 sm:px-8 py-3 sm:py-4',
+            isDark 
+                ? 'bg-gray-800/90 border-gray-700' 
+                : 'bg-white/90 border-gray-200'
+        ]">
+            <div class="flex items-center justify-between gap-6">
+                <!-- Left: Title and Status -->
+                <div class="flex items-center space-x-3">
+                    <div :class="[
+                        'md:text-base xl:text-2xl font-semibold truncate',
+                        isDark ? 'text-white' : 'text-gray-900'
+                    ]">
+                        {{ isReviewMode ? 'Review' : 'Sample Diagnostic Quiz' }}
+                    </div>
+                    
+                    <!-- Review Mode Status Badge -->
+                    <div v-if="isReviewMode && getCurrentAnswer()" :class="[
+                        'flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide',
+                        getCurrentAnswer().is_correct 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                    ]">
+                        <span :class="getCurrentAnswer().is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                            {{ getCurrentAnswer().is_correct ? '✓' : '✗' }}
+                        </span>
+                        <span>{{ getCurrentAnswer().is_correct ? 'CORRECT' : 'INCORRECT' }}</span>
+                    </div>
+                </div>
+
+                <!-- Center: Progress -->
+                <div class="flex-1 max-w-lg flex flex-col items-center space-y-1">
+                    <span :class="[
+                        'text-lg font-semibold',
+                        isDark ? 'text-white' : 'text-gray-900'
+                    ]">
+                        {{ currentQuestionIndex + 1 }} of {{ sampleQuestions.length }}
+                    </span>
+                    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div 
+                            class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out" 
+                            :style="{ width: progress + '%' }"
+                        ></div>
+                    </div>
+                </div>
+
+                <!-- Right: Timer and Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Timer (Hidden in Review Mode) -->
+                    <div v-if="!isReviewMode">
                         <QuizTimer :isReview="isReviewMode" :isDark="isDark" @question-tick="onQuestionTick" ref="timer" />
                     </div>
 
@@ -45,452 +163,343 @@
                             : 'bg-red-600/20 hover:bg-red-600/30 text-red-700 border border-red-700'
                     ]" aria-label="Exit quiz">
                         <XMarkIcon class="w-4 h-4" />
-                        <span class="hidden sm:inline">Exit Quiz</span>
+                        <span>Exit Quiz</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Progress Section -->
-        <div :class="[
-            'backdrop-blur-xl border-b px-4 sm:px-8 py-3',
-            isDark
-                ? 'bg-gray-800/50 border-gray-700 shadow'
-                : 'bg-gray-600 border-gray-700 shadow-md'
-        ]">
-            <!-- Desktop Progress -->
-            <div class="hidden sm:flex items-center justify-between gap-4">
-                <div :class="[
-                    'md:text-base xl:text-xl font-semibold truncate',
-                    isDark ? 'text-gray-200' : 'text-white'
-                ]">
-                    Question {{ currentQuestionIndex + 1 }} / {{ sampleQuestions.length }}
-                </div>
 
-                <div class="grow">
-                    <div :class="[
-                        'w-full border shadow-inner rounded-full h-4 overflow-hidden',
-                        isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'
-                    ]">
+        <!-- Question Section with Apple-style Background Hierarchy -->
+        <div class="mx-2 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-6 mt-6 pb-32 rounded-md flex-1">
+            <div :class="[
+                'min-h-full gap-4',
+                isReviewMode 
+                    ? 'grid grid-cols-1 xl:grid-cols-12 max-w-7xl mx-auto' 
+                    : 'flex flex-col md:flex-row max-w-4xl mx-auto'
+            ]">
+                <div :class="isReviewMode ? 'xl:col-span-8' : 'flex-1'">
+                    <!-- Direct Question Component without Double Card -->
+                    <component :is="currentQuestionComponent" :question="currentQuestionForDisplay"
+                        :answer="currentAnswerForDisplay" :isReview="isReviewMode" :isDark="isDark"
+                        @selected="selected" v-if="currentQuestion"
+                        :showExplanations="showAllExplanations"
+                        :class="[
+                            'diagnostic-question rounded-3xl backdrop-blur-xl border',
+                            isDark 
+                                ? 'dark-mode bg-gray-800/70 border-gray-700/50' 
+                                : 'light-mode bg-white/90 border-gray-200/50'
+                        ]" 
+                        :style="isReviewMode && getCurrentAnswer() ? {
+                            borderTop: getCurrentAnswer().is_correct 
+                                ? '3px solid rgb(34, 197, 94)' 
+                                : '3px solid rgb(239, 68, 68)'
+                        } : {}"
+                        @touchstart="handleTouchStart"
+                        @touchend="handleTouchEnd" />
+
+                    <!-- Notice Banner (Aligned with Question Content) -->
+                    <div v-if="!isReviewMode" class="mt-4">
                         <div :class="[
-                            'h-4 transition-all duration-300 shadow-xs',
-                            isDark ? 'bg-blue-500' : 'bg-blue-500'
-                        ]" :style="{ width: `${progress}%` }"></div>
+                            'rounded-lg p-4 border',
+                            isDark
+                                ? 'bg-blue-900/20 border-blue-600 text-blue-200'
+                                : 'bg-blue-50 border-blue-300 text-blue-800'
+                        ]">
+                            <p class="text-base">
+                                <strong>Note:</strong> This is a sample quiz for demonstration purposes. Your answers won't be
+                                saved.
+                                <InertiaLink
+                                    :href="typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics'"
+                                    class="underline hover:no-underline font-semibold">
+                                Take the full diagnostic assessment
+                                </InertiaLink> to receive personalized results and recommendations.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Mobile Progress and Timer -->
-            <div class="sm:hidden space-y-3">
-                <div class="flex items-center justify-between">
+                <!-- Question Details Card (Right Sidebar - Review Mode Only) -->
+                <div v-if="isReviewMode" class="hidden xl:block xl:col-span-4 space-y-6">
+                    <!-- Question Metadata Card -->
                     <div :class="[
-                        'text-base font-semibold',
-                        isDark ? 'text-gray-200' : 'text-white'
+                        'backdrop-blur-xl rounded-2xl shadow-xl border p-6 space-y-5',
+                        isDark 
+                            ? 'bg-gray-800/90 border-gray-700/30' 
+                            : 'bg-white/90 border-gray-200/30'
                     ]">
-                        Question {{ currentQuestionIndex + 1 }} / {{ sampleQuestions.length }}
-                    </div>
-                </div>
-
-                <div :class="[
-                    'w-full border shadow-inner rounded-full h-4 overflow-hidden',
-                    isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-100 border-gray-300'
-                ]">
-                    <div :class="[
-                        'h-4 transition-all duration-300 shadow-xs',
-                        isDark ? 'bg-blue-500' : 'bg-blue-500'
-                    ]" :style="{ width: `${progress}%` }"></div>
-                </div>
-
-                <!-- Mobile Timer -->
-                <QuizTimer :isReview="isReviewMode" :isDark="isDark" @question-tick="onQuestionTick" ref="mobileTimer" />
-            </div>
-        </div>
-
-
-        <!-- Question Section -->
-        <div class="mx-2 sm:mx-4 md:mx-6 lg:mx-8 my-4 rounded-md flex-1 overflow-hidden">
-            <div class="flex flex-col md:flex-row h-full gap-4">
-                <div class="flex-1">
-                    <div class="flex flex-col lg:flex-row bg-transparent space-y-4 lg:space-y-0">
-                        <component :is="currentQuestionComponent" :question="currentQuestionForDisplay"
-                            :answer="currentAnswerForDisplay" :isReview="isReviewMode" :isDark="isDark"
-                            @selected="selected" v-if="currentQuestion"
-                            :class="['diagnostic-question', isDark ? 'dark-mode' : 'light-mode']" />
-                    </div>
-                </div>
-
-                <!-- Question Metadata Section -->
-                <div :class="[
-                    'hidden xl:block backdrop-blur-md rounded-2xl w-full xl:w-2/6 p-6 border',
-                    isDark
-                        ? 'bg-gray-800 border-gray-700 shadow-xl'
-                        : 'bg-white border-gray-200 shadow-xs'
-                ]">
-                    <h3 :class="[
-                        'text-xl font-bold mb-6 pb-3 border-b',
-                        isDark
-                            ? 'text-gray-100 border-gray-700'
-                            : 'text-slate-900 border-slate-200'
-                    ]">
-                        Question Details
-                    </h3>
-
-                    <!-- Metadata Grid -->
-                    <div class="space-y-4">
-                        <!-- Domain -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Domain
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ currentQuestion?.domain || "N/A" }}
-                            </span>
-                        </div>
-
-                        <!-- Topic -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Topic
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ currentQuestion?.topic || "N/A" }}
-                            </span>
-                        </div>
-
-                        <!-- Dimension -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Dimension
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ currentQuestion?.dimension || "N/A" }}
-                            </span>
-                        </div>
-
-                        <!-- Question Type -->
-                        <div class="flex flex-col space-y-1">
-                            <span :class="[
-                                'text-xs uppercase tracking-wider font-semibold',
-                                isDark ? 'text-gray-400' : 'text-slate-500'
-                            ]">
-                                Question Type
-                            </span>
-                            <span :class="[
-                                'text-lg font-medium',
-                                isDark ? 'text-gray-200' : 'text-slate-800'
-                            ]">
-                                {{ getQuestionTypeName() }}
-                            </span>
-                        </div>
-
-                        <!-- Difficulty Level -->
-                        <div class="flex flex-col space-y-1">
-                            <div class="flex items-center space-x-2">
-                                <span :class="[
-                                    'text-xs uppercase tracking-wider font-semibold',
-                                    isDark ? 'text-gray-400' : 'text-slate-500'
+                        <h3 :class="[
+                            'text-lg font-semibold',
+                            isDark ? 'text-white' : 'text-gray-900'
+                        ]">
+                            Question Details
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Domain -->
+                            <div v-if="currentQuestion?.domain">
+                                <label :class="[
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Domain</label>
+                                <p :class="[
+                                    'font-medium mt-1',
+                                    isDark ? 'text-white' : 'text-gray-900'
                                 ]">
-                                    Difficulty Level
-                                </span>
-                                <!-- Desktop Tooltip -->
-                                <Popover class="relative hidden sm:block">
-                                    <PopoverButton :class="[
-                                        'p-0.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus-visible:ring-gray-600 focus-visible:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus-visible:ring-slate-400 focus-visible:ring-offset-white'
+                                    {{ currentQuestion.domain }}
+                                </p>
+                            </div>
+                            
+                            <!-- Topic -->
+                            <div v-if="currentQuestion?.topic">
+                                <label :class="[
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Topic</label>
+                                <p :class="[
+                                    'font-medium mt-1',
+                                    isDark ? 'text-white' : 'text-gray-900'
+                                ]">
+                                    {{ currentQuestion.topic }}
+                                </p>
+                            </div>
+                            
+                            <!-- Difficulty -->
+                            <div v-if="currentQuestion?.difficulty">
+                                <span :class="[
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Difficulty</span>
+                                <div class="flex items-center space-x-1 mt-2">
+                                    <div 
+                                        v-for="i in 5" 
+                                        :key="i"
+                                        :class="[
+                                            'w-2 h-2 rounded-full',
+                                            i <= getDifficultyNumeric(currentQuestion.difficulty) 
+                                                ? 'bg-blue-500' 
+                                                : (isDark ? 'bg-gray-600' : 'bg-gray-300')
+                                        ]"
+                                    ></div>
+                                    <span :class="[
+                                        'text-xs ml-2',
+                                        isDark ? 'text-gray-400' : 'text-gray-600'
                                     ]">
-                                        <QuestionMarkCircleIcon :class="[
-                                            'h-4 w-4',
-                                            isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                        ]" />
-                                    </PopoverButton>
-
-                                    <transition
-                                        enter-active-class="transition duration-200 ease-out"
-                                        enter-from-class="-translate-x-1 opacity-0"
-                                        enter-to-class="translate-x-0 opacity-100"
-                                        leave-active-class="transition duration-150 ease-in"
-                                        leave-from-class="translate-x-0 opacity-100"
-                                        leave-to-class="-translate-x-1 opacity-0"
-                                    >
-                                        <PopoverPanel :class="[
-                                            'absolute z-50 w-80 px-4 py-3 rounded-lg shadow-xl border',
-                                            // Position to the right of the icon
-                                            'left-full ml-2 top-1/2 -translate-y-1/2',
-                                            // Ensure it stays within viewport
-                                            'max-h-[calc(100vh-4rem)] overflow-y-auto',
-                                            isDark 
-                                                ? 'bg-gray-800 border-gray-700' 
-                                                : 'bg-white border-gray-200'
-                                        ]">
-                                            <!-- Arrow pointing to the left -->
-                                            <div :class="[
-                                                'absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 transform rotate-45',
-                                                isDark ? 'bg-gray-800 border-l border-b border-gray-700' : 'bg-white border-l border-b border-gray-200'
-                                            ]"></div>
-
-                                            <div class="space-y-3 relative">
-                                                <h4 :class="[
-                                                    'text-base font-semibold flex items-center gap-2',
-                                                    isDark ? 'text-gray-100' : 'text-gray-900'
-                                                ]">
-                                                    ❓ Difficulty Level?
-                                                </h4>
-                                                <p :class="[
-                                                    'text-sm leading-relaxed',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    Each question is rated by how challenging it is:
-                                                </p>
-                                                <ul :class="[
-                                                    'text-sm space-y-1',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    <li>• <span class="font-medium">1 – Very Easy:</span> Basic facts or definitions</li>
-                                                    <li>• <span class="font-medium">2 – Easy:</span> Simple application of key concepts</li>
-                                                    <li>• <span class="font-medium">3 – Medium:</span> Involves moderate reasoning or scenarios</li>
-                                                    <li>• <span class="font-medium">4 – Hard:</span> Requires deep analysis and multi-step thinking</li>
-                                                    <li>• <span class="font-medium">5 – Very Hard:</span> Complex, expert-level questions</li>
-                                                </ul>
-                                                <p :class="[
-                                                    'text-sm pt-2 border-t',
-                                                    isDark ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-200'
-                                                ]">
-                                                    Helps the system adapt to your skill level!
-                                                </p>
-                                            </div>
-                                        </PopoverPanel>
-                                    </transition>
-                                </Popover>
-                                <!-- Mobile Tooltip Button -->
-                                <button 
-                                    @click="showDifficultyModal = true"
-                                    class="sm:hidden p-0.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1"
-                                    :class="[
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus:ring-gray-600 focus:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus:ring-slate-400 focus:ring-offset-white'
-                                    ]"
-                                >
-                                    <QuestionMarkCircleIcon :class="[
-                                        'h-4 w-4',
-                                        isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                    ]" />
-                                </button>
+                                        {{ getDifficultyLabel(currentQuestion.difficulty) }}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="flex items-end space-x-3">
+                            
+                            <!-- Bloom Level -->
+                            <div v-if="currentQuestion?.bloom">
                                 <span :class="[
-                                    'text-lg font-medium leading-none pb-0.5',
-                                    isDark ? 'text-gray-200' : 'text-slate-800'
-                                ]">
-                                    {{ currentQuestion?.difficulty || "N/A" }}
-                                </span>
-                                <BarChartLevelIndicator 
-                                    :totalBars="5"
-                                    :filledBars="getDifficultyScore()"
-                                    :showLabel="false"
-                                    :containerClass="'flex items-end pb-1'"
-                                    :baseHeight="8"
-                                    :heightIncrement="3" />
-                            </div>
-                        </div>
-
-                        <!-- Bloom Level -->
-                        <div class="flex flex-col space-y-1">
-                            <div class="flex items-center space-x-2">
-                                <span :class="[
-                                    'text-xs uppercase tracking-wider font-semibold',
-                                    isDark ? 'text-gray-400' : 'text-slate-500'
-                                ]">
-                                    Bloom Level
-                                </span>
-                                <!-- Desktop Tooltip -->
-                                <Popover class="relative hidden sm:block">
-                                    <PopoverButton :class="[
-                                        'p-0.5 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus-visible:ring-gray-600 focus-visible:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus-visible:ring-slate-400 focus-visible:ring-offset-white'
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Bloom Level</span>
+                                <div class="flex items-center space-x-1 mt-2">
+                                    <div 
+                                        v-for="i in 6" 
+                                        :key="i"
+                                        :class="[
+                                            'w-2 h-2 rounded-full',
+                                            i <= getBloomNumeric(currentQuestion.bloom) 
+                                                ? 'bg-purple-500' 
+                                                : (isDark ? 'bg-gray-600' : 'bg-gray-300')
+                                        ]"
+                                    ></div>
+                                    <span :class="[
+                                        'text-xs ml-2',
+                                        isDark ? 'text-gray-400' : 'text-gray-600'
                                     ]">
-                                        <QuestionMarkCircleIcon :class="[
-                                            'h-4 w-4',
-                                            isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                        ]" />
-                                    </PopoverButton>
-
-                                    <transition
-                                        enter-active-class="transition duration-200 ease-out"
-                                        enter-from-class="-translate-x-1 opacity-0"
-                                        enter-to-class="translate-x-0 opacity-100"
-                                        leave-active-class="transition duration-150 ease-in"
-                                        leave-from-class="translate-x-0 opacity-100"
-                                        leave-to-class="-translate-x-1 opacity-0"
-                                    >
-                                        <PopoverPanel :class="[
-                                            'absolute z-50 w-80 px-4 py-3 rounded-lg shadow-xl border',
-                                            // Position to the right of the icon
-                                            'left-full ml-2 top-1/2 -translate-y-1/2',
-                                            // Ensure it stays within viewport
-                                            'max-h-[calc(100vh-4rem)] overflow-y-auto',
-                                            isDark 
-                                                ? 'bg-gray-800 border-gray-700' 
-                                                : 'bg-white border-gray-200'
-                                        ]">
-                                            <!-- Arrow pointing to the left -->
-                                            <div :class="[
-                                                'absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 transform rotate-45',
-                                                isDark ? 'bg-gray-800 border-l border-b border-gray-700' : 'bg-white border-l border-b border-gray-200'
-                                            ]"></div>
-
-                                            <div class="space-y-3 relative">
-                                                <h4 :class="[
-                                                    'text-base font-semibold flex items-center gap-2',
-                                                    isDark ? 'text-gray-100' : 'text-gray-900'
-                                                ]">
-                                                    💡 Bloom's Taxonomy Levels
-                                                </h4>
-                                                <p :class="[
-                                                    'text-sm leading-relaxed',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    A framework that measures the depth of understanding:
-                                                </p>
-                                                <div :class="[
-                                                    'text-sm space-y-2 pl-2',
-                                                    isDark ? 'text-gray-300' : 'text-gray-600'
-                                                ]">
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-blue-500">1.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Remember</span>
-                                                            <span class="text-xs block opacity-80">Recall facts and basic concepts</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-blue-500">2.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Understand</span>
-                                                            <span class="text-xs block opacity-80">Explain ideas or concepts</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-green-500">3.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Apply</span>
-                                                            <span class="text-xs block opacity-80">Use information in new situations</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-green-500">4.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Analyze</span>
-                                                            <span class="text-xs block opacity-80">Draw connections among ideas</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-orange-500">5.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Evaluate</span>
-                                                            <span class="text-xs block opacity-80">Justify decisions or judgments</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex items-start gap-2">
-                                                        <span class="font-bold text-red-500">6.</span>
-                                                        <div>
-                                                            <span class="font-semibold">Create</span>
-                                                            <span class="text-xs block opacity-80">Produce new or original work</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p :class="[
-                                                    'text-xs pt-2 border-t italic',
-                                                    isDark ? 'text-gray-400 border-gray-700' : 'text-gray-500 border-gray-200'
-                                                ]">
-                                                    The assessment adapts difficulty based on your performance at each level.
-                                                </p>
-                                            </div>
-                                        </PopoverPanel>
-                                    </transition>
-                                </Popover>
-                                <!-- Mobile Tooltip Button -->
-                                <button 
-                                    @click="showBloomModal = true"
-                                    class="sm:hidden p-0.5 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1"
-                                    :class="[
-                                        isDark 
-                                            ? 'hover:bg-gray-700 focus:ring-gray-600 focus:ring-offset-gray-800' 
-                                            : 'hover:bg-slate-100 focus:ring-slate-400 focus:ring-offset-white'
-                                    ]"
-                                >
-                                    <QuestionMarkCircleIcon :class="[
-                                        'h-4 w-4',
-                                        isDark ? 'text-gray-500 hover:text-gray-400' : 'text-slate-400 hover:text-slate-600'
-                                    ]" />
-                                </button>
+                                        {{ getBloomLabel(currentQuestion.bloom) }}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="flex items-end space-x-3">
-                                <span :class="[
-                                    'text-lg font-medium leading-none pb-0.5',
-                                    isDark ? 'text-gray-200' : 'text-slate-800'
+                            
+                            <!-- Your Answer -->
+                            <div v-if="getCurrentAnswer()?.selected_options?.length > 0">
+                                <label :class="[
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Your Answer</label>
+                                <div :class="[
+                                    'mt-1 space-y-1',
+                                    getCurrentAnswer().is_correct
+                                        ? (isDark ? 'text-green-400' : 'text-green-600')
+                                        : (isDark ? 'text-red-400' : 'text-red-600')
                                 ]">
-                                    {{ currentQuestion?.bloom || "N/A" }}
-                                </span>
-                                <BarChartLevelIndicator 
-                                    :totalBars="6"
-                                    :filledBars="getBloomScore()"
-                                    :showLabel="false"
-                                    :containerClass="'flex items-end pb-1'"
-                                    :baseHeight="8"
-                                    :heightIncrement="3" />
+                                    <p v-for="option in getCurrentAnswer().selected_options" :key="option" class="font-medium">
+                                        {{ option }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Correct Answer -->
+                            <div v-if="currentQuestion?.correct_options?.length > 0">
+                                <label :class="[
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Correct Answer{{ currentQuestion.correct_options.length > 1 ? 's' : '' }}</label>
+                                <div :class="[
+                                    'mt-1 space-y-1',
+                                    isDark ? 'text-green-400' : 'text-green-600'
+                                ]">
+                                    <p v-for="option in currentQuestion.correct_options" :key="option" class="font-medium">
+                                        {{ option }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Time Taken -->
+                            <div v-if="getCurrentAnswer()?.duration">
+                                <label :class="[
+                                    'text-xs font-medium uppercase tracking-wider',
+                                    isDark ? 'text-gray-400' : 'text-gray-500'
+                                ]">Time Taken</label>
+                                <p :class="[
+                                    'font-medium mt-1',
+                                    isDark ? 'text-white' : 'text-gray-900'
+                                ]">
+                                    {{ formatTime(getCurrentAnswer().duration) }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                </div>
-            </div>
-
-            <!-- Notice Banner -->
-            <div v-if="!isReviewMode" class="mt-6 mx-2">
-                <div :class="[
-                    'rounded-lg p-4 border',
-                    isDark
-                        ? 'bg-blue-900/20 border-blue-600 text-blue-200'
-                        : 'bg-blue-50 border-blue-300 text-blue-800'
-                ]">
-                    <p class="text-base">
-                        <strong>Note:</strong> This is a sample quiz for demonstration purposes. Your answers won't be
-                        saved.
-                        <InertiaLink
-                            :href="typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics'"
-                            class="underline hover:no-underline font-semibold">
-                        Take the full diagnostic assessment
-                        </InertiaLink> to receive personalized results and recommendations.
-                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Footer Controls -->
+        <!-- Floating Edge Navigation (Review Mode Only - Mobile Landscape) -->
+        <div v-if="isReviewMode" class="hidden max-md:landscape:block portrait:hidden fixed top-1/2 left-2 transform -translate-y-1/2 z-40">
+            <button 
+                v-if="currentQuestionIndex > 0"
+                @click="previousQuestion" 
+                :class="[
+                    'w-12 h-12 rounded-full backdrop-blur-xl border-2 shadow-lg transition-all duration-300',
+                    isDark 
+                        ? 'bg-gray-800/90 border-gray-600 text-white hover:bg-gray-700/90' 
+                        : 'bg-white/90 border-gray-300 text-gray-700 hover:bg-gray-50/90'
+                ]"
+                aria-label="Previous Question"
+            >
+                <svg class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+        </div>
+        
+        <div v-if="isReviewMode" class="hidden max-md:landscape:block portrait:hidden fixed top-1/2 right-2 transform -translate-y-1/2 z-40">
+            <button 
+                v-if="currentQuestionIndex < sampleQuestions.length - 1"
+                @click="nextQuestion" 
+                :class="[
+                    'w-12 h-12 rounded-full backdrop-blur-xl border-2 shadow-lg transition-all duration-300',
+                    isDark 
+                        ? 'bg-gray-800/90 border-gray-600 text-white hover:bg-gray-700/90' 
+                        : 'bg-white/90 border-gray-300 text-gray-700 hover:bg-gray-50/90'
+                ]"
+                aria-label="Next Question"
+            >
+                <svg class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Bottom-Right Floating CTA Badge (Final Question Only - Mobile Landscape) -->
+        <transition
+            enter-active-class="transition-all duration-300 ease-out delay-200"
+            enter-from-class="transform translate-x-full opacity-0"
+            enter-to-class="transform translate-x-0 opacity-100"
+            leave-active-class="transition-all duration-200 ease-in"
+            leave-from-class="transform translate-x-0 opacity-100"
+            leave-to-class="transform translate-x-full opacity-0"
+        >
+            <InertiaLink
+                v-if="isReviewMode && currentQuestionIndex === 9"
+                :href="typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics'"
+                class="fixed bottom-6 right-6 z-50 hidden max-md:landscape:block portrait:hidden"
+            >
+                <div :class="[
+                    'px-4 py-2 rounded-full backdrop-blur-xl border shadow-lg transition-all duration-300 hover:shadow-xl',
+                    'bg-emerald-500/90 hover:bg-emerald-600/90 border-emerald-400/30 text-white',
+                    'text-sm font-semibold whitespace-nowrap'
+                ]">
+                    Full Assessment
+                </div>
+            </InertiaLink>
+        </transition>
+
+        <!-- Mobile: Ultra-Minimal Footer (Hidden in Landscape Review Mode Only) -->
         <div :class="[
+            'lg:hidden backdrop-blur-xl border-t py-2 px-4 fixed bottom-0 left-0 w-full z-50',
+            isReviewMode ? 'landscape:hidden' : '',
+            isDark
+                ? 'bg-gray-800/90 border-gray-700'
+                : 'bg-gray-700 border-gray-800'
+        ]">
+            <div class="flex w-full gap-3 max-w-md mx-auto">
+                <!-- Review Mode Navigation -->
+                <div v-if="isReviewMode" class="flex w-full gap-2">
+                    
+                    <button @click="previousQuestion" :disabled="currentQuestionIndex === 0" :class="[
+                        'px-4 py-2 rounded-xl font-medium flex-1 transition-all',
+                        currentQuestionIndex === 0
+                            ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
+                            : 'bg-gray-500 hover:bg-gray-600 text-white'
+                    ]">
+                        Previous
+                    </button>
+                    <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="nextQuestion" :class="[
+                        'px-4 py-2 rounded-xl font-medium flex-1 text-white transition-all',
+                        'bg-blue-500 hover:bg-blue-600'
+                    ]">
+                        Next
+                    </button>
+                    <button v-else @click="restartQuiz" :class="[
+                        'px-4 py-2 rounded-xl font-medium flex-1 text-white transition-all',
+                        'bg-emerald-600 hover:bg-emerald-700'
+                    ]">
+                        Full Assessment
+                    </button>
+                </div>
+
+                <!-- Quiz Mode Controls -->
+                <div v-else class="flex w-full gap-3">
+                    <button @click="goToPreviousQuestion" 
+                        :disabled="currentQuestionIndex === 0" 
+                        :class="[
+                            'px-4 py-2 rounded-xl font-medium flex-1 transition-all',
+                            currentQuestionIndex === 0
+                                ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
+                                : 'bg-gray-500 hover:bg-gray-600 text-white'
+                        ]">
+                        Previous
+                    </button>
+                    <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="submitAnswer"
+                        :disabled="!hasSelection || isSubmitting" :class="[
+                            'px-4 py-2 rounded-xl font-medium flex-1 text-white transition-all',
+                            !hasSelection || isSubmitting
+                                ? 'bg-gray-600 cursor-not-allowed opacity-50'
+                                : 'bg-blue-500'
+                        ]">
+                        {{ isSubmitting ? 'Submitting...' : 'Submit Answer' }}
+                    </button>
+                    <button v-else @click="finishQuiz" :disabled="!hasSelection || isSubmitting" :class="[
+                        'px-4 py-2 rounded-xl font-medium flex-1 text-white transition-all',
+                        !hasSelection || isSubmitting
+                            ? 'bg-gray-600 cursor-not-allowed opacity-50'
+                            : 'bg-rose-500 hover:bg-rose-600'
+                    ]">
+                        Finish Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop: Original Footer -->
+        <div class="hidden lg:block" :class="[
             'backdrop-blur-xl border-t py-4 px-4 fixed bottom-0 left-0 w-full z-50',
             isDark
                 ? 'bg-gray-800/90 border-gray-700 shadow-2xl'
@@ -500,7 +509,7 @@
                 <!-- Review Mode Navigation -->
                 <div v-if="isReviewMode" class="flex w-full gap-2">
                     <button @click="previousQuestion" :disabled="currentQuestionIndex === 0" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border transition-all transform active:scale-95',
+                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border transition-all',
                         currentQuestionIndex === 0
                             ? (isDark
                                 ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50 text-gray-400'
@@ -510,18 +519,18 @@
                         Previous
                     </button>
                     <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="nextQuestion" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all transform active:scale-95',
-                        'bg-blue-500 hover:bg-blue-600 border-blue-400'
+                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all',
+                        'bg-blue-500 border-blue-400'
                     ]">
                         Next
                     </button>
                     <button v-else @click="restartQuiz" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all transform active:scale-95',
+                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all',
                         isDark
                             ? 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500'
                             : 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500'
                     ]">
-                        Try Full Assessment →
+                        Full Assessment
                     </button>
                 </div>
 
@@ -530,28 +539,28 @@
                     <button @click="goToPreviousQuestion" 
                         :disabled="currentQuestionIndex === 0" 
                         :class="[
-                            'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border transition-all transform',
+                            'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border transition-all',
                             currentQuestionIndex === 0
                                 ? (isDark
                                     ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50 text-gray-400'
                                     : 'bg-gray-500 border-gray-600 cursor-not-allowed opacity-60 text-gray-300')
-                                : 'bg-gray-500 hover:bg-gray-600 border-gray-400 text-white active:scale-95'
+                                : 'bg-gray-500 hover:bg-gray-600 border-gray-400 text-white'
                         ]">
                         Previous
                     </button>
                     <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="submitAnswer"
                         :disabled="!hasSelection || isSubmitting" :class="[
-                            'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all transform active:scale-95 shadow-lg',
+                            'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all shadow-lg',
                             !hasSelection || isSubmitting
                                 ? (isDark
                                     ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
                                     : 'bg-gray-400 border-gray-300 cursor-not-allowed opacity-60')
-                                : 'bg-blue-500 hover:bg-blue-600 border-blue-400 text-white hover:shadow-blue-500/25'
+                                : 'bg-blue-500 hover:bg-blue-600 border-blue-400 text-white'
                         ]">
                         {{ isSubmitting ? 'Submitting...' : 'Submit Answer' }}
                     </button>
                     <button v-else @click="finishQuiz" :disabled="!hasSelection || isSubmitting" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all transform active:scale-95 shadow-lg',
+                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all shadow-lg',
                         !hasSelection || isSubmitting
                             ? (isDark
                                 ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
@@ -604,7 +613,7 @@
                     </p>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex gap-3 justify-center">
                     <button @click="reviewAnswers" :class="[
                         'px-4 py-2 rounded-lg font-semibold transition-colors',
                         isDark
@@ -690,7 +699,7 @@
                 <!-- Action Buttons -->
                 <div class="flex justify-center">
                     <button @click="resumeQuiz" :class="[
-                        'px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-xl',
+                        'px-8 py-3 rounded-xl font-semibold text-white transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-xl',
                         isDark 
                             ? 'bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-500/25 hover:shadow-blue-500/40' 
                             : 'bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/30 hover:shadow-blue-500/50'
@@ -904,6 +913,7 @@ import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 import { SunIcon, MoonIcon } from 'lucide-vue-next';
 import { XMarkIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
+import { sampleQuestions } from '@/data/sampleQuestions.js';
 
 export default {
     layout: null, // No layout for sample quiz
@@ -939,7 +949,12 @@ export default {
         return {
             currentQuestionIndex: 0,
             selectedOptions: [],
-            answer: this.initialAnswer(),
+            answer: {
+                question_id: null,
+                selected_options: [],
+                duration: 0,
+                is_correct: null,
+            },
             userAnswers: [],
             isReviewMode: false,
             showResults: false,
@@ -952,435 +967,15 @@ export default {
             lastActivity: Date.now(),
             commandHistory: [], // For Type7 terminal commands
             isSubmitting: false, // Prevent double submissions
-            // Sample questions data
-            sampleQuestions: [
-                {
-                    id: 1,
-                    type_id: 7, // Simulation
-                    question_type: { id: 7, name: 'Simulation', code: 'simulation' },
-                    content: "Using the command line, determine the **MAC address** of the primary network interface (eth0) on this system. (You may use Linux or Windows commands)",
-                    options: [
-                        "00:1B:44:11:3A:B7",
-                        "02:42:AC:11:00:02", 
-                        "00:0C:29:4F:8E:35",
-                        "A8:6D:AA:5F:92:C4"
-                    ],
-                    correct_options: ["00:1B:44:11:3A:B7"],
-                    justifications: [
-                        "This is the correct MAC address of the primary network interface. You can verify this using commands like 'ifconfig', 'ip addr', 'ipconfig /all' (Windows), or 'getmac'.",
-                        "This appears to be a Docker container's virtual MAC address, not the primary network interface.",
-                        "This looks like a VMware virtual machine's MAC address, not the primary physical interface.",
-                        "This is a valid MAC address format, but it is not the MAC address of the primary network interface on this system."
-                    ],
-                    settings: {
-                        "shell": "bash",
-                        "clearCommand": "clear",
-                        "errorMessages": {
-                            "commandNotFound": "$COMMAND: command not found",
-                            "permissionDenied": "$COMMAND: permission denied"
-                        },
-                        "commands": [
-                            // Linux/Unix commands
-                            {
-                                "pattern": "^ifconfig$",
-                                "response": "eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 192.168.1.100  netmask 255.255.255.0  broadcast 192.168.1.255\n        inet6 fe80::21b:44ff:fe11:3ab7  prefixlen 64  scopeid 0x20<link>\n        ether 00:1b:44:11:3a:b7  txqueuelen 1000  (Ethernet)\n        RX packets 128420  bytes 95234567 (90.8 MiB)\n        RX errors 0  dropped 0  overruns 0  frame 0\n        TX packets 84321  bytes 12345678 (11.8 MiB)\n        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0\n\nlo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536\n        inet 127.0.0.1  netmask 255.0.0.0\n        inet6 ::1  prefixlen 128  scopeid 0x10<host>\n        loop  txqueuelen 1000  (Local Loopback)\n        RX packets 82  bytes 8120 (7.9 KiB)\n        RX errors 0  dropped 0  overruns 0  frame 0\n        TX packets 82  bytes 8120 (7.9 KiB)\n        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0"
-                            },
-                            {
-                                "pattern": "^ifconfig eth0$",
-                                "response": "eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 192.168.1.100  netmask 255.255.255.0  broadcast 192.168.1.255\n        inet6 fe80::21b:44ff:fe11:3ab7  prefixlen 64  scopeid 0x20<link>\n        ether 00:1b:44:11:3a:b7  txqueuelen 1000  (Ethernet)\n        RX packets 128420  bytes 95234567 (90.8 MiB)\n        RX errors 0  dropped 0  overruns 0  frame 0\n        TX packets 84321  bytes 12345678 (11.8 MiB)\n        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0"
-                            },
-                            {
-                                "pattern": "^ip addr$|^ip addr show$|^ip a$",
-                                "response": "1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000\n    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00\n    inet 127.0.0.1/8 scope host lo\n       valid_lft forever preferred_lft forever\n    inet6 ::1/128 scope host\n       valid_lft forever preferred_lft forever\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\n    link/ether 00:1b:44:11:3a:b7 brd ff:ff:ff:ff:ff:ff\n    inet 192.168.1.100/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\n       valid_lft 86389sec preferred_lft 86389sec\n    inet6 fe80::21b:44ff:fe11:3ab7/64 scope link noprefixroute\n       valid_lft forever preferred_lft forever"
-                            },
-                            {
-                                "pattern": "^ip link$|^ip link show$|^ip l$",
-                                "response": "1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000\n    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000\n    link/ether 00:1b:44:11:3a:b7 brd ff:ff:ff:ff:ff:ff"
-                            },
-                            {
-                                "pattern": "^hostname -I$",
-                                "response": "192.168.1.100 fe80::21b:44ff:fe11:3ab7"
-                            },
-                            {
-                                "pattern": "^cat /sys/class/net/eth0/address$",
-                                "response": "00:1b:44:11:3a:b7"
-                            },
-                            {
-                                "pattern": "^getmac$",
-                                "response": "Physical Address    Transport Name\n=================== ==================================================\n00-1B-44-11-3A-B7   \\Device\\Tcpip_{B8E2A55C-7D17-4C85-A88B-123456789012}"
-                            },
-                            // Windows commands
-                            {
-                                "pattern": "^ipconfig$",
-                                "response": "Windows IP Configuration\n\n\nEthernet adapter Ethernet:\n\n   Connection-specific DNS Suffix  . : \n   Link-local IPv6 Address . . . . . : fe80::21b:44ff:fe11:3ab7%12\n   IPv4 Address. . . . . . . . . . . : 192.168.1.100\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.1.1\n\nWireless LAN adapter Local Area Connection* 1:\n\n   Media State . . . . . . . . . . . : Media disconnected\n   Connection-specific DNS Suffix  . : \n\nWireless LAN adapter Wi-Fi:\n\n   Media State . . . . . . . . . . . : Media disconnected\n   Connection-specific DNS Suffix  . : \n\nEthernet adapter Bluetooth Network Connection:\n\n   Media State . . . . . . . . . . . : Media disconnected\n   Connection-specific DNS Suffix  . :"
-                            },
-                            {
-                                "pattern": "^ipconfig /all$",
-                                "response": "Windows IP Configuration\n\n   Host Name . . . . . . . . . . . . : DESKTOP-ABC123\n   Primary Dns Suffix  . . . . . . . : \n   Node Type . . . . . . . . . . . . : Hybrid\n   IP Routing Enabled. . . . . . . . : No\n   WINS Proxy Enabled. . . . . . . . : No\n\nEthernet adapter Ethernet:\n\n   Connection-specific DNS Suffix  . : \n   Description . . . . . . . . . . . : Intel(R) Ethernet Connection\n   Physical Address. . . . . . . . . : 00-1B-44-11-3A-B7\n   DHCP Enabled. . . . . . . . . . . : Yes\n   Autoconfiguration Enabled . . . . : Yes\n   Link-local IPv6 Address . . . . . : fe80::21b:44ff:fe11:3ab7%12(Preferred)\n   IPv4 Address. . . . . . . . . . . : 192.168.1.100(Preferred)\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Lease Obtained. . . . . . . . . . : Sunday, June 8, 2025 8:00:00 AM\n   Lease Expires . . . . . . . . . . : Monday, June 9, 2025 8:00:00 AM\n   Default Gateway . . . . . . . . . : 192.168.1.1\n   DHCP Server . . . . . . . . . . . : 192.168.1.1\n   DNS Servers . . . . . . . . . . . : 8.8.8.8\n                                       8.8.4.4"
-                            },
-                            {
-                                "pattern": "^wmic nic get macaddress$",
-                                "response": "MACAddress\n00:1B:44:11:3A:B7\n"
-                            },
-                            {
-                                "pattern": "^getmac /v$",
-                                "response": "Connection Name     Network Adapter                Physical Address    Transport Name\n===============     ========================       ==================  ==================\nEthernet            Intel(R) Ethernet Connection   00-1B-44-11-3A-B7   \\Device\\Tcpip_{B8E2A55C}\nWi-Fi               Not Connected                  N/A                 N/A"
-                            },
-                            // Additional Linux commands
-                            {
-                                "pattern": "^arp -a$",
-                                "response": "? (192.168.1.1) at 00:11:22:33:44:55 on eth0 [ether] REACHABLE\n? (192.168.1.100) at 00:1b:44:11:3a:b7 on eth0 [ether] PERMANENT\n? (192.168.1.105) at aa:bb:cc:dd:ee:ff on eth0 [ether] STALE"
-                            },
-                            // Help command
-                            {
-                                "pattern": "^help$",
-                                "response": "Available commands:\n\nLinux:\n  ifconfig                    - Show network interfaces (includes MAC)\n  ifconfig eth0               - Show specific interface details\n  ip addr                     - Show IP addresses and MAC\n  ip link                     - Show network links with MAC\n  cat /sys/class/net/eth0/address - Show MAC address directly\n  hostname -I                 - Show IP addresses\n  arp -a                      - Show ARP table\n\nWindows:\n  ipconfig                    - Show basic network configuration (NO MAC)\n  ipconfig /all               - Show detailed configuration (includes MAC)\n  getmac                      - Show MAC addresses\n  getmac /v                   - Verbose MAC address listing\n  wmic nic get macaddress     - WMI query for MAC addresses\n\nOther:\n  clear                       - Clear the terminal\n  help                        - Show this help message"
-                            }
-                        ]
-                    },
-                    domain: "Network Security",
-                    topic: "Network Configuration",
-                    difficulty: "Easy",
-                    bloom: "Apply",
-                    dimension: "Technical"
-                },
-                {
-                    id: 2,
-                    type_id: 2, // True/False question
-                    question_type: { id: 2, name: 'True/False', code: 'true_false' },
-                    content: "In a properly implemented defense-in-depth strategy, if one security control fails, the entire security posture is compromised.",
-                    options: ["True", "False"],
-                    correct_options: ["False"],
-                    explanation: "Defense-in-depth uses multiple layers of security controls. If one control fails, other controls continue to provide protection. This layered approach ensures that a single point of failure doesn't compromise the entire security posture.",
-                    domain: "Security Architecture & Design",
-                    topic: "Defense in Depth",
-                    difficulty: "Easy",
-                    bloom: "Understand",
-                    dimension: "Technical"
-                },
-                {
-                    id: 3,
-                    type_id: 1, // Single choice
-                    question_type: { id: 1, name: 'Single Choice', code: 'single_choice' },
-                    content: "An organization is running a legacy system that no longer receives vendor patches or support. In risk management terms, what does this represent?",
-                    options: [
-                        "A threat",
-                        "A vulnerability",
-                        "An impact",
-                        "A risk"
-                    ],
-                    correct_options: ["A vulnerability"],
-                    justifications: [
-                        "A threat is a potential danger that could exploit a weakness. The legacy system itself is not the threat, but rather what could be exploited.",
-                        "Correct. A vulnerability is a weakness or gap in security that can be exploited. An unpatched legacy system represents a weakness in the organization's security posture.",
-                        "An impact refers to the potential damage or consequences if a vulnerability is exploited. The legacy system itself is not the impact.",
-                        "A risk is the combination of a threat, vulnerability, and impact. The legacy system alone is just one component (vulnerability) of the overall risk equation."
-                    ],
-                    domain: "Risk Management",
-                    topic: "Risk Components",
-                    difficulty: "Medium",
-                    bloom: "Understand",
-                    dimension: "Managerial"
-                },
-                {
-                    id: 4,
-                    type_id: 1, // Using Type1 with multi-select settings
-                    question_type: { id: 1, name: 'Multiple Choice', code: 'multiple_choice' },
-                    content: "Which of the following are examples of multi-factor authentication (MFA)? (Select **ALL** that apply)",
-                    options: [
-                        "Password + SMS code",
-                        "Fingerprint + PIN",
-                        "Username + password",
-                        "Smart card + biometric"
-                    ],
-                    correct_options: ["Password + SMS code", "Fingerprint + PIN", "Smart card + biometric"],
-                    settings: {
-                        isMultiSelect: true,
-                        maxSelectable: 3  // There are 3 correct answers
-                    },
-                    justifications: [
-                        "Combines something you know (password) with something you have (phone for SMS) - two different factors.",
-                        "Combines something you are (fingerprint biometric) with something you know (PIN) - two different factors.",
-                        "Both username and password are 'something you know' - this is single-factor authentication, not MFA.",
-                        "Combines something you have (smart card) with something you are (biometric) - two different factors."
-                    ],
-                    domain: "Access Control",
-                    topic: "Authentication Methods",
-                    difficulty: "Easy",
-                    bloom: "Understand",
-                    dimension: "Technical"
-                },
-                {
-                    id: 5,
-                    type_id: 3, // Drag and drop (single zone)
-                    question_type: { id: 3, name: 'Drag and Drop', code: 'drag_drop' },
-                    content: "Drag only symmetric algorithms to the drop zone:",
-                    options: [
-                        "AES",
-                        "RSA",
-                        "DES",
-                        "Diffie-Hellman",
-                        "3DES",
-                        "ECC"
-                    ],
-                    correct_options: ["AES", "DES", "3DES"],
-                    justifications: [
-                        "AES (Advanced Encryption Standard) is a symmetric block cipher that uses the same key for encryption and decryption.",
-                        "RSA is an asymmetric algorithm that uses different keys for encryption and decryption (public/private key pair).",
-                        "DES (Data Encryption Standard) is a symmetric block cipher that uses the same 56-bit key for encryption and decryption.",
-                        "Diffie-Hellman is a key exchange protocol, not an encryption algorithm. It's used to securely establish a shared secret.",
-                        "3DES (Triple DES) is a symmetric algorithm that applies DES three times with different keys.",
-                        "ECC (Elliptic Curve Cryptography) is an asymmetric algorithm based on elliptic curve mathematics."
-                    ],
-                    domain: "Cryptography",
-                    topic: "Encryption Algorithms",
-                    difficulty: "Medium",
-                    bloom: "Apply",
-                    dimension: "Technical"
-                },
-                {
-                    id: 6,
-                    type_id: 4, // Drag and drop (ordering)
-                    question_type: { id: 4, name: 'Ordering', code: 'ordering' },
-                    content: "The Open System Interconnection (OSI) reference model is a conceptual model made up of seven layers that describe information flow from one computing asset to another over a network. Each layer of the OSI model performs or facilitates a specific network function. Drag & drop the layers in sequence from top (layer 7) to bottom (layer 1).",
-                    options: ["Transport", "Physical", "Application", "Data Link", "Network", "Presentation", "Session"], // Shuffled
-                    correct_options: ["Application", "Presentation", "Session", "Transport", "Network", "Data Link", "Physical"],
-                    domain: "Network Security",
-                    topic: "OSI Model",
-                    difficulty: "Medium",
-                    bloom: "Remember",
-                    dimension: "Technical"
-                },
-                {
-                    id: 7,
-                    type_id: 5, // Matching
-                    question_type: { id: 5, name: 'Matching', code: 'matching' },
-                    content: "Drag and match the type of intellectual property with its definition on the left.",
-                    options: {
-                        items: ["Patent", "Trademark", "Copyright", "Trade Secret"],
-                        responses: [
-                            "Protects new inventions, processes, and technical solutions",
-                            "Protects logos, brand names, slogans, and symbols used in commerce",
-                            "Protects original artistic and literary works like books, music, and software",
-                            "Protects confidential business information that gives a competitive advantage"
-                        ]
-                    },
-                    correct_options: {
-                        "Patent": "Protects new inventions, processes, and technical solutions",
-                        "Trademark": "Protects logos, brand names, slogans, and symbols used in commerce",
-                        "Copyright": "Protects original artistic and literary works like books, music, and software",
-                        "Trade Secret": "Protects confidential business information that gives a competitive advantage"
-                    },
-                    justifications: {
-                        "Patent": "A patent gives exclusive rights to an inventor for a limited time, typically 20 years, protecting new inventions or discoveries.",
-                        "Trademark": "Trademarks identify and distinguish the source of goods or services and protect brand identity in the marketplace.",
-                        "Copyright": "Copyright protects the expression of ideas in tangible form, such as books, software, music, or films — not the idea itself.",
-                        "Trade Secret": "Trade secrets include formulas, practices, or designs that are confidential and give a business advantage, such as the Coca-Cola recipe."
-                    },
-                    domain: "Legal, Regulatory & Compliance",
-                    topic: "Intellectual Property",
-                    difficulty: "Medium",
-                    bloom: "Understand",
-                    dimension: "Managerial"
-                },
-                {
-                    id: 8,
-                    type_id: 6, // Hotspot
-                    question_type: { id: 6, name: 'Hotspot', code: 'hotspot' },
-                    content: "Click where the Firewall should be placed to secure outbound connections from internal computers, protect internal resources from inbound connections from Internet, and use a separate **DMZ** segment to allow web connections from the Internet.",
-                    image: "/images/questions/1.png",
-                    options: [
-                        { "x": 132, "y": 58 },
-                        { "x": 238, "y": 58 },
-                        { "x": 342, "y": 58 },
-                        { "x": 448, "y": 58 }
-                    ],
-                    correct_options: { "x": 342, "y": 58 },
-                    justifications: "A single firewall with at least 3 network interfaces can be used to create a network architecture containing a DMZ. The external network is formed from the ISP to the firewall on the first network interface, the internal network is formed from the second network interface, and the DMZ is formed from the third network interface.",
-                    domain: "Network Security",
-                    topic: "Firewall Placement",
-                    difficulty: "Hard",
-                    bloom: "Apply",
-                    dimension: "Technical"
-                },
-                {
-                    id: 9,
-                    type_id: 7, // Simulation
-                    question_type: { id: 7, name: 'Simulation', code: 'simulation' },
-                    content: "Using the command line, determine the **IPv6** address for *saazacademy.com*",
-                    options: [
-                        "2606:4700:3037::6815:4c99",
-                        "2a00:1450:4009:80f::200e", 
-                        "2001:4860:4860::8888",
-                        "172.67.180.227"
-                    ],
-                    correct_options: ["2606:4700:3037::6815:4c99"],
-                    justifications: [
-                        "This is the correct IPv6 address for *saazacademy.com*. You can verify this using commands like 'dig AAAA saazacademy.com' or 'host -t AAAA saazacademy.com'.",
-                        "This is a Google Public DNS IPv6 address, not related to *saazacademy.com*.",
-                        "This is a Google DNS64 IPv6 address, not related to *saazacademy.com*.",
-                        "This is an IPv4 address for *saazacademy.com* not an IPv6 address."
-                    ],
-                    settings: {
-                            "shell": "bash",
-                            "clearCommand": "clear",
-                            "errorMessages": {
-                                "commandNotFound": "$COMMAND: command not found",
-                                "missingArgument": "$COMMAND: missing required argument: domain name",
-                                "unknownHost": "$COMMAND: cannot resolve $1: Unknown host"
-                            },
-                            "commands": [
-                                // Commands that work only for saazacademy.com
-                                {
-                                    "pattern": "dig (AAAA saazacademy\\.com|saazacademy\\.com AAAA)$",
-                                    "response": "; <<>> DiG 9.18.28-0ubuntu0.20.04.1-Ubuntu <<>> AAAA saazacademy.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 47823\n;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;saazacademy.com.\t\tIN\tAAAA\n\n;; ANSWER SECTION:\nsaazacademy.com.\t300\tIN\tAAAA\t2606:4700:3037::6815:4c99\nsaazacademy.com.\t300\tIN\tAAAA\t2606:4700:3037::ac43:b4e3\n\n;; Query time: 23 msec\n;; SERVER: 172.20.10.1#53(172.20.10.1)\n;; WHEN: Sat Jun 08 17:42:31 PST 2025\n;; MSG SIZE  rcvd: 88"
-                                },
-                                {
-                                    "pattern": "dig AAAA saazacademy\\.com \\+short$",
-                                    "response": "2606:4700:3037::6815:4c99\n2606:4700:3037::ac43:b4e3"
-                                },
-                                {
-                                    "pattern": "host -t AAAA saazacademy\\.com$",
-                                    "response": "saazacademy.com has IPv6 address 2606:4700:3037::6815:4c99\nsaazacademy.com has IPv6 address 2606:4700:3037::ac43:b4e3"
-                                },
-                                // IPv4 commands for saazacademy.com
-                                {
-                                    "pattern": "dig saazacademy\\.com \\+short$",
-                                    "response": "172.67.180.227\n104.21.76.153"
-                                },
-                                {
-                                    "pattern": "dig saazacademy\\.com$",
-                                    "response": "; <<>> DiG 9.18.28-0ubuntu0.20.04.1-Ubuntu <<>> saazacademy.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 32451\n;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 65494\n;; QUESTION SECTION:\n;saazacademy.com.\t\tIN\tA\n\n;; ANSWER SECTION:\nsaazacademy.com.\t300\tIN\tA\t172.67.180.227\nsaazacademy.com.\t300\tIN\tA\t104.21.76.153\n\n;; Query time: 15 msec\n;; SERVER: 172.20.10.1#53(172.20.10.1)\n;; WHEN: Sat Jun 08 17:45:22 PST 2025\n;; MSG SIZE  rcvd: 76"
-                                },
-                                {
-                                    "pattern": "host saazacademy\\.com$",
-                                    "response": "saazacademy.com has address 172.67.180.227\nsaazacademy.com has address 104.21.76.153\nsaazacademy.com has IPv6 address 2606:4700:3037::6815:4c99\nsaazacademy.com has IPv6 address 2606:4700:3037::ac43:b4e3\nsaazacademy.com mail is handled by 0 _dc-mx.b54f0cda8c8e.saazacademy.com."
-                                },
-                                {
-                                    "pattern": "nslookup saazacademy\\.com$",
-                                    "response": "Server:\t\t172.20.10.1\nAddress:\t172.20.10.1#53\n\nNon-authoritative answer:\nName:\tsaazacademy.com\nAddress: 172.67.180.227\nName:\tsaazacademy.com\nAddress: 104.21.76.153\nName:\tsaazacademy.com\nAddress: 2606:4700:3037::6815:4c99\nName:\tsaazacademy.com\nAddress: 2606:4700:3037::ac43:b4e3"
-                                },
-                                {
-                                    "pattern": "ping saazacademy\\.com$",
-                                    "response": "PING saazacademy.com (172.67.180.227) 56(84) bytes of data.\n64 bytes from 172.67.180.227: icmp_seq=1 ttl=52 time=23.7 ms\n64 bytes from 172.67.180.227: icmp_seq=2 ttl=52 time=23.5 ms\n64 bytes from 172.67.180.227: icmp_seq=3 ttl=52 time=23.6 ms\n64 bytes from 172.67.180.227: icmp_seq=4 ttl=52 time=23.8 ms\n\n--- saazacademy.com ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3003ms\nrtt min/avg/max/mdev = 23.5/23.65/23.8/0.122 ms"
-                                },
-                                {
-                                    "pattern": "nslookup -query=AAAA saazacademy\\.com$",
-                                    "response": "Server:\t\t172.20.10.1\nAddress:\t172.20.10.1#53\n\nNon-authoritative answer:\nName:\tsaazacademy.com\nAddress: 2606:4700:3037::6815:4c99\nName:\tsaazacademy.com\nAddress: 2606:4700:3037::ac43:b4e3"
-                                },
-                                {
-                                    "pattern": "ping6 saazacademy\\.com$",
-                                    "response": "PING6(56=40+8+8 bytes) 2001:db8:0:1234::1 --> 2606:4700:3037::6815:4c99\n16 bytes from 2606:4700:3037::6815:4c99, icmp_seq=0 hlim=52 time=24.152 ms\n16 bytes from 2606:4700:3037::6815:4c99, icmp_seq=1 hlim=52 time=23.897 ms\n16 bytes from 2606:4700:3037::6815:4c99, icmp_seq=2 hlim=52 time=24.021 ms\n16 bytes from 2606:4700:3037::6815:4c99, icmp_seq=3 hlim=52 time=23.944 ms\n\n--- saazacademy.com ping6 statistics ---\n4 packets transmitted, 4 packets received, 0.0% packet loss\nround-trip min/avg/max/std-dev = 23.897/24.004/24.152/0.099 ms"
-                                },
-                                {
-                                    "pattern": "ping -6 saazacademy\\.com$",
-                                    "response": "PING saazacademy.com(2606:4700:3037::6815:4c99) 56 data bytes\n64 bytes from 2606:4700:3037::6815:4c99: icmp_seq=1 ttl=52 time=24.1 ms\n64 bytes from 2606:4700:3037::6815:4c99: icmp_seq=2 ttl=52 time=23.9 ms\n64 bytes from 2606:4700:3037::6815:4c99: icmp_seq=3 ttl=52 time=24.0 ms\n64 bytes from 2606:4700:3037::6815:4c99: icmp_seq=4 ttl=52 time=23.8 ms\n\n--- saazacademy.com ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 23.8/23.95/24.1/0.125 ms"
-                                },
-                                // Additional IPv6 commands
-                                {
-                                    "pattern": "getent ahosts saazacademy\\.com$",
-                                    "response": "2606:4700:3037::6815:4c99 STREAM saazacademy.com\n2606:4700:3037::6815:4c99 DGRAM\n2606:4700:3037::6815:4c99 RAW\n2606:4700:3037::ac43:b4e3 STREAM\n2606:4700:3037::ac43:b4e3 DGRAM\n2606:4700:3037::ac43:b4e3 RAW\n172.67.180.227  STREAM\n172.67.180.227  DGRAM\n172.67.180.227  RAW\n104.21.76.153   STREAM\n104.21.76.153   DGRAM\n104.21.76.153   RAW"
-                                },
-                                {
-                                    "pattern": "getent hosts saazacademy\\.com$",
-                                    "response": "2606:4700:3037::6815:4c99 saazacademy.com"
-                                },
-                                {
-                                    "pattern": "host -t ANY saazacademy\\.com$",
-                                    "response": "saazacademy.com has address 172.67.180.227\nsaazacademy.com has address 104.21.76.153\nsaazacademy.com has IPv6 address 2606:4700:3037::6815:4c99\nsaazacademy.com has IPv6 address 2606:4700:3037::ac43:b4e3\nsaazacademy.com mail is handled by 0 _dc-mx.b54f0cda8c8e.saazacademy.com.\nsaazacademy.com nameserver = ns1.example.com.\nsaazacademy.com nameserver = ns2.example.com."
-                                },
-                                {
-                                    "pattern": "drill AAAA saazacademy\\.com$",
-                                    "response": ";; ->>HEADER<<- opcode: QUERY, rcode: NOERROR, id: 12345\n;; flags: qr rd ra ; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 0\n;; QUESTION SECTION:\n;; saazacademy.com.\tIN\tAAAA\n\n;; ANSWER SECTION:\nsaazacademy.com.\t300\tIN\tAAAA\t2606:4700:3037::6815:4c99\nsaazacademy.com.\t300\tIN\tAAAA\t2606:4700:3037::ac43:b4e3\n\n;; AUTHORITY SECTION:\n\n;; ADDITIONAL SECTION:\n\n;; Query time: 25 msec\n;; SERVER: 8.8.8.8\n;; WHEN: Sun Jun  8 21:30:00 2025\n;; MSG SIZE  rcvd: 88"
-                                },
-                                {
-                                    "pattern": "resolveip -6 saazacademy\\.com$",
-                                    "response": "IPv6 address of saazacademy.com is 2606:4700:3037::6815:4c99"
-                                },
-                                {
-                                    "pattern": "dnseval saazacademy\\.com$",
-                                    "response": "saazacademy.com. A: 172.67.180.227, 104.21.76.153\nsaazacademy.com. AAAA: 2606:4700:3037::6815:4c99, 2606:4700:3037::ac43:b4e3"
-                                },
-                                {
-                                    "pattern": "systemd-resolve saazacademy\\.com$",
-                                    "response": "saazacademy.com: 2606:4700:3037::6815:4c99\n                 2606:4700:3037::ac43:b4e3\n                 172.67.180.227\n                 104.21.76.153\n\n-- Information acquired via protocol DNS in 15.2ms.\n-- Data is authenticated: no"
-                                },
-                                {
-                                    "pattern": "resolvectl query saazacademy\\.com$",
-                                    "response": "saazacademy.com: 2606:4700:3037::6815:4c99\n                 2606:4700:3037::ac43:b4e3\n                 172.67.180.227\n                 104.21.76.153\n\n-- Information acquired via protocol DNS in 12.4ms.\n-- Data is authenticated: no"
-                                },
-                                {
-                                    "pattern": "nmap -6 -sn saazacademy\\.com$",
-                                    "response": "Starting Nmap 7.80 ( https://nmap.org ) at 2025-06-08 21:30 IST\nNmap scan report for saazacademy.com (2606:4700:3037::6815:4c99)\nHost is up (0.024s latency).\nOther addresses for saazacademy.com (not scanned): 2606:4700:3037::ac43:b4e3\nNmap done: 1 IP address (1 host up) scanned in 0.08 seconds"
-                                },
-                                {
-                                    "pattern": "curl -6 -I saazacademy\\.com$",
-                                    "response": "curl: (7) Failed to connect to saazacademy.com port 80: Connection refused"
-                                },
-                                // Generic commands for other domains with NXDOMAIN response
-                                {
-                                    "pattern": "ping ([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$",
-                                    "condition": "^ping (?!saazacademy\\.com$)",
-                                    "generateResponse": {
-                                        "type": "error",
-                                        "template": "ping: cannot resolve $1: Unknown host"
-                                    },
-                                    "isError": true
-                                },
-                                {
-                                    "pattern": "dig ([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})$",
-                                    "condition": "^dig (?!saazacademy\\.com$)",
-                                    "generateResponse": {
-                                        "type": "nxdomain",
-                                        "template": "; <<>> DiG 9.10.6 <<>> $1\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: $RANDOM_ID\n;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 1280\n;; QUESTION SECTION:\n;$1.\t\t\tIN\tA\n\n;; AUTHORITY SECTION:\ncom.\t\t\t899\tIN\tSOA\ta.gtld-servers.net. nstld.verisign-grs.com. 1749397177 1800 900 604800 900\n\n;; Query time: $RANDOM_TIME msec\n;; SERVER: 2405:201:4017:721c::c0a8:1d01#53(2405:201:4017:721c::c0a8:1d01)\n;; WHEN: $DATE\n;; MSG SIZE  rcvd: $RANDOM_SIZE"
-                                    }
-                                },
-                                {
-                                    "pattern": "dig AAAA ([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})",
-                                    "condition": "^dig AAAA (?!saazacademy\\.com)",
-                                    "generateResponse": {
-                                        "type": "nxdomain",
-                                        "template": "; <<>> DiG 9.10.6 <<>> AAAA $1\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: $RANDOM_ID\n;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1\n\n;; OPT PSEUDOSECTION:\n; EDNS: version: 0, flags:; udp: 1280\n;; QUESTION SECTION:\n;$1.\t\t\tIN\tAAAA\n\n;; AUTHORITY SECTION:\ncom.\t\t\t899\tIN\tSOA\ta.gtld-servers.net. nstld.verisign-grs.com. 1749397177 1800 900 604800 900\n\n;; Query time: $RANDOM_TIME msec\n;; SERVER: 2405:201:4017:721c::c0a8:1d01#53(2405:201:4017:721c::c0a8:1d01)\n;; WHEN: $DATE\n;; MSG SIZE  rcvd: $RANDOM_SIZE"
-                                    }
-                                },
-                                // Help command
-                                {
-                                    "pattern": "^help$",
-                                    "response": "Available commands:\n  dig <domain>                   - Query A (IPv4) record using DNS\n  dig AAAA <domain>              - Query AAAA (IPv6) record using DNS\n  dig AAAA <domain> +short       - Query IPv6 address (short format)\n  host <domain>                  - Display all DNS records for hostname\n  host -t AAAA <domain>          - Display IPv6 address for hostname\n  host -t ANY <domain>           - Display ALL DNS records\n  nslookup <domain>              - Query all addresses for domain\n  nslookup -query=AAAA <domain>  - Query nameserver for IPv6 only\n  ping <domain>                  - Ping using IPv4\n  ping6 <domain>                 - Ping using IPv6\n  ping -6 <domain>               - Ping using IPv6\n  getent hosts <domain>          - Get host entry (prefers IPv6)\n  getent ahosts <domain>         - Get all host addresses\n  drill AAAA <domain>            - DNS lookup tool (alternative to dig)\n  systemd-resolve <domain>       - SystemD resolver query\n  resolvectl query <domain>      - SystemD resolver control\n  resolveip -6 <domain>          - Resolve to IPv6 address only\n  dnseval <domain>               - Evaluate DNS records\n  nmap -6 -sn <domain>           - IPv6 host discovery\n  curl -6 -I <domain>            - HTTP HEAD request over IPv6\n  clear                          - Clear the terminal\n  help                           - Show this help message"
-                                }
-                            ]
-                        },
-                    domain: "Network Security",
-                    topic: "Network Commands",
-                    difficulty: "Medium",
-                    bloom: "Apply",
-                    dimension: "Technical"
-                },
-                {
-                    id: 10,
-                    type_id: 1, // Single choice
-                    question_type: { id: 1, name: 'Single Choice', code: 'single_choice' },
-                    content: "An EU citizen is traveling in the United States and requires medical attention. During the visit, a U.S.-based hospital collects the individual's personal and medical data for treatment purposes.\n\nWhich of the following statements is TRUE regarding the hospital's data protection obligations?",
-                    options: [
-                        "The U.S. hospital must comply with the EU GDPR because the patient is an EU citizen.",
-                        "The U.S. hospital must adhere to both GDPR and HIPAA due to the dual nature of the data (EU citizenship and medical information).",
-                        "The U.S. hospital must comply with HIPAA, not GDPR, as the data processing occurs in the U.S. for domestic healthcare purposes.",
-                        "The U.S. hospital can share the data with third parties without consent since the patient is a foreign national."
-                    ],
-                    correct_options: ["The U.S. hospital must comply with HIPAA, not GDPR, as the data processing occurs in the U.S. for domestic healthcare purposes."],
-                    justifications: [
-                        "GDPR does not automatically apply to U.S.-based organizations solely because the data belongs to an EU citizen. GDPR applies when data is processed within the EU or by entities targeting EU residents, which is not the case here.",
-                        "While HIPAA governs medical data in the U.S., GDPR does not apply to data processed domestically in the U.S., even if the individual is an EU citizen.",
-                        "HIPAA governs healthcare data protection within the U.S., and since the data processing occurs locally for healthcare purposes, GDPR does not apply.",
-                        "HIPAA strictly prohibits sharing patient data without consent or legal justification, regardless of nationality."
-                    ],
-                    domain: "Legal, Regulatory & Compliance",
-                    topic: "Data Protection Laws",
-                    difficulty: "Medium",
-                    bloom: "Understand",
-                    dimension: "Managerial"
-                }
-            ]
+            showAllExplanations: false, // For mobile explanation toggle
+            // Swipe navigation
+            touchStartX: 0,
+            touchStartY: 0,
+            touchEndX: 0,
+            touchEndY: 0,
+            swipeThreshold: 50,
+            // Sample questions data (imported from separate file)
+            sampleQuestions
         };
     },
     computed: {
@@ -1395,8 +990,8 @@ export default {
                     3: 'Type3Review', // Drag and drop review
                     4: 'Type4Review', // Ordering review
                     5: 'Type5Review', // Matching review
-                    6: 'Type6', // Hotspot - no review component, use regular
-                    7: 'Type7', // Simulation - no review component, use regular
+                    6: 'Type6Review', // Hotspot review
+                    7: 'Type7Review', // Simulation review
                 };
                 return typeMap[this.currentQuestion?.type_id] || 'Type1Review';
             } else {
@@ -1852,6 +1447,112 @@ export default {
             
             // Navigate back to diagnostics index page
             window.location.href = typeof route !== 'undefined' ? route('assessments.diagnostics.index') : '/diagnostics';
+        },
+        getCurrentAnswer() {
+            return this.userAnswers[this.currentQuestionIndex] || null;
+        },
+        formatTime(seconds) {
+            if (!seconds) return 'N/A';
+            
+            if (seconds < 60) {
+                return `${seconds}s`;
+            } else {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+            }
+        },
+        getDifficultyLabel(difficulty) {
+            // Handle both string and numeric inputs
+            if (typeof difficulty === 'string') {
+                return difficulty; // Return string as-is (e.g., "Easy", "Medium")
+            }
+            
+            const labels = {
+                1: 'Beginner',
+                2: 'Easy',
+                3: 'Intermediate',
+                4: 'Advanced',
+                5: 'Expert'
+            };
+            return labels[difficulty] || 'Unknown';
+        },
+        getBloomLabel(bloom) {
+            // Handle both string and numeric inputs
+            if (typeof bloom === 'string') {
+                return bloom; // Return string as-is (e.g., "Apply", "Understand")
+            }
+            
+            const labels = {
+                1: 'Remember (L1)',
+                2: 'Understand (L2)',
+                3: 'Apply (L3)',
+                4: 'Analysis (L4)',
+                5: 'Evaluate (L5)',
+                6: 'Create (L6)'
+            };
+            return labels[bloom] || 'Unknown';
+        },
+        getDifficultyNumeric(difficulty) {
+            // Convert string difficulty to numeric for dot indicators
+            if (typeof difficulty === 'number') {
+                return difficulty;
+            }
+            
+            const difficultyMap = {
+                'Easy': 2,
+                'Medium': 3,
+                'Hard': 4,
+                'Expert': 5,
+                'Beginner': 1
+            };
+            return difficultyMap[difficulty] || 0;
+        },
+        getBloomNumeric(bloom) {
+            // Convert string bloom to numeric for dot indicators
+            if (typeof bloom === 'number') {
+                return bloom;
+            }
+            
+            const bloomMap = {
+                'Remember': 1,
+                'Understand': 2,
+                'Apply': 3,
+                'Analysis': 4,
+                'Analyze': 4,
+                'Evaluate': 5,
+                'Create': 6
+            };
+            return bloomMap[bloom] || 0;
+        },
+        handleTouchStart(event) {
+            if (!this.isReviewMode) return;
+            
+            this.touchStartX = event.touches[0].clientX;
+            this.touchStartY = event.touches[0].clientY;
+        },
+        handleTouchEnd(event) {
+            if (!this.isReviewMode) return;
+            
+            this.touchEndX = event.changedTouches[0].clientX;
+            this.touchEndY = event.changedTouches[0].clientY;
+            
+            this.handleSwipe();
+        },
+        handleSwipe() {
+            const deltaX = this.touchEndX - this.touchStartX;
+            const deltaY = this.touchEndY - this.touchStartY;
+            
+            // Only process horizontal swipes
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > this.swipeThreshold) {
+                if (deltaX > 0) {
+                    // Swipe right - go to previous
+                    this.previousQuestion();
+                } else {
+                    // Swipe left - go to next
+                    this.nextQuestion();
+                }
+            }
         }
     },
     watch: {
@@ -1919,5 +1620,45 @@ export default {
 <style scoped>
 .diagnostic-question {
     /* Inherits styles from the quiz type components */
+    transform: translateZ(0); /* Hardware acceleration */
+    transition: all 0.3s ease;
+}
+
+/* Enhanced animations for navigation grid */
+.grid button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating navigation animations */
+.fixed button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Status badge animations */
+.rounded-full {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Progress bar animations */
+.h-4 div {
+    transition: width 0.5s ease-in-out;
+}
+
+/* Touch feedback for mobile */
+@media (max-width: 1024px) {
+    .diagnostic-question {
+        touch-action: pan-y; /* Allow vertical scrolling only */
+    }
 }
 </style>

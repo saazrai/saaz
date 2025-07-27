@@ -1,28 +1,31 @@
 <template>
     <!-- Question Panel - True/False Style -->
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl',
+            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
             isThemeDark 
                 ? 'bg-gray-800 border-gray-700' 
                 : 'bg-white border-gray-200'
          ]">
         <div>
             <div
-                class="px-6 pt-8 pb-4 rounded text-lg font-medium"
+                class="pb-4 rounded text-lg font-medium"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'"
                 v-html="renderedQuestion"
             ></div>
 
-            <div class="flex gap-4 justify-center px-6 pb-8 mt-6">
-                <button
+            <div class="flex gap-3 mt-6">
+                <div
                     v-for="option in ['True', 'False']"
                     :key="option"
-                    class="flex-1 max-w-xs py-4 px-8 rounded-xl font-medium text-lg transition-all transform hover:scale-105"
-                    :class="getButtonClasses(option)"
+                    class="relative flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ease-in-out active:scale-98 hover:shadow-lg"
+                    :class="getCardClasses(option)"
                     @click="handleOptionClick(option)"
+                    role="button"
+                    :aria-pressed="selectedOption === option"
                 >
+                    <!-- Option Content -->
                     <div class="flex items-center justify-center gap-3">
                         <svg v-if="option === 'True'" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -30,14 +33,14 @@
                         <svg v-else class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span>{{ option }}</span>
-                        <span
-                            v-if="selectedOption === option"
-                            class="ml-2 font-bold text-xl"
-                            >✓</span
+                        <span 
+                            class="text-lg font-semibold"
+                            :class="isThemeDark ? 'text-white' : 'text-gray-900'"
                         >
+                            {{ option }}
+                        </span>
                     </div>
-                </button>
+                </div>
             </div>
         </div>
     </div>
@@ -92,22 +95,20 @@ export default {
         }
     },
     methods: {
-        getButtonClasses(option) {
+        getCardClasses(option) {
             const isSelected = this.selectedOption === option;
             
             if (this.isThemeDark) {
                 if (isSelected) {
-                    // Use neutral blue for both True and False when selected
-                    return 'bg-blue-700/60 text-white font-medium border-2 border-blue-400 shadow-lg shadow-blue-400/30 ring-2 ring-blue-400/20';
+                    return 'bg-blue-600/20 border-2 border-blue-400 shadow-xl shadow-blue-400/30 ring-1 ring-blue-300/50';
                 } else {
-                    return 'bg-gray-700/40 text-gray-300 border-2 border-gray-600 hover:bg-gray-700/60 hover:border-gray-500 hover:shadow-lg';
+                    return 'bg-gray-800/60 border border-gray-600 hover:bg-gray-800/80 hover:border-gray-500';
                 }
             } else {
                 if (isSelected) {
-                    // Use neutral blue for both True and False when selected
-                    return 'bg-blue-100 text-blue-900 font-medium border-2 border-blue-500 shadow-md ring-2 ring-blue-200';
+                    return 'bg-blue-50 border-2 border-blue-500 shadow-xl shadow-blue-200/50 ring-1 ring-blue-200';
                 } else {
-                    return 'bg-gray-100 text-gray-800 border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 hover:shadow-lg';
+                    return 'bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 shadow-sm';
                 }
             }
         },

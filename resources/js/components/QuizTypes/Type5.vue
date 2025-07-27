@@ -1,6 +1,13 @@
 <template>
-    <!-- Question Panel with Apple-style design -->
-    <div class="w-full">
+    <!-- Main Card Container with consistent styling -->
+    <div :class="[
+            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
+            isThemeDark 
+                ? 'bg-gray-800 border-gray-700' 
+                : 'bg-white border-gray-200'
+         ]">
+        <!-- Question Panel with Apple-style design -->
+        <div class="w-full">
         <!-- Compact Header -->
         <div class="mb-4">
             <h3 class="text-lg font-semibold text-center"
@@ -214,7 +221,7 @@
                          class="absolute inset-0">
                         <div
                             :class="[
-                                'rounded-3xl h-full flex flex-col justify-center backdrop-blur-xl border transition-transform duration-200',
+                                'rounded-3xl h-full flex flex-col backdrop-blur-xl border transition-transform duration-200',
                                 isTouchDevice && isLargeScreen ? 'p-6' : 'p-4',
                                 isThemeDark 
                                     ? 'bg-gray-800/90 border-gray-700/50 shadow-2xl' 
@@ -223,7 +230,7 @@
                                 isSwipeActive && swipeDirection === 'right' && 'transform translate-x-2'
                             ]"
                         >
-                            <div class="flex justify-between items-center mb-6">
+                            <div class="flex justify-between items-center mb-4">
                                 <h4 :class="[
                                     'text-xl font-semibold',
                                     isThemeDark ? 'text-white' : 'text-gray-900'
@@ -243,19 +250,19 @@
                                 </button>
                             </div>
                             
-                            <div class="space-y-3 overflow-y-auto flex-1">
+                            <div class="space-y-2 flex-1">
                                 <div
                                     v-for="(item, index) in displayItems"
                                     :key="`summary-${index}`"
                                     :class="[
-                                        'p-3 rounded-xl border',
+                                        'p-2 rounded-xl border',
                                         isThemeDark 
                                             ? 'bg-gray-700/50 border-gray-600' 
                                             : 'bg-gray-50 border-gray-200'
                                     ]"
                                 >
                                     <h5 :class="[
-                                        'font-semibold text-sm mb-2',
+                                        'font-semibold text-sm mb-1',
                                         isThemeDark ? 'text-blue-400' : 'text-blue-600'
                                     ]">
                                         {{ item }}
@@ -291,7 +298,7 @@
                         <div
                             :class="[
                                 'rounded-3xl h-full flex flex-col justify-center backdrop-blur-xl border transition-transform duration-200',
-                                isTouchDevice && isLargeScreen ? 'p-12' : 'p-8',
+                                isTouchDevice && isLargeScreen ? 'p-12' : 'p-3',
                                 isThemeDark 
                                     ? 'bg-gray-800/90 border-gray-700/50 shadow-2xl' 
                                     : 'bg-white/90 border-gray-200/50 shadow-xl',
@@ -300,7 +307,7 @@
                             ]"
                         >
                             <h4 :class="[
-                                'text-2xl font-semibold text-center mb-8',
+                                'text-xl font-semibold text-center mb-4',
                                 isThemeDark ? 'text-white' : 'text-gray-900'
                             ]">
                                 {{ element }}
@@ -346,14 +353,14 @@
                             </div>
 
                             <!-- Definition Options -->
-                            <div class="space-y-3">
+                            <div class="space-y-2">
                                 <button
                                     v-for="(def, defIndex) in availableDefinitionsForCurrent"
                                     :key="`def-${defIndex}`"
                                     @click="selectDefinition(def)"
                                     :class="[
                                         'w-full rounded-2xl text-left transition-all duration-200 border backdrop-blur-md',
-                                        isTouchDevice && isLargeScreen ? 'p-5' : 'p-4',
+                                        isTouchDevice && isLargeScreen ? 'p-5' : 'p-3',
                                         isThemeDark 
                                             ? 'bg-gray-700/50 border-gray-600 hover:bg-gray-700/70 active:bg-gray-700/90' 
                                             : 'bg-gray-50/50 border-gray-200 hover:bg-gray-100/70 active:bg-gray-200/90',
@@ -424,6 +431,7 @@
                     </button>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </template>

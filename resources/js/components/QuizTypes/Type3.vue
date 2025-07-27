@@ -1,18 +1,18 @@
 <template>
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl pt-8 font-medium border shadow-xl',
+            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 font-medium border shadow-xl',
             isThemeDark 
                 ? 'bg-gray-800 border-gray-700' 
                 : 'bg-white border-gray-200'
          ]">
-        <div class="px-2 py-8 lg:p-8">
-            <h4 class="text-lg mb-10 px-6"
+        <div>
+            <div class="text-base lg:text-lg font-medium leading-tight lg:leading-normal mb-6"
                 :class="isThemeDark 
                     ? 'text-white' 
-                    : 'text-gray-800'">
-                {{ question.content }}
-            </h4>
-            <div class="question-options flex flex-col md:flex-row gap-6 px-6">
+                    : 'text-slate-900'"
+                v-html="question.content">
+            </div>
+            <div class="question-options flex flex-col sm:flex-row gap-6">
                 <div class="flex-1">
                     <h3 class="mb-4 font-semibold text-sm uppercase tracking-wider"
                         :class="isThemeDark 

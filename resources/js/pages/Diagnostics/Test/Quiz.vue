@@ -1,53 +1,142 @@
 <template>
-    <div class="min-h-screen flex flex-col bg-gray-200 dark:bg-gray-900">
-        <!-- Refined Top Bar - Cleaner, more focused -->
-        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
-            <div class="px-6 py-4">
-                <div class="flex items-center justify-between">
-                    <!-- Left: Title and Phase -->
-                    <div class="flex-1">
-                        <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Diagnostic Assessment
-                        </h1>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ currentPhaseData.name }}
-                            </span>
-                            <span class="text-gray-300 dark:text-gray-600">•</span>
-                            <span class="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                {{ overallConfidence }}% confidence
-                            </span>
-                        </div>
+    <div :class="[
+        'min-h-screen flex flex-col',
+        isDark ? 'bg-gray-900' : 'bg-gray-300'
+    ]">
+        <!-- Mobile: Ultra-Minimal Header -->
+        <div class="lg:hidden relative" :class="[
+            'backdrop-blur-xl border-b px-3 py-1.5 flex items-center justify-between',
+            isDark 
+                ? 'bg-gray-800/90 border-gray-700' 
+                : 'bg-white/90 border-gray-200'
+        ]">
+            <!-- Left: Back Button + Question Progress -->
+            <div class="flex items-center space-x-3">
+                <!-- Back Button -->
+                <button @click="pauseTest" :class="[
+                    'p-1 rounded-lg transition-colors',
+                    isDark 
+                        ? 'hover:bg-gray-700 text-gray-300' 
+                        : 'hover:bg-gray-100 text-gray-600'
+                ]">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                
+                <!-- Question Progress -->
+                <div class="flex items-center space-x-1">
+                    <span :class="[
+                        'text-base font-semibold',
+                        isDark ? 'text-white' : 'text-gray-900'
+                    ]">
+                        Q{{ currentQuestionNumber }}
+                    </span>
+                    <span :class="[
+                        'text-sm',
+                        isDark ? 'text-gray-400' : 'text-gray-500'
+                    ]">
+                        <template v-if="totalQuestions">/{{ totalQuestions }}</template>
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Center: Progress Bar -->
+            <div class="flex-1 max-w-xs mx-4">
+                <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out" 
+                         :style="{ width: progress + '%' }">
                     </div>
-                    
-                    <!-- Right: Timer and Actions -->
-                    <div class="flex items-center gap-3">
-                        <!-- Timer - Subtle design -->
-                        <div class="flex items-center gap-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">Question</span>
-                                <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {{ formatTime(questionTime) }}
+                </div>
+            </div>
+            
+            <!-- Right: Timer + Theme + Exit -->
+            <div class="flex items-center space-x-2">
+                <!-- Compact Timer -->
+                <div :class="[
+                    'px-2 py-0.5 rounded-lg backdrop-blur-sm border text-xs font-medium w-20 text-center whitespace-nowrap',
+                    isDark 
+                        ? 'bg-white/10 border-white/20 text-gray-300'
+                        : 'bg-black/10 border-black/20 text-gray-600'
+                ]">
+                    {{ formatTime(totalTime) }}
+                </div>
+                
+                <!-- Theme Toggle -->
+                <button @click="() => toggleTheme(false)" :class="[
+                    'p-1 rounded-lg transition-colors',
+                    isDark 
+                        ? 'hover:bg-gray-700 text-yellow-500' 
+                        : 'hover:bg-gray-100 text-gray-600'
+                ]">
+                    <svg v-if="isDark" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                
+                <!-- Exit Button -->
+                <button @click="pauseTest" :class="[
+                    'w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors'
+                ]">
+                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Desktop: Enhanced Header -->
+        <div class="hidden lg:block">
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
+                <div class="px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <!-- Left: Title and Phase -->
+                        <div class="flex-1">
+                            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                Diagnostic Assessment
+                            </h1>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">
+                                    {{ currentPhaseData.name }}
                                 </span>
-                            </div>
-                            <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">Total</span>
-                                <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    {{ formatTime(totalTime) }}
+                                <span class="text-gray-300 dark:text-gray-600">•</span>
+                                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    {{ overallConfidence }}% confidence
                                 </span>
                             </div>
                         </div>
                         
-                        <!-- Theme Toggle - iOS style -->
-                        <button
-                            @click="() => toggleTheme(false)"
-                            class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            :class="isDark ? 'bg-blue-600' : 'bg-gray-300'"
-                            aria-label="Toggle theme"
-                        >
-                            <span
-                                class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
+                        <!-- Right: Timer and Actions -->
+                        <div class="flex items-center gap-3">
+                            <!-- Timer - Subtle design -->
+                            <div class="flex items-center gap-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Question</span>
+                                    <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        {{ formatTime(questionTime) }}
+                                    </span>
+                                </div>
+                                <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Total</span>
+                                    <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        {{ formatTime(totalTime) }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Theme Toggle - iOS style -->
+                            <button
+                                @click="() => toggleTheme(false)"
+                                class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                :class="isDark ? 'bg-blue-600' : 'bg-gray-300'"
+                                aria-label="Toggle theme"
+                            >
+                                <span
+                                    class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
                                 :class="isDark ? 'translate-x-6' : 'translate-x-1'"
                             >
                                 <SunIcon v-if="!isDark" class="h-5 w-5 p-1 text-yellow-500" />
@@ -66,98 +155,127 @@
                 </div>
             </div>
             
-            <!-- Progress Bar - Integrated into header -->
-            <div class="px-6 pb-4">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        <template v-if="totalQuestions">
-                            Question {{ currentQuestionNumber }} of {{ totalQuestions }}
-                        </template>
-                        <template v-else>
-                            Q{{ currentQuestionNumber }} • {{ diagnostic?.current_domain || 'Assessment' }}
-                        </template>
-                    </span>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">
-                        <template v-if="diagnostic?.phases_total">
-                            Phase {{ diagnostic.current_phase || 1 }} of {{ diagnostic.phases_total }} • {{ Math.round(progress) }}% Complete
-                        </template>
-                        <template v-else>
-                            {{ Math.round(progress) }}% Complete
-                        </template>
-                    </span>
-                </div>
-                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-                    <div 
-                        class="h-full bg-linear-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
-                        :style="{ width: `${progress}%` }"
-                    ></div>
-                </div>
-                
-                <!-- Domain Pills - Clean tags -->
-                <div v-if="currentMilestoneDomains.length > 0" class="flex items-center gap-2 mt-3 flex-wrap">
-                    <span 
-                        v-for="domain in currentMilestoneDomains" 
-                        :key="domain.id"
-                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors"
-                        :class="getDomainStatusClasses(domain.id)"
-                    >
-                        <span class="w-1.5 h-1.5 rounded-full" :class="getDomainDotClasses(domain.id)"></span>
-                        {{ domain.name }}
-                    </span>
+                <!-- Progress Bar - Integrated into header -->
+                <div class="px-6 pb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <template v-if="totalQuestions">
+                                Question {{ currentQuestionNumber }} of {{ totalQuestions }}
+                            </template>
+                            <template v-else>
+                                Q{{ currentQuestionNumber }} • {{ diagnostic?.current_domain || 'Assessment' }}
+                            </template>
+                        </span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">
+                            <template v-if="diagnostic?.phases_total">
+                                Phase {{ diagnostic.current_phase || 1 }} of {{ diagnostic.phases_total }} • {{ Math.round(progress) }}% Complete
+                            </template>
+                            <template v-else>
+                                {{ Math.round(progress) }}% Complete
+                            </template>
+                        </span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                        <div 
+                            class="h-full bg-linear-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
+                            :style="{ width: `${progress}%` }"
+                        ></div>
+                    </div>
+                    
+                    <!-- Domain Pills - Clean tags -->
+                    <div v-if="currentMilestoneDomains.length > 0" class="flex items-center gap-2 mt-3 flex-wrap">
+                        <span 
+                            v-for="domain in currentMilestoneDomains" 
+                            :key="domain.id"
+                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                            :class="getDomainStatusClasses(domain.id)"
+                        >
+                            <span class="w-1.5 h-1.5 rounded-full" :class="getDomainDotClasses(domain.id)"></span>
+                            {{ domain.name }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content Area - Clean layout -->
-        <div class="flex-1 px-6 py-8">
+        <!-- Main Content Area - Responsive layout -->
+        <div class="flex-1 px-2 sm:px-4 md:px-6 lg:px-6 py-4 lg:py-8 pb-24">
             <div class="max-w-6xl mx-auto">
                 <div class="max-w-4xl mx-auto">
-                    <!-- Question Card - Primary focus -->
-                    <div>
-                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xs border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-                            <div class="p-8">
-                                <!-- Question Content using QuizTypes -->
-                                <div v-if="currentQuestionData">
-                                    <component
-                                        :is="currentQuestionComponent"
-                                        :question="currentQuestionData"
-                                        :answer="currentAnswer"
-                                        :isDark="isDark"
-                                        @selected="handleSelection"
-                                    />
-                                </div>
-                                
-                                <!-- Loading State -->
-                                <div v-else class="flex items-center justify-center h-64">
-                                    <div class="text-center">
-                                        <div class="inline-flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
-                                            <svg class="animate-spin h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                        </div>
-                                        <p class="text-gray-500 dark:text-gray-400">Loading question...</p>
-                                    </div>
-                                </div>
+                    <!-- Question Content - Direct without wrapper card -->
+                    <div v-if="currentQuestionData">
+                        <component
+                            :is="currentQuestionComponent"
+                            :question="currentQuestionData"
+                            :answer="currentAnswer"
+                            :isDark="isDark"
+                            @selected="handleSelection"
+                        />
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div v-else class="flex items-center justify-center h-64">
+                        <div class="text-center">
+                            <div class="inline-flex items-center justify-center w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
+                                <svg class="animate-spin h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
                             </div>
+                            <p class="text-gray-500 dark:text-gray-400">Loading question...</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Bottom Action Bar - Floating design -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50">
-            <div class="px-6 py-4">
-                <div class="max-w-6xl mx-auto flex justify-end">
+        
+        <!-- Bottom Action Bar - Mobile responsive -->
+        <div :class="[
+            'fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t z-50',
+            'lg:hidden',
+            isDark
+                ? 'bg-gray-800/90 border-gray-700'
+                : 'bg-white/90 border-gray-200'
+        ]">
+            <div class="px-3 py-1.5">
+                <div class="max-w-md portrait:max-w-md landscape:max-w-xs mx-auto">
                     <button
                         @click="submitAnswer"
                         :disabled="!hasSelection || isSubmitting"
-                        class="px-8 py-3 rounded-full font-medium transition-all transform"
+                        class="w-full px-6 py-2 rounded-xl font-medium transition-all active:scale-95 shadow-lg"
                         :class="[
                             hasSelection && !isSubmitting
-                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl active:scale-95 cursor-pointer' 
-                                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60',
+                                ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-500/25 cursor-pointer' 
+                                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60 shadow-none',
+                            (!hasSelection || isSubmitting) && 'pointer-events-none'
+                        ]"
+                    >
+                        <span v-if="isSubmitting" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Loading next question...
+                        </span>
+                        <span v-else>{{ isLastQuestion ? 'Complete Assessment' : 'Submit Answer' }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Desktop Action Bar -->
+        <div class="hidden lg:block fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50">
+            <div class="px-6 py-6">
+                <div class="max-w-4xl mx-auto flex justify-center">
+                    <button
+                        @click="submitAnswer"
+                        :disabled="!hasSelection || isSubmitting"
+                        class="px-12 py-4 rounded-2xl font-semibold text-lg transition-all hover:scale-105 shadow-lg min-w-64"
+                        :class="[
+                            hasSelection && !isSubmitting
+                                ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-500/25 hover:shadow-blue-500/40 cursor-pointer' 
+                                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60 shadow-none',
                             (!hasSelection || isSubmitting) && 'pointer-events-none'
                         ]"
                     >
@@ -454,8 +572,8 @@ export default {
             }
             // Redirect to results page
             const route_url = typeof route !== 'undefined' 
-                ? route('assessments.diagnostics.results', props.diagnostic.id)
-                : `/diagnostics/${props.diagnostic.id}/results`;
+                ? route('assessments.diagnostics.all-results')
+                : `/diagnostics/results`;
             router.visit(route_url)
         }
         

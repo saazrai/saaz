@@ -1,6 +1,13 @@
 <template>
     <div class="quiz-timer w-full">
+        <!-- Compact Mode: Mobile minimal format -->
+        <div v-if="compact">
+            {{ formatTime(questionTimer) }} / {{ formatTime(totalTimer) }}
+        </div>
+        
+        <!-- Full Mode: Desktop detailed format -->
         <div
+            v-else
             class="flex flex-wrap justify-between items-center gap-x-6 gap-y-1 w-full"
         >
             <div class="flex items-center">
@@ -44,6 +51,10 @@ export default {
         isDark: {
             type: Boolean,
             default: false,
+        },
+        compact: {
+            type: Boolean,
+            default: false, // Enable minimal mobile format
         },
     },
     data() {

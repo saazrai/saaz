@@ -229,7 +229,7 @@ const formatTimeAgo = (date: string) => {
                                             </div>
                                         </div>
                                         <div class="flex flex-col space-y-2">
-                                            <Link :href="route('assessments.diagnostics.results', result.id)">
+                                            <Link :href="route('assessments.diagnostics.all-results')">
                                                 <Button size="sm" class="w-full">
                                                     View Report
                                                 </Button>

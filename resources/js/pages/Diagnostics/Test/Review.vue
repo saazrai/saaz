@@ -1,20 +1,36 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pb-20">
+    <div class="bg-slate-100 dark:bg-slate-900">
         <!-- Apple-Style Header - Responsive -->
-        <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50" style="box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl sticky top-0 z-50" style="box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
             <!-- Mobile Header -->
             <div class="xl:hidden">
-                <div class="max-w-7xl mx-auto px-2 py-2">
-                    <div class="relative flex items-center h-6">
-                        <!-- Back Button -->
-                        <Link
-                            :href="route('assessments.diagnostics.all-results')"
-                            class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                        >
-                            <ChevronLeftIcon class="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                        </Link>
+                <div class="max-w-7xl mx-auto px-3 py-1.5">
+                    <div class="relative flex items-center justify-between">
+                        <!-- Left Side: Back Button + Status -->
+                        <div class="flex items-center space-x-3">
+                            <!-- Back Button -->
+                            <Link
+                                :href="route('assessments.diagnostics.all-results')"
+                                class="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                            >
+                                <ChevronLeftIcon class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                            </Link>
+                            
+                            <!-- Status Indicator -->
+                            <div v-if="currentResponse" :class="[
+                                'flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide',
+                                currentResponse.is_correct 
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                            ]">
+                                <span :class="currentResponse.is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                                    {{ currentResponse.is_correct ? '✓' : '✗' }}
+                                </span>
+                                <span>{{ currentResponse.is_correct ? 'CORRECT' : 'INCORRECT' }}</span>
+                            </div>
+                        </div>
                         
-                        <!-- Question Indicator - Absolutely centered -->
+                        <!-- Question Number - Centered -->
                         <div class="absolute left-1/2 transform -translate-x-1/2">
                             <span class="text-sm font-semibold text-gray-900 dark:text-white">
                                 Q{{ currentQuestionIndex + 1 }}/{{ diagnostic?.responses?.length ?? 0 }}
@@ -28,7 +44,9 @@
                                 v-if="currentQuestionHasJustifications"
                                 @click="toggleExplanations"
                                 :class="[
-                                    'px-3 py-1.5 rounded-full transition-all duration-200 text-xs font-semibold flex items-center space-x-1.5',
+                                    'transition-all duration-200 flex items-center',
+                                    'portrait:p-1.5 portrait:rounded-full portrait:justify-center',
+                                    'landscape:px-3 landscape:py-1.5 landscape:rounded-full landscape:space-x-1.5',
                                     showAllExplanations
                                         ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'
                                         : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
@@ -38,7 +56,9 @@
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 17.25h.01" />
                                 </svg>
-                                <span class="tracking-wide">{{ showAllExplanations ? 'Hide' : 'Explain' }}</span>
+                                <span class="landscape:inline portrait:hidden text-xs tracking-wide">
+                                    {{ showAllExplanations ? 'Hide' : 'Explain' }}
+                                </span>
                             </button>
                             
                             <!-- Theme Toggle -->
@@ -68,19 +88,37 @@
             <div class="hidden xl:block">
                 <div class="max-w-6xl mx-auto px-8 py-4">
                     <div class="flex items-center justify-center relative">
-                        <!-- Back Button - Left -->
-                        <Link
-                            :href="route('assessments.diagnostics.all-results')"
-                            class="absolute left-0 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200 transform hover:scale-105"
-                        >
-                            <ChevronLeftIcon class="w-6 h-6 text-gray-600 dark:text-gray-300" />
-                        </Link>
+                        <!-- Left Side: Back Button + Status -->
+                        <div class="absolute left-0 flex items-center space-x-4">
+                            <!-- Back Button -->
+                            <Link
+                                :href="route('assessments.diagnostics.all-results')"
+                                class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200"
+                            >
+                                <ChevronLeftIcon class="w-6 h-6 text-gray-600 dark:text-gray-300" />
+                            </Link>
+                            
+                            <!-- Status Indicator -->
+                            <div v-if="currentResponse" :class="[
+                                'flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide',
+                                currentResponse.is_correct 
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                            ]">
+                                <span :class="currentResponse.is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                                    {{ currentResponse.is_correct ? '✓' : '✗' }}
+                                </span>
+                                <span>{{ currentResponse.is_correct ? 'CORRECT' : 'INCORRECT' }}</span>
+                            </div>
+                        </div>
                         
                         <!-- Centered Progress - Apple Style -->
                         <div class="flex flex-col items-center space-y-2">
-                            <span class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                {{ currentQuestionIndex + 1 }} of {{ diagnostic?.responses?.length ?? 0 }}
-                            </span>
+                            <div class="flex items-center justify-center">
+                                <span class="text-2xl font-semibold text-gray-900 dark:text-white">
+                                    {{ currentQuestionIndex + 1 }} of {{ diagnostic?.responses?.length ?? 0 }}
+                                </span>
+                            </div>
                             <div class="w-80 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                 <div 
                                     class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out" 
@@ -94,7 +132,7 @@
                             <!-- Theme Toggle -->
                             <button
                                 @click="toggleTheme"
-                                class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200 transform hover:scale-105"
+                                class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-200"
                                 aria-label="Toggle theme"
                             >
                                 <SunIcon v-if="isDark" class="w-6 h-6 text-yellow-500" />
@@ -104,7 +142,7 @@
                             <!-- Close Button -->
                             <Link
                                 :href="route('assessments.diagnostics.all-results')"
-                                class="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 transform hover:scale-105"
+                                class="w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200"
                             >
                                 <XIcon class="w-4 h-4 text-white" />
                             </Link>
@@ -115,22 +153,29 @@
         </div>
 
         <!-- Main Content - Apple Clean Layout -->
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-6 py-6 pb-32">
             <!-- Mobile Layout (existing) -->
             <div class="xl:hidden">
-                <div class="grid grid-cols-1 gap-6">
+                <div class="grid grid-cols-1">
                     <!-- Question and Answer Section with Swipe Support -->
-                    <!-- Swipeable Container -->
+                    <!-- Swipeable Container with Status Tint -->
                     <div 
                         ref="swipeContainer"
-                        class="relative overflow-hidden rounded-3xl touch-pan-y swipe-container"
+                        :class="[
+                            'relative overflow-x-hidden rounded-3xl touch-pan-y swipe-container'
+                        ]"
+                        :style="{
+                            borderTop: currentResponse?.is_correct 
+                                ? '3px solid rgb(34, 197, 94)' 
+                                : '3px solid rgb(239, 68, 68)'
+                        }"
                         @touchstart="handleTouchStart"
                         @touchmove="handleTouchMove" 
                         @touchend="handleTouchEnd"
                     >
                         <!-- Questions Container with Transform -->
                         <div 
-                            class="flex transition-transform duration-300 ease-out"
+                            class="flex transition-transform duration-300 ease-out rounded-3xl"
                             :style="{ 
                                 transform: `translateX(${swipeOffset}px)`,
                                 width: `${(diagnostic?.responses?.length || 1) * 100}%`
@@ -154,7 +199,7 @@
                                     />
                                 </div>
                                 <!-- Placeholder for non-adjacent questions -->
-                                <div v-else class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-8 h-96">
+                                <div v-else class="rounded-3xl p-8 h-96">
                                     <div class="flex justify-center items-center h-full text-gray-500">
                                         <span class="text-lg font-medium">Question {{ index + 1 }}</span>
                                     </div>
@@ -163,12 +208,13 @@
                         </div>
                         
                         <!-- Loading State -->
-                        <div v-if="!diagnostic?.responses?.length" class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-8">
+                        <div v-if="!diagnostic?.responses?.length" class="rounded-3xl p-8">
                             <div class="flex justify-center items-center h-32 text-gray-500">
                                 <LoaderIcon class="w-6 h-6 animate-spin" />
                                 <span class="ml-2 font-medium">Loading questions...</span>
                             </div>
                         </div>
+                        
                         
                     </div>
                 </div>
@@ -176,8 +222,8 @@
                 <!-- Sidebar - Hidden on mobile/tablet, visible on desktop -->
                 <div class="hidden xl:block space-y-6">
                     <!-- Question Details -->
-                    <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-                        <div class="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200/50 dark:border-slate-700/50 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200/50 dark:border-slate-700/50">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Question Details</h3>
                         </div>
                         <div class="p-6 space-y-4">
@@ -210,12 +256,17 @@
                                 
                                 <div class="flex flex-col space-y-1">
                                     <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Your Answer</span>
-                                    <span class="text-sm text-gray-900 dark:text-white font-medium">
+                                    <span :class="[
+                                        'text-sm font-medium',
+                                        currentResponse?.is_correct 
+                                            ? 'text-green-600 dark:text-green-400' 
+                                            : 'text-red-500 dark:text-red-400'
+                                    ]">
                                         {{ formatAnswer(currentResponse?.user_answer) }}
                                     </span>
                                 </div>
                                 
-                                <div class="flex flex-col space-y-1">
+                                <div v-if="!currentResponse?.is_correct" class="flex flex-col space-y-1">
                                     <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Correct Answer</span>
                                     <span class="text-sm text-green-600 dark:text-green-400 font-medium">
                                         {{ formatAnswer(currentQuestionData?.correct_options) }}
@@ -232,56 +283,31 @@
                         </div>
                     </div>
 
-                    <!-- Quick Navigation -->
-                    <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-                        <div class="px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Navigation</h3>
-                        </div>
-                        <div class="p-6">
-                            <div class="grid grid-cols-5 gap-2">
-                                <button
-                                    v-for="(response, index) in diagnostic.responses"
-                                    :key="index"
-                                    @click="currentQuestionIndex = index"
-                                    :class="[
-                                        'w-12 h-12 rounded-xl font-semibold text-sm transition-all duration-200 transform hover:scale-105',
-                                        currentQuestionIndex === index
-                                            ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-800 scale-105'
-                                            : '',
-                                        response.is_correct
-                                            ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/70'
-                                            : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/70'
-                                    ]"
-                                >
-                                    {{ index + 1 }}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <!-- Large Screen Layout - Apple Design -->
             <div class="hidden xl:block">
-                <div class="grid grid-cols-12 gap-8">
+                <div class="grid grid-cols-12 gap-10">
                     <!-- Main Question Area -->
                     <div class="col-span-8">
-                        <!-- Review Component -->
+                        
+                        <!-- Review Component with Clean Styling -->
                         <component
                             :is="getReviewComponentForIndex(currentQuestionIndex)"
                             :question="currentQuestionData"
                             :answer="currentResponse"
                             :isDark="isDark"
                             :showExplanations="true"
-                            class="large-screen-review"
+                            class="large-screen-review-enhanced"
                         />
                     </div>
 
-                    <!-- Right Sidebar: Question Details - Apple Style -->
-                    <div class="col-span-4">
-                        <!-- Current Question Details -->
-                        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 space-y-6">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white tracking-wide">Question Details</h3>
+                    <!-- Right Sidebar: Question Details - Enhanced Apple Style -->
+                    <div class="col-span-4 space-y-6">
+                        <!-- Question Metadata Card -->
+                        <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/30 dark:border-gray-700/30 p-6 space-y-5">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Question Details</h3>
                             
                             <div class="space-y-4">
                                 <div>
@@ -332,10 +358,15 @@
                                 
                                 <div>
                                     <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Your Answer</span>
-                                    <p class="text-red-500 dark:text-red-400 font-medium mt-1 text-sm">{{ formatAnswer(currentResponse?.user_answer) }}</p>
+                                    <p :class="[
+                                        'font-medium mt-1 text-sm',
+                                        currentResponse?.is_correct 
+                                            ? 'text-green-500 dark:text-green-400' 
+                                            : 'text-red-500 dark:text-red-400'
+                                    ]">{{ formatAnswer(currentResponse?.user_answer) }}</p>
                                 </div>
                                 
-                                <div>
+                                <div v-if="!currentResponse?.is_correct">
                                     <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Correct Answer</span>
                                     <p class="text-green-500 dark:text-green-400 font-medium mt-1 text-sm">{{ formatAnswer(currentQuestionData?.correct_options) }}</p>
                                 </div>
@@ -346,39 +377,25 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Performance Insight - Minimal -->
-                        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 mt-6">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 tracking-wide">Performance</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600 dark:text-gray-400 text-sm">Current Score</span>
-                                    <span class="text-blue-500 font-semibold">{{ calculateScore() }}%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                                    <div class="bg-blue-500 rounded-full h-1.5 transition-all duration-300" :style="{ width: calculateScore() + '%' }"></div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Review Navigation -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-50" style="box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);">
-            <div class="max-w-6xl mx-auto px-4 py-4">
-                <div class="flex items-center justify-between gap-3">
+        <!-- Enhanced Review Navigation (Portrait + Desktop) -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl z-50 portrait:block landscape:xl:block landscape:hidden" style="box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);">
+            <div class="max-w-6xl mx-auto px-4 xl:py-5 py-3">
+                <div class="flex w-full gap-3 max-w-md mx-auto">
                     <!-- Previous Button -->
                     <button
                         @click="previousQuestion"
                         :disabled="currentQuestionIndex === 0"
                         :class="[
-                            'flex items-center justify-center px-6 py-3 rounded-xl font-medium text-sm transition-all duration-200',
-                            'min-w-[100px]',
+                            'px-4 py-2 rounded-xl font-medium flex-1 transition-all flex items-center justify-center',
                             currentQuestionIndex === 0
-                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                                ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
+                                : 'bg-gray-500 hover:bg-gray-600 text-white'
                         ]"
                         :aria-label="currentQuestionIndex === 0 ? 'No previous question' : 'Previous question'"
                     >
@@ -389,7 +406,7 @@
                     <button
                         v-if="!isLastQuestion"
                         @click="nextQuestion"
-                        class="flex items-center justify-center px-8 py-3 rounded-xl bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold text-sm transition-all duration-200 transform hover:scale-105 shadow-lg min-w-[100px]"
+                        class="px-4 py-2 rounded-xl font-medium flex-1 text-white transition-all bg-blue-500 hover:bg-blue-600 flex items-center justify-center"
                         aria-label="Next question"
                     >
                         <span>Next</span>
@@ -399,7 +416,7 @@
                     <Link
                         v-if="isLastQuestion"
                         :href="route('assessments.diagnostics.all-results')"
-                        class="flex items-center justify-center px-8 py-3 rounded-xl bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white font-semibold text-sm transition-all duration-200 transform hover:scale-105 shadow-lg min-w-[100px]"
+                        class="px-4 py-2 rounded-xl font-medium flex-1 text-white transition-all bg-red-500 hover:bg-red-600 flex items-center justify-center"
                         aria-label="End review and return to results"
                     >
                         <span>End Review</span>
@@ -407,6 +424,31 @@
 
                 </div>
             </div>
+        </div>
+        
+        <!-- Floating Navigation Buttons (Mobile Landscape Only) - Outside Content Area -->
+        <div class="hidden max-md:landscape:block portrait:hidden">
+            <!-- Previous Button - Far Left Edge, Outside Content -->
+            <button
+                v-if="currentQuestionIndex > 0"
+                @click="previousQuestion"
+                class="fixed left-0 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-blue-500 hover:bg-blue-600 rounded-r-full shadow-xl flex items-center justify-center transition-all duration-300 hover:shadow-2xl z-50"
+                style="margin-left: 0px;"
+                aria-label="Previous question"
+            >
+                <ChevronLeftIcon class="w-4 h-4 text-white ml-1" />
+            </button>
+            
+            <!-- Next Button - Far Right Edge, Outside Content -->
+            <button
+                v-if="currentQuestionIndex < (diagnostic?.responses?.length ?? 0) - 1"
+                @click="nextQuestion"
+                class="fixed right-0 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-blue-500 hover:bg-blue-600 rounded-l-full shadow-xl flex items-center justify-center transition-all duration-300 hover:shadow-2xl z-50"
+                style="margin-right: 0px;"
+                aria-label="Next question"
+            >
+                <ChevronRightIcon class="w-4 h-4 text-white mr-1" />
+            </button>
         </div>
     </div>
 </template>
@@ -424,7 +466,8 @@ import Type7Review from '@/components/QuizTypes/Type7Review.vue';
 import BarChartLevelIndicator from '@/components/LevelIndicators/BarChartLevelIndicator.vue';
 import { 
     XIcon, 
-    ChevronLeftIcon, 
+    ChevronLeftIcon,
+    ChevronRightIcon,
     LoaderIcon,
     SunIcon,
     MoonIcon
@@ -701,11 +744,6 @@ const getBloomLabel = (bloom) => {
     return labels[bloom] || 'Unknown';
 };
 
-const calculateScore = () => {
-    if (!props.diagnostic?.responses?.length) return 0;
-    const correct = props.diagnostic.responses.filter(response => response.is_correct).length;
-    return Math.round((correct / props.diagnostic.responses.length) * 100);
-};
 
 // Window resize handler
 const handleResize = () => {
@@ -813,18 +851,144 @@ onUnmounted(() => {
     padding: 2.5rem !important;
 }
 
-.large-screen-review :deep(.question-option) {
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    margin-bottom: 0.75rem;
+.large-screen-review-enhanced {
+    padding: 0 !important;
 }
 
-.large-screen-review :deep(.question-option:hover) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.large-screen-review :deep(.question-option),
+.large-screen-review-enhanced :deep(.question-option) {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    margin-bottom: 1.25rem;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border-width: 2px;
+    font-size: 1.0625rem;
+    line-height: 1.6;
 }
 
-.dark .large-screen-review :deep(.question-option:hover) {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+.large-screen-review :deep(.question-option:hover),
+.large-screen-review-enhanced :deep(.question-option:hover) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.dark .large-screen-review :deep(.question-option:hover),
+.dark .large-screen-review-enhanced :deep(.question-option:hover) {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+/* Enhanced question text styling */
+.large-screen-review-enhanced :deep(.question-text) {
+    font-size: 1.375rem !important;
+    line-height: 1.7 !important;
+    color: rgb(31, 41, 55) !important;
+    font-weight: 600 !important;
+    margin-bottom: 2rem !important;
+}
+
+.dark .large-screen-review-enhanced :deep(.question-text) {
+    color: rgb(243, 244, 246) !important;
+}
+
+/* Enhanced answer option text styling */
+.large-screen-review-enhanced :deep(.option-text) {
+    font-size: 1.0625rem !important;
+    line-height: 1.6 !important;
+    font-weight: 500 !important;
+    color: rgb(55, 65, 81) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(.option-text) {
+    color: rgb(229, 231, 235) !important;
+}
+
+/* Enhanced explanation text styling */
+.large-screen-review-enhanced :deep(.explanation-text) {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    font-weight: 500 !important;
+    color: rgb(55, 65, 81) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(.explanation-text) {
+    color: rgb(209, 213, 219) !important;
+}
+
+/* Fix blue explanation text contrast */
+.large-screen-review-enhanced :deep(.explanation-text.text-blue-600) {
+    color: rgb(37, 99, 235) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(.explanation-text.text-blue-400) {
+    color: rgb(96, 165, 250) !important;
+}
+
+/* Improved spacing for answer options */
+.large-screen-review-enhanced :deep(.answer-options) {
+    gap: 1.25rem !important;
+    margin-top: 1.5rem !important;
+}
+
+/* Enhanced typography for all text elements */
+.large-screen-review-enhanced :deep(p) {
+    font-size: 1.0625rem !important;
+    line-height: 1.6 !important;
+    color: rgb(55, 65, 81) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(p) {
+    color: rgb(209, 213, 219) !important;
+}
+
+/* Better spacing between sections */
+.large-screen-review-enhanced :deep(.question-section) {
+    margin-bottom: 2rem !important;
+}
+
+/* Enhanced correct answer display */
+.large-screen-review-enhanced :deep(.correct-answer-section) {
+    margin-top: 2rem !important;
+    padding: 1.5rem !important;
+    border-radius: 1rem !important;
+}
+
+/* Improve visual hierarchy */
+.large-screen-review-enhanced :deep(h3),
+.large-screen-review-enhanced :deep(.section-title) {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+    color: rgb(31, 41, 55) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(h3),
+.dark .large-screen-review-enhanced :deep(.section-title) {
+    color: rgb(243, 244, 246) !important;
+}
+
+/* Enhanced correct/incorrect styling */
+.large-screen-review-enhanced :deep(.question-option.correct) {
+    background: linear-gradient(135deg, rgb(220, 252, 231) 0%, rgb(187, 247, 208) 100%) !important;
+    border-color: rgb(34, 197, 94) !important;
+    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.2) !important;
+}
+
+.large-screen-review-enhanced :deep(.question-option.incorrect) {
+    background: linear-gradient(135deg, rgb(254, 226, 226) 0%, rgb(252, 165, 165) 100%) !important;
+    border-color: rgb(239, 68, 68) !important;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(.question-option.correct) {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%) !important;
+    border-color: rgb(34, 197, 94) !important;
+}
+
+.dark .large-screen-review-enhanced :deep(.question-option.incorrect) {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%) !important;
+    border-color: rgb(239, 68, 68) !important;
 }
 
 /* Add extra spacing for question text on large screens */

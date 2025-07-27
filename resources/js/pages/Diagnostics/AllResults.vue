@@ -386,7 +386,7 @@
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                     <tr 
-                                        v-for="subtopic in subtopic_analysis.subtopic_performance.slice(0, 20)" 
+                                        v-for="subtopic in displayedSubtopics" 
                                         :key="subtopic.id"
                                         class="hover:bg-gray-50 dark:hover:bg-gray-700"
                                     >
@@ -426,9 +426,30 @@
                             </table>
                         </div>
                         <div v-if="subtopic_analysis.subtopic_performance.length > 20" class="mt-4 text-center">
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Showing top 20 of {{ subtopic_analysis.subtopic_performance.length }} subtopics
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                {{ showAllSubtopics 
+                                    ? `Showing all ${subtopic_analysis.subtopic_performance.length} subtopics` 
+                                    : `Showing top 20 of ${subtopic_analysis.subtopic_performance.length} subtopics` 
+                                }}
                             </p>
+                            <button 
+                                @click="showAllSubtopics = !showAllSubtopics"
+                                class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                                :class="isDark 
+                                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-300 border border-gray-600' 
+                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300'"
+                            >
+                                <svg v-if="!showAllSubtopics" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                </svg>
+                                {{ showAllSubtopics 
+                                    ? 'Show Top 20 Only' 
+                                    : `Show All ${subtopic_analysis.subtopic_performance.length} Subtopics` 
+                                }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -473,6 +494,10 @@ console.log('Phase keys:', Object.keys(props.phases));
 // Track selected attempts for each phase
 const selectedAttempts = ref({});
 
+// Track whether to show all subtopics or just the first 20
+const showAllSubtopics = ref(false);
+
+
 // Initialize selected phase to first completed or available phase
 const getInitialSelectedPhase = () => {
     // First try to find a completed phase
@@ -503,6 +528,20 @@ Object.keys(props.phases).forEach(phaseNum => {
 // Computed property for completed phases count
 const completedPhasesCount = computed(() => {
     return Object.values(props.phases).filter(phase => phase.completed).length;
+});
+
+// Computed property for displayed subtopics
+const displayedSubtopics = computed(() => {
+    if (!props.subtopic_analysis?.subtopic_performance) return [];
+    return showAllSubtopics.value 
+        ? props.subtopic_analysis.subtopic_performance 
+        : props.subtopic_analysis.subtopic_performance.slice(0, 20);
+});
+
+// Check if current theme is dark
+const isDark = computed(() => {
+    return document.documentElement.classList.contains('dark') ||
+           window.matchMedia?.('(prefers-color-scheme: dark)').matches;
 });
 
 // Helper functions

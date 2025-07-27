@@ -112,21 +112,6 @@
                 </div>
                 
                 <!-- Result Message -->
-                <div class="mb-6">
-                    <p :class="[
-                        'font-semibold text-lg mb-2',
-                        answer.is_correct
-                            ? (isThemeDark ? 'text-green-400' : 'text-green-700')
-                            : (isThemeDark ? 'text-red-400' : 'text-red-700')
-                    ]">
-                        {{ answer.is_correct ? '✓ Correct!' : '✗ Incorrect' }}
-                    </p>
-                    <p :class="isThemeDark ? 'text-gray-300 text-lg' : 'text-gray-700 text-lg'">
-                        {{ answer.is_correct 
-                            ? 'Perfect! You arranged the items in the correct order.' 
-                            : 'The order is not quite right. See the correct sequence below.' }}
-                    </p>
-                </div>
                 
                 <!-- Correct Order -->
                 <div class="lg:max-w-[50%] lg:mx-auto">

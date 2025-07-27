@@ -1,10 +1,10 @@
 <template>
     <!-- Question Review Panel - True/False Style -->
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl',
+            'transition-all duration-300 w-full backdrop-blur-md rounded-3xl border-0',
             isThemeDark 
-                ? 'bg-gray-800 border-gray-700' 
-                : 'bg-white border-gray-200'
+                ? 'bg-gray-800/90' 
+                : 'bg-white/90'
          ]">
         <div>
             <div
@@ -50,24 +50,6 @@
                 </div>
             </div>
 
-            <!-- Result Section -->
-            <div class="px-6 pb-6">
-                <div :class="[
-                    'rounded-lg p-4 text-center',
-                    answer?.is_correct 
-                        ? (isThemeDark ? 'bg-green-900/20 border border-green-600/50' : 'bg-green-50 border border-green-200')
-                        : (isThemeDark ? 'bg-red-900/20 border border-red-600/50' : 'bg-red-50 border border-red-200')
-                ]">
-                    <p :class="[
-                        'font-semibold text-lg',
-                        answer?.is_correct
-                            ? (isThemeDark ? 'text-green-400' : 'text-green-700')
-                            : (isThemeDark ? 'text-red-400' : 'text-red-700')
-                    ]">
-                        {{ answer?.is_correct ? '✓ Correct!' : '✗ Incorrect' }}
-                    </p>
-                </div>
-            </div>
 
             <!-- Explanation Section -->
             <div v-if="question.explanation || question.justifications" 

@@ -219,7 +219,7 @@
                                             <div class="flex space-x-2">
                                                 <Link 
                                                     v-if="assessment.status === 'completed'"
-                                                    :href="route('assessments.diagnostics.results', assessment.id)"
+                                                    :href="route('assessments.diagnostics.all-results')"
                                                     class="text-blue-600 hover:text-blue-900 dark:text-blue-400"
                                                 >
                                                     View Results
