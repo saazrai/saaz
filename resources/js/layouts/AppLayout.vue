@@ -124,7 +124,7 @@ watchEffect(() => {
 </script>
 
 <template>
-    <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-[#efefef]']">
+    <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-white']">
         <!-- Navbar -->
         <nav class="fixed top-4 z-navbar w-full lg:top-6 z-9999">
             <div class="container box-border max-w-[1672px]! px-6! md:px-9!">

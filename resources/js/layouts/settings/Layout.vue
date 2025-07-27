@@ -30,7 +30,7 @@ const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.locati
 </script>
 
 <template>
-    <div class="px-4 py-6">
+    <div :class="['px-4 py-6 min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-white']">
         <Heading title="Settings" description="Manage your profile and account settings" />
 
         <div class="flex flex-col space-y-8 md:space-y-0 lg:flex-row lg:space-y-0 lg:space-x-12">

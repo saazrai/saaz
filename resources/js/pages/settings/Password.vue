@@ -3,7 +3,7 @@ import InputError from '@/components/InputError.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Button } from '@/components/shadcn/ui/button';
@@ -20,6 +20,9 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
 const passwordInput = ref<HTMLInputElement | null>(null);
 const currentPasswordInput = ref<HTMLInputElement | null>(null);
+
+// Get dark mode state from AppLayout
+const isDark = inject('isDark', false);
 
 const form = useForm({
     current_password: '',
@@ -58,15 +61,28 @@ const updatePassword = () => {
             <div class="space-y-6">
                 <HeadingSmall title="Update password" description="Ensure your account is using a long, random password to stay secure" />
 
-                <form @submit.prevent="updatePassword" class="space-y-6">
+                <form @submit.prevent="updatePassword" :class="[
+                    'space-y-6 p-6 rounded-xl border transition-colors duration-300',
+                    isDark 
+                        ? 'bg-gray-800 border-gray-700' 
+                        : 'bg-white border-gray-200 shadow-xs'
+                ]">
                     <div class="grid gap-2">
-                        <Label for="current_password">Current password</Label>
+                        <Label for="current_password" :class="[
+                            'font-medium transition-colors duration-300',
+                            isDark ? 'text-gray-200' : 'text-gray-700'
+                        ]">Current password</Label>
                         <Input
                             id="current_password"
                             ref="currentPasswordInput"
                             v-model="form.current_password"
                             type="password"
-                            class="mt-1 block w-full"
+                            :class="[
+                                'mt-1 block w-full transition-colors duration-300',
+                                isDark 
+                                    ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500' 
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500'
+                            ]"
                             autocomplete="current-password"
                             placeholder="Current password"
                         />
@@ -74,13 +90,21 @@ const updatePassword = () => {
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="password">New password</Label>
+                        <Label for="password" :class="[
+                            'font-medium transition-colors duration-300',
+                            isDark ? 'text-gray-200' : 'text-gray-700'
+                        ]">New password</Label>
                         <Input
                             id="password"
                             ref="passwordInput"
                             v-model="form.password"
                             type="password"
-                            class="mt-1 block w-full"
+                            :class="[
+                                'mt-1 block w-full transition-colors duration-300',
+                                isDark 
+                                    ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500' 
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500'
+                            ]"
                             autocomplete="new-password"
                             placeholder="New password"
                         />
@@ -88,12 +112,20 @@ const updatePassword = () => {
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="password_confirmation">Confirm password</Label>
+                        <Label for="password_confirmation" :class="[
+                            'font-medium transition-colors duration-300',
+                            isDark ? 'text-gray-200' : 'text-gray-700'
+                        ]">Confirm password</Label>
                         <Input
                             id="password_confirmation"
                             v-model="form.password_confirmation"
                             type="password"
-                            class="mt-1 block w-full"
+                            :class="[
+                                'mt-1 block w-full transition-colors duration-300',
+                                isDark 
+                                    ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500' 
+                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500'
+                            ]"
                             autocomplete="new-password"
                             placeholder="Confirm password"
                         />
@@ -101,7 +133,17 @@ const updatePassword = () => {
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <Button :disabled="form.processing">Save password</Button>
+                        <Button 
+                            :disabled="form.processing"
+                            :class="[
+                                'px-6 py-2 rounded-lg font-medium transition-all duration-300',
+                                isDark 
+                                    ? 'bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-600 disabled:text-gray-400' 
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:text-gray-600'
+                            ]"
+                        >
+                            Save password
+                        </Button>
 
                         <Transition
                             enter-active-class="transition ease-in-out"
@@ -109,7 +151,10 @@ const updatePassword = () => {
                             leave-active-class="transition ease-in-out"
                             leave-to-class="opacity-0"
                         >
-                            <p v-show="form.recentlySuccessful" class="text-sm text-neutral-600">Saved.</p>
+                            <p v-show="form.recentlySuccessful" :class="[
+                                'text-sm transition-colors duration-300',
+                                isDark ? 'text-gray-400' : 'text-gray-600'
+                            ]">Saved.</p>
                         </Transition>
                     </div>
                 </form>
