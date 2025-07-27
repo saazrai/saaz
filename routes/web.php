@@ -20,21 +20,6 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 // Static pages
 Route::get('/about', fn () => Inertia::render('About'))->name('info.about');
 
-// Debug route for PostHog configuration (remove after verifying)
-Route::get('/debug/posthog', function () {
-    return response()->json([
-        'posthog_enabled' => \App\Services\PostHogService::isEnabled(),
-        'posthog_config' => \App\Services\PostHogService::getConfig(),
-        'environment_vars' => [
-            'api_key_set' => !empty(env('POSTHOG_API_KEY')),
-            'api_key_prefix' => substr(env('POSTHOG_API_KEY'), 0, 10) . '...',
-            'host' => env('POSTHOG_API_HOST') ?: env('POSTHOG_HOST'),
-            'enabled' => env('POSTHOG_ENABLED'),
-            'app_debug' => config('app.debug'),
-        ],
-    ]);
-});
-
 // Public sample diagnostic (no auth required)
 Route::get('/diagnostics/sample', [DiagnosticController::class, 'sample'])->name('assessments.diagnostics.sample');
 
