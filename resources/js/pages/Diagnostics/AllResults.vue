@@ -67,10 +67,10 @@
                                 <!-- Completed Phase Score -->
                                 <div v-if="phases[phase]?.completed" class="relative">
                                     <div class="flex items-end space-x-1 mb-2">
-                                        <div class="text-4xl sm:text-5xl font-black tracking-tighter leading-none" :class="getScoreColorClass(phases[phase].score)">
+                                        <div class="text-2xl sm:text-3xl font-black tracking-tighter leading-none" :class="getScoreColorClass(phases[phase].score)">
                                             {{ phases[phase].score }}
                                         </div>
-                                        <div class="text-xl font-bold text-gray-400 dark:text-gray-500 pb-0.5">%</div>
+                                        <div class="text-lg font-bold text-gray-400 dark:text-gray-500 pb-0.5">%</div>
                                     </div>
                                     <div class="flex items-center space-x-2">
                                         <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Score</span>
@@ -245,10 +245,10 @@
                                 </div>
                                 <div v-if="phases[phase]?.completed" class="text-right">
                                     <div class="flex items-end justify-end space-x-1 mb-1">
-                                        <div class="text-4xl font-black tracking-tighter" :class="getScoreColorClass(phases[phase].score)">
+                                        <div class="text-2xl font-black tracking-tighter" :class="getScoreColorClass(phases[phase].score)">
                                             {{ phases[phase].score }}
                                         </div>
-                                        <div class="text-xl font-bold text-gray-400 dark:text-gray-500 pb-0.5">%</div>
+                                        <div class="text-lg font-bold text-gray-400 dark:text-gray-500 pb-0.5">%</div>
                                     </div>
                                     <div class="flex items-center justify-end space-x-1">
                                         <div class="w-1.5 h-1.5 rounded-full" :class="getScoreIndicatorClass(phases[phase].score)"></div>
@@ -296,7 +296,7 @@
                                                     {{ domain.name }}
                                                 </span>
                                                 <div class="flex items-baseline space-x-0.5">
-                                                    <span class="text-lg font-black" :class="getScoreColorClass(domain.score)">
+                                                    <span class="text-base font-black" :class="getScoreColorClass(domain.score)">
                                                         {{ domain.score }}
                                                     </span>
                                                     <span class="text-sm font-bold text-gray-400 dark:text-gray-500">%</span>
@@ -587,9 +587,6 @@ const props = defineProps({
     subtopic_analysis: Object
 });
 
-// Debug: Log received data
-console.log('AllResults received phases:', props.phases);
-console.log('Phase keys:', Object.keys(props.phases));
 
 // Track selected attempts for each phase
 const selectedAttempts = ref({});

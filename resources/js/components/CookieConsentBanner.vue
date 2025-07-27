@@ -424,8 +424,6 @@ function loadGoogleAnalytics() {
     if (window.gtag) return;
     
     // TODO: Enable when GA_MEASUREMENT_ID is configured
-    // For now, just log in development
-    console.log('Google Analytics would be loaded here when configured');
     return;
     
     // Get the CSP nonce from meta tag
