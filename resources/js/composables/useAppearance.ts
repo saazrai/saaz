@@ -44,7 +44,19 @@ const getStoredAppearance = () => {
         return null;
     }
 
-    return localStorage.getItem('appearance') as Appearance | null;
+    // First check for appearance setting, then fallback to main theme
+    const appearance = localStorage.getItem('appearance') as Appearance | null;
+    if (appearance) {
+        return appearance;
+    }
+    
+    // Fallback to main theme system
+    const theme = localStorage.getItem('theme');
+    if (theme === 'light' || theme === 'dark') {
+        return theme as Appearance;
+    }
+    
+    return null;
 };
 
 const handleSystemThemeChange = () => {
@@ -70,10 +82,13 @@ const appearance = ref<Appearance>('dark');
 
 export function useAppearance() {
     onMounted(() => {
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
+        const savedAppearance = getStoredAppearance();
 
         if (savedAppearance) {
             appearance.value = savedAppearance;
+        } else {
+            // Default to dark to match main theme system
+            appearance.value = 'dark';
         }
     });
 
@@ -82,6 +97,11 @@ export function useAppearance() {
 
         // Store in localStorage for client-side persistence...
         localStorage.setItem('appearance', value);
+        
+        // Also sync with main theme system for consistency
+        if (value === 'light' || value === 'dark') {
+            localStorage.setItem('theme', value);
+        }
 
         // Store in cookie for SSR...
         setCookie('appearance', value);
