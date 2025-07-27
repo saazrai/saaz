@@ -19,6 +19,14 @@ export function updateTheme(value: Appearance) {
     // Update both class and data-theme attribute for theme.css
     document.documentElement.classList.toggle('dark', effectiveTheme === 'dark');
     document.documentElement.setAttribute('data-theme', effectiveTheme);
+    
+    // Persist the effective theme to localStorage for the main theme system
+    localStorage.setItem('theme', effectiveTheme);
+    
+    // Dispatch a custom event to notify other theme systems
+    window.dispatchEvent(new CustomEvent('theme-changed', { 
+        detail: { theme: effectiveTheme } 
+    }));
 }
 
 const setCookie = (name: string, value: string, days = 365) => {
