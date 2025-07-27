@@ -50,7 +50,7 @@ return [
 
     'posthog' => [
         'api_key' => env('POSTHOG_API_KEY'),
-        'host' => env('POSTHOG_HOST', 'https://app.posthog.com'),
+        'host' => env('POSTHOG_HOST') ?: env('POSTHOG_API_HOST', 'https://app.posthog.com'),
         'project_id' => env('POSTHOG_PROJECT_ID'),
         'enabled' => env('POSTHOG_ENABLED', true),
     ],
