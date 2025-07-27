@@ -57,5 +57,10 @@ jobs:
           ls -la public/build/
           cat public/build/manifest.json | head -20
 
+      - name: Set permissions for build directory
+        run: chmod -R 755 public/build/
+
       - name: Tests
-        run: ./vendor/bin/pest
+        run: |
+          export APP_ENV=local
+          ./vendor/bin/pest
