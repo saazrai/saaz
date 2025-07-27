@@ -46,8 +46,16 @@ jobs:
       - name: Publish Ziggy Configuration
         run: php artisan ziggy:generate
 
+      - name: Clear any existing build artifacts
+        run: rm -rf public/build
+
       - name: Build Assets
         run: npm run build
+
+      - name: Verify build artifacts exist
+        run: |
+          ls -la public/build/
+          cat public/build/manifest.json | head -20
 
       - name: Tests
         run: ./vendor/bin/pest
