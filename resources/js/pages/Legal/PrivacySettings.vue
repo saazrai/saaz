@@ -1,11 +1,10 @@
 <template>
-    <AppLayout>
-        <Head>
-            <title>Privacy Settings | SecureStart™</title>
-            <meta name="description" content="Manage your privacy preferences and data settings for SecureStart™." />
-        </Head>
+    <Head>
+        <title>Privacy Settings | SecureStart™</title>
+        <meta name="description" content="Manage your privacy preferences and data settings for SecureStart™." />
+    </Head>
 
-        <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-gray-50']">
+    <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-gray-50']">
         <!-- Hero Section -->
         <div :class="[
             'py-16 transition-colors duration-300',
@@ -223,9 +222,9 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 
-        <!-- Delete Confirmation Modal -->
+    <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteConfirmation" 
          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div :class="[
@@ -261,13 +260,16 @@
             </div>
         </div>
     </div>
-    </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, inject } from 'vue'
 import { Head, useForm, usePage } from '@inertiajs/vue3'
 import AppLayout from '@/layouts/AppLayout.vue'
+
+defineOptions({
+    layout: AppLayout,
+});
 
 // Get dark mode state from AppLayout (via provide/inject)
 const isDark = inject('isDark', false)
