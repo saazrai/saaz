@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\DataAnonymizationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -95,21 +96,26 @@ class PrivacyController extends Controller
         //     ->withProperties(['action' => 'data_export_requested'])
         //     ->log('User requested data export');
 
-        // Generate export data
+        // Generate export data based on available relationships
         $exportData = [
-            'profile' => $user->only(['name', 'email', 'created_at', 'updated_at']),
-            'professional_profile' => $user->professionalProfile,
-            'purchases' => $user->purchases()->with('product')->get(),
-            'assessments' => $user->assessments()->get(),
-            'study_progress' => [
-                'topics' => $user->topicProgress()->get(),
-                'lessons' => $user->lessonProgress()->get(),
-                'courses' => $user->courseProgress()->get(),
-            ],
-            'achievements' => $user->achievements()->with('achievementDefinition')->get(),
-            'social_activities' => $user->socialActivities()->get(),
+            'profile' => $user->only(['name', 'email', 'created_at', 'updated_at', 'google_id', 'ui_preferences']),
             'privacy_consents' => $user->privacyConsents()->get(),
+            'privacy_settings' => $user->privacySetting,
         ];
+
+        // Add diagnostic data if the user has any
+        $diagnostics = \App\Models\Diagnostic::where('user_id', $user->id)->get();
+        if ($diagnostics->isNotEmpty()) {
+            $exportData['diagnostics'] = $diagnostics;
+            
+            // Add diagnostic responses
+            $diagnosticResponses = \App\Models\DiagnosticResponse::whereIn('diagnostic_id', $diagnostics->pluck('id'))->get();
+            $exportData['diagnostic_responses'] = $diagnosticResponses;
+            
+            // Add diagnostic profiles
+            $diagnosticProfiles = \App\Models\DiagnosticProfile::where('user_id', $user->id)->get();
+            $exportData['diagnostic_profiles'] = $diagnosticProfiles;
+        }
 
         $filename = 'user-data-export-'.$user->id.'-'.now()->format('Y-m-d').'.json';
 
@@ -415,5 +421,66 @@ class PrivacyController extends Controller
 
         return redirect($intendedUrl)
             ->with('success', 'Thank you for accepting our privacy policy.');
+    }
+
+    /**
+     * Update privacy settings.
+     */
+    public function updateSettings(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'marketing_consent' => 'boolean',
+            'analytics_consent' => 'boolean',
+            'third_party_consent' => 'boolean',
+        ]);
+
+        $user = $request->user();
+
+        // Update or create privacy settings
+        $user->privacySetting()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'marketing_consent' => $validated['marketing_consent'] ?? false,
+                'analytics_consent' => $validated['analytics_consent'] ?? false,
+                'third_party_consent' => $validated['third_party_consent'] ?? false,
+                'consent_given_at' => now(),
+                'consent_version' => config('privacy.versions.settings', '1.0'),
+            ]
+        );
+
+        return redirect()->back()
+            ->with('success', 'Privacy settings updated successfully.');
+    }
+
+    /**
+     * Delete user account and all associated data.
+     */
+    public function deleteAccount(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        // Log the account deletion request
+        // TODO: Add activity logging when package is installed
+        // activity()
+        //     ->performedOn($user)
+        //     ->causedBy($user)
+        //     ->withProperties(['action' => 'account_deletion_requested'])
+        //     ->log('User requested account deletion');
+
+        try {
+            // Delete user and all related data (cascade deletes will handle relationships)
+            $user->delete();
+
+            // Log out the user
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect('/')
+                ->with('success', 'Your account has been successfully deleted.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'There was an error deleting your account. Please contact support.');
+        }
     }
 }

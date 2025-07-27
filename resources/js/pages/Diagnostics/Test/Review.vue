@@ -383,8 +383,8 @@
             </div>
         </div>
 
-        <!-- Enhanced Review Navigation (Portrait + Desktop) -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl z-50 portrait:block landscape:xl:block landscape:hidden" style="box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);">
+        <!-- Enhanced Review Navigation (Always visible on all screen sizes) -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl z-50" style="box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);">
             <div class="max-w-6xl mx-auto px-4 xl:py-5 py-3">
                 <div class="flex w-full gap-3 max-w-md mx-auto">
                     <!-- Previous Button -->
@@ -425,31 +425,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Floating Navigation Buttons (Mobile Landscape Only) - Outside Content Area -->
-        <div class="hidden max-md:landscape:block portrait:hidden">
-            <!-- Previous Button - Far Left Edge, Outside Content -->
-            <button
-                v-if="currentQuestionIndex > 0"
-                @click="previousQuestion"
-                class="fixed left-0 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-blue-500 hover:bg-blue-600 rounded-r-full shadow-xl flex items-center justify-center transition-all duration-300 hover:shadow-2xl z-50"
-                style="margin-left: 0px;"
-                aria-label="Previous question"
-            >
-                <ChevronLeftIcon class="w-4 h-4 text-white ml-1" />
-            </button>
-            
-            <!-- Next Button - Far Right Edge, Outside Content -->
-            <button
-                v-if="currentQuestionIndex < (diagnostic?.responses?.length ?? 0) - 1"
-                @click="nextQuestion"
-                class="fixed right-0 top-1/2 transform -translate-y-1/2 w-10 h-16 bg-blue-500 hover:bg-blue-600 rounded-l-full shadow-xl flex items-center justify-center transition-all duration-300 hover:shadow-2xl z-50"
-                style="margin-right: 0px;"
-                aria-label="Next question"
-            >
-                <ChevronRightIcon class="w-4 h-4 text-white mr-1" />
-            </button>
-        </div>
     </div>
 </template>
 
@@ -467,7 +442,6 @@ import BarChartLevelIndicator from '@/components/LevelIndicators/BarChartLevelIn
 import { 
     XIcon, 
     ChevronLeftIcon,
-    ChevronRightIcon,
     LoaderIcon,
     SunIcon,
     MoonIcon

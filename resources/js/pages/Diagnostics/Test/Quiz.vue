@@ -230,10 +230,9 @@
         </div>
         
         
-        <!-- Bottom Action Bar - Mobile responsive -->
+        <!-- Bottom Action Bar - Always visible -->
         <div :class="[
             'fixed bottom-0 left-0 right-0 backdrop-blur-xl border-t z-50',
-            'lg:hidden',
             isDark
                 ? 'bg-gray-800/90 border-gray-700'
                 : 'bg-white/90 border-gray-200'
@@ -247,34 +246,6 @@
                         :class="[
                             hasSelection && !isSubmitting
                                 ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-500/25 cursor-pointer' 
-                                : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60 shadow-none',
-                            (!hasSelection || isSubmitting) && 'pointer-events-none'
-                        ]"
-                    >
-                        <span v-if="isSubmitting" class="flex items-center gap-2">
-                            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Loading next question...
-                        </span>
-                        <span v-else>{{ isLastQuestion ? 'Complete Assessment' : 'Submit Answer' }}</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Desktop Action Bar -->
-        <div class="hidden lg:block fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50">
-            <div class="px-6 py-6">
-                <div class="max-w-4xl mx-auto flex justify-center">
-                    <button
-                        @click="submitAnswer"
-                        :disabled="!hasSelection || isSubmitting"
-                        class="px-12 py-4 rounded-2xl font-semibold text-lg transition-all hover:scale-105 shadow-lg min-w-64"
-                        :class="[
-                            hasSelection && !isSubmitting
-                                ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-500/25 hover:shadow-blue-500/40 cursor-pointer' 
                                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-60 shadow-none',
                             (!hasSelection || isSubmitting) && 'pointer-events-none'
                         ]"

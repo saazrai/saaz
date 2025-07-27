@@ -52,7 +52,7 @@
 
 
             <!-- Explanation Section -->
-            <div v-if="question.explanation || question.justifications" 
+            <div v-if="shouldShowExplanations" 
                  class="mx-6 mb-6 p-4 rounded-lg"
                  :class="isThemeDark 
                      ? 'bg-blue-900/20 border border-blue-600/50' 
@@ -92,7 +92,16 @@ export default {
         isDark: {
             type: Boolean,
             default: null
+        },
+        showExplanations: {
+            type: Boolean,
+            default: false
         }
+    },
+    data() {
+        return {
+            windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024
+        };
     },
     computed: {
         renderedQuestion() {
@@ -115,6 +124,18 @@ export default {
                    this.$el?.classList?.contains('dark-mode') ||
                    this.$parent?.$el?.classList?.contains('dark-mode') ||
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        },
+        hasAnyExplanations() {
+            return this.question?.explanation || this.question?.justifications;
+        },
+        shouldShowExplanations() {
+            // Desktop: always show if explanations exist
+            // Mobile: show only if parent component says to show them
+            if (this.windowWidth >= 1024) {
+                return this.hasAnyExplanations;
+            } else {
+                return this.showExplanations && this.hasAnyExplanations;
+            }
         }
     },
     methods: {
@@ -160,6 +181,19 @@ export default {
                  html = html.replace(/<b>/g, '<b style="color: inherit;">');
              }
              return html;
+        },
+        updateWindowWidth() {
+            this.windowWidth = window.innerWidth;
+        }
+    },
+    mounted() {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', this.updateWindowWidth);
+        }
+    },
+    beforeUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', this.updateWindowWidth);
         }
     }
 };

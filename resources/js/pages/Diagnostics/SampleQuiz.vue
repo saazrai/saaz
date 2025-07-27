@@ -370,42 +370,6 @@
             </div>
         </div>
 
-        <!-- Floating Edge Navigation (Review Mode Only - Mobile Landscape) -->
-        <div v-if="isReviewMode" class="hidden max-md:landscape:block portrait:hidden fixed top-1/2 left-2 transform -translate-y-1/2 z-40">
-            <button 
-                v-if="currentQuestionIndex > 0"
-                @click="previousQuestion" 
-                :class="[
-                    'w-12 h-12 rounded-full backdrop-blur-xl border-2 shadow-lg transition-all duration-300',
-                    isDark 
-                        ? 'bg-gray-800/90 border-gray-600 text-white hover:bg-gray-700/90' 
-                        : 'bg-white/90 border-gray-300 text-gray-700 hover:bg-gray-50/90'
-                ]"
-                aria-label="Previous Question"
-            >
-                <svg class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
-        </div>
-        
-        <div v-if="isReviewMode" class="hidden max-md:landscape:block portrait:hidden fixed top-1/2 right-2 transform -translate-y-1/2 z-40">
-            <button 
-                v-if="currentQuestionIndex < sampleQuestions.length - 1"
-                @click="nextQuestion" 
-                :class="[
-                    'w-12 h-12 rounded-full backdrop-blur-xl border-2 shadow-lg transition-all duration-300',
-                    isDark 
-                        ? 'bg-gray-800/90 border-gray-600 text-white hover:bg-gray-700/90' 
-                        : 'bg-white/90 border-gray-300 text-gray-700 hover:bg-gray-50/90'
-                ]"
-                aria-label="Next Question"
-            >
-                <svg class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
-        </div>
 
         <!-- Bottom-Right Floating CTA Badge (Final Question Only - Mobile Landscape) -->
         <transition
@@ -431,10 +395,9 @@
             </InertiaLink>
         </transition>
 
-        <!-- Mobile: Ultra-Minimal Footer (Hidden in Landscape Review Mode Only) -->
+        <!-- Footer Navigation (Always visible on all screen sizes) -->
         <div :class="[
-            'lg:hidden backdrop-blur-xl border-t py-2 px-4 fixed bottom-0 left-0 w-full z-50',
-            isReviewMode ? 'landscape:hidden' : '',
+            'backdrop-blur-xl border-t py-2 px-4 fixed bottom-0 left-0 w-full z-50',
             isDark
                 ? 'bg-gray-800/90 border-gray-700'
                 : 'bg-gray-700 border-gray-800'
@@ -491,81 +454,6 @@
                         !hasSelection || isSubmitting
                             ? 'bg-gray-600 cursor-not-allowed opacity-50'
                             : 'bg-rose-500 hover:bg-rose-600'
-                    ]">
-                        Finish Quiz
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Desktop: Original Footer -->
-        <div class="hidden lg:block" :class="[
-            'backdrop-blur-xl border-t py-4 px-4 fixed bottom-0 left-0 w-full z-50',
-            isDark
-                ? 'bg-gray-800/90 border-gray-700 shadow-2xl'
-                : 'bg-gray-700 border-gray-800 shadow-2xl shadow-gray-800/30'
-        ]">
-            <div class="flex w-full gap-2 md:max-w-xl md:mx-auto">
-                <!-- Review Mode Navigation -->
-                <div v-if="isReviewMode" class="flex w-full gap-2">
-                    <button @click="previousQuestion" :disabled="currentQuestionIndex === 0" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border transition-all',
-                        currentQuestionIndex === 0
-                            ? (isDark
-                                ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50 text-gray-400'
-                                : 'bg-gray-500 border-gray-600 cursor-not-allowed opacity-60 text-gray-300')
-                            : 'bg-gray-500 hover:bg-gray-600 border-gray-400 text-white'
-                    ]">
-                        Previous
-                    </button>
-                    <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="nextQuestion" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all',
-                        'bg-blue-500 border-blue-400'
-                    ]">
-                        Next
-                    </button>
-                    <button v-else @click="restartQuiz" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all',
-                        isDark
-                            ? 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500'
-                            : 'bg-emerald-600 hover:bg-emerald-700 border-emerald-500'
-                    ]">
-                        Full Assessment
-                    </button>
-                </div>
-
-                <!-- Quiz Mode Controls -->
-                <div v-else class="flex w-full gap-2">
-                    <button @click="goToPreviousQuestion" 
-                        :disabled="currentQuestionIndex === 0" 
-                        :class="[
-                            'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border transition-all',
-                            currentQuestionIndex === 0
-                                ? (isDark
-                                    ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50 text-gray-400'
-                                    : 'bg-gray-500 border-gray-600 cursor-not-allowed opacity-60 text-gray-300')
-                                : 'bg-gray-500 hover:bg-gray-600 border-gray-400 text-white'
-                        ]">
-                        Previous
-                    </button>
-                    <button v-if="currentQuestionIndex < sampleQuestions.length - 1" @click="submitAnswer"
-                        :disabled="!hasSelection || isSubmitting" :class="[
-                            'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all shadow-lg',
-                            !hasSelection || isSubmitting
-                                ? (isDark
-                                    ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
-                                    : 'bg-gray-400 border-gray-300 cursor-not-allowed opacity-60')
-                                : 'bg-blue-500 hover:bg-blue-600 border-blue-400 text-white'
-                        ]">
-                        {{ isSubmitting ? 'Submitting...' : 'Submit Answer' }}
-                    </button>
-                    <button v-else @click="finishQuiz" :disabled="!hasSelection || isSubmitting" :class="[
-                        'px-5 py-3 rounded-lg font-semibold flex-1 backdrop-blur-md border text-white transition-all shadow-lg',
-                        !hasSelection || isSubmitting
-                            ? (isDark
-                                ? 'bg-gray-600 border-gray-500 cursor-not-allowed opacity-50'
-                                : 'bg-gray-400 border-gray-300 cursor-not-allowed opacity-60')
-                            : 'bg-rose-500 hover:bg-rose-600 border-rose-400 text-white hover:shadow-rose-500/25'
                     ]">
                         Finish Quiz
                     </button>

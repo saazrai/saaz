@@ -141,7 +141,7 @@
                                     {{ option }}
                                 </div>
                                 <div 
-                                    v-if="question.justifications && question.justifications[index]" 
+                                    v-if="shouldShowExplanations && question.justifications && question.justifications[index]" 
                                     class="text-lg"
                                     :class="isThemeDark ? 'text-green-200' : 'text-green-800'"
                                     v-html="question.justifications[index]"
@@ -170,7 +170,16 @@ export default {
         isDark: {
             type: Boolean,
             default: null
+        },
+        showExplanations: {
+            type: Boolean,
+            default: false
         }
+    },
+    data() {
+        return {
+            windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024
+        };
     },
     computed: {
         isThemeDark(): boolean {
@@ -183,6 +192,18 @@ export default {
                    this.$el?.classList?.contains('dark-mode') ||
                    this.isThemeDark ||
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        },
+        hasAnyExplanations() {
+            return this.question?.justifications && this.question.justifications.some(j => j);
+        },
+        shouldShowExplanations() {
+            // Desktop: always show if explanations exist
+            // Mobile: show only if parent component says to show them
+            if (this.windowWidth >= 1024) {
+                return this.hasAnyExplanations;
+            } else {
+                return this.showExplanations && this.hasAnyExplanations;
+            }
         }
     },
     methods: {
@@ -214,6 +235,19 @@ export default {
                     : 'border bg-red-50 border-red-500';
             }
         },
+        updateWindowWidth() {
+            this.windowWidth = window.innerWidth;
+        }
+    },
+    mounted() {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', this.updateWindowWidth);
+        }
+    },
+    beforeUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', this.updateWindowWidth);
+        }
     },
 };
 </script> 

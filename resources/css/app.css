@@ -24,4 +24,95 @@
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
     }
+    
+    /* Force form elements to respect theme colors */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="url"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="time"],
+    input[type="month"],
+    input[type="week"],
+    select,
+    textarea {
+        background-color: hsl(var(--background)) !important;
+        border-color: hsl(var(--border)) !important;
+        color: hsl(var(--foreground)) !important;
+    }
+    
+    /* Ensure form elements in dark mode are properly styled */
+    .dark input[type="text"],
+    .dark input[type="email"],
+    .dark input[type="password"],
+    .dark input[type="search"],
+    .dark input[type="url"],
+    .dark input[type="tel"],
+    .dark input[type="number"],
+    .dark input[type="datetime-local"],
+    .dark input[type="date"],
+    .dark input[type="time"],
+    .dark input[type="month"],
+    .dark input[type="week"],
+    .dark select,
+    .dark textarea {
+        background-color: hsl(var(--input)) !important;
+        border-color: hsl(var(--border)) !important;
+        color: hsl(var(--foreground)) !important;
+    }
+    
+    /* Ensure placeholders have proper contrast in dark mode */
+    .dark input::placeholder,
+    .dark textarea::placeholder {
+        color: hsl(var(--muted-foreground)) !important;
+        opacity: 1;
+    }
+    
+    /* Focus states for form elements */
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: hsl(var(--ring)) !important;
+        box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
+    }
+    
+    /* Ensure buttons respect theme colors */
+    button {
+        color: inherit;
+    }
+    
+    /* Labels should respect theme text color */
+    label {
+        color: hsl(var(--foreground));
+    }
+    
+    .dark label {
+        color: hsl(var(--foreground));
+    }
+    
+    /* Override any potential webkit autofill styles */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+        -webkit-text-fill-color: hsl(var(--foreground)) !important;
+        -webkit-box-shadow: 0 0 0px 1000px hsl(var(--background)) inset !important;
+        transition: background-color 5000s ease-in-out 0s !important;
+    }
+    
+    /* Ensure dropdown/select backgrounds are themed */
+    select option {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+    }
+    
+    /* Fix any potential card backgrounds */
+    .card,
+    [class*="card"] {
+        background-color: hsl(var(--card));
+        color: hsl(var(--card-foreground));
+    }
 }

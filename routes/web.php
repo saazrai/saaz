@@ -28,6 +28,9 @@ Route::get('/privacy', [PrivacyController::class, 'policy'])->name('privacy.poli
 Route::get('/privacy/consent', [PrivacyController::class, 'showConsent'])->middleware('auth')->name('privacy.consent');
 Route::post('/privacy/consent', [PrivacyController::class, 'storeConsent'])->middleware('auth')->name('privacy.consent.store');
 Route::get('/privacy/settings', [PrivacyController::class, 'settings'])->middleware('auth')->name('privacy.settings');
+Route::post('/privacy/settings', [PrivacyController::class, 'updateSettings'])->middleware('auth')->name('privacy.settings.update');
+Route::get('/privacy/export', [PrivacyController::class, 'exportData'])->middleware('auth')->name('privacy.export');
+Route::delete('/privacy/delete', [PrivacyController::class, 'deleteAccount'])->middleware('auth')->name('privacy.delete');
 Route::get('/terms', [PrivacyController::class, 'terms'])->name('terms');
 Route::get('/cookies', [PrivacyController::class, 'cookies'])->name('cookies');
 

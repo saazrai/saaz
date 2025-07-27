@@ -75,7 +75,7 @@
                             <span class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-blue-600 dark:text-blue-400">1</span>
                             Foundation & Governance
                         </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                             <div v-for="(domain, index) in phase1Domains" :key="domain.name"
                                  class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
@@ -89,7 +89,7 @@
                                             <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                                         </svg>
                                     </div>
-                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-tight">{{ domain.name }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                             <span class="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-green-600 dark:text-green-400">2</span>
                             Technical Controls
                         </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                             <div v-for="(domain, index) in phase2Domains" :key="domain.name"
                                  class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
@@ -115,7 +115,7 @@
                                             <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                         </svg>
                                     </div>
-                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-tight">{{ domain.name }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -127,9 +127,9 @@
                             <span class="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-purple-600 dark:text-purple-400">3</span>
                             Infrastructure & Applications
                         </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                             <div v-for="(domain, index) in phase3Domains" :key="domain.name"
-                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
+                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 min-h-[80px] transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -141,7 +141,7 @@
                                             <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                                         </svg>
                                     </div>
-                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-tight">{{ domain.name }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -153,9 +153,9 @@
                             <span class="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mr-3 text-sm font-bold text-orange-600 dark:text-orange-400">4</span>
                             Operations & Response
                         </h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                             <div v-for="(domain, index) in phase4Domains" :key="domain.name"
-                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
+                                 class="relative bg-white dark:bg-gray-800 backdrop-blur-md border border-gray-200 dark:border-gray-700 rounded-2xl p-4 min-h-[80px] transition-all duration-300 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 group"
                                  @click="showDomainTooltip(domain)">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -167,7 +167,7 @@
                                             <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                         </svg>
                                     </div>
-                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ domain.name }}</h4>
+                                    <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-tight">{{ domain.name }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -306,11 +306,11 @@ defineProps({
     },
 });
 
-// Domains organized by phase with simplified structure
+// Domains organized by phase - aligned with DiagnosticsSeeder.php
 const phase1Domains = ref([
     { 
-        name: 'General Security', 
-        description: 'Core security principles including CIA Triad and security controls',
+        name: 'General Security Concepts', 
+        description: 'Fundamental security principles that form the foundation of all cybersecurity practices. Covers the CIA Triad, security controls, and core concepts essential for understanding more advanced topics.',
         topics: [
             '5 Pillars of Information Security',
             'Professional Ethics',
@@ -320,8 +320,8 @@ const phase1Domains = ref([
         ]
     },
     { 
-        name: 'Governance', 
-        description: 'Management frameworks and security policies',
+        name: 'Information Security Governance', 
+        description: 'Organizational frameworks and policies that establish security management structure. Essential for aligning security with business objectives and ensuring proper oversight.',
         topics: [
             'Information Security Program',
             'Strategic Alignment',
@@ -331,19 +331,8 @@ const phase1Domains = ref([
         ]
     },
     { 
-        name: 'Risk Management', 
-        description: 'Risk assessment and treatment strategies',
-        topics: [
-            'Risk Management Fundamentals',
-            'Risk Identification',
-            'Risk Assessment',
-            'Risk Treatment',
-            'Risk Monitoring & Reporting'
-        ]
-    },
-    { 
-        name: 'Legal & Compliance', 
-        description: 'Regulatory requirements and legal frameworks',
+        name: 'Legal, Regulatory & Compliance', 
+        description: 'Legal frameworks, regulations, and compliance requirements that organizations must follow. Critical for avoiding legal liabilities and maintaining regulatory compliance.',
         topics: [
             'Compliance Requirements',
             'Contracts',
@@ -354,7 +343,7 @@ const phase1Domains = ref([
     },
     { 
         name: 'Privacy', 
-        description: 'Data protection and privacy principles',
+        description: 'Privacy principles and data protection requirements. Focuses on protecting personal information and ensuring compliance with privacy regulations like GDPR.',
         topics: [
             'Personal Information',
             'Privacy Principles',
@@ -362,24 +351,35 @@ const phase1Domains = ref([
             'Privacy Governance',
             'Privacy Protection'
         ]
+    },
+    { 
+        name: 'Risk Management', 
+        description: 'Comprehensive risk management processes from identification to monitoring. Core competency for security professionals to assess and manage organizational risks.',
+        topics: [
+            'Risk Management Fundamentals',
+            'Risk Identification',
+            'Risk Assessment',
+            'Risk Response & Treatment',
+            'Risk Monitoring & Reporting'
+        ]
     }
 ]);
 
 const phase2Domains = ref([
     { 
-        name: 'Security Audits', 
-        description: 'Audit methodologies and assessment techniques',
+        name: 'Security Audits & Assessments', 
+        description: 'Audit methodologies and assessment techniques to evaluate security effectiveness. Essential for maintaining compliance and identifying security gaps.',
         topics: [
-            'Audit Fundamentals & Planning',
-            'Evidence Gathering & Documentation',
-            'Control Assessment & Testing',
+            'Audit Fundamentals',
+            'Evidence Gathering',
+            'Control Assessment',
             'Testing Methodologies & Approaches',
-            'Security Testing & Assessment'
+            'Security Testing'
         ]
     },
     { 
-        name: 'Threat & Vulnerability', 
-        description: 'Threat identification and vulnerability management',
+        name: 'Threat & Vulnerability Management', 
+        description: 'Identification and management of threats and vulnerabilities. Covers threat actors, attack vectors, and vulnerability lifecycle management.',
         topics: [
             'Threat Actors',
             'TTPs',
@@ -389,19 +389,19 @@ const phase2Domains = ref([
         ]
     },
     { 
-        name: 'Cryptography', 
-        description: 'Encryption algorithms and key management',
+        name: 'Cryptography & Key Management', 
+        description: 'Cryptographic principles and key management practices. Essential for protecting data confidentiality and integrity.',
         topics: [
-            'Cryptographic Algorithms',
+            'Cryptography Algorithms',
             'Cryptographic Applications',
             'Public Key Infrastructure (PKI)',
             'Key Management',
-            'Cryptanalysis & Security'
+            'Cryptanalysis'
         ]
     },
     { 
         name: 'Data Governance', 
-        description: 'Data lifecycle and protection strategies',
+        description: 'Data lifecycle management and governance practices. Covers classification, retention, and protection of organizational data.',
         topics: [
             'Data Classification & Categorization',
             'Data Lifecycle Management',
@@ -411,8 +411,8 @@ const phase2Domains = ref([
         ]
     },
     { 
-        name: 'Identity & Access', 
-        description: 'IAM principles and access control',
+        name: 'Identity and Access Management (IAM)', 
+        description: 'Identity and access management principles. Critical for ensuring only authorized users access resources.',
         topics: [
             'Identification',
             'Authentication',
@@ -425,8 +425,8 @@ const phase2Domains = ref([
 
 const phase3Domains = ref([
     { 
-        name: 'Networking', 
-        description: 'Network protocols and infrastructure',
+        name: 'Network Concepts', 
+        description: 'Fundamental networking concepts and protocols. Essential foundation for understanding network security.',
         topics: [
             'OSI Model',
             'TCP/IP Protocols',
@@ -437,7 +437,7 @@ const phase3Domains = ref([
     },
     { 
         name: 'Network Security', 
-        description: 'Network defense and security protocols',
+        description: 'Network security fundamentals including defense mechanisms and attack vectors. Essential for protecting data in transit.',
         topics: [
             'Security Protocols',
             'Network Attacks',
@@ -448,18 +448,18 @@ const phase3Domains = ref([
     },
     { 
         name: 'Application Security', 
-        description: 'Secure development and DevSecOps',
+        description: 'Secure software development practices and application security. Integrates security throughout the development lifecycle.',
         topics: [
-            'Secure Software Development Lifecycle',
-            'Models',
-            'Application vulnerabilities',
+            'Secure Software Development Lifecycle (SSDLC)',
+            'Development Models',
+            'Application Vulnerabilities',
             'Security Testing',
             'Secure Coding'
         ]
     },
     { 
         name: 'Cloud Security', 
-        description: 'Cloud infrastructure and security controls',
+        description: 'Cloud computing security across different service and deployment models. Understanding shared responsibility is crucial.',
         topics: [
             'Cloud Fundamentals',
             'Cloud Models',
@@ -469,72 +469,72 @@ const phase3Domains = ref([
         ]
     },
     { 
-        name: 'Endpoint & IoT', 
-        description: 'Device security and management',
+        name: 'Endpoint, Mobile & IoT Security', 
+        description: 'Security for endpoints including desktops, mobile devices, and IoT. Critical as attack surfaces expand.',
         topics: [
-            'Endpoint Protection Platform',
-            'Application Whitelisting',
-            'Secure Configuration',
-            'Device Encryption',
-            'Mobile Device Management'
+            'Endpoint Security',
+            'Device Security',
+            'Mobile Security',
+            'IoT Security',
+            'OT Security'
         ]
     }
 ]);
 
 const phase4Domains = ref([
     { 
-        name: 'Security Architecture', 
-        description: 'Design principles and frameworks',
-        topics: [
-            'Security by Design',
-            'Secure Defaults',
-            'Least Privilege',
-            'Defense in Depth',
-            'Zero Trust'
-        ]
-    },
-    { 
-        name: 'Human Factors', 
-        description: 'Security awareness and training',
+        name: 'Security Awareness & Human Factors', 
+        description: 'Human aspects of security including awareness training and social engineering defense. People are often the weakest link.',
         topics: [
             'Social Engineering',
-            'Security Awareness Training',
-            'Personnel Security',
-            'Physical Access Controls',
-            'Environmental Security'
+            'Security Awareness & Training',
+            'Human Resource Security',
+            'Personnel Safety',
+            'Personnel Security Controls'
         ]
     },
     { 
-        name: 'Security Operations', 
-        description: 'SOC and monitoring operations',
+        name: 'Physical & Environmental Security', 
+        description: 'Physical security controls and environmental protection. Often overlooked but critical for comprehensive security.',
         topics: [
-            'Security Operations Center',
-            'Operational Metrics',
-            'Log & Event Management',
-            'Patch Management',
-            'SIEM & SOAR'
+            'Physical Access Control',
+            'Fire',
+            'Power',
+            'Site Design',
+            'Environmental Controls'
         ]
     },
     { 
-        name: 'Incident Response', 
-        description: 'Incident handling and forensics',
+        name: 'Security Operations & Monitoring', 
+        description: 'Day-to-day security operations including monitoring, detection, and response. The front line of security defense.',
         topics: [
-            'Incident Response Phases',
-            'Playbooks & Runbooks',
-            'Reporting & Communication',
-            'Forensic Investigation',
-            'Digital Forensics Tools'
+            'Security Operations Center (SOC)',
+            'Log Management',
+            'Detection',
+            'Response',
+            'Monitoring'
         ]
     },
     { 
-        name: 'Business Continuity', 
-        description: 'Disaster recovery and resilience',
+        name: 'Incident Management', 
+        description: 'Incident response procedures and digital forensics. Critical for minimizing damage and learning from security events.',
         topics: [
-            'Business Impact Analysis',
-            'Recovery Objectives',
-            'Business Continuity Plan',
-            'Disaster Recovery Plan',
-            'Backup Strategies'
+            'Preparation',
+            'Detection, Triage & Analysis',
+            'Containment',
+            'Eradication & Recovery',
+            'Post-Incident Activity'
+        ]
+    },
+    { 
+        name: 'Business Continuity & Disaster Recovery', 
+        description: 'Ensuring business resilience through continuity planning and disaster recovery. Essential for organizational survival.',
+        topics: [
+            'Business Impact Analysis (BIA)',
+            'Business Continuity Planning',
+            'Disaster Recovery',
+            'Recovery Strategy',
+            'Testing'
         ]
     }
 ]);

@@ -1,4 +1,4 @@
-import { onMounted, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 
 type Appearance = 'light' | 'dark' | 'system';
 
@@ -90,14 +90,59 @@ const appearance = ref<Appearance>('dark');
 
 export function useAppearance() {
     onMounted(() => {
+        // First, check what the actual DOM state is
+        const isDomDark = document.documentElement.classList.contains('dark');
         const savedAppearance = getStoredAppearance();
-
+        
         if (savedAppearance) {
             appearance.value = savedAppearance;
+            
+            // Verify appearance matches DOM state, if not, sync them
+            const expectedDark = savedAppearance === 'dark' || 
+                (savedAppearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            
+            if (expectedDark !== isDomDark) {
+                // DOM and appearance are out of sync, use DOM state as source of truth
+                const currentTheme = isDomDark ? 'dark' : 'light';
+                appearance.value = currentTheme;
+                localStorage.setItem('appearance', currentTheme);
+                localStorage.setItem('theme', currentTheme);
+            }
         } else {
-            // Default to dark to match main theme system
-            appearance.value = 'dark';
+            // No saved appearance, determine from DOM state
+            const currentTheme = isDomDark ? 'dark' : 'light';
+            appearance.value = currentTheme;
+            localStorage.setItem('appearance', currentTheme);
+            localStorage.setItem('theme', currentTheme);
         }
+        
+        // Listen for theme changes from other sources (like navbar toggle)
+        const handleThemeChange = () => {
+            const isDomDark = document.documentElement.classList.contains('dark');
+            const currentTheme = isDomDark ? 'dark' : 'light';
+            
+            // Only update if it's different and not a system preference
+            if (appearance.value !== 'system' && appearance.value !== currentTheme) {
+                appearance.value = currentTheme;
+                localStorage.setItem('appearance', currentTheme);
+            }
+        };
+        
+        // Listen for theme changes from navbar or other components
+        window.addEventListener('theme-changed', handleThemeChange);
+        
+        // Also observe DOM changes
+        const observer = new MutationObserver(handleThemeChange);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Setup cleanup on unmount
+        onBeforeUnmount(() => {
+            window.removeEventListener('theme-changed', handleThemeChange);
+            observer.disconnect();
+        });
     });
 
     function updateAppearance(value: Appearance) {
