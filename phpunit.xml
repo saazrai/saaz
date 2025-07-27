@@ -27,8 +27,10 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="file"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="AUDITING_ENABLED" value="true"/>
+        <env name="VITE_DEV_SERVER_KEY" value=""/>
+        <env name="VITE_DEV_SERVER_CERT" value=""/>
     </php>
 </phpunit>
