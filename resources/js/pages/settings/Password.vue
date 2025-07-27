@@ -24,6 +24,9 @@ const currentPasswordInput = ref<HTMLInputElement | null>(null);
 // Get dark mode state from AppLayout
 const isDark = inject('isDark', false);
 
+// Debug: Log theme state (remove this after testing)
+console.log('Password component isDark:', isDark);
+
 const form = useForm({
     current_password: '',
     password: '',

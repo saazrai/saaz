@@ -4,7 +4,7 @@ import { Button } from '@/components/shadcn/ui/button';
 import { Separator } from '@/components/shadcn/ui/separator';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { inject } from 'vue';
+import { inject, provide } from 'vue';
 
 const sidebarNavItems: NavItem[] = [
     {
@@ -25,6 +25,9 @@ const page = usePage();
 
 // Get dark mode state from AppLayout
 const isDark = inject('isDark', false);
+
+// Provide dark mode state to child components
+provide('isDark', isDark);
 
 const currentPath = page.props.ziggy?.location ? new URL(page.props.ziggy.location).pathname : '';
 </script>
