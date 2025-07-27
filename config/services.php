@@ -41,4 +41,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'google_analytics' => [
+        'measurement_id' => env('GOOGLE_ANALYTICS_ID'),
+        'stream_id' => env('GOOGLE_ANALYTICS_STREAM_ID', '2360896180'),
+        'stream_url' => env('GOOGLE_ANALYTICS_STREAM_URL', 'https://saazacademy.com'),
+        'stream_name' => env('GOOGLE_ANALYTICS_STREAM_NAME', 'Saaz Academy'),
+    ],
+
 ];
