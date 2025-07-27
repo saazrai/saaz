@@ -4,17 +4,23 @@
         <meta name="description" content="Manage your privacy preferences and data settings for SecureStart™." />
     </Head>
 
-    <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-gray-50']">
+    <div :class="['transition-colors duration-300', isDark ? 'bg-gray-900' : 'bg-gray-50']">
         <!-- Hero Section -->
         <div :class="[
-            'py-16 transition-colors duration-300',
+            'py-12 transition-colors duration-300',
             isDark 
-                ? 'bg-linear-to-br from-gray-800 via-gray-700 to-gray-800' 
-                : 'bg-linear-to-br from-blue-900 via-blue-800 to-blue-700'
+                ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800' 
+                : 'bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700'
         ]">
-            <div class="max-w-4xl mx-auto px-6 text-center text-white">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Privacy Settings</h1>
-                <p class="text-xl text-blue-100">
+            <div class="max-w-4xl mx-auto px-6 text-center">
+                <h1 :class="[
+                    'text-4xl md:text-5xl font-bold mb-4 transition-colors duration-300',
+                    isDark ? 'text-white' : 'text-white'
+                ]">Privacy Settings</h1>
+                <p :class="[
+                    'text-xl transition-colors duration-300',
+                    isDark ? 'text-gray-300' : 'text-blue-100'
+                ]">
                     Manage your privacy preferences and consent settings
                 </p>
             </div>
@@ -340,8 +346,3 @@ const formatDate = (dateString) => {
 }
 </script>
 
-<style scoped>
-.bg-linear-to-br {
-    background: linear-gradient(to bottom right, var(--tw-gradient-stops));
-}
-</style>
