@@ -8,6 +8,7 @@ use App\Models\Diagnostic;
 use App\Models\DiagnosticItem;
 use App\Models\DiagnosticResponse;
 use App\Services\AdaptiveDiagnosticService;
+use App\Services\PostHogService;
 use App\Services\UserAbilityService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -238,6 +239,13 @@ class DiagnosticController extends Controller
                 'question_count' => 100,
             ])),
         ]);
+
+        // Track diagnostic start with PostHog
+        PostHogService::trackDiagnosticStart(
+            auth()->id(),
+            $diagnostic->id,
+            $diagnostic->phase->order_sequence ?? null
+        );
 
         // Step 5: Generate first question (simplified without AdaptiveService)
         $this->generateFirstQuestion($diagnostic);
@@ -650,6 +658,18 @@ class DiagnosticController extends Controller
             $correctAnswers = DiagnosticResponse::where('diagnostic_id', $diagnostic->id)
                 ->where('is_correct', true)
                 ->count();
+
+            // Track diagnostic completion with PostHog
+            if ($totalAnswered > 0) {
+                $finalScore = round(($correctAnswers / $totalAnswered) * 100, 2);
+                PostHogService::trackDiagnosticComplete(
+                    auth()->id(),
+                    $diagnostic->id,
+                    $finalScore,
+                    $totalAnswered,
+                    $diagnostic->total_duration_seconds
+                );
+            }
 
             $score = $totalAnswered > 0 ? round(($correctAnswers / $totalAnswered) * 100, 2) : 0;
 

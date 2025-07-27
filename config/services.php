@@ -48,4 +48,11 @@ return [
         'stream_name' => env('GOOGLE_ANALYTICS_STREAM_NAME', 'Saaz Academy'),
     ],
 
+    'posthog' => [
+        'api_key' => env('POSTHOG_API_KEY'),
+        'host' => env('POSTHOG_HOST', 'https://app.posthog.com'),
+        'project_id' => env('POSTHOG_PROJECT_ID'),
+        'enabled' => env('POSTHOG_ENABLED', true),
+    ],
+
 ];
