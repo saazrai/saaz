@@ -362,7 +362,7 @@ watchEffect(() => {
         
         <!-- Main Content -->
         <div class="pt-24 min-h-[calc(100vh-6rem)]">
-            <div class="flex mx-auto px-8">
+            <div class="flex mx-auto px-2 sm:px-8">
                 <!-- Main Content (no sidebar in V1 Enhanced) -->
                 <div class="flex-1 overflow-y-auto">
                     <main class="py-4 pb-24">
