@@ -48,31 +48,8 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         {{-- Google Analytics 4 - Saaz Academy --}}
-        @if(config('services.google_analytics.measurement_id'))
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google_analytics.measurement_id') }}"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '{{ config('services.google_analytics.measurement_id') }}', {
-            page_title: document.title,
-            page_location: window.location.href,
-            anonymize_ip: true,
-            allow_google_signals: false,
-            allow_ad_personalization_signals: false
-          });
-          console.log('Google Analytics loaded with ID: {{ config('services.google_analytics.measurement_id') }}');
-        </script>
-        @else
-        <!-- Google Analytics not loaded - missing GOOGLE_ANALYTICS_ID environment variable -->
-        <script>
-          console.log('Google Analytics not loaded. Debug info:', {
-            app_debug: {{ config('app.debug') ? 'true' : 'false' }},
-            ga_id: '{{ config('services.google_analytics.measurement_id') }}',
-            env: '{{ config('app.env') }}'
-          });
-        </script>
+        @if(\App\Services\GoogleAnalyticsService::isEnabled())
+        {!! \App\Services\GoogleAnalyticsService::getTrackingScript() !!}
         @endif
 
         <link rel="icon" href="/favicon.ico" sizes="any">

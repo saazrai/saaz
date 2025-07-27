@@ -20,19 +20,6 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 // Static pages
 Route::get('/about', fn () => Inertia::render('About'))->name('info.about');
 
-// Debug route for Google Analytics configuration (remove after fixing)
-Route::get('/debug/ga', function () {
-    return response()->json([
-        'app_debug' => config('app.debug'),
-        'app_env' => config('app.env'),
-        'ga_measurement_id' => config('services.google_analytics.measurement_id'),
-        'ga_config' => config('services.google_analytics'),
-        'ga_env_var_old' => env('GOOGLE_ANALYTICS_ID'),
-        'ga_env_var_new' => env('GA_MEASUREMENT_ID'),
-        'ga_service_enabled' => \App\Services\GoogleAnalyticsService::isEnabled(),
-    ]);
-});
-
 // Public sample diagnostic (no auth required)
 Route::get('/diagnostics/sample', [DiagnosticController::class, 'sample'])->name('assessments.diagnostics.sample');
 
