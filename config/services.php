@@ -42,7 +42,7 @@ return [
     ],
 
     'google_analytics' => [
-        'measurement_id' => env('GOOGLE_ANALYTICS_ID'),
+        'measurement_id' => env('GA_MEASUREMENT_ID') ?: env('GOOGLE_ANALYTICS_ID'),
         'stream_id' => env('GOOGLE_ANALYTICS_STREAM_ID', '2360896180'),
         'stream_url' => env('GOOGLE_ANALYTICS_STREAM_URL', 'https://saazacademy.com'),
         'stream_name' => env('GOOGLE_ANALYTICS_STREAM_NAME', 'Saaz Academy'),

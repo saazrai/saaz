@@ -27,7 +27,8 @@ Route::get('/debug/ga', function () {
         'app_env' => config('app.env'),
         'ga_measurement_id' => config('services.google_analytics.measurement_id'),
         'ga_config' => config('services.google_analytics'),
-        'ga_env_var' => env('GOOGLE_ANALYTICS_ID'),
+        'ga_env_var_old' => env('GOOGLE_ANALYTICS_ID'),
+        'ga_env_var_new' => env('GA_MEASUREMENT_ID'),
         'ga_service_enabled' => \App\Services\GoogleAnalyticsService::isEnabled(),
     ]);
 });
