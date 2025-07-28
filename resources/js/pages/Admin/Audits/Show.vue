@@ -259,7 +259,7 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const props = defineProps({
   audit: Object

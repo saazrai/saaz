@@ -458,7 +458,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { Link, useForm, router } from '@inertiajs/vue3'
-import AdminLayout from '../../Layouts/AdminLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const props = defineProps({
   users: {

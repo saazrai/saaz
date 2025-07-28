@@ -366,7 +366,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { Head, Link, router } from '@inertiajs/vue3'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const props = defineProps({
   audits: Object,
