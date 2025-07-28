@@ -11,7 +11,7 @@
                 :class="isThemeDark 
                     ? 'text-white dark:text-white' 
                     : 'text-gray-800'">
-                <b>{{ question.content }}</b>
+                <div v-html="renderedQuestion"></div>
             </h4>
             
             <!-- Your Matches -->
@@ -39,7 +39,7 @@
                         <div :class="[
                             'flex-1 sm:flex-none sm:w-1/3 p-3 rounded-lg font-medium text-lg',
                             isThemeDark 
-                                ? 'bg-gray-800/50 text-white' 
+                                ? 'bg-gray-700 text-white' 
                                 : 'bg-white text-gray-900'
                         ]">
                             {{ element }}
@@ -63,7 +63,7 @@
                         <div :class="[
                             'flex-1 p-3 rounded-lg text-lg flex items-center justify-between',
                             isThemeDark 
-                                ? 'bg-gray-800/50' 
+                                ? 'bg-gray-700' 
                                 : 'bg-white'
                         ]">
                             <span :class="isCorrectOption(index) 
@@ -144,7 +144,7 @@
                                 <div :class="[
                                     'flex-1 sm:flex-none sm:w-1/3 p-3 rounded-lg font-medium text-lg',
                                     isThemeDark 
-                                        ? 'bg-gray-800/50 text-white' 
+                                        ? 'bg-gray-700 text-white' 
                                         : 'bg-white text-gray-900'
                                 ]">
                                     {{ item }}
@@ -163,7 +163,7 @@
                                 <div :class="[
                                     'flex-1 p-3 rounded-lg text-lg flex items-center justify-between',
                                     isThemeDark 
-                                        ? 'bg-gray-800/50 text-green-300' 
+                                        ? 'bg-gray-700 text-green-300' 
                                         : 'bg-white text-green-700'
                                 ]">
                                     <span class="font-medium">{{ getCorrectAnswer(item) }}</span>
@@ -182,6 +182,7 @@
 </template>
 
 <script lang="ts">
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -199,6 +200,9 @@ export default {
         }
     },
     computed: {
+        renderedQuestion() {
+            return renderMarkdown(this.question?.content, this.isThemeDark);
+        },
         isThemeDark(): boolean {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDark !== null) {

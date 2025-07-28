@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -105,14 +105,7 @@ export default {
     },
     computed: {
         renderedQuestion() {
-             if (!this.question?.content) return '';
-             let html = marked(this.question.content);
-             // Force white color for bold/strong tags in dark mode
-             if (this.isThemeDark) {
-                 html = html.replace(/<strong>/g, '<strong style="color: white;">');
-                 html = html.replace(/<b>/g, '<b style="color: white;">');
-             }
-             return html;
+            return renderMarkdown(this.question?.content, this.isThemeDark);
         },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
@@ -160,7 +153,7 @@ export default {
                 } else if (isUserSelected && !isCorrect) {
                     return 'bg-red-700/40 text-white font-medium border-2 border-red-400 shadow-lg shadow-red-400/20';
                 } else {
-                    return 'bg-gray-700/40 text-gray-400 border-2 border-gray-600 opacity-60';
+                    return 'bg-gray-700 text-gray-400 border-2 border-gray-500 opacity-60';
                 }
             } else {
                 if (isCorrect) {
@@ -173,14 +166,7 @@ export default {
             }
         },
         renderMarkdown(text) {
-             if (!text) return '';
-             let html = marked(text);
-             // Force white color for bold/strong tags in dark mode
-             if (this.isThemeDark) {
-                 html = html.replace(/<strong>/g, '<strong style="color: inherit;">');
-                 html = html.replace(/<b>/g, '<b style="color: inherit;">');
-             }
-             return html;
+            return renderMarkdown(text, this.isThemeDark);
         },
         updateWindowWidth() {
             this.windowWidth = window.innerWidth;

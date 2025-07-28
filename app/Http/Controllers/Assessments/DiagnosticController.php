@@ -120,20 +120,8 @@ class DiagnosticController extends Controller
             return $this->begin($request);
         }
 
-        // Original behavior for backward compatibility
-        $assessment = Assessment::create([
-            'user_id' => auth()->id(),
-            'assessable_type' => 'diagnostic',
-            'assessable_id' => 1, // Default diagnostic
-            'type' => 'diagnostic',
-            'status' => 'in_progress',
-            'started_at' => now(),
-        ]);
-
-        return Inertia::render('Diagnostics/Assessment', [
-            'assessment' => $assessment,
-            'isAuthenticated' => true,
-        ]);
+        // Redirect to modern Quiz system instead of legacy Assessment
+        return $this->begin($request);
     }
 
     /**
@@ -569,9 +557,8 @@ class DiagnosticController extends Controller
             $correctAnswers = [$correctAnswers];
         }
 
-        // Check if answer is correct (simple comparison for now)
-        $isCorrect = ! empty(array_intersect($userAnswer, $correctAnswers)) &&
-                    count($userAnswer) === count($correctAnswers);
+        // Check if answer is correct based on question type
+        $isCorrect = $this->checkAnswerCorrectness($diagnosticItem, $userAnswer, $correctAnswers);
 
         // Step 7: Update the diagnostic_responses table
         $currentResponse->update([
@@ -1561,5 +1548,42 @@ class DiagnosticController extends Controller
             'is_correct' => null,
             'response_time_seconds' => null,
         ]);
+    }
+
+    /**
+     * Check if answer is correct based on question type
+     */
+    private function checkAnswerCorrectness(DiagnosticItem $diagnosticItem, array $userAnswer, array $correctAnswers): bool
+    {
+        $typeId = $diagnosticItem->type_id;
+
+        switch ($typeId) {
+            case 1: // Multiple Choice (Single)
+            case 2: // True/False
+            case 7: // Essay/Short Answer (Terminal-based)
+                // For single-selection questions, check if the user's selection matches any correct option
+                return !empty(array_intersect($userAnswer, $correctAnswers));
+
+            case 3: // Multiple Choice (Multiple)
+            case 4: // Matching
+            case 5: // Ordering/Sequencing
+                // For multiple-selection questions, require exact match (all correct, none incorrect)
+                $intersection = array_intersect($userAnswer, $correctAnswers);
+                return !empty($intersection) && count($userAnswer) === count($correctAnswers);
+
+            case 6: // Fill in the Blank
+                // For fill-in-the-blank, use case-insensitive comparison
+                $userAnswerLower = array_map('strtolower', array_map('trim', $userAnswer));
+                $correctAnswersLower = array_map('strtolower', array_map('trim', $correctAnswers));
+                return !empty(array_intersect($userAnswerLower, $correctAnswersLower));
+
+            default:
+                // Fallback to intersection check for unknown types
+                \Log::warning('Unknown question type encountered', [
+                    'type_id' => $typeId,
+                    'diagnostic_item_id' => $diagnosticItem->id,
+                ]);
+                return !empty(array_intersect($userAnswer, $correctAnswers));
+        }
     }
 }

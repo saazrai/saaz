@@ -2,7 +2,7 @@
     <div :class="[
             'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
             isThemeDark 
-                ? 'bg-gray-800 border-gray-700' 
+                ? 'bg-gray-700 border-gray-500' 
                 : 'bg-white border-gray-200'
          ]">
         <div>
@@ -15,20 +15,26 @@
             
             <div class="overflow-x-auto">
                 <div class="relative inline-block">
-                <!-- Image with white background outline -->
-                <img 
-                    v-if="imageUrl"
-                    :src="imageUrl" 
-                    class="block mx-auto"
-                    :style="{ 
-                        boxShadow: isThemeDark ? '0 0 0 8px white, 0 0 0 10px rgba(0,0,0,0.1)' : 'none',
+                <!-- Image wrapper with border -->
+                <div v-if="imageUrl" 
+                     class="inline-block mx-auto"
+                     :style="{ 
+                        border: '16px solid white',
                         borderRadius: '8px',
-                        width: 'auto',
-                        height: 'auto',
-                        maxWidth: 'none',
-                        maxHeight: 'none'
-                    }"
-                />
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                     }">
+                    <img 
+                        :src="imageUrl" 
+                        class="block"
+                        :style="{ 
+                            width: 'auto',
+                            height: 'auto',
+                            maxWidth: 'none',
+                            maxHeight: 'none',
+                            display: 'block'
+                        }"
+                    />
+                </div>
                 <div v-else :class="[
                     'flex items-center justify-center h-96 w-full rounded-lg',
                     isThemeDark ? 'bg-gray-700' : 'bg-gray-100'
@@ -45,8 +51,8 @@
                     :class="getReviewOptionClasses(i, option)"
                     :style="{
                         position: 'absolute',
-                        top: option.y + 'px',
-                        left: option.x + 'px',
+                        top: (option.y + 16) + 'px',
+                        left: (option.x + 16) + 'px',
                         marginLeft: '-35px',
                         marginTop: '-35px'
                     }"
@@ -120,7 +126,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -148,8 +154,7 @@ export default {
     },
     computed: {
         renderedQuestion() {
-            if (!this.question?.content) return '';
-            return marked(this.question.content);
+            return renderMarkdown(this.question?.content, this.isThemeDark);
         },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
@@ -205,25 +210,25 @@ export default {
                 if (this.question?.justifications) {
                     // Check if it's a string
                     if (typeof this.question.justifications === 'string') {
-                        return marked(this.question.justifications);
+                        return renderMarkdown(this.question.justifications, this.isThemeDark);
                     }
                     // Check if it's an array
                     else if (Array.isArray(this.question.justifications) && this.question.justifications.length > 0) {
                         // Get the justification for the correct answer
                         const correctIndex = this.correctOptionIndex;
                         if (correctIndex >= 0 && this.question.justifications[correctIndex]) {
-                            return marked(this.question.justifications[correctIndex]);
+                            return renderMarkdown(this.question.justifications[correctIndex], this.isThemeDark);
                         }
                         // Fallback to first justification if available
                         if (this.question.justifications[0]) {
-                            return marked(this.question.justifications[0]);
+                            return renderMarkdown(this.question.justifications[0], this.isThemeDark);
                         }
                     }
                 }
                 
                 // Fallback to explanation field if justifications not available
                 if (this.question?.explanation) {
-                    return marked(this.question.explanation);
+                    return renderMarkdown(this.question.explanation, this.isThemeDark);
                 }
                 
                 return '';

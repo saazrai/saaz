@@ -34,10 +34,13 @@
                     <div class="flex items-start space-x-3">
                         <!-- Option Label (Desktop only) -->
                         <span 
-                            class="hidden lg:inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors"
-                            :class="isSelectedOption(option)
-                                ? (isThemeDark ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white')
-                                : (isThemeDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600')"
+                            :class="[
+                                'hidden lg:inline-flex items-center justify-center w-8 h-8 text-sm font-bold transition-colors',
+                                isMultiSelect ? 'rounded-md' : 'rounded-full',
+                                isSelectedOption(option)
+                                    ? (isThemeDark ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white')
+                                    : (isThemeDark ? 'bg-gray-500 text-gray-300' : 'bg-gray-100 text-gray-600')
+                            ]"
                         >
                             {{ bullets[i] }}
                         </span>
@@ -71,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -114,14 +117,7 @@ export default {
             return this.options.length || 999;
         },
         renderedQuestion() {
-             if (!this.question?.content) return '';
-             let html = marked(this.question.content);
-             // Force white color for bold/strong tags in dark mode
-             if (this.isThemeDark) {
-                 html = html.replace(/<strong>/g, '<strong style="color: white;">');
-                 html = html.replace(/<b>/g, '<b style="color: white;">');
-             }
-             return html;
+             return renderMarkdown(this.question?.content, this.isThemeDark);
         },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
@@ -160,7 +156,7 @@ export default {
                 } else if (isDisabled) {
                     return 'bg-gray-800/40 border border-gray-700 text-gray-500';
                 } else {
-                    return 'bg-gray-800/60 border border-gray-600 hover:bg-gray-800/80 hover:border-gray-500';
+                    return 'bg-gray-700 border border-gray-500 hover:bg-gray-700/80 hover:border-gray-400';
                 }
             } else {
                 if (isSelected) {
@@ -221,14 +217,7 @@ export default {
             }
         },
         renderMarkdown(text) {
-             if (!text) return '';
-             let html = marked(text);
-             // Force white color for bold/strong tags in dark mode
-             if (this.isThemeDark) {
-                 html = html.replace(/<strong>/g, '<strong style="color: inherit;">');
-                 html = html.replace(/<b>/g, '<b style="color: inherit;">');
-             }
-             return html;
+             return renderMarkdown(text, this.isThemeDark);
         }
     },
     watch: {

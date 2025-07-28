@@ -12,14 +12,11 @@
         <div class="mb-4">
             <h3 class="text-lg font-semibold text-center"
                 :class="isThemeDark ? 'text-white' : 'text-gray-900'">
-                <span v-if="!isTouchDevice">{{ question.content }}</span>
-                <span v-else>Match the type of intellectual property with its definition.</span>
+                <div v-html="renderedQuestion"></div>
             </h3>
             <p class="text-sm text-center mt-1"
                :class="isThemeDark ? 'text-gray-400' : 'text-gray-600'">
-                <span v-if="!isTouchDevice">Drag items from below and drop them on the matching pairs</span>
-                <span v-else>Tap the correct definition for each item</span>
-                 • {{ getMatchedCount() }} of {{ displayItems.length }} matched
+                {{ getMatchedCount() }} of {{ displayItems.length }} matched
             </p>
         </div>
         
@@ -38,7 +35,7 @@
                         <div :class="[
                             'flex-1 p-3 rounded-lg border text-sm',
                             isThemeDark 
-                                ? 'bg-gray-800 border-gray-700' 
+                                ? 'bg-gray-700 border-gray-500' 
                                 : 'bg-white border-gray-300'
                         ]">
                             <span :class="[
@@ -65,7 +62,7 @@
                                     ? (isThemeDark ? 'bg-blue-900/50 border-blue-500' : 'bg-blue-50 border-blue-400')
                                     : dragOverIndex === index
                                         ? (isThemeDark ? 'bg-blue-900/70 border-blue-400 drop-zone-highlight' : 'bg-blue-100 border-blue-500 drop-zone-highlight')
-                                        : (isThemeDark ? 'bg-gray-800 border-gray-600 hover:bg-gray-700' : 'bg-gray-100 border-gray-400 hover:bg-gray-200'),
+                                        : (isThemeDark ? 'bg-gray-700 border-gray-500 hover:bg-gray-700/80' : 'bg-gray-100 border-gray-400 hover:bg-gray-200'),
                             ]"
                             @dragover.prevent="dragOverIndex = index"
                             @dragleave="dragOverIndex = null"
@@ -109,7 +106,7 @@
                     <div :class="[
                         'p-3 rounded-lg border min-h-[60px]',
                         isThemeDark 
-                            ? 'bg-gray-800 border-gray-700' 
+                            ? 'bg-gray-700 border-gray-500' 
                             : 'bg-gray-50 border-gray-300',
                         dragOverBottom && 'ring-2 ring-blue-500'
                     ]"
@@ -124,7 +121,7 @@
                                 :class="[
                                     'px-3 py-2 rounded-md border cursor-move transition-all duration-200',
                                     isThemeDark 
-                                        ? 'bg-gray-700 border-gray-600 hover:bg-gray-600 hover:border-gray-500' 
+                                        ? 'bg-gray-700 border-gray-500 hover:bg-gray-700/80 hover:border-gray-400' 
                                         : 'bg-white border-gray-300 hover:bg-gray-100 hover:border-gray-400',
                                     'hover:scale-[1.02] active:scale-[0.98]',
                                     draggedItem === definition.id && (isDragging ? 'touch-dragging' : 'opacity-50')
@@ -257,7 +254,7 @@
                                     :class="[
                                         'p-2 rounded-xl border',
                                         isThemeDark 
-                                            ? 'bg-gray-700/50 border-gray-600' 
+                                            ? 'bg-gray-700 border-gray-500' 
                                             : 'bg-gray-50 border-gray-200'
                                     ]"
                                 >
@@ -362,7 +359,7 @@
                                         'w-full rounded-2xl text-left transition-all duration-200 border backdrop-blur-md',
                                         isTouchDevice && isLargeScreen ? 'p-5' : 'p-3',
                                         isThemeDark 
-                                            ? 'bg-gray-700/50 border-gray-600 hover:bg-gray-700/70 active:bg-gray-700/90' 
+                                            ? 'bg-gray-700 border-gray-500 hover:bg-gray-700/80 active:bg-gray-700/90' 
                                             : 'bg-gray-50/50 border-gray-200 hover:bg-gray-100/70 active:bg-gray-200/90',
                                         'transform hover:scale-[1.02] active:scale-[0.98]'
                                     ]"
@@ -438,6 +435,7 @@
 
 <script lang="ts">
 import { shuffle } from "lodash";
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -482,6 +480,9 @@ export default {
         };
     },
     computed: {
+        renderedQuestion() {
+            return renderMarkdown(this.question?.content, this.isThemeDark);
+        },
         isThemeDark() {
             if (this.isDark !== null) {
                 return this.isDark;

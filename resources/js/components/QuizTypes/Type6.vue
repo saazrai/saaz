@@ -15,20 +15,26 @@
             
             <div class="overflow-x-auto">
                 <div class="relative inline-block">
-                <!-- Image with white background outline -->
-                <img 
-                    v-if="imageUrl"
-                    :src="imageUrl" 
-                    class="block mx-auto"
-                    :style="{ 
-                        boxShadow: isThemeDark ? '0 0 0 8px white, 0 0 0 10px rgba(0,0,0,0.1)' : 'none',
+                <!-- Image wrapper with border -->
+                <div v-if="imageUrl" 
+                     class="inline-block mx-auto"
+                     :style="{ 
+                        border: '16px solid white',
                         borderRadius: '8px',
-                        width: 'auto',
-                        height: 'auto',
-                        maxWidth: 'none',
-                        maxHeight: 'none'
-                    }"
-                />
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                     }">
+                    <img 
+                        :src="imageUrl" 
+                        class="block"
+                        :style="{ 
+                            width: 'auto',
+                            height: 'auto',
+                            maxWidth: 'none',
+                            maxHeight: 'none',
+                            display: 'block'
+                        }"
+                    />
+                </div>
                 <div v-else :class="[
                     'flex items-center justify-center h-96 w-full rounded-lg',
                     isThemeDark ? 'bg-gray-700' : 'bg-gray-100'
@@ -45,8 +51,8 @@
                     :class="getInteractiveOptionClasses(option)"
                     :style="{
                         position: 'absolute',
-                        top: option.y + 'px',
-                        left: option.x + 'px',
+                        top: (option.y + 16) + 'px',
+                        left: (option.x + 16) + 'px',
                         marginLeft: '-35px',
                         marginTop: '-35px'
                     }"
@@ -63,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -82,8 +88,7 @@ export default {
     },
     computed: {
         renderedQuestion() {
-            if (!this.question?.content) return '';
-            return marked(this.question.content);
+            return renderMarkdown(this.question?.content, this.isThemeDark);
         },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods

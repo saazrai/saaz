@@ -3,18 +3,23 @@
         'min-h-screen flex flex-col',
         isDark ? 'bg-gray-900' : 'bg-gray-300'
     ]">
-        <!-- Mobile: Ultra-Minimal Header -->
-        <div class="lg:hidden relative" :class="[
-            'backdrop-blur-xl border-b px-3 py-1.5 flex items-center justify-between',
+        <!-- Unified Header for All Screens -->
+        <div :class="[
+            'backdrop-blur-xl border-b flex items-center justify-between',
+            'px-3 py-1.5 lg:px-6 lg:py-4',
             isDark 
                 ? 'bg-gray-800/90 border-gray-700' 
                 : 'bg-white/90 border-gray-200'
         ]">
             <!-- Left: Back Button + Question Progress -->
-            <div class="flex items-center space-x-3">
+            <div :class="[
+                'flex items-center',
+                'space-x-3 lg:space-x-4'
+            ]">
                 <!-- Back Button -->
                 <button @click="pauseTest" :class="[
-                    'p-1 rounded-lg transition-colors',
+                    'rounded-lg transition-colors',
+                    'p-1 lg:p-2',
                     isDark 
                         ? 'hover:bg-gray-700 text-gray-300' 
                         : 'hover:bg-gray-100 text-gray-600'
@@ -25,15 +30,16 @@
                 </button>
                 
                 <!-- Question Progress -->
-                <div class="flex items-center space-x-1">
+                <div class="flex items-center space-x-1 lg:space-x-2">
                     <span :class="[
-                        'text-base font-semibold',
+                        'font-semibold',
+                        'text-base lg:text-lg',
                         isDark ? 'text-white' : 'text-gray-900'
                     ]">
                         Q{{ currentQuestionNumber }}
                     </span>
                     <span :class="[
-                        'text-sm',
+                        'text-sm lg:hidden',
                         isDark ? 'text-gray-400' : 'text-gray-500'
                     ]">
                         <template v-if="totalQuestions">/{{ totalQuestions }}</template>
@@ -42,32 +48,47 @@
             </div>
             
             <!-- Center: Progress Bar -->
-            <div class="flex-1 max-w-xs mx-4">
-                <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div :class="[
+                'flex-1 mx-4 lg:mx-8',
+                'max-w-xs lg:max-w-md'
+            ]">
+                <div :class="[
+                    'bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden',
+                    'h-1 lg:h-2'
+                ]">
                     <div class="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out" 
                          :style="{ width: progress + '%' }">
                     </div>
                 </div>
             </div>
             
-            <!-- Right: Timer + Theme + Exit -->
-            <div class="flex items-center space-x-2">
-                <!-- Compact Timer -->
-                <div :class="[
-                    'px-2 py-0.5 rounded-lg backdrop-blur-sm border text-xs font-medium w-20 text-center whitespace-nowrap',
-                    isDark 
-                        ? 'bg-white/10 border-white/20 text-gray-300'
-                        : 'bg-black/10 border-black/20 text-gray-600'
-                ]">
-                    {{ formatTime(totalTime) }}
-                </div>
+            <!-- Right: Timer + Theme + Actions -->
+            <div :class="[
+                'flex items-center',
+                'space-x-2 lg:space-x-3'
+            ]">
+                <!-- Unified Responsive Timer -->
+                <QuizTimer 
+                    :isReview="false" 
+                    :isDark="isDark" 
+                    @question-tick="onQuestionTick" 
+                    ref="quizTimer"
+                    displayMode="container"
+                    widthClass="w-16 sm:w-28 lg:w-36"
+                    heightClass="h-10"
+                    fontSizeClass="text-sm"
+                    :showLabels="false"
+                    :showDivider="true"
+                    :totalOnly="false"
+                />
                 
                 <!-- Theme Toggle -->
                 <button @click="() => toggleTheme(false)" :class="[
-                    'p-1 rounded-lg transition-colors',
+                    'flex items-center justify-center rounded-lg transition-colors',
+                    'w-10 h-10 bg-gray-100 dark:bg-gray-700',
                     isDark 
-                        ? 'hover:bg-gray-700 text-yellow-500' 
-                        : 'hover:bg-gray-100 text-gray-600'
+                        ? 'hover:bg-gray-600 text-yellow-500' 
+                        : 'hover:bg-gray-200 text-gray-600'
                 ]">
                     <svg v-if="isDark" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -77,124 +98,21 @@
                     </svg>
                 </button>
                 
-                <!-- Exit Button -->
+                <!-- Pause Test Button -->
                 <button @click="pauseTest" :class="[
-                    'w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors'
+                    'rounded-lg font-medium transition-colors flex items-center',
+                    'portrait:p-2 portrait:justify-center',
+                    'landscape:px-3 landscape:py-2 landscape:gap-2',
+                    'lg:px-4 lg:py-2 lg:gap-2',
+                    isDark
+                        ? 'bg-red-900/20 hover:bg-red-900/30 text-red-400 border border-red-800'
+                        : 'bg-red-600/20 hover:bg-red-600/30 text-red-700 border border-red-700'
                 ]">
-                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6" />
                     </svg>
+                    <span class="text-sm portrait:hidden landscape:inline lg:inline">Pause Test</span>
                 </button>
-            </div>
-        </div>
-
-        <!-- Desktop: Enhanced Header -->
-        <div class="hidden lg:block">
-            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
-                <div class="px-6 py-4">
-                    <div class="flex items-center justify-between">
-                        <!-- Left: Title and Phase -->
-                        <div class="flex-1">
-                            <h1 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                Diagnostic Assessment
-                            </h1>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ currentPhaseData.name }}
-                                </span>
-                                <span class="text-gray-300 dark:text-gray-600">•</span>
-                                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                    {{ overallConfidence }}% confidence
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <!-- Right: Timer and Actions -->
-                        <div class="flex items-center gap-3">
-                            <!-- Timer - Subtle design -->
-                            <div class="flex items-center gap-4 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs text-gray-500 dark:text-gray-400">Question</span>
-                                    <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        {{ formatTime(questionTime) }}
-                                    </span>
-                                </div>
-                                <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xs text-gray-500 dark:text-gray-400">Total</span>
-                                    <span class="font-mono text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        {{ formatTime(totalTime) }}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <!-- Theme Toggle - iOS style -->
-                            <button
-                                @click="() => toggleTheme(false)"
-                                class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                :class="isDark ? 'bg-blue-600' : 'bg-gray-300'"
-                                aria-label="Toggle theme"
-                            >
-                                <span
-                                    class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
-                                :class="isDark ? 'translate-x-6' : 'translate-x-1'"
-                            >
-                                <SunIcon v-if="!isDark" class="h-5 w-5 p-1 text-yellow-500" />
-                                <MoonIcon v-else class="h-5 w-5 p-1 text-gray-700" />
-                            </span>
-                        </button>
-                        
-                        <!-- Pause Button - Red accent -->
-                        <button
-                            @click="pauseTest"
-                            class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                        >
-                            Pause Test
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-                <!-- Progress Bar - Integrated into header -->
-                <div class="px-6 pb-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <template v-if="totalQuestions">
-                                Question {{ currentQuestionNumber }} of {{ totalQuestions }}
-                            </template>
-                            <template v-else>
-                                Q{{ currentQuestionNumber }} • {{ diagnostic?.current_domain || 'Assessment' }}
-                            </template>
-                        </span>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">
-                            <template v-if="diagnostic?.phases_total">
-                                Phase {{ diagnostic.current_phase || 1 }} of {{ diagnostic.phases_total }} • {{ Math.round(progress) }}% Complete
-                            </template>
-                            <template v-else>
-                                {{ Math.round(progress) }}% Complete
-                            </template>
-                        </span>
-                    </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-                        <div 
-                            class="h-full bg-linear-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 ease-out"
-                            :style="{ width: `${progress}%` }"
-                        ></div>
-                    </div>
-                    
-                    <!-- Domain Pills - Clean tags -->
-                    <div v-if="currentMilestoneDomains.length > 0" class="flex items-center gap-2 mt-3 flex-wrap">
-                        <span 
-                            v-for="domain in currentMilestoneDomains" 
-                            :key="domain.id"
-                            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors"
-                            :class="getDomainStatusClasses(domain.id)"
-                        >
-                            <span class="w-1.5 h-1.5 rounded-full" :class="getDomainDotClasses(domain.id)"></span>
-                            {{ domain.name }}
-                        </span>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -237,12 +155,12 @@
                 ? 'bg-gray-800/90 border-gray-700'
                 : 'bg-white/90 border-gray-200'
         ]">
-            <div class="px-3 py-1.5">
+            <div class="px-3 py-2 lg:py-4">
                 <div class="max-w-md portrait:max-w-md landscape:max-w-xs mx-auto">
                     <button
                         @click="submitAnswer"
                         :disabled="!hasSelection || isSubmitting"
-                        class="w-full px-6 py-2 rounded-xl font-medium transition-all active:scale-95 shadow-lg"
+                        class="w-full px-6 py-2 lg:py-3 rounded-xl font-medium transition-all active:scale-95 shadow-lg"
                         :class="[
                             hasSelection && !isSubmitting
                                 ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-blue-500/25 cursor-pointer' 
@@ -335,6 +253,7 @@ import Type4 from '@/components/QuizTypes/Type4.vue'
 import Type5 from '@/components/QuizTypes/Type5.vue'
 import Type6 from '@/components/QuizTypes/Type6.vue'
 import Type7 from '@/components/QuizTypes/Type7.vue'
+import QuizTimer from '@/components/QuizTimer.vue'
 
 export default {
     components: {
@@ -352,7 +271,8 @@ export default {
         Type4,
         Type5,
         Type6,
-        Type7
+        Type7,
+        QuizTimer
     },
     props: {
         diagnostic: Object,
@@ -375,8 +295,6 @@ export default {
         const currentQuestionData = ref(props.question)
         const showPauseModal = ref(false)
         const showBloomHelp = ref(false)
-        const questionTime = ref(0)
-        const totalTime = ref(0)
         const isSubmitting = ref(false) // Prevent double submissions
         
         // Inactivity timer variables
@@ -395,19 +313,11 @@ export default {
             }
         }, { deep: true })
         
-        // Timer logic
-        let questionTimer = null
-        let totalTimer = null
+        // Timer tracking variables
+        const questionTime = ref(0)
+        const totalTime = ref(0)
         
         onMounted(() => {
-            // Start timers
-            questionTimer = setInterval(() => {
-                questionTime.value++
-            }, 1000)
-            
-            totalTimer = setInterval(() => {
-                totalTime.value++
-            }, 1000)
             
             // Start inactivity timer
             resetInactivityTimer()
@@ -420,9 +330,6 @@ export default {
         })
         
         onUnmounted(() => {
-            // Clean up timers
-            if (questionTimer) clearInterval(questionTimer)
-            if (totalTimer) clearInterval(totalTimer)
             
             // Clean up inactivity timer
             if (inactivityTimer) {
@@ -524,6 +431,11 @@ export default {
         })
         
         // Methods
+        const onQuestionTick = (questionSeconds, totalSeconds) => {
+            questionTime.value = questionSeconds
+            totalTime.value = totalSeconds
+        }
+        
         const formatTime = (seconds) => {
             const mins = Math.floor(seconds / 60)
             const secs = seconds % 60
@@ -746,6 +658,7 @@ export default {
             resumeFromPause,
             handleSelection,
             submitAnswer,
+            onQuestionTick,
             getDifficultyLabel,
             getDifficultyScore,
             getBloomLabel,

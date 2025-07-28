@@ -10,7 +10,7 @@
             <div class="px-2 py-8 lg:p-8">
                 <h4 class="text-lg font-bold mb-10 px-6"
                     :class="isThemeDark ? 'text-white' : 'text-gray-800'">
-                    <b>{{ question.content }}</b>
+                    <div v-html="renderedQuestion"></div>
                 </h4>
                 <div class="question-options grid grid-cols-1 sm:grid-cols-2 gap-4 px-6">
                     <div class="mb-8">
@@ -123,6 +123,7 @@
 </template>
 
 <script lang="ts">
+import { renderMarkdown } from '@/utils/markdown';
 export default {
     props: {
         question: {
@@ -139,6 +140,9 @@ export default {
         }
     },
     computed: {
+        renderedQuestion() {
+            return renderMarkdown(this.question?.content, this.isThemeDark);
+        },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDark !== null) {

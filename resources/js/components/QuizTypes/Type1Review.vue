@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -156,8 +156,7 @@ export default {
             }
         },
         renderedQuestion() {
-             if (!this.question?.content) return '';
-             return marked(this.question.content);
+            return renderMarkdown(this.question?.content, this.isThemeDark);
         },
         hasAnyJustifications() {
             return this.question?.justifications && 
@@ -195,7 +194,7 @@ export default {
                     : 'bg-red-50 border border-red-300';
             } else {
                 return this.isThemeDark 
-                    ? 'bg-gray-800/50 border border-gray-700' 
+                    ? 'bg-gray-700 border border-gray-500' 
                     : 'bg-gray-50 border border-gray-200';
             }
         },
@@ -255,8 +254,7 @@ export default {
             return selected.includes(option);
         },
         renderMarkdown(text) {
-             if (!text) return '';
-             return marked(text);
+            return renderMarkdown(text, this.isThemeDark);
         },
         shouldShowJustification(optionIndex) {
             // Use the global explanation visibility state

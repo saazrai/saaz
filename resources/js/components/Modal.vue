@@ -84,9 +84,10 @@ const maxWidthClass = computed(() => {
         ref="dialog"
     >
         <div
-            class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0 flex items-center justify-center min-h-screen"
+            class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0"
             scroll-region
         >
+            <!-- Backdrop overlay -->
             <Transition
                 v-if="showOverlay"
                 enter-active-class="ease-out duration-300"
@@ -98,31 +99,30 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
-                    class="fixed inset-0 transform transition-all"
+                    class="fixed inset-0 bg-black/30 backdrop-blur-sm"
                     @click="close"
-                >
-                    <div
-                        class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-50 dark:opacity-75"
-                    />
-                </div>
+                />
             </Transition>
 
-            <Transition
-                enter-active-class="ease-out duration-300"
-                enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enter-to-class="opacity-100 translate-y-0 sm:scale-100"
-                leave-active-class="ease-in duration-200"
-                leave-from-class="opacity-100 translate-y-0 sm:scale-100"
-                leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-                <div
-                    v-show="show"
-                    class="mb-6 transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-xl transition-all sm:mx-auto sm:w-full"
-                    :class="maxWidthClass"
+            <!-- Modal content -->
+            <div class="relative z-10 flex min-h-full items-center justify-center p-4">
+                <Transition
+                    enter-active-class="ease-out duration-300"
+                    enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    enter-to-class="opacity-100 translate-y-0 sm:scale-100"
+                    leave-active-class="ease-in duration-200"
+                    leave-from-class="opacity-100 translate-y-0 sm:scale-100"
+                    leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                    <slot v-if="showSlot" />
-                </div>
-            </Transition>
+                    <div
+                        v-show="show"
+                        class="relative w-full transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-xl transition-all"
+                        :class="maxWidthClass"
+                    >
+                        <slot v-if="showSlot" />
+                    </div>
+                </Transition>
+            </div>
         </div>
     </dialog>
 </template>

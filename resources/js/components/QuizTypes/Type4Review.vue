@@ -2,7 +2,7 @@
     <div :class="[
             'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl overflow-hidden',
             isThemeDark 
-                ? 'bg-gray-800 border-gray-700' 
+                ? 'bg-gray-700 border-gray-500' 
                 : 'bg-white border-gray-200'
          ]">
         <!-- Question Section -->
@@ -12,7 +12,7 @@
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'"
-                v-html="question.content"
+                v-html="renderedQuestion"
             ></div>
                 
             <!-- Your Answer Order -->
@@ -157,6 +157,7 @@
 </template>
 
 <script lang="ts">
+import { renderMarkdown } from '@/utils/markdown';
 export default {
     props: {
         question: {
@@ -182,6 +183,9 @@ export default {
         };
     },
     computed: {
+        renderedQuestion() {
+            return renderMarkdown(this.question?.content, this.isThemeDark);
+        },
         isThemeDark(): boolean {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDark !== null) {

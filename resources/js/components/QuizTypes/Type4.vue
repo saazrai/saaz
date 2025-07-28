@@ -10,7 +10,7 @@
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-slate-900'"
-                v-html="question.content">
+                v-html="renderedQuestion">
             </div>
             
             <div class="flex flex-col sm:flex-row gap-6">
@@ -37,7 +37,7 @@
                                 :class="[
                                     'text-base font-medium rounded-lg px-4 py-3 transition-all duration-200 hover:scale-[1.02] cursor-move border',
                                     isThemeDark 
-                                        ? 'bg-gray-700/50 border-gray-600 text-gray-200 hover:bg-gray-700/70 hover:border-blue-500' 
+                                        ? 'bg-gray-700 border-gray-500 text-gray-200 hover:bg-gray-700/80 hover:border-blue-500' 
                                         : 'bg-gray-200 border-gray-400 text-gray-900 hover:bg-blue-50 hover:border-blue-500 shadow-lg hover:shadow-blue-500/20'
                                 ]"
                             >
@@ -108,6 +108,7 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -133,6 +134,9 @@ export default {
         draggable,
     },
     computed: {
+        renderedQuestion() {
+            return renderMarkdown(this.question?.content, this.isThemeDark);
+        },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
             if (this.isDark !== null) {

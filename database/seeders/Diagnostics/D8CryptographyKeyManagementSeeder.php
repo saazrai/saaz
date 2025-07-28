@@ -1426,7 +1426,13 @@ How do Algorithm A and Algorithm B primarily differ in their security strength a
             [
                 'topic' => 'Digital Signatures & PKI',
                 'subtopic' => 'Digital Signatures & PKI',
-                'question' => 'Consider two situations involving digital certificates:\n\nSituation A: A server administrator receives an alert that a server certificate will expire in 30 days.\n\nSituation B: A private key for an employee\'s code signing certificate is accidentally exposed on a public code repository.\n\nWhat are the appropriate, and distinctly different, certificate lifecycle actions required for Situation A and Situation B, respectively?',
+                'question' => 'Consider two situations involving digital certificates:
+
+Situation A: A server administrator receives an alert that a server certificate will expire in 30 days.
+
+Situation B: A private key for an employee\'s code signing certificate is accidentally exposed on a public code repository.
+
+What are the appropriate, and distinctly different, certificate lifecycle actions required for Situation A and Situation B, respectively?',
                 'options' => [
                     'Situation A requires revocation, Situation B requires renewal.',
                     'Situation A requires renewal, Situation B requires revocation.',

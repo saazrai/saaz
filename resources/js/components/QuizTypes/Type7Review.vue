@@ -2,7 +2,7 @@
     <div :class="[
             'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
             isThemeDark 
-                ? 'bg-gray-800 border-gray-700' 
+                ? 'bg-gray-700 border-gray-500' 
                 : 'bg-white border-gray-200'
          ]">
         <!-- Question Display -->
@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -190,10 +190,9 @@ export default {
             if (this.question.content) {
                 // Split content to separate the question from terminal output
                 const contentParts = this.question.content.split('```');
-                if (contentParts.length > 0) {
-                    return marked(contentParts[0]);
-                }
-                return marked(this.question.content);
+                const contentToProcess = contentParts.length > 0 ? contentParts[0] : this.question.content;
+                
+                return renderMarkdown(contentToProcess, this.isThemeDark);
             }
             return '';
         },
@@ -285,7 +284,7 @@ export default {
             return selected.includes(option);
         },
         renderMarkdown(text) {
-            return text ? marked(text) : '';
+            return renderMarkdown(text, this.isThemeDark);
         },
         getOptionClasses(option, i) {
             if (this.isCorrectOption(i)) {
@@ -298,7 +297,7 @@ export default {
                     : 'border bg-red-100 border-red-500';
             } else {
                 return this.isThemeDark 
-                    ? 'border border-gray-700 hover:bg-gray-700/20' 
+                    ? 'border border-gray-500 hover:bg-gray-700/20' 
                     : 'border border-gray-200 hover:bg-gray-50';
             }
         },
@@ -314,7 +313,7 @@ export default {
                     : 'bg-red-50 border border-red-200';
             } else {
                 return this.isThemeDark 
-                    ? 'bg-gray-800/50 border border-gray-700' 
+                    ? 'bg-gray-700 border border-gray-500' 
                     : 'bg-gray-50 border border-gray-200';
             }
         },

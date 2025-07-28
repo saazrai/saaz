@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -73,14 +73,7 @@ export default {
     },
     computed: {
         renderedQuestion() {
-             if (!this.question?.content) return '';
-             let html = marked(this.question.content);
-             // Force white color for bold/strong tags in dark mode
-             if (this.isThemeDark) {
-                 html = html.replace(/<strong>/g, '<strong style="color: white;">');
-                 html = html.replace(/<b>/g, '<b style="color: white;">');
-             }
-             return html;
+             return renderMarkdown(this.question?.content, this.isThemeDark);
         },
         isThemeDark() {
             // Use prop if provided, otherwise fallback to detection methods
@@ -102,7 +95,7 @@ export default {
                 if (isSelected) {
                     return 'bg-blue-600/20 border-2 border-blue-400 shadow-xl shadow-blue-400/30 ring-1 ring-blue-300/50';
                 } else {
-                    return 'bg-gray-800/60 border border-gray-600 hover:bg-gray-800/80 hover:border-gray-500';
+                    return 'bg-gray-700 border border-gray-500 hover:bg-gray-700/80 hover:border-gray-400';
                 }
             } else {
                 if (isSelected) {

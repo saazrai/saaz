@@ -73,43 +73,46 @@
 
         <!-- Options Section -->
         <div class="mt-6">
-            <ol class="space-y-2">
-                <li
+            <div class="pb-2 space-y-2">
+                <div
                     v-for="(option, i) in options"
                     :key="i"
-                    class="p-4 rounded-md flex items-center transition-all duration-200"
-                    :class="getOptionClasses(option)"
+                    class="relative p-4 rounded-xl transition-all duration-200 ease-in-out active:scale-98 cursor-pointer hover:shadow-lg"
+                    :class="getCardClasses(option)"
+                    @click="selectOption(option)"
+                    role="button"
+                    :aria-pressed="isSelectedOption(option)"
                 >
-                    <input
-                        type="radio"
-                        name="option"
-                        :id="'option' + i"
-                        :value="option"
-                        v-model="selectedOption"
-                        class="form-check-input w-5 h-5 mr-3 rounded-full"
-                        :class="getRadioClasses(option)"
-                    />
-                    <label :for="'option' + i" class="flex-1 cursor-pointer">
-                        <div class="flex lg:space-x-2">
-                            <span class="hidden lg:inline w-4 font-semibold" :class="isThemeDark ? 'text-white' : 'text-black'">{{ bullets[i] }}.</span>
-                            <span class="flex-1" v-html="renderMarkdown(option)"></span>
-                        </div>
-                    </label>
-                    <span
-                        v-if="isSelectedOption(option)"
-                        class="ml-auto font-bold text-lg"
-                        :class="isThemeDark 
-                            ? 'text-blue-300' 
-                            : 'text-blue-700'"
-                        >✓</span>
-                </li>
-            </ol>
+                    <!-- Option Content -->
+                    <div class="flex items-start space-x-3">
+                        <!-- Option Label (Desktop only) -->
+                        <span 
+                            class="hidden lg:inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors"
+                            :class="isSelectedOption(option)
+                                ? (isThemeDark ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white')
+                                : (isThemeDark ? 'bg-gray-500 text-gray-300' : 'bg-gray-100 text-gray-600')"
+                        >
+                            {{ bullets[i] }}
+                        </span>
+                        
+                        <!-- Option Text -->
+                        <div 
+                            class="flex-1 text-base lg:text-lg leading-relaxed"
+                            :class="[
+                                isSelectedOption(option) ? 'font-semibold' : 'font-medium',
+                                isThemeDark ? 'text-white' : 'text-gray-900'
+                            ]"
+                            v-html="renderMarkdown(option)"
+                        ></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 export default {
     props: {
@@ -154,10 +157,9 @@ export default {
             if (this.question.content) {
                 // Split content to separate the question from terminal output
                 const contentParts = this.question.content.split('```');
-                if (contentParts.length > 0) {
-                    return marked(contentParts[0]);
-                }
-                return marked(this.question.content);
+                const contentToProcess = contentParts.length > 0 ? contentParts[0] : this.question.content;
+                
+                return renderMarkdown(contentToProcess, this.isThemeDark);
             }
             return '';
         },
@@ -397,33 +399,23 @@ export default {
 
 
         renderMarkdown(text) {
-            return text ? marked(text) : '';
+            return renderMarkdown(text, this.isThemeDark);
         },
 
-        getOptionClasses(option) {
+        getCardClasses(option) {
             if (this.isSelectedOption(option)) {
                 return this.isThemeDark 
-                    ? 'bg-blue-900/40 text-white font-medium border border-blue-400 shadow-lg shadow-blue-400/20' 
-                    : 'bg-blue-50 text-gray-900 font-medium border border-blue-500 shadow-md';
+                    ? 'bg-blue-900/30 border-2 border-blue-500 shadow-lg shadow-blue-500/20' 
+                    : 'bg-blue-50 border-2 border-blue-500 shadow-lg shadow-blue-500/10';
             } else {
                 return this.isThemeDark 
-                    ? 'bg-gray-700/40 text-gray-300 border border-gray-600 hover:bg-gray-700/60 hover:border-gray-500 cursor-pointer' 
-                    : 'bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 cursor-pointer shadow-xs';
+                    ? 'bg-gray-700 border border-gray-500 hover:bg-gray-700/80 hover:border-gray-400' 
+                    : 'bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm';
             }
         },
 
-        getRadioClasses(option) {
-            const isSelected = this.isSelectedOption(option);
-            
-            if (this.isThemeDark) {
-                return isSelected
-                    ? 'accent-blue-500 border-blue-400'
-                    : 'accent-gray-600 border-gray-500';
-            } else {
-                return isSelected
-                    ? 'accent-blue-500 border-blue-500'
-                    : 'accent-gray-300 border-gray-300';
-            }
+        selectOption(option) {
+            this.selectedOption = option;
         }
     },
 
