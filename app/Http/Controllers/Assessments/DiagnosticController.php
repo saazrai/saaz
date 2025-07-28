@@ -542,9 +542,21 @@ class DiagnosticController extends Controller
         // Step 6: Determine correct/incorrect
         $userAnswer = $validated['selected_options'];
 
-        // Flatten nested arrays from frontend (e.g., [["Executive support"]] -> ["Executive support"])
-        if (is_array($userAnswer) && count($userAnswer) === 1 && is_array($userAnswer[0])) {
+        // Light debug logging for Type7 questions
+        if ($diagnosticItem->type_id === 7) {
+            \Log::info('Type7 Answer Processing', [
+                'diagnostic_item_id' => $diagnosticItem->id,
+                'raw_input' => $validated['selected_options'],
+            ]);
+        }
+
+        // Flatten deeply nested arrays from frontend (handles multiple levels of nesting)
+        // Examples: [["value"]] -> ["value"], [[["value"]]] -> ["value"], etc.
+        $maxDepth = 10; // Prevent infinite loops
+        $currentDepth = 0;
+        while (is_array($userAnswer) && count($userAnswer) === 1 && is_array($userAnswer[0]) && $currentDepth < $maxDepth) {
             $userAnswer = $userAnswer[0];
+            $currentDepth++;
         }
 
         $correctAnswers = $diagnosticItem->correct_options;
@@ -555,6 +567,15 @@ class DiagnosticController extends Controller
         }
         if (! is_array($correctAnswers)) {
             $correctAnswers = [$correctAnswers];
+        }
+
+        // Log final processed data for Type7 questions
+        if ($diagnosticItem->type_id === 7) {
+            \Log::info('Type7 Final Processing', [
+                'diagnostic_item_id' => $diagnosticItem->id,
+                'processed_answer' => $userAnswer,
+                'correct_options' => $correctAnswers,
+            ]);
         }
 
         // Check if answer is correct based on question type
@@ -1557,12 +1578,33 @@ class DiagnosticController extends Controller
     {
         $typeId = $diagnosticItem->type_id;
 
+        // Log Type7 answer checking
+        if ($typeId === 7) {
+            \Log::info('Type7 Answer Check', [
+                'diagnostic_item_id' => $diagnosticItem->id,
+                'user_answer' => $userAnswer,
+                'correct_answers' => $correctAnswers,
+            ]);
+        }
+
         switch ($typeId) {
             case 1: // Multiple Choice (Single)
             case 2: // True/False
             case 7: // Essay/Short Answer (Terminal-based)
                 // For single-selection questions, check if the user's selection matches any correct option
-                return !empty(array_intersect($userAnswer, $correctAnswers));
+                $intersection = array_intersect($userAnswer, $correctAnswers);
+                $result = !empty($intersection);
+                
+                // Log Type7 result
+                if ($typeId === 7) {
+                    \Log::info('Type7 Result', [
+                        'diagnostic_item_id' => $diagnosticItem->id,
+                        'intersection' => $intersection,
+                        'is_correct' => $result,
+                    ]);
+                }
+                
+                return $result;
 
             case 3: // Multiple Choice (Multiple)
             case 4: // Matching

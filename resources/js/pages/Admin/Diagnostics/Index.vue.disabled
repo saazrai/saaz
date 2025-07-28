@@ -1,0 +1,444 @@
+<template>
+  <AdminLayout>
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="[
+            'text-3xl font-bold',
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          ]">Diagnostic Tests</h1>
+          <p :class="[
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          ]">Monitor and manage diagnostic test results</p>
+        </div>
+      </div>
+
+    <!-- Filters -->
+    <div :class="[
+      'rounded-lg shadow-sm p-6 mb-6',
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    ]">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- User Filter -->
+        <div>
+          <Select v-model="selectedUser" @update:model-value="onUserChange">
+            <SelectTrigger :class="[
+              'w-full',
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="Select a user" />
+            </SelectTrigger>
+            <SelectContent :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+            ]">
+              <SelectItem value="all" :class="[
+                isDarkMode ? 'text-white hover:bg-gray-600' : 'text-gray-900 hover:bg-gray-100'
+              ]">All Users</SelectItem>
+              <SelectItem 
+                v-for="user in users" 
+                :key="user.id" 
+                :value="user.id.toString()"
+                :class="[
+                  isDarkMode ? 'text-white hover:bg-gray-600' : 'text-gray-900 hover:bg-gray-100'
+                ]"
+              >
+                {{ user.name }} ({{ user.email }})
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+          <Select v-model="selectedStatus" @update:model-value="onStatusChange">
+            <SelectTrigger :class="[
+              'w-full',
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-300'
+            ]">
+              <SelectItem value="all" :class="[
+                isDarkMode ? 'text-white hover:bg-gray-600' : 'text-gray-900 hover:bg-gray-100'
+              ]">All Statuses</SelectItem>
+              <SelectItem 
+                v-for="(label, value) in statuses" 
+                :key="value" 
+                :value="value"
+                :class="[
+                  isDarkMode ? 'text-white hover:bg-gray-600' : 'text-gray-900 hover:bg-gray-100'
+                ]"
+              >
+                {{ label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Table -->
+    <div :class="[
+      'rounded-lg shadow-sm',
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    ]">
+      <table class="min-w-full">
+        <thead>
+          <tr :class="[
+            'border-b',
+            isDarkMode ? 'border-gray-700' : 'border-gray-200'
+          ]">
+            <th :class="[
+              'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              User
+            </th>
+            <th :class="[
+              'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Status
+            </th>
+            <th :class="[
+              'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Progress
+            </th>
+            <th :class="[
+              'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Score
+            </th>
+            <th :class="[
+              'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Duration
+            </th>
+            <th :class="[
+              'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Started
+            </th>
+            <th :class="[
+              'px-8 py-4 text-right text-sm font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="!diagnostics.data || diagnostics.data.length === 0">
+            <td colspan="7" :class="[
+              'px-8 py-12 text-center',
+              isDarkMode ? 'text-gray-400' : 'text-gray-500'
+            ]">
+              No diagnostic tests found.
+            </td>
+          </tr>
+          <tr 
+            v-for="diagnostic in diagnostics.data" 
+            :key="diagnostic.id" 
+            :class="[
+              'border-b transition-colors',
+              isDarkMode 
+                ? 'border-gray-700 hover:bg-gray-700' 
+                : 'border-gray-100 hover:bg-gray-50'
+            ]"
+          >
+            <td class="px-8 py-6 cursor-pointer" @click="showDiagnostic(diagnostic)">
+              <div :class="[
+                'font-medium',
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              ]">{{ diagnostic.user?.name || 'Unknown User' }}</div>
+              <div :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+              ]">{{ diagnostic.user?.email || 'No email' }}</div>
+            </td>
+            <td class="px-8 py-6 cursor-pointer" @click="showDiagnostic(diagnostic)">
+              <span 
+                :class="[
+                  'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                  diagnostic.status === 'completed' && (isDarkMode 
+                    ? 'bg-green-900/50 text-green-300 border border-green-700' 
+                    : 'bg-green-100 text-green-800'),
+                  diagnostic.status === 'in_progress' && (isDarkMode 
+                    ? 'bg-blue-900/50 text-blue-300 border border-blue-700' 
+                    : 'bg-blue-100 text-blue-800'),
+                  diagnostic.status === 'paused' && (isDarkMode 
+                    ? 'bg-yellow-900/50 text-yellow-300 border border-yellow-700' 
+                    : 'bg-yellow-100 text-yellow-800')
+                ]"
+              >
+                {{ formatStatus(diagnostic.status) }}
+              </span>
+            </td>
+            <td class="px-8 py-6 cursor-pointer" @click="showDiagnostic(diagnostic)">
+              <div class="flex items-center">
+                <div :class="[
+                  'w-full rounded-full h-2 mr-2',
+                  isDarkMode ? 'bg-gray-600' : 'bg-gray-200'
+                ]">
+                  <div 
+                    class="bg-blue-600 h-2 rounded-full" 
+                    :style="{ width: `${getProgress(diagnostic)}%` }"
+                  ></div>
+                </div>
+                <span :class="[
+                  'text-sm',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                ]">{{ getProgress(diagnostic) }}%</span>
+              </div>
+              <div :class="[
+                'text-xs mt-1',
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+              ]">
+                {{ diagnostic.responses?.length || 0 }} / {{ diagnostic.total_questions }}
+              </div>
+            </td>
+            <td class="px-8 py-6 cursor-pointer" @click="showDiagnostic(diagnostic)">
+              <div :class="[
+                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+              ]">
+                {{ diagnostic.score ? `${diagnostic.score}%` : '-' }}
+              </div>
+            </td>
+            <td class="px-8 py-6 cursor-pointer" @click="showDiagnostic(diagnostic)">
+              <div :class="[
+                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+              ]">{{ formatDuration(diagnostic.total_duration) }}</div>
+            </td>
+            <td class="px-8 py-6 cursor-pointer" @click="showDiagnostic(diagnostic)">
+              <div :class="[
+                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+              ]">{{ formatDate(diagnostic.created_at) }}</div>
+            </td>
+            <td class="px-8 py-6 text-right">
+              <div class="flex justify-end space-x-2">
+                <button
+                  @click="showDiagnostic(diagnostic)"
+                  :class="[
+                    'text-sm font-medium transition-colors',
+                    isDarkMode 
+                      ? 'text-blue-400 hover:text-blue-300' 
+                      : 'text-blue-600 hover:text-blue-900'
+                  ]"
+                >
+                  View Report
+                </button>
+                <button
+                  @click="destroy(diagnostic.id)"
+                  :class="[
+                    'text-sm font-medium transition-colors',
+                    isDarkMode 
+                      ? 'text-red-400 hover:text-red-300' 
+                      : 'text-red-600 hover:text-red-900'
+                  ]"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Pagination -->
+      <div v-if="diagnostics.links && diagnostics.links.length > 0" :class="[
+        'px-8 py-4 border-t',
+        isDarkMode ? 'border-gray-700' : 'border-gray-200'
+      ]">
+        <div class="flex items-center justify-between">
+          <div :class="[
+            'text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          ]">
+            Showing {{ diagnostics.from || 0 }} to {{ diagnostics.to || 0 }} of {{ diagnostics.total || 0 }} results
+          </div>
+          <div class="flex space-x-1">
+            <template v-for="link in diagnostics.links" :key="link.label">
+              <Link
+                v-if="link.url"
+                :href="link.url"
+                :class="[
+                  'px-3 py-2 text-sm border rounded-md transition-colors',
+                  link.active
+                    ? (isDarkMode ? 'bg-blue-600 text-white border-blue-600' : 'bg-blue-500 text-white border-blue-500')
+                    : (isDarkMode 
+                        ? 'text-gray-300 hover:text-white border-gray-600 hover:bg-gray-600' 
+                        : 'text-gray-700 hover:text-gray-900 border-gray-300 hover:bg-gray-50'
+                      )
+                ]"
+                v-html="link.label"
+              />
+              <span
+                v-else
+                :class="[
+                  'px-3 py-2 text-sm border rounded-md cursor-not-allowed',
+                  isDarkMode 
+                    ? 'border-gray-600 text-gray-500' 
+                    : 'border-gray-300 text-gray-500'
+                ]"
+                v-html="link.label"
+              />
+            </template>
+          </div>
+        </div>
+      </div>      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/shadcn/ui/select'
+
+// Dark mode state
+const isDarkMode = computed(() => {
+  return localStorage.getItem('adminDarkMode') === 'true'
+})
+
+// Listen for dark mode changes
+onMounted(() => {
+  // Force reactivity update when storage changes
+  const handleStorageChange = (e) => {
+    if (e.key === 'adminDarkMode') {
+      // Trigger component re-render
+      window.dispatchEvent(new Event('adminDarkModeChanged'))
+    }
+  }
+  
+  const handleCustomDarkModeChange = () => {
+    // Force computed property to re-evaluate
+    window.dispatchEvent(new Event('storage'))
+  }
+  
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+  
+  // Cleanup
+  onUnmounted(() => {
+    window.removeEventListener('storage', handleStorageChange)
+    window.removeEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+  })
+})
+
+const props = defineProps({ 
+  diagnostics: {
+    type: Object,
+    required: true
+  },
+  users: {
+    type: Array,
+    default: () => []
+  },
+  statuses: {
+    type: Object,
+    default: () => ({})
+  },
+  filters: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
+// Filter state
+const selectedUser = ref(props.filters.user_id || 'all')
+const selectedStatus = ref(props.filters.status || 'all')
+
+// Handle filter changes
+const onUserChange = (userId) => {
+  selectedUser.value = userId
+  applyFilters()
+}
+
+const onStatusChange = (status) => {
+  selectedStatus.value = status
+  applyFilters()
+}
+
+// Apply filters by navigating with query parameters
+const applyFilters = () => {
+  const params = {}
+  
+  if (selectedUser.value && selectedUser.value !== 'all') {
+    params.user_id = selectedUser.value
+  }
+  
+  if (selectedStatus.value && selectedStatus.value !== 'all') {
+    params.status = selectedStatus.value
+  }
+  
+  router.get(route('admin.diagnostics.index'), params, {
+    preserveState: true,
+    preserveScroll: true,
+  })
+}
+
+function showDiagnostic(diagnostic) {
+  router.visit(route('admin.diagnostics.show', diagnostic.id))
+}
+
+function destroy(id) {
+  if (confirm('Are you sure you want to delete this diagnostic test?')) {
+    router.delete(route('admin.diagnostics.destroy', id))
+  }
+}
+
+function formatStatus(status) {
+  const statusMap = {
+    'in_progress': 'In Progress',
+    'paused': 'Paused',
+    'completed': 'Completed'
+  }
+  return statusMap[status] || status
+}
+
+function getProgress(diagnostic) {
+  if (!diagnostic.total_questions || diagnostic.total_questions === 0) return 0
+  const answered = diagnostic.responses?.length || 0
+  return Math.round((answered / diagnostic.total_questions) * 100)
+}
+
+function formatDuration(seconds) {
+  if (!seconds) return '-'
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = seconds % 60
+  
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${secs}s`
+  } else if (minutes > 0) {
+    return `${minutes}m ${secs}s`
+  } else {
+    return `${secs}s`
+  }
+}
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+</script>

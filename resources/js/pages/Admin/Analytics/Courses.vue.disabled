@@ -1,0 +1,92 @@
+<template>
+    <AdminLayout>
+        <Head title="Course Analytics" />
+        
+        <div :class="[isDarkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900', 'p-6']">
+            <div class="mb-6">
+                <h1 :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-2xl font-semibold']">Course Analytics</h1>
+                <p :class="[isDarkMode ? 'text-gray-400' : 'text-gray-600']">Course performance and engagement metrics</p>
+            </div>
+
+            <!-- Course Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div :class="[isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200', 'p-6 rounded-lg shadow border']">
+                    <h3 :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500', 'text-sm font-medium']">Total Courses</h3>
+                    <p :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-2xl font-bold mt-2']">{{ data.totalCourses || 0 }}</p>
+                </div>
+                <div :class="[isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200', 'p-6 rounded-lg shadow border']">
+                    <h3 :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500', 'text-sm font-medium']">Active Enrollments</h3>
+                    <p :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-2xl font-bold mt-2']">{{ data.activeEnrollments || 0 }}</p>
+                </div>
+                <div :class="[isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200', 'p-6 rounded-lg shadow border']">
+                    <h3 :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500', 'text-sm font-medium']">Avg. Completion Rate</h3>
+                    <p :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-2xl font-bold mt-2']">{{ data.avgCompletionRate || 0 }}%</p>
+                </div>
+                <div :class="[isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200', 'p-6 rounded-lg shadow border']">
+                    <h3 :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500', 'text-sm font-medium']">Total Lessons</h3>
+                    <p :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-2xl font-bold mt-2']">{{ data.totalLessons || 0 }}</p>
+                </div>
+            </div>
+
+            <!-- Course Performance Table -->
+            <div :class="[isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200', 'rounded-lg shadow border']">
+                <div :class="[isDarkMode ? 'border-gray-700' : 'border-gray-200', 'px-6 py-4 border-b']">
+                    <h3 :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-lg font-medium']">Course Performance</h3>
+                </div>
+                <div class="p-6">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500', 'text-left text-sm font-medium']">
+                                <th class="pb-3">Course</th>
+                                <th class="pb-3">Enrolled</th>
+                                <th class="pb-3">Active</th>
+                                <th class="pb-3">Completion Rate</th>
+                                <th class="pb-3">Avg. Score</th>
+                            </tr>
+                        </thead>
+                        <tbody :class="[isDarkMode ? 'divide-gray-700' : 'divide-gray-200', 'divide-y']">
+                            <tr v-for="course in data.coursePerformance || []" :key="course.id">
+                                <td :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'py-3 font-medium']">{{ course.name }}</td>
+                                <td :class="[isDarkMode ? 'text-gray-300' : 'text-gray-700', 'py-3']">{{ course.enrolled_count }}</td>
+                                <td :class="[isDarkMode ? 'text-gray-300' : 'text-gray-700', 'py-3']">{{ course.active_count }}</td>
+                                <td class="py-3">
+                                    <div class="flex items-center">
+                                        <div :class="[isDarkMode ? 'bg-gray-600' : 'bg-gray-200', 'w-24 rounded-full h-2 mr-2']">
+                                            <div class="bg-blue-600 h-2 rounded-full" 
+                                                 :style="`width: ${course.completion_rate}%`"></div>
+                                        </div>
+                                        <span :class="[isDarkMode ? 'text-gray-300' : 'text-gray-700', 'text-sm']">{{ course.completion_rate }}%</span>
+                                    </div>
+                                </td>
+                                <td :class="[isDarkMode ? 'text-gray-300' : 'text-gray-700', 'py-3']">{{ course.avg_score }}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Course Engagement Chart -->
+            <div :class="[isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200', 'mt-6 rounded-lg shadow p-6 border']">
+                <h3 :class="[isDarkMode ? 'text-gray-100' : 'text-gray-900', 'text-lg font-medium mb-4']">Course Engagement Trends</h3>
+                <div :class="[isDarkMode ? 'bg-gray-700' : 'bg-gray-100', 'h-64 rounded flex items-center justify-center']">
+                    <span :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500']">Course engagement chart placeholder</span>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { Head } from '@inertiajs/vue3'
+import { ref, onMounted, onUnmounted } from 'vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { useTheme } from '@/Composables/useTheme'
+
+const props = defineProps({
+    data: Object,
+    dateRange: String
+})
+
+// Use centralized theme system
+const { isDarkMode } = useTheme()
+</script>

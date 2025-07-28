@@ -1,0 +1,219 @@
+<template>
+    <AdminLayout title="Diagnostic Modes">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Diagnostic Modes</h1>
+                <div class="flex space-x-3">
+                    <button
+                        @click="validateAllModes"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition-colors"
+                    >
+                        🔍 Validate All
+                    </button>
+                    <Link 
+                        :href="typeof route !== 'undefined' ? route('admin.diagnostic-modes.create') : '/admin/diagnostic-modes/create'"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors"
+                    >
+                        <PlusIcon class="w-5 h-5 mr-2" />
+                        Add Mode
+                    </Link>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <li 
+                        v-for="mode in modes" 
+                        :key="mode.id" 
+                        @click="$event.target.tagName !== 'BUTTON' && !$event.target.closest('a') && router.visit(typeof route !== 'undefined' ? route('admin.diagnostic-modes.show', mode.id) : `/admin/diagnostic-modes/${mode.id}`)"
+                        class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                    >
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div 
+                                    class="w-3 h-3 rounded-full mr-3" 
+                                    :class="`bg-${mode.color_scheme}-500`"
+                                ></div>
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                        {{ mode.name }}
+                                        <span v-if="mode.badge_text" class="ml-2 px-2 py-1 text-xs rounded-full text-white" :class="`bg-${mode.color_scheme}-600`">
+                                            {{ mode.badge_text }}
+                                        </span>
+                                    </h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ mode.question_count }} questions • {{ mode.duration_minutes }} minutes • 
+                                        {{ mode.cooldown_hours || 0 }}h cooldown
+                                        <span v-if="mode.is_dev_only" class="ml-2 text-orange-600">(Dev Only)</span>
+                                    </p>
+                                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-600 dark:text-gray-400">
+                                        <span v-if="mode.domain_config">
+                                            📊 {{ mode.domain_config.total_domains }} domains × {{ mode.domain_config.questions_per_domain }}
+                                        </span>
+                                        <span v-if="mode.question_config">
+                                            🎯 Start: Bloom {{ mode.question_config.starting_bloom_level }}
+                                        </span>
+                                        <span v-if="mode.algorithm_config">
+                                            ⚙️ {{ mode.algorithm_config.type }}
+                                        </span>
+                                        <span v-if="mode.validation_errors && mode.validation_errors.length > 0" class="text-red-600">
+                                            ❌ {{ mode.validation_errors.length }} errors
+                                        </span>
+                                        <span v-else class="text-green-600">
+                                            ✅ Valid
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2">
+                                <button
+                                    @click.stop="validateMode(mode)"
+                                    class="p-2 text-sm rounded-lg transition-colors bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300"
+                                    title="Validate Configuration"
+                                >
+                                    🔍
+                                </button>
+                                
+                                <Link 
+                                    :href="typeof route !== 'undefined' ? route('admin.diagnostic-modes.clone', mode.id) : `/admin/diagnostic-modes/${mode.id}/clone`"
+                                    class="p-2 text-sm rounded-lg transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900 dark:text-purple-300"
+                                    title="Clone Mode"
+                                >
+                                    📋
+                                </Link>
+                                
+                                <button
+                                    @click.stop="exportMode(mode)"
+                                    class="p-2 text-sm rounded-lg transition-colors bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300"
+                                    title="Export Configuration"
+                                >
+                                    📥
+                                </button>
+                                
+                                <button
+                                    @click.stop="toggleActive(mode)"
+                                    class="px-3 py-1 text-sm rounded-lg transition-colors"
+                                    :class="mode.is_active 
+                                        ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900 dark:text-green-300' 
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'"
+                                >
+                                    {{ mode.is_active ? 'Active' : 'Inactive' }}
+                                </button>
+                                
+                                <Link 
+                                    :href="typeof route !== 'undefined' ? route('admin.diagnostic-modes.edit', mode.id) : `/admin/diagnostic-modes/${mode.id}/edit`"
+                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400"
+                                >
+                                    <PencilIcon class="w-5 h-5" />
+                                </Link>
+                                
+                                <button 
+                                    @click.stop="deleteMode(mode)"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400"
+                                >
+                                    <TrashIcon class="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { Link, router } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { PlusIcon, PencilIcon, TrashIcon } from 'lucide-vue-next';
+import { showError, showSuccess, showConfirm, showLoading } from '@/Utils/dialog-service';
+
+const props = defineProps({
+    modes: Array,
+    available_domains: Array
+});
+
+const toggleActive = (mode) => {
+    router.post(typeof route !== 'undefined' ? route('admin.diagnostic-modes.toggle-active', mode.id) : `/admin/diagnostic-modes/${mode.id}/toggle-active`);
+};
+
+const validateMode = async (mode) => {
+    try {
+        const response = await fetch(typeof route !== 'undefined' ? route('admin.diagnostic-modes.validate', mode.id) : `/admin/diagnostic-modes/${mode.id}/validate`);
+        const result = await response.json();
+        
+        if (result.valid) {
+            await showSuccess(
+                'Configuration Valid ✅',
+                `Domains: ${result.summary.domain_config.total_domains} × ${result.summary.domain_config.questions_per_domain} questions\n` +
+                `Starting Bloom: Level ${result.summary.question_config.starting_bloom_level}\n` +
+                `Early Termination: Min ${result.summary.termination_config.min_questions} questions`
+            );
+        } else {
+            await showError(
+                'Configuration Errors ❌',
+                result.errors.join('\n')
+            );
+        }
+    } catch (error) {
+        await showError('Error', 'Failed to validate configuration');
+    }
+};
+
+const exportMode = async (mode) => {
+    try {
+        const response = await fetch(typeof route !== 'undefined' ? route('admin.diagnostic-modes.export', mode.id) : `/admin/diagnostic-modes/${mode.id}/export`);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `diagnostic_mode_${mode.slug}.json`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    } catch (error) {
+        await showError('Error', 'Failed to export configuration');
+    }
+};
+
+const validateAllModes = async () => {
+    const loading = showLoading('Validating All Modes...', 'Please wait...');
+
+    try {
+        const response = await fetch(typeof route !== 'undefined' ? route('admin.diagnostic-modes.validate-all') : '/admin/diagnostic-modes/validate-all', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        const result = await response.json();
+        
+        loading.close();
+        
+        if (result.success) {
+            await showSuccess('All Modes Valid ✅', result.output);
+        } else {
+            await showError('Validation Issues Found ⚠️', result.output);
+        }
+    } catch (error) {
+        loading.close();
+        await showError('Error', 'Failed to validate modes');
+    }
+};
+
+const deleteMode = async (mode) => {
+    const result = await showConfirm(
+        'Are you sure?',
+        `Delete "${mode.name}" diagnostic mode?`,
+        'Yes, delete it!',
+        'Cancel'
+    );
+    
+    if (result.isConfirmed) {
+        router.delete(typeof route !== 'undefined' ? route('admin.diagnostic-modes.destroy', mode.id) : `/admin/diagnostic-modes/${mode.id}`);
+    }
+};
+</script>

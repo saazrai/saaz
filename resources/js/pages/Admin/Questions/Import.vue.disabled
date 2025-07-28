@@ -1,0 +1,614 @@
+<template>
+  <AdminLayout page-title="Import Questions">
+    <!-- Back Navigation -->
+    <div class="mb-6">
+      <Link 
+        :href="route('admin.content.questions.index')" 
+        class="inline-flex items-center text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium transition-colors"
+      >
+        <ChevronLeft class="w-4 h-4 mr-1" />
+        Back to Questions
+      </Link>
+    </div>
+
+    <!-- Inline Flash Messages -->
+    <InlineFlashMessage />
+
+    <!-- Main Content Container -->
+    <div class="max-w-4xl mx-auto">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Import Questions</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+          Bulk import questions from Excel or CSV files
+        </p>
+      </div>
+
+      <!-- Import Card -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden relative">
+        <!-- Loading Overlay -->
+        <Transition
+          enter-active-class="transition ease-out duration-200"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition ease-in duration-150"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div v-if="uploading" class="absolute inset-0 bg-gray-900/50 dark:bg-gray-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-xl text-center max-w-lg w-full">
+              <Loader2 class="w-16 h-16 text-blue-500 animate-spin mx-auto mb-6" />
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Processing Import</h3>
+              
+              <!-- Progress Messages Area -->
+              <div class="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-6 text-left max-h-48 overflow-y-auto">
+                <div class="space-y-1.5">
+                  <div v-for="(msg, index) in progressMessages" :key="index" class="text-sm">
+                    <span class="text-gray-500 dark:text-gray-500 font-mono text-xs">{{ msg.time }}</span>
+                    <span :class="[
+                      'ml-2',
+                      msg.type === 'success' ? 'text-green-600 dark:text-green-400' :
+                      msg.type === 'warning' ? 'text-yellow-600 dark:text-yellow-400' :
+                      msg.type === 'error' ? 'text-red-600 dark:text-red-400' :
+                      'text-gray-700 dark:text-gray-300'
+                    ]">{{ msg.message }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Current Status -->
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 font-medium">
+                {{ uploadMessage || 'Initializing...' }}
+              </p>
+              
+              <!-- Progress Bar -->
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden mb-2">
+                <div 
+                  class="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all duration-300 relative"
+                  :style="{ width: `${uploadProgress}%` }"
+                >
+                  <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                </div>
+              </div>
+              <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ Math.round(uploadProgress) }}%</p>
+            </div>
+          </div>
+        </Transition>
+
+        <!-- Card Header -->
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 p-6">
+          <div class="flex items-center space-x-3">
+            <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+              <Upload class="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-white">Upload Question File</h2>
+              <p class="text-blue-100 text-sm mt-1">Supported formats: Excel (.xlsx, .xls) or CSV</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-8">
+          <!-- Upload Form -->
+          <form @submit.prevent="uploadFile" class="space-y-6">
+            <!-- File Drop Zone -->
+            <div 
+              @drop.prevent="handleDrop"
+              @dragover.prevent
+              @dragenter.prevent
+              class="relative"
+            >
+              <input 
+                id="file-upload" 
+                ref="fileInput" 
+                type="file" 
+                accept=".xlsx,.xls,.csv" 
+                required 
+                class="sr-only"
+                @change="handleFileSelect"
+                :disabled="uploading"
+              />
+              <label 
+                for="file-upload"
+                :class="[
+                  'flex justify-center px-6 py-10 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200',
+                  uploading ? 'opacity-50 cursor-not-allowed' : 'hover:border-blue-400 dark:hover:border-blue-500',
+                  'border-gray-300 dark:border-gray-600',
+                  'bg-gray-50 dark:bg-gray-900/50'
+                ]"
+              >
+                <div class="space-y-2 text-center">
+                  <div class="flex justify-center">
+                    <div :class="[
+                      'p-4 rounded-full transition-colors',
+                      selectedFile ? 'bg-green-100 dark:bg-green-900/30' : 'bg-gray-100 dark:bg-gray-800'
+                    ]">
+                      <FileCheck v-if="selectedFile" class="w-10 h-10 text-green-600 dark:text-green-400" />
+                      <Upload v-else class="w-10 h-10 text-gray-400 dark:text-gray-500" />
+                    </div>
+                  </div>
+                  <div class="text-gray-600 dark:text-gray-400">
+                    <span class="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
+                      Click to upload
+                    </span>
+                    <span class="ml-1">or drag and drop</span>
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-500">
+                    Excel files (.xlsx, .xls) or CSV files up to 10MB
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <!-- Selected File Display -->
+            <Transition
+              enter-active-class="transition ease-out duration-200"
+              enter-from-class="opacity-0 translate-y-1"
+              enter-to-class="opacity-100 translate-y-0"
+              leave-active-class="transition ease-in duration-150"
+              leave-from-class="opacity-100 translate-y-0"
+              leave-to-class="opacity-0 translate-y-1"
+            >
+              <div v-if="selectedFile" class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div class="flex items-center space-x-3">
+                  <FileSpreadsheet class="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <p class="font-medium text-gray-900 dark:text-white">{{ selectedFile.name }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">{{ formatFileSize(selectedFile.size) }}</p>
+                  </div>
+                </div>
+                <button
+                  v-if="!uploading"
+                  type="button"
+                  @click="clearFile"
+                  class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                >
+                  <X class="w-5 h-5" />
+                </button>
+              </div>
+            </Transition>
+
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                @click="downloadTemplate"
+                :disabled="uploading"
+                class="dark:border-gray-600 dark:hover:bg-gray-700"
+              >
+                <Download class="w-4 h-4 mr-2" />
+                Download Template
+              </Button>
+              <Button 
+                type="submit" 
+                :disabled="!selectedFile || uploading"
+                class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Loader2 v-if="uploading" class="w-4 h-4 mr-2 animate-spin" />
+                <Upload v-else class="w-4 h-4 mr-2" />
+                {{ uploading ? 'Importing...' : 'Import Questions' }}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- File Format Information -->
+      <div class="mt-8 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <FileText class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
+          File Format Guide
+        </h3>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Required Columns -->
+          <div>
+            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Required Columns</h4>
+            <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+              <li class="flex items-start">
+                <span class="text-blue-500 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">content</code> - Question text</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-blue-500 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">type_id</code> - Question type ID</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-blue-500 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">difficulty_id</code> - Difficulty level ID</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-blue-500 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">options</code> - Answer choices</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-blue-500 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">correct_options</code> - Correct answer(s)</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Optional Columns -->
+          <div>
+            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Optional Columns</h4>
+            <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+              <li class="flex items-start">
+                <span class="text-gray-400 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">bloom_id</code> - Bloom taxonomy level</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-gray-400 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">justifications</code> - Answer explanations</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-gray-400 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">settings</code> - Type-specific config (JSON)</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-gray-400 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">topics</code> - Topic codes (comma-separated)</span>
+              </li>
+              <li class="flex items-start">
+                <span class="text-gray-400 mr-2">•</span>
+                <span><code class="text-xs bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded">lesson_code</code> - Associated lesson</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Type Reference -->
+        <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p class="text-xs text-blue-700 dark:text-blue-300">
+            <strong>Question Types:</strong> 1 = Multiple Choice, 2 = Multiple Select, 3 = True/False, 4 = Fill in Blank, 5 = Matching
+          </p>
+        </div>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { router, Link, usePage } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import InlineFlashMessage from '@/Components/InlineFlashMessage.vue'
+import { Button } from '@/Components/shadcn/ui/button'
+import {
+  ChevronLeft,
+  Upload,
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Info,
+  Download,
+  FileSpreadsheet,
+  FileCheck,
+  X,
+  AlertCircle,
+  FileText
+} from 'lucide-vue-next'
+
+const page = usePage()
+
+// Reactive state
+const fileInput = ref(null)
+const selectedFile = ref(null)
+const uploading = ref(false)
+const uploadProgress = ref(0)
+const uploadMessage = ref('')
+const progressMessages = ref([])
+
+// Add progress message
+const addProgressMessage = (message, type = 'info') => {
+  const time = new Date().toLocaleTimeString('en-US', { 
+    hour12: false, 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+  })
+  progressMessages.value.push({ time, message, type })
+  
+  // Auto-scroll to bottom
+  setTimeout(() => {
+    const container = document.querySelector('.max-h-48')
+    if (container) {
+      container.scrollTop = container.scrollHeight
+    }
+  }, 10)
+}
+
+// Format file size
+const formatFileSize = (bytes) => {
+  if (bytes < 1024) return bytes + ' B'
+  if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB'
+  return Math.round(bytes / 1048576 * 10) / 10 + ' MB'
+}
+
+// Handle file selection
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file && validateFile(file)) {
+    selectedFile.value = file
+  }
+}
+
+// Handle drag and drop
+const handleDrop = (event) => {
+  const file = event.dataTransfer.files[0]
+  if (file && validateFile(file)) {
+    selectedFile.value = file
+  }
+}
+
+// Validate file
+const validateFile = (file) => {
+  const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv']
+  const validExtensions = ['.xlsx', '.xls', '.csv']
+  const maxSize = 10 * 1024 * 1024 // 10MB
+
+  const extension = '.' + file.name.split('.').pop().toLowerCase()
+  
+  if (!validTypes.includes(file.type) && !validExtensions.includes(extension)) {
+    alert('Invalid file type. Please upload an Excel (.xlsx, .xls) or CSV file.')
+    return false
+  }
+
+  if (file.size > maxSize) {
+    alert('File size exceeds 10MB limit.')
+    return false
+  }
+
+  return true
+}
+
+// Clear selected file
+const clearFile = () => {
+  selectedFile.value = null
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
+// Upload file with progress simulation
+const uploadFile = async () => {
+  if (!selectedFile.value) return
+
+  uploading.value = true
+  uploadProgress.value = 0
+  uploadMessage.value = 'Initializing import process...'
+  progressMessages.value = []
+
+  // Add initial messages
+  addProgressMessage('Import process started', 'success')
+  addProgressMessage(`File: ${selectedFile.value.name} (${formatFileSize(selectedFile.value.size)})`, 'info')
+
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+
+  // Estimate processing time based on file size
+  const fileSizeMB = selectedFile.value.size / (1024 * 1024)
+  const estimatedSeconds = Math.max(5, fileSizeMB * 3) // 3 seconds per MB, minimum 5 seconds
+  const progressIncrement = 100 / (estimatedSeconds * 10) // Update every 100ms
+
+  // Progress tracking with realistic messages
+  let lastMessageStage = 0
+  const progressInterval = setInterval(() => {
+    if (uploadProgress.value < 95) {
+      // More realistic progress that slows down at certain points
+      if (uploadProgress.value < 10) {
+        uploadProgress.value += 2
+      } else if (uploadProgress.value < 30) {
+        uploadProgress.value += 1.5
+      } else if (uploadProgress.value < 50) {
+        uploadProgress.value += 0.8
+      } else if (uploadProgress.value < 70) {
+        uploadProgress.value += 0.5
+      } else if (uploadProgress.value < 90) {
+        uploadProgress.value += 0.3
+      } else {
+        uploadProgress.value += 0.1
+      }
+      
+      // Add stage-based messages with more realistic flow
+      if (uploadProgress.value >= 5 && lastMessageStage < 5) {
+        addProgressMessage('Uploading file to server...', 'info')
+        uploadMessage.value = 'Uploading file...'
+        lastMessageStage = 5
+      } else if (uploadProgress.value >= 10 && lastMessageStage < 10) {
+        addProgressMessage('File received by server', 'success')
+        lastMessageStage = 10
+      } else if (uploadProgress.value >= 15 && lastMessageStage < 15) {
+        addProgressMessage('Opening Excel file...', 'info')
+        uploadMessage.value = 'Reading Excel file...'
+        lastMessageStage = 15
+      } else if (uploadProgress.value >= 20 && lastMessageStage < 20) {
+        addProgressMessage('Detecting worksheet structure...', 'info')
+        lastMessageStage = 20
+      } else if (uploadProgress.value >= 25 && lastMessageStage < 25) {
+        addProgressMessage('Found "Questions" worksheet', 'success')
+        uploadMessage.value = 'Processing Questions sheet...'
+        lastMessageStage = 25
+      } else if (uploadProgress.value >= 30 && lastMessageStage < 30) {
+        addProgressMessage('Validating column headers...', 'info')
+        lastMessageStage = 30
+      } else if (uploadProgress.value >= 35 && lastMessageStage < 35) {
+        addProgressMessage('All required columns found', 'success')
+        lastMessageStage = 35
+      } else if (uploadProgress.value >= 40 && lastMessageStage < 40) {
+        const questionCount = Math.floor(Math.random() * 50) + 50 // Simulate 50-100 questions
+        addProgressMessage(`Found ${questionCount} questions to import`, 'info')
+        uploadMessage.value = 'Processing questions...'
+        lastMessageStage = 40
+      } else if (uploadProgress.value >= 45 && lastMessageStage < 45) {
+        addProgressMessage('Processing row 10 of 100...', 'info')
+        lastMessageStage = 45
+      } else if (uploadProgress.value >= 50 && lastMessageStage < 50) {
+        addProgressMessage('Processing row 25 of 100...', 'info')
+        lastMessageStage = 50
+      } else if (uploadProgress.value >= 55 && lastMessageStage < 55) {
+        addProgressMessage('Processing row 40 of 100...', 'info')
+        lastMessageStage = 55
+      } else if (uploadProgress.value >= 60 && lastMessageStage < 60) {
+        addProgressMessage('Processing row 55 of 100...', 'info')
+        lastMessageStage = 60
+      } else if (uploadProgress.value >= 65 && lastMessageStage < 65) {
+        addProgressMessage('Processing row 70 of 100...', 'info')
+        uploadMessage.value = 'Validating questions...'
+        lastMessageStage = 65
+      } else if (uploadProgress.value >= 70 && lastMessageStage < 70) {
+        addProgressMessage('Validating question types...', 'info')
+        lastMessageStage = 70
+      } else if (uploadProgress.value >= 75 && lastMessageStage < 75) {
+        addProgressMessage('Linking questions to topics...', 'info')
+        uploadMessage.value = 'Creating relationships...'
+        lastMessageStage = 75
+      } else if (uploadProgress.value >= 80 && lastMessageStage < 80) {
+        addProgressMessage('Processing question options...', 'info')
+        lastMessageStage = 80
+      } else if (uploadProgress.value >= 85 && lastMessageStage < 85) {
+        addProgressMessage('Validating correct answers...', 'info')
+        uploadMessage.value = 'Saving to database...'
+        lastMessageStage = 85
+      } else if (uploadProgress.value >= 90 && lastMessageStage < 90) {
+        addProgressMessage('Writing to database...', 'info')
+        lastMessageStage = 90
+      } else if (uploadProgress.value >= 93 && lastMessageStage < 93) {
+        addProgressMessage('Updating search indexes...', 'info')
+        uploadMessage.value = 'Finalizing import...'
+        lastMessageStage = 93
+      }
+    }
+  }, 200)
+
+  try {
+    // Use Inertia router for consistent navigation
+    await router.post(route('admin.content.questions.import.store'), formData, {
+      forceFormData: true,
+      preserveScroll: true,
+      preserveState: false, // Allow the page to refresh with new props
+      onProgress: (progress) => {
+        // Use actual upload progress for first 10% (file upload)
+        if (progress.percentage) {
+          const actualProgress = Math.min(progress.percentage * 0.1, 10)
+          if (actualProgress > uploadProgress.value && uploadProgress.value < 10) {
+            uploadProgress.value = actualProgress
+          }
+        }
+      },
+      onSuccess: (page) => {
+        clearInterval(progressInterval)
+        
+        // Add completion message
+        addProgressMessage('Import completed!', 'success')
+        
+        // Wait a moment then close modal
+        setTimeout(() => {
+          uploading.value = false
+          uploadProgress.value = 0
+          uploadMessage.value = ''
+          progressMessages.value = []
+          
+          // Reset form
+          selectedFile.value = null
+          if (fileInput.value) {
+            fileInput.value.value = ''
+          }
+        }, 1500)
+      },
+      onError: (errors) => {
+        clearInterval(progressInterval)
+        
+        // Check for different error types
+        if (errors.file) {
+          handleImportError(errors.file[0])
+        } else if (errors.message) {
+          handleImportError(errors.message)
+        } else {
+          // Check for server error response
+          const errorMessage = getErrorMessage(errors)
+          handleImportError(errorMessage)
+        }
+      },
+      onFinish: () => {
+        // Ensure interval is cleared
+        clearInterval(progressInterval)
+      }
+    })
+  } catch (error) {
+    clearInterval(progressInterval)
+    console.error('Upload error:', error)
+    
+    // Better error handling for different error types
+    const errorMessage = getErrorMessage(error)
+    handleImportError(errorMessage)
+  }
+}
+
+// Extract error message from various error formats
+const getErrorMessage = (error) => {
+  // Check for axios error response
+  if (error.response) {
+    if (error.response.data?.message) {
+      return error.response.data.message
+    }
+    if (error.response.status === 500) {
+      return 'Server error occurred. This may be due to a large or corrupted file. Please check your file and try again.'
+    }
+    if (error.response.status === 413) {
+      return 'File is too large. Please reduce the file size and try again.'
+    }
+    if (error.response.status === 422) {
+      return 'Invalid file format. Please ensure you are uploading an Excel (.xlsx, .xls) or CSV file.'
+    }
+  }
+  
+  // Check for network errors
+  if (error.code === 'ERR_NETWORK') {
+    return 'Network error. Please check your connection and try again.'
+  }
+  
+  // Default error message
+  return 'An unexpected error occurred. Please try again or contact support if the problem persists.'
+}
+
+// Handle import error
+const handleImportError = (errorMessage) => {
+  // Simply close the modal and let the error show via flash message
+  uploading.value = false
+  uploadProgress.value = 0
+  uploadMessage.value = ''
+  progressMessages.value = []
+  
+  // Reset file input
+  selectedFile.value = null
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
+// Download template
+const downloadTemplate = () => {
+  const csvContent = `content,type_id,difficulty_id,bloom_id,options,correct_options,justifications,settings,topics,lesson_code,course_code
+"What is the primary goal of information security?","1","2","2","A) To eliminate all risks
+B) To protect the confidentiality, integrity, and availability of information
+C) To prevent all cyber attacks
+D) To ensure 100% uptime","B) To protect the confidentiality, integrity, and availability of information","The CIA triad (Confidentiality, Integrity, Availability) is the fundamental model of information security.","{}","CISSP-D1-T1,SECURITY-BASICS","L1.1","CISSP-2024"
+"Which of the following are components of the CIA triad? (Select all that apply)","2","2","2","[""Confidentiality"",""Integrity"",""Authentication"",""Availability"",""Authorization""]","[""Confidentiality"",""Integrity"",""Availability""]","The CIA triad consists of Confidentiality, Integrity, and Availability. Authentication and Authorization are security controls but not part of the triad.","{}","CISSP-D1-T1","L1.1","CISSP-2024"
+"True or False: Encryption is primarily used to ensure data integrity.","3","2","3","True
+False","False","Encryption is primarily used to ensure confidentiality. While some encryption methods can help detect tampering, integrity is typically ensured through hashing and digital signatures.","{}","CISSP-D1-T2,CRYPTO-BASICS","L1.2","CISSP-2024"`
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  link.setAttribute('href', url)
+  link.setAttribute('download', 'question_import_template.csv')
+  link.style.visibility = 'hidden'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+</script>

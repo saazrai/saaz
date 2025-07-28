@@ -1,0 +1,1162 @@
+<template>
+  <AdminLayout title="Vouchers Management">
+    <div class="p-6">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 :class="[
+            'text-3xl font-bold',
+            isDarkMode ? 'text-gray-100' : 'text-gray-900'
+          ]">Vouchers</h1>
+          <p :class="[
+            'mt-1',
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          ]">Manage voucher credits and gift certificates</p>
+        </div>
+        <button
+          @click="showCreateModal = true"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+        >
+          <PlusIcon class="h-5 w-5" />
+          <span>Create Voucher</span>
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div :class="[
+          'rounded-lg shadow p-6',
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        ]">
+          <div class="flex items-center">
+            <div :class="[
+              'p-2 rounded-lg',
+              isDarkMode ? 'bg-blue-900' : 'bg-blue-100'
+            ]">
+              <TicketIcon :class="[
+                'h-6 w-6',
+                isDarkMode ? 'text-blue-400' : 'text-blue-600'
+              ]" />
+            </div>
+            <div class="ml-4">
+              <p :class="[
+                'text-sm font-medium',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">Total Vouchers</p>
+              <p :class="[
+                'text-2xl font-semibold',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">{{ stats.total || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div :class="[
+          'rounded-lg shadow p-6',
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        ]">
+          <div class="flex items-center">
+            <div :class="[
+              'p-2 rounded-lg',
+              isDarkMode ? 'bg-green-900' : 'bg-green-100'
+            ]">
+              <CheckCircleIcon :class="[
+                'h-6 w-6',
+                isDarkMode ? 'text-green-400' : 'text-green-600'
+              ]" />
+            </div>
+            <div class="ml-4">
+              <p :class="[
+                'text-sm font-medium',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">Active</p>
+              <p :class="[
+                'text-2xl font-semibold',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">{{ stats.active || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div :class="[
+          'rounded-lg shadow p-6',
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        ]">
+          <div class="flex items-center">
+            <div :class="[
+              'p-2 rounded-lg',
+              isDarkMode ? 'bg-yellow-900' : 'bg-yellow-100'
+            ]">
+              <CurrencyDollarIcon :class="[
+                'h-6 w-6',
+                isDarkMode ? 'text-yellow-400' : 'text-yellow-600'
+              ]" />
+            </div>
+            <div class="ml-4">
+              <p :class="[
+                'text-sm font-medium',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">Total Value</p>
+              <p :class="[
+                'text-2xl font-semibold',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">${{ stats.total_value || 0 }}</p>
+            </div>
+          </div>
+        </div>
+        <div :class="[
+          'rounded-lg shadow p-6',
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        ]">
+          <div class="flex items-center">
+            <div :class="[
+              'p-2 rounded-lg',
+              isDarkMode ? 'bg-red-900' : 'bg-red-100'
+            ]">
+              <ExclamationTriangleIcon :class="[
+                'h-6 w-6',
+                isDarkMode ? 'text-red-400' : 'text-red-600'
+              ]" />
+            </div>
+            <div class="ml-4">
+              <p :class="[
+                'text-sm font-medium',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">Expired</p>
+              <p :class="[
+                'text-2xl font-semibold',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">{{ stats.expired || 0 }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search and Filters -->
+      <div :class="[
+        'rounded-lg shadow-sm p-4 mb-6',
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      ]">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex-1">
+            <input
+              v-model="searchTerm"
+              type="text"
+              placeholder="Search vouchers by code or recipient..."
+              :class="[
+                'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                  : 'border-gray-300'
+              ]"
+            />
+          </div>
+          <div class="flex gap-2">
+            <select
+              v-model="statusFilter"
+              :class="[
+                'px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                  : 'border-gray-300'
+              ]"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="used">Used</option>
+              <option value="expired">Expired</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <select
+              v-model="typeFilter"
+              :class="[
+                'px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                  : 'border-gray-300'
+              ]"
+            >
+              <option value="">All Types</option>
+              <option value="gift">Gift Certificate</option>
+              <option value="credit">Store Credit</option>
+              <option value="refund">Refund Voucher</option>
+              <option value="promotional">Promotional</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vouchers Table -->
+      <div :class="[
+        'rounded-lg shadow-sm overflow-hidden',
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      ]">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead :class="[
+            isDarkMode ? 'bg-gray-700' : 'bg-gray-50'
+          ]">
+            <tr>
+              <th :class="[
+                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Code & Type
+              </th>
+              <th :class="[
+                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Recipient
+              </th>
+              <th :class="[
+                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Value & Balance
+              </th>
+              <th :class="[
+                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Valid Period
+              </th>
+              <th :class="[
+                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Usage
+              </th>
+              <th :class="[
+                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Status
+              </th>
+              <th :class="[
+                'px-6 py-3 text-right text-xs font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody :class="[
+            'divide-y',
+            isDarkMode ? 'bg-gray-800 divide-gray-700' : 'bg-white divide-gray-200'
+          ]">
+            <tr v-for="voucher in filteredVouchers" :key="voucher.id" :class="[
+              isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+            ]">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex flex-col">
+                  <div :class="[
+                    'text-sm font-medium font-mono px-2 py-1 rounded w-fit',
+                    isDarkMode ? 'text-gray-100 bg-gray-700' : 'text-gray-900 bg-gray-100'
+                  ]">
+                    {{ voucher.code }}
+                  </div>
+                  <span :class="[
+                    'inline-flex px-2 py-1 text-xs font-semibold rounded-full w-fit mt-1',
+                    getTypeColor(voucher.type)
+                  ]">
+                    {{ getTypeLabel(voucher.type) }}
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex flex-col">
+                  <div :class="[
+                    'text-sm font-medium',
+                    isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                  ]">
+                    {{ voucher.recipient_name || 'N/A' }}
+                  </div>
+                  <div :class="[
+                    'text-sm',
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  ]">
+                    {{ voucher.recipient_email || 'No email' }}
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex flex-col">
+                  <div :class="[
+                    'text-sm font-medium',
+                    isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                  ]">
+                    ${{ voucher.amount }}
+                  </div>
+                  <div :class="[
+                    'text-sm',
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  ]">
+                    Balance: ${{ voucher.balance || voucher.amount }}
+                  </div>
+                </div>
+              </td>
+              <td :class="[
+                'px-6 py-4 whitespace-nowrap text-sm',
+                isDarkMode ? 'text-gray-100' : 'text-gray-900'
+              ]">
+                <div class="flex flex-col">
+                  <div>{{ formatDate(voucher.valid_from) }}</div>
+                  <div :class="[
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  ]">to {{ formatDate(voucher.valid_until) }}</div>
+                </div>
+              </td>
+              <td :class="[
+                'px-6 py-4 whitespace-nowrap text-sm',
+                isDarkMode ? 'text-gray-100' : 'text-gray-900'
+              ]">
+                <div class="flex flex-col">
+                  <div>{{ voucher.usage_count || 0 }} times</div>
+                  <div :class="[
+                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                  ]">
+                    Last: {{ voucher.last_used_at ? formatDate(voucher.last_used_at) : 'Never' }}
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span :class="[
+                  'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                  getVoucherStatusClass(voucher)
+                ]">
+                  {{ getVoucherStatus(voucher) }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div class="flex justify-end space-x-2">
+                  <button
+                    @click="viewVoucherDetails(voucher)"
+                    class="text-gray-600 hover:text-gray-900"
+                    title="View Details"
+                  >
+                    <EyeIcon class="h-4 w-4" />
+                  </button>
+                  <button
+                    @click="editVoucher(voucher)"
+                    class="text-blue-600 hover:text-blue-900"
+                    title="Edit"
+                  >
+                    <PencilIcon class="h-4 w-4" />
+                  </button>
+                  <button
+                    @click="sendVoucherEmail(voucher)"
+                    class="text-green-600 hover:text-green-900"
+                    title="Send Email"
+                  >
+                    <EnvelopeIcon class="h-4 w-4" />
+                  </button>
+                  <button
+                    @click="cancelVoucher(voucher)"
+                    v-if="getVoucherStatus(voucher) === 'Active'"
+                    class="text-red-600 hover:text-red-900"
+                    title="Cancel"
+                  >
+                    <XMarkIcon class="h-4 w-4" />
+                  </button>
+                  <button
+                    @click="deleteVoucher(voucher)"
+                    class="text-red-600 hover:text-red-900"
+                    title="Delete"
+                  >
+                    <TrashIcon class="h-4 w-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Empty State -->
+        <div v-if="filteredVouchers.length === 0" class="text-center py-12">
+          <div :class="[
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">No vouchers found</div>
+        </div>
+
+        <!-- Pagination -->
+        <div v-if="pagination && pagination.total && pagination.per_page && pagination.total > pagination.per_page" :class="[
+          'px-4 py-3 border-t sm:px-6',
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <div class="flex-1 flex justify-between sm:hidden">
+            <button
+              @click="previousPage"
+              :disabled="pagination.current_page === 1"
+              :class="[
+                'relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50',
+                isDarkMode 
+                  ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600' 
+                  : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+              ]"
+            >
+              Previous
+            </button>
+            <button
+              @click="nextPage"
+              :disabled="pagination.current_page === pagination.last_page"
+              :class="[
+                'ml-3 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md disabled:opacity-50',
+                isDarkMode 
+                  ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600' 
+                  : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+              ]"
+            >
+              Next
+            </button>
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">
+                Showing <span class="font-medium">{{ pagination.from }}</span> to <span class="font-medium">{{ pagination.to }}</span> of <span class="font-medium">{{ pagination.total }}</span> results
+              </p>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  @click="previousPage"
+                  :disabled="pagination.current_page === 1"
+                  :class="[
+                    'relative inline-flex items-center px-2 py-2 rounded-l-md border text-sm font-medium disabled:opacity-50',
+                    isDarkMode 
+                      ? 'border-gray-600 bg-gray-700 text-gray-400 hover:bg-gray-600' 
+                      : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50'
+                  ]"
+                >
+                  Previous
+                </button>
+                <button
+                  @click="nextPage"
+                  :disabled="pagination.current_page === pagination.last_page"
+                  :class="[
+                    'relative inline-flex items-center px-2 py-2 rounded-r-md border text-sm font-medium disabled:opacity-50',
+                    isDarkMode 
+                      ? 'border-gray-600 bg-gray-700 text-gray-400 hover:bg-gray-600' 
+                      : 'border-gray-300 bg-white text-gray-500 hover:bg-gray-50'
+                  ]"
+                >
+                  Next
+                </button>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div v-if="showCreateModal || showEditModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div :class="[
+        'relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md',
+        isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
+      ]">
+        <div class="mt-3">
+          <h3 :class="[
+            'text-lg font-medium mb-4',
+            isDarkMode ? 'text-gray-100' : 'text-gray-900'
+          ]">
+            {{ showCreateModal ? 'Create Voucher' : 'Edit Voucher' }}
+          </h3>
+          
+          <form @submit.prevent="saveVoucher">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Voucher Code *</label>
+                <input
+                  v-model="form.code"
+                  type="text"
+                  required
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                  placeholder="Enter voucher code (e.g., GIFT2024)"
+                  style="text-transform: uppercase"
+                  @input="form.code = $event.target.value.toUpperCase()"
+                />
+              </div>
+
+              <div>
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Type *</label>
+                <select
+                  v-model="form.type"
+                  required
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                >
+                  <option value="">Select type</option>
+                  <option value="gift">Gift Certificate</option>
+                  <option value="credit">Store Credit</option>
+                  <option value="refund">Refund Voucher</option>
+                  <option value="promotional">Promotional</option>
+                </select>
+              </div>
+
+              <div>
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Amount ($) *</label>
+                <input
+                  v-model="form.amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  required
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                  placeholder="Enter amount"
+                />
+              </div>
+
+              <div>
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Recipient Name</label>
+                <input
+                  v-model="form.recipient_name"
+                  type="text"
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                  placeholder="Recipient's name"
+                />
+              </div>
+
+              <div>
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Recipient Email</label>
+                <input
+                  v-model="form.recipient_email"
+                  type="email"
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                  placeholder="recipient@example.com"
+                />
+              </div>
+
+              <div>
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Valid From *</label>
+                <input
+                  v-model="form.valid_from"
+                  type="date"
+                  required
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                />
+              </div>
+
+              <div>
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Valid Until *</label>
+                <input
+                  v-model="form.valid_until"
+                  type="date"
+                  required
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                      : 'border-gray-300'
+                  ]"
+                />
+              </div>
+
+              <div class="md:col-span-2">
+                <label :class="[
+                  'block text-sm font-medium mb-2',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Message</label>
+                <textarea
+                  v-model="form.message"
+                  rows="3"
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                      : 'border-gray-300'
+                  ]"
+                  placeholder="Personal message (optional)"
+                ></textarea>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="flex items-center">
+                  <input
+                    v-model="form.is_active"
+                    type="checkbox"
+                    :class="[
+                      'rounded text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50',
+                      isDarkMode 
+                        ? 'border-gray-600 bg-gray-700' 
+                        : 'border-gray-300'
+                    ]"
+                  />
+                  <span :class="[
+                    'ml-2 text-sm',
+                    isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                  ]">Active</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6">
+              <button
+                type="button"
+                @click="cancelEdit"
+                :class="[
+                  'px-4 py-2 border rounded-md text-sm font-medium',
+                  isDarkMode 
+                    ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ]"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                :disabled="processing"
+                class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+              >
+                {{ processing ? 'Saving...' : (showCreateModal ? 'Create' : 'Update') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div v-if="showDetailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div :class="[
+        'relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md',
+        isDarkMode ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
+      ]">
+        <div class="mt-3">
+          <h3 :class="[
+            'text-lg font-medium mb-4',
+            isDarkMode ? 'text-gray-100' : 'text-gray-900'
+          ]">Voucher Details</h3>
+          
+          <div v-if="selectedVoucher" class="space-y-4">
+            <div>
+              <label :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Code</label>
+              <div :class="[
+                'text-lg font-mono px-3 py-2 rounded',
+                isDarkMode ? 'bg-gray-700 text-gray-100' : 'bg-gray-100 text-gray-900'
+              ]">{{ selectedVoucher.code }}</div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label :class="[
+                  'block text-sm font-medium',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Type</label>
+                <div :class="[
+                  'text-sm',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]">{{ getTypeLabel(selectedVoucher.type) }}</div>
+              </div>
+              <div>
+                <label :class="[
+                  'block text-sm font-medium',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Amount</label>
+                <div :class="[
+                  'text-sm',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]">${{ selectedVoucher.amount }}</div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label :class="[
+                  'block text-sm font-medium',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Balance</label>
+                <div :class="[
+                  'text-sm',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]">${{ selectedVoucher.balance || selectedVoucher.amount }}</div>
+              </div>
+              <div>
+                <label :class="[
+                  'block text-sm font-medium',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Usage Count</label>
+                <div :class="[
+                  'text-sm',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]">{{ selectedVoucher.usage_count || 0 }} times</div>
+              </div>
+            </div>
+            
+            <div>
+              <label :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Recipient</label>
+              <div :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">
+                {{ selectedVoucher.recipient_name || 'N/A' }}
+                <span v-if="selectedVoucher.recipient_email" :class="[
+                  isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                ]">
+                  ({{ selectedVoucher.recipient_email }})
+                </span>
+              </div>
+            </div>
+            
+            <div>
+              <label :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Valid Period</label>
+              <div :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">
+                {{ formatDate(selectedVoucher.valid_from) }} - {{ formatDate(selectedVoucher.valid_until) }}
+              </div>
+            </div>
+            
+            <div v-if="selectedVoucher.message">
+              <label :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Message</label>
+              <div :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">{{ selectedVoucher.message }}</div>
+            </div>
+            
+            <div>
+              <label :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Status</label>
+              <span :class="[
+                'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                getVoucherStatusClass(selectedVoucher)
+              ]">
+                {{ getVoucherStatus(selectedVoucher) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-6">
+            <button
+              @click="showDetailsModal = false"
+              class="px-4 py-2 bg-gray-600 text-white rounded-md text-sm font-medium hover:bg-gray-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { 
+  PlusIcon, PencilIcon, TrashIcon, EyeIcon, EnvelopeIcon, XMarkIcon,
+  TicketIcon, CheckCircleIcon, CurrencyDollarIcon, ExclamationTriangleIcon
+} from '@heroicons/vue/24/outline'
+
+// Dark mode management
+const isDarkMode = ref(false)
+
+// Reactive data
+const vouchers = ref([])
+const stats = ref({})
+const searchTerm = ref('')
+const statusFilter = ref('')
+const typeFilter = ref('')
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
+const showDetailsModal = ref(false)
+const processing = ref(false)
+const selectedVoucher = ref(null)
+const pagination = ref({
+  current_page: 1,
+  last_page: 1,
+  per_page: 10,
+  total: 0,
+  from: 0,
+  to: 0
+})
+
+const form = ref({
+  id: null,
+  code: '',
+  type: '',
+  amount: '',
+  recipient_name: '',
+  recipient_email: '',
+  valid_from: '',
+  valid_until: '',
+  message: '',
+  is_active: true
+})
+
+// Computed
+const filteredVouchers = computed(() => {
+  // Ensure vouchers.value is an array before filtering
+  if (!Array.isArray(vouchers.value)) {
+    return []
+  }
+  
+  let filtered = vouchers.value
+
+  if (searchTerm.value) {
+    const search = searchTerm.value.toLowerCase()
+    filtered = filtered.filter(item => 
+      item.code.toLowerCase().includes(search) ||
+      (item.recipient_name && item.recipient_name.toLowerCase().includes(search)) ||
+      (item.recipient_email && item.recipient_email.toLowerCase().includes(search))
+    )
+  }
+
+  if (statusFilter.value) {
+    filtered = filtered.filter(item => {
+      const status = getVoucherStatus(item).toLowerCase()
+      return status === statusFilter.value
+    })
+  }
+
+  if (typeFilter.value) {
+    filtered = filtered.filter(item => item.type === typeFilter.value)
+  }
+
+  return filtered
+})
+
+// Methods
+const fetchVouchers = async (page = 1) => {
+  try {
+    const response = await fetch(`/admin/vouchers?page=${page}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json()
+    
+    // Ensure data.data is an array, fallback to empty array if not
+    vouchers.value = Array.isArray(data.data) ? data.data : []
+    stats.value = data.stats || {}
+    pagination.value = {
+      current_page: data.current_page || 1,
+      last_page: data.last_page || 1,
+      per_page: data.per_page || 10,
+      total: data.total || 0,
+      from: data.from || 0,
+      to: data.to || 0
+    }
+  } catch (error) {
+    console.error('Error fetching vouchers:', error)
+    // Ensure vouchers is always an array even on error
+    vouchers.value = []
+    stats.value = {}
+    pagination.value = {
+      current_page: 1,
+      last_page: 1,
+      per_page: 10,
+      total: 0,
+      from: 0,
+      to: 0
+    }
+  }
+}
+
+const getVoucherStatus = (voucher) => {
+  const now = new Date()
+  const validFrom = new Date(voucher.valid_from)
+  const validUntil = new Date(voucher.valid_until)
+  
+  if (!voucher.is_active || voucher.status === 'cancelled') return 'Cancelled'
+  if (now < validFrom) return 'Scheduled'
+  if (now > validUntil) return 'Expired'
+  if (voucher.balance <= 0) return 'Used'
+  
+  return 'Active'
+}
+
+const getVoucherStatusClass = (voucher) => {
+  const status = getVoucherStatus(voucher)
+  
+  switch (status) {
+    case 'Active': return 'bg-green-100 text-green-800'
+    case 'Scheduled': return 'bg-blue-100 text-blue-800'
+    case 'Expired': return 'bg-red-100 text-red-800'
+    case 'Used': return 'bg-gray-100 text-gray-800'
+    case 'Cancelled': return 'bg-red-100 text-red-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getTypeLabel = (type) => {
+  const types = {
+    gift: 'Gift Certificate',
+    credit: 'Store Credit',
+    refund: 'Refund Voucher',
+    promotional: 'Promotional'
+  }
+  return types[type] || type
+}
+
+const getTypeColor = (type) => {
+  const colors = {
+    gift: 'bg-purple-100 text-purple-800',
+    credit: 'bg-blue-100 text-blue-800',
+    refund: 'bg-yellow-100 text-yellow-800',
+    promotional: 'bg-green-100 text-green-800'
+  }
+  return colors[type] || 'bg-gray-100 text-gray-800'
+}
+
+const viewVoucherDetails = (voucher) => {
+  selectedVoucher.value = voucher
+  showDetailsModal.value = true
+}
+
+const editVoucher = (voucher) => {
+  form.value = {
+    id: voucher.id,
+    code: voucher.code,
+    type: voucher.type,
+    amount: voucher.amount,
+    recipient_name: voucher.recipient_name || '',
+    recipient_email: voucher.recipient_email || '',
+    valid_from: voucher.valid_from.split(' ')[0], // Convert datetime to date
+    valid_until: voucher.valid_until.split(' ')[0],
+    message: voucher.message || '',
+    is_active: voucher.is_active
+  }
+  showEditModal.value = true
+}
+
+const saveVoucher = async () => {
+  processing.value = true
+  
+  try {
+    const url = showCreateModal.value 
+      ? '/admin/vouchers' 
+      : `/admin/vouchers/${form.value.id}`
+    
+    const method = showCreateModal.value ? 'POST' : 'PUT'
+    
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify(form.value)
+    })
+
+    if (response.ok) {
+      cancelEdit()
+      fetchVouchers()
+    } else {
+      console.error('Error saving voucher')
+    }
+  } catch (error) {
+    console.error('Error:', error)
+  } finally {
+    processing.value = false
+  }
+}
+
+const sendVoucherEmail = async (voucher) => {
+  if (!voucher.recipient_email) {
+    alert('No email address found for this voucher')
+    return
+  }
+  
+  if (confirm(`Send voucher email to ${voucher.recipient_email}?`)) {
+    try {
+      const response = await fetch(`/admin/vouchers/${voucher.id}/send-email`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+      })
+
+      if (response.ok) {
+        alert('Email sent successfully!')
+      } else {
+        alert('Failed to send email')
+      }
+    } catch (error) {
+      console.error('Error sending email:', error)
+      alert('Failed to send email')
+    }
+  }
+}
+
+const cancelVoucher = async (voucher) => {
+  if (confirm(`Are you sure you want to cancel voucher "${voucher.code}"?`)) {
+    try {
+      const response = await fetch(`/admin/vouchers/${voucher.id}/cancel`, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+      })
+
+      if (response.ok) {
+        fetchVouchers()
+      }
+    } catch (error) {
+      console.error('Error cancelling voucher:', error)
+    }
+  }
+}
+
+const deleteVoucher = async (voucher) => {
+  if (confirm(`Are you sure you want to delete voucher "${voucher.code}"?`)) {
+    try {
+      const response = await fetch(`/admin/vouchers/${voucher.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+      })
+
+      if (response.ok) {
+        fetchVouchers()
+      }
+    } catch (error) {
+      console.error('Error deleting voucher:', error)
+    }
+  }
+}
+
+const cancelEdit = () => {
+  showCreateModal.value = false
+  showEditModal.value = false
+  form.value = {
+    id: null,
+    code: '',
+    type: '',
+    amount: '',
+    recipient_name: '',
+    recipient_email: '',
+    valid_from: '',
+    valid_until: '',
+    message: '',
+    is_active: true
+  }
+}
+
+const previousPage = () => {
+  if (pagination.value.current_page > 1) {
+    fetchVouchers(pagination.value.current_page - 1)
+  }
+}
+
+const nextPage = () => {
+  if (pagination.value.current_page < pagination.value.last_page) {
+    fetchVouchers(pagination.value.current_page + 1)
+  }
+}
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString()
+}
+
+// Lifecycle
+onMounted(() => {
+  // Initialize dark mode state
+  isDarkMode.value = localStorage.getItem('adminDarkMode') === 'true'
+  
+  // Listen for storage changes
+  const handleStorageChange = (e) => {
+    if (e.key === 'adminDarkMode') {
+      isDarkMode.value = e.newValue === 'true'
+    }
+  }
+  
+  // Listen for custom dark mode events
+  const handleDarkModeChanged = (e) => {
+    isDarkMode.value = e.detail
+  }
+  
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleDarkModeChanged)
+  
+  // Cleanup listeners on unmount
+  onUnmounted(() => {
+    window.removeEventListener('storage', handleStorageChange)
+    window.removeEventListener('adminDarkModeChanged', handleDarkModeChanged)
+  })
+
+  fetchVouchers()
+  // Set default dates
+  const now = new Date()
+  const nextYear = new Date(now)
+  nextYear.setFullYear(nextYear.getFullYear() + 1)
+  
+  form.value.valid_from = now.toISOString().split('T')[0]
+  form.value.valid_until = nextYear.toISOString().split('T')[0]
+})
+</script>

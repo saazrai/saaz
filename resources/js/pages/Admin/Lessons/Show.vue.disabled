@@ -1,0 +1,139 @@
+<template>
+  <AdminLayout>
+    <!-- Header with breadcrumb -->
+    <div class="mb-8">
+      <Link 
+        :href="route('admin.content.lessons.index')" 
+        :class="isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'"
+        class="inline-flex items-center text-sm mb-4 font-medium transition-colors"
+      >
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Lessons
+      </Link>
+      <div class="flex items-start justify-between">
+        <div>
+          <div :class="isDarkMode ? 'text-gray-400' : 'text-gray-600'" class="text-sm mb-1">
+            {{ lesson.domain?.course?.code || 'No Course' }} / {{ lesson.domain?.name || 'No Domain' }}
+          </div>
+          <h1 :class="isDarkMode ? 'text-white' : 'text-gray-900'" class="text-3xl font-bold">
+            {{ lesson.name }}
+          </h1>
+          <p :class="isDarkMode ? 'text-gray-400' : 'text-gray-600'" class="mt-1 text-sm">Lesson Details</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lesson Details Card -->
+    <div :class="isDarkMode ? 'bg-gray-800' : 'bg-white'" class="rounded-lg shadow-sm p-8">
+      <div class="space-y-8">
+        <!-- Row 1: Number and Slug -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Number</label>
+            <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3">
+              {{ lesson.number || 'No number assigned' }}
+            </div>
+          </div>
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Slug</label>
+            <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3">
+              {{ lesson.slug || 'No slug assigned' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Name and Code -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Name</label>
+            <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3">
+              {{ lesson.name }}
+            </div>
+          </div>
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Code</label>
+            <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3">
+              {{ lesson.code || 'No code assigned' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Domain and Course -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Domain</label>
+            <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3">
+              {{ lesson.domain?.name || 'No domain assigned' }}
+            </div>
+          </div>
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Course</label>
+            <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3">
+              {{ lesson.domain?.course?.code || 'No course assigned' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Description -->
+        <div>
+          <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" class="block text-sm font-medium mb-2">Description</label>
+          <div :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'" class="border rounded-md px-4 py-3 min-h-[100px]">
+            {{ lesson.description || 'No description provided' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="mt-8 flex justify-end">
+        <Link 
+          :href="route('admin.content.lessons.edit', lesson.slug)"
+          :class="isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'"
+          class="text-white px-6 py-2.5 rounded-md transition-colors font-medium"
+        >
+          Edit Lesson
+        </Link>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { Link } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const props = defineProps({
+  lesson: Object,
+})
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+const handleStorageChange = () => {
+  initializeDarkMode()
+}
+
+const handleAdminDarkModeChange = () => {
+  initializeDarkMode()
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleAdminDarkModeChange)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('adminDarkModeChanged', handleAdminDarkModeChange)
+})
+</script>

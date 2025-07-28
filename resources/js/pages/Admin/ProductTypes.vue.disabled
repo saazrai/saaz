@@ -1,0 +1,299 @@
+<template>
+    <AdminLayout title="Product Types Management">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Product Types</h1>
+                    <p :class="['mt-1', isDarkMode ? 'text-gray-400' : 'text-gray-600']">Manage product categorization and types</p>
+                </div>
+                <button @click="showCreateModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                    <PlusIcon class="h-5 w-5" />
+                    <span>Add Product Type</span>
+                </button>
+            </div>
+
+            <!-- Search and Filters -->
+            <div :class="['rounded-lg shadow-sm p-4 mb-6', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white']">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <input v-model="searchTerm" type="text" placeholder="Search product types..."
+                            :class="[
+                                'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                                isDarkMode 
+                                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                                    : 'border-gray-300'
+                            ]" />
+                    </div>
+                    <div class="flex gap-2">
+                        <select v-model="statusFilter"
+                            :class="[
+                                'px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                                isDarkMode 
+                                    ? 'bg-gray-700 border-gray-600 text-white' 
+                                    : 'border-gray-300'
+                            ]">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Types Table -->
+            <div :class="['rounded-lg shadow-sm overflow-hidden', isDarkMode ? 'bg-gray-800' : 'bg-white']">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead :class="[isDarkMode ? 'bg-gray-700' : 'bg-gray-50']">
+                        <tr>
+                            <th :class="['px-6 py-3 text-left text-xs font-medium uppercase tracking-wider', isDarkMode ? 'text-gray-300' : 'text-gray-500']">
+                                Name
+                            </th>
+                            <th :class="['px-6 py-3 text-left text-xs font-medium uppercase tracking-wider', isDarkMode ? 'text-gray-300' : 'text-gray-500']">
+                                Status
+                            </th>
+                            <th :class="['px-6 py-3 text-left text-xs font-medium uppercase tracking-wider', isDarkMode ? 'text-gray-300' : 'text-gray-500']">
+                                Products Count
+                            </th>
+                            <th :class="['px-6 py-3 text-right text-xs font-medium uppercase tracking-wider', isDarkMode ? 'text-gray-300' : 'text-gray-500']">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody :class="['divide-y', isDarkMode ? 'bg-gray-800 divide-gray-700' : 'bg-white divide-gray-200']">
+                        <tr v-for="productType in filteredProductTypes" :key="productType.id" :class="[isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50']">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div :class="['text-sm font-medium', isDarkMode ? 'text-white' : 'text-gray-900']">{{ productType.name }}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <Switch 
+                                    :checked="productType.is_active" 
+                                    @update:checked="(checked) => toggleStatus(productType, checked)"
+                                    :disabled="togglingStatus === productType.id"
+                                />
+                            </td>
+                            <td :class="['px-6 py-4 whitespace-nowrap text-sm', isDarkMode ? 'text-white' : 'text-gray-900']">
+                                {{ productType.products_count || 0 }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end space-x-2">
+                                    <button @click="editProductType(productType)"
+                                        :class="[isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-900']">
+                                        <PencilIcon class="h-4 w-4" />
+                                    </button>
+                                    <button @click="deleteProductType(productType)"
+                                        :class="[isDarkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-900']">
+                                        <TrashIcon class="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Empty State -->
+                <div v-if="filteredProductTypes.length === 0" class="text-center py-12">
+                    <div :class="[isDarkMode ? 'text-gray-400' : 'text-gray-500']">No product types found</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create/Edit Modal -->
+        <div v-if="showCreateModal || showEditModal"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div :class="['relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white']">
+                <div class="mt-3">
+                    <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">
+                        {{ showCreateModal ? 'Create Product Type' : 'Edit Product Type' }}
+                    </h3>
+
+                    <form @submit.prevent="saveProductType">
+                        <div class="mb-4">
+                            <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-300' : 'text-gray-700']">Name *</label>
+                            <input v-model="form.name" type="text" required
+                                :class="['w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'border-gray-300']"
+                                placeholder="Enter product type name" />
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="flex items-center">
+                                <input v-model="form.is_active" type="checkbox"
+                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" />
+                                <span :class="['ml-2 text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">Active</span>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" @click="cancelEdit"
+                                :class="['px-4 py-2 border rounded-md text-sm font-medium', isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50']">
+                                Cancel
+                            </button>
+                            <button type="submit" :disabled="form.processing"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+                                {{ form.processing ? 'Saving...' : (showCreateModal ? 'Create' : 'Update') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { router, useForm } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Switch } from '@/Components/shadcn/ui/switch'
+import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+// Initialize dark mode from localStorage
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+// Listen for dark mode changes
+const handleDarkModeChange = (event) => {
+  if (event.key === 'adminDarkMode') {
+    isDarkMode.value = JSON.parse(event.newValue || 'false')
+  }
+}
+
+const handleCustomDarkModeChange = (event) => {
+  isDarkMode.value = event.detail.isDarkMode
+}
+
+// Props
+const props = defineProps({
+    productTypes: {
+        type: Array,
+        default: () => []
+    }
+})
+
+// Reactive data
+const searchTerm = ref('')
+const statusFilter = ref('')
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
+const togglingStatus = ref(null)
+
+// Use Inertia's useForm for form handling
+const form = useForm({
+    name: '',
+    is_active: true
+})
+
+// Computed
+const filteredProductTypes = computed(() => {
+    let filtered = props.productTypes
+
+    if (searchTerm.value) {
+        const search = searchTerm.value.toLowerCase()
+        filtered = filtered.filter(item =>
+            item.name.toLowerCase().includes(search)
+        )
+    }
+
+    if (statusFilter.value) {
+        filtered = filtered.filter(item =>
+            statusFilter.value === 'active' ? item.is_active : !item.is_active
+        )
+    }
+
+    return filtered
+})
+
+// Methods
+const editProductType = (productType) => {
+    form.name = productType.name
+    form.is_active = productType.is_active
+    form.id = productType.id
+    showEditModal.value = true
+}
+
+const saveProductType = () => {
+    if (showCreateModal.value) {
+        form.post('/admin/product-types', {
+            onSuccess: () => {
+                cancelEdit()
+            },
+            onError: () => {
+                console.error('Error creating product type')
+            }
+        })
+    } else {
+        form.put(`/admin/product-types/${form.id}`, {
+            onSuccess: () => {
+                cancelEdit()
+            },
+            onError: () => {
+                console.error('Error updating product type')
+            }
+        })
+    }
+}
+
+const deleteProductType = (productType) => {
+    if (confirm(`Are you sure you want to delete "${productType.name}"?`)) {
+        router.delete(`/admin/product-types/${productType.id}`, {
+            onError: () => {
+                console.error('Error deleting product type')
+            }
+        })
+    }
+}
+
+// Toggle product type status
+const toggleStatus = async (productType, checked) => {
+    togglingStatus.value = productType.id
+    
+    try {
+        await router.patch(`/admin/product-types/${productType.id}/toggle-status`, {}, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+            onSuccess: () => {
+                // Update the product type status in the local data
+                productType.is_active = !productType.is_active
+            },
+            onError: (errors) => {
+                console.error('Failed to toggle status:', errors)
+            }
+        })
+    } catch (error) {
+        console.error('Error toggling status:', error)
+    } finally {
+        togglingStatus.value = null
+    }
+}
+
+const cancelEdit = () => {
+    showCreateModal.value = false
+    showEditModal.value = false
+    form.reset()
+}
+
+// Lifecycle
+onMounted(() => {
+    // Initialize dark mode
+    initializeDarkMode()
+    
+    // Listen for dark mode changes
+    window.addEventListener('storage', handleDarkModeChange)
+    window.addEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+
+onUnmounted(() => {
+    // Remove event listeners
+    window.removeEventListener('storage', handleDarkModeChange)
+    window.removeEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+</script>

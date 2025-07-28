@@ -1,0 +1,301 @@
+<template>
+    <AdminLayout title="Diagnostic Mode Details">
+        <div class="p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ mode.name }}</h1>
+                    <div class="flex space-x-3">
+                        <Link 
+                            :href="typeof route !== 'undefined' ? route('admin.diagnostic-modes.edit', mode.id) : `/admin/diagnostic-modes/${mode.id}/edit`"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+                        >
+                            Edit Mode
+                        </Link>
+                        <Link 
+                            :href="typeof route !== 'undefined' ? route('admin.diagnostic-modes.index') : '/admin/diagnostic-modes'"
+                            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg transition-colors"
+                        >
+                            Back to List
+                        </Link>
+                    </div>
+                </div>
+
+                <!-- Status Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Status</h3>
+                        <span :class="[
+                            'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium',
+                            mode.is_active 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                        ]">
+                            {{ mode.is_active ? 'Active' : 'Inactive' }}
+                        </span>
+                        <div v-if="mode.is_dev_only" class="mt-2">
+                            <span class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full text-sm font-medium">
+                                Dev Only
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Questions</h3>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ mode.question_count }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ mode.duration_minutes }} minutes</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Cooldown</h3>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ mode.cooldown_hours || 0 }}h</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Between attempts</p>
+                    </div>
+                </div>
+
+                <!-- Details Section -->
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Mode Details</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
+                            <p class="text-gray-900 dark:text-gray-100 font-mono">{{ mode.slug }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sort Order</label>
+                            <p class="text-gray-900 dark:text-gray-100">{{ mode.sort_order }}</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Color Scheme</label>
+                            <div class="flex items-center gap-2">
+                                <div :class="[
+                                    'w-6 h-6 rounded',
+                                    `bg-${mode.color_scheme}-500`
+                                ]"></div>
+                                <p class="text-gray-900 dark:text-gray-100 capitalize">{{ mode.color_scheme }}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
+                            <p class="text-gray-900 dark:text-gray-100">${{ mode.price || '0.00' }}</p>
+                        </div>
+
+                        <div v-if="mode.badge_text">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Badge Text</label>
+                            <p class="text-gray-900 dark:text-gray-100">{{ mode.badge_text }}</p>
+                        </div>
+
+                        <div v-if="mode.icon">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Icon</label>
+                            <p class="text-gray-900 dark:text-gray-100">{{ mode.icon }}</p>
+                        </div>
+                    </div>
+
+                    <div v-if="mode.description" class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                        <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap">{{ mode.description }}</p>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div v-if="mode.display_features && mode.display_features.length > 0" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Features</h2>
+                    <ul class="space-y-2">
+                        <li v-for="(feature, index) in mode.display_features" :key="index" class="flex items-start">
+                            <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">{{ feature }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Configuration Sections -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Domain Selection Configuration -->
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Domain Selection</h2>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Total Domains</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.domain_config.total_domains }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Questions per Domain</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.domain_config.questions_per_domain }}</p>
+                            </div>
+                            <div v-if="mode.domain_config.selection_strategy">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Selection Strategy</label>
+                                <div class="space-y-1">
+                                    <div v-for="(count, type) in mode.domain_config.selection_strategy" :key="type" class="flex justify-between text-sm">
+                                        <span class="text-gray-600 dark:text-gray-400 capitalize">{{ type }}:</span>
+                                        <span class="text-gray-900 dark:text-gray-100">{{ count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Selection Configuration -->
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Question Selection</h2>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Starting Bloom Level</label>
+                                <p class="text-gray-900 dark:text-gray-100">Level {{ mode.question_config.starting_bloom_level }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Adaptive Progression</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.question_config.adaptive_progression ? 'Enabled' : 'Disabled' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fallback Strategy</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.question_config.fallback_strategy }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Domain Balancing</label>
+                                <p class="text-gray-900 dark:text-gray-100 capitalize">{{ mode.question_config.domain_balancing }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Algorithm Configuration -->
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Algorithm Settings</h2>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Type</label>
+                                <p class="text-gray-900 dark:text-gray-100 capitalize">{{ mode.algorithm_config.type }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Features</label>
+                                <div class="space-y-1 mt-1">
+                                    <div class="flex items-center gap-2">
+                                        <span :class="mode.algorithm_config.adaptive_enabled ? 'text-green-600' : 'text-gray-400'">
+                                            {{ mode.algorithm_config.adaptive_enabled ? '✓' : '✗' }}
+                                        </span>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">Adaptive Enabled</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span :class="mode.algorithm_config.early_stopping ? 'text-green-600' : 'text-gray-400'">
+                                            {{ mode.algorithm_config.early_stopping ? '✓' : '✗' }}
+                                        </span>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">Early Stopping</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span :class="mode.algorithm_config.domain_balancing ? 'text-green-600' : 'text-gray-400'">
+                                            {{ mode.algorithm_config.domain_balancing ? '✓' : '✗' }}
+                                        </span>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">Domain Balancing</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timing Configuration -->
+                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Timing Settings</h2>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Strict Timing</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.timing_config.strict_timing ? 'Enabled' : 'Disabled' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pause Allowed</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.timing_config.pause_allowed ? 'Yes' : 'No' }}</p>
+                            </div>
+                            <div v-if="mode.timing_config.time_warnings && mode.timing_config.time_warnings.length > 0">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Time Warnings</label>
+                                <p class="text-gray-900 dark:text-gray-100">{{ mode.timing_config.time_warnings.join(', ') }} minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Early Termination Configuration -->
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Early Termination Rules</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">General Settings</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Enabled:</span>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ mode.termination_config.enabled ? 'Yes' : 'No' }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Min Questions:</span>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ mode.termination_config.min_questions }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Mastery Threshold:</span>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ (mode.termination_config.mastery_threshold * 100).toFixed(0) }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="mode.termination_config.poor_performance">
+                            <h3 class="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">Poor Performance Rules</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Consecutive Failures:</span>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ mode.termination_config.poor_performance.consecutive_failures }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Accuracy Threshold:</span>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ (mode.termination_config.poor_performance.accuracy_threshold * 100).toFixed(0) }}%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Min Before Stop:</span>
+                                    <span class="text-gray-900 dark:text-gray-100">{{ mode.termination_config.poor_performance.min_questions_before_stop }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation Status -->
+                <div v-if="mode.validation_errors && mode.validation_errors.length > 0" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-3">Configuration Errors</h2>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li v-for="(error, index) in mode.validation_errors" :key="index" class="text-red-700 dark:text-red-300">
+                            {{ error }}
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Timestamps -->
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Timestamps</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Created At</label>
+                            <p class="text-gray-900 dark:text-gray-100">{{ formatDate(mode.created_at) }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Updated</label>
+                            <p class="text-gray-900 dark:text-gray-100">{{ formatDate(mode.updated_at) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { Link } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import moment from 'moment';
+
+const props = defineProps({
+    mode: Object
+});
+
+const formatDate = (date) => {
+    return moment(date).format('MMM DD, YYYY HH:mm');
+};
+</script>

@@ -1,0 +1,386 @@
+<template>
+  <AdminLayout pageTitle="Diagnostic Items">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Inline Flash Messages -->
+      <InlineFlashMessage />
+
+      <!-- Dashboard Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Diagnostic Items</h1>
+          <p :class="isDarkMode ? 'text-gray-300' : 'text-gray-600'">Manage your diagnostic item bank</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+          <Button variant="outline" size="sm" @click="navigateTo(route('admin.diagnostics.items.import'))">
+            <Upload class="mr-2 h-4 w-4" />
+            Import Items
+          </Button>
+          <Button size="sm" @click="navigateTo(route('admin.diagnostics.items.create'))">
+            <Plus class="mr-2 h-4 w-4" />
+            Add Item
+          </Button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Items -->
+        <Card :class="[
+          'hover:shadow-lg transition-shadow cursor-pointer shadow-sm',
+          isDarkMode 
+            ? 'bg-gray-800 border-gray-700 shadow-gray-900/20' 
+            : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-100' : 'text-gray-900'
+            ]">Total Items</CardTitle>
+            <FileText :class="[
+              'h-4 w-4',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]" />
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ items.total }}</div>
+            <p :class="[
+              'text-xs',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              Items in question bank
+            </p>
+          </CardContent>
+        </Card>
+        
+        <!-- Published Items -->
+        <Card :class="[
+          'hover:shadow-lg transition-shadow cursor-pointer shadow-sm',
+          isDarkMode 
+            ? 'bg-gray-800 border-gray-700 shadow-gray-900/20' 
+            : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-100' : 'text-gray-900'
+            ]">Published Items</CardTitle>
+            <CheckCircle :class="[
+              'h-4 w-4',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]" />
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ items.data?.filter(item => item.status === 'published').length || 0 }}</div>
+            <p :class="[
+              'text-xs',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              <span :class="isDarkMode ? 'text-green-400' : 'text-green-600'">{{ Math.round((items.data?.filter(item => item.status === 'published').length / items.total) * 100) || 0 }}%</span> of total
+            </p>
+          </CardContent>
+        </Card>
+        
+        <!-- Technical Items -->
+        <Card :class="[
+          'hover:shadow-lg transition-shadow cursor-pointer shadow-sm',
+          isDarkMode 
+            ? 'bg-gray-800 border-gray-700 shadow-gray-900/20' 
+            : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-100' : 'text-gray-900'
+            ]">Technical Items</CardTitle>
+            <Cpu :class="[
+              'h-4 w-4',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]" />
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ items.data?.filter(item => item.dimension === 'Technical').length || 0 }}</div>
+            <p :class="[
+              'text-xs',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              Technical dimension
+            </p>
+          </CardContent>
+        </Card>
+        
+        <!-- Domains Covered -->
+        <Card :class="[
+          'hover:shadow-lg transition-shadow cursor-pointer shadow-sm',
+          isDarkMode 
+            ? 'bg-gray-800 border-gray-700 shadow-gray-900/20' 
+            : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-100' : 'text-gray-900'
+            ]">Domains Covered</CardTitle>
+            <Layers :class="[
+              'h-4 w-4',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]" />
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ uniqueDomainsCount }}</div>
+            <p :class="[
+              'text-xs',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              Knowledge domains
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Items Table -->
+      <Card :class="[
+        'shadow-sm',
+        isDarkMode 
+          ? 'bg-gray-800 border-gray-700 shadow-gray-900/20' 
+          : 'bg-white border-gray-200'
+      ]">
+        <CardHeader>
+          <CardTitle :class="isDarkMode ? 'text-gray-100' : 'text-gray-900'">All Diagnostic Items</CardTitle>
+          <CardDescription :class="isDarkMode ? 'text-gray-400' : 'text-gray-600'">A list of all diagnostic items in your item bank</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow :class="isDarkMode ? 'border-gray-700' : 'border-gray-200'">
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">ID</TableHead>
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">Question</TableHead>
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">Domain</TableHead>
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">Topic</TableHead>
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">Type</TableHead>
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">Dimension</TableHead>
+                <TableHead :class="isDarkMode ? 'text-gray-400' : 'text-gray-700'">Status</TableHead>
+                <TableHead :class="['text-right', isDarkMode ? 'text-gray-400' : 'text-gray-700']">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="item in items.data" :key="item.id" :class="[isDarkMode ? 'border-gray-700 hover:bg-gray-750' : 'border-gray-200 hover:bg-gray-50', 'cursor-pointer']">
+                <TableCell @click="viewItem(item)" :class="isDarkMode ? 'text-gray-300' : 'text-gray-900'">{{ item.id }}</TableCell>
+                <TableCell @click="viewItem(item)" :class="['max-w-xs truncate', isDarkMode ? 'text-gray-300' : 'text-gray-900']">{{ stripHtml(item.content) }}</TableCell>
+                <TableCell @click="viewItem(item)" :class="isDarkMode ? 'text-gray-300' : 'text-gray-900'">{{ item.topic?.domain?.name || 'N/A' }}</TableCell>
+                <TableCell @click="viewItem(item)" :class="isDarkMode ? 'text-gray-300' : 'text-gray-900'">{{ item.topic?.name || 'N/A' }}</TableCell>
+                <TableCell @click="viewItem(item)" :class="isDarkMode ? 'text-gray-300' : 'text-gray-900'">{{ item.type?.name || 'N/A' }}</TableCell>
+                <TableCell @click="viewItem(item)">
+                  <span :class="[
+                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                    item.dimension === 'Technical' 
+                      ? (isDarkMode ? 'bg-blue-900/50 text-blue-300 border border-blue-700' : 'bg-blue-100 text-blue-700 border border-blue-300')
+                      : (isDarkMode ? 'bg-gray-700 text-gray-300 border border-gray-600' : 'bg-gray-100 text-gray-700 border border-gray-300')
+                  ]">
+                    {{ item.dimension }}
+                  </span>
+                </TableCell>
+                <TableCell @click="viewItem(item)">
+                  <span :class="getStatusBadgeClass(item.status)">
+                    {{ item.status }}
+                  </span>
+                </TableCell>
+                <TableCell class="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal class="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" :class="isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'">
+                      <DropdownMenuItem @click="viewItem(item)" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">
+                        <Eye class="mr-2 h-4 w-4" />
+                        View
+                      </DropdownMenuItem>
+                      <DropdownMenuItem @click="navigateTo(route('admin.diagnostics.items.edit', item.id))" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">
+                        <Edit class="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator :class="isDarkMode ? 'bg-gray-700' : 'bg-gray-200'" />
+                      <DropdownMenuItem @click="deleteItem(item.id)" :class="['text-red-600', isDarkMode ? 'text-red-400 hover:bg-gray-700' : 'hover:bg-gray-100']">
+                        <Trash2 class="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex items-center justify-between">
+            <p :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+              Showing {{ items.from }} to {{ items.to }} of {{ items.total }} results
+            </p>
+            <div class="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="!items.prev_page_url"
+                @click="changePage(items.current_page - 1)"
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="!items.next_page_url"
+                @click="changePage(items.current_page + 1)"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { computed, onMounted, onUnmounted } from 'vue'
+import { router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import InlineFlashMessage from '@/Components/InlineFlashMessage.vue'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
+import { Button } from '@/Components/shadcn/ui/button'
+import { Badge } from '@/Components/shadcn/ui/badge'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/Components/shadcn/ui/table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/Components/shadcn/ui/dropdown-menu'
+import { Plus, MoreHorizontal, Eye, Edit, Trash2, Upload, FileText, CheckCircle, Cpu, Layers } from 'lucide-vue-next'
+
+const props = defineProps({
+  items: Object,
+})
+
+// Dark mode state
+const isDarkMode = computed(() => {
+  return localStorage.getItem('adminDarkMode') === 'true'
+})
+
+// Listen for dark mode changes
+onMounted(() => {
+  // Force reactivity update when storage changes
+  const handleStorageChange = (e) => {
+    if (e.key === 'adminDarkMode') {
+      // Trigger component re-render
+      window.dispatchEvent(new Event('adminDarkModeChanged'))
+    }
+  }
+  
+  const handleCustomDarkModeChange = () => {
+    // Force computed property to re-evaluate
+    window.dispatchEvent(new Event('storage'))
+  }
+  
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+  
+  // Cleanup
+  onUnmounted(() => {
+    window.removeEventListener('storage', handleStorageChange)
+    window.removeEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+  })
+})
+
+const uniqueDomainsCount = computed(() => {
+  const domains = new Set()
+  props.items.data?.forEach(item => {
+    if (item.topic?.domain?.name) {
+      domains.add(item.topic.domain.name)
+    }
+  })
+  return domains.size
+})
+
+const stripHtml = (html) => {
+  const tmp = document.createElement('div')
+  tmp.innerHTML = html
+  return tmp.textContent || tmp.innerText || ''
+}
+
+const getStatusVariant = (status) => {
+  // For shadcn Badge component, we return variant prop
+  const variants = {
+    'published': 'default',
+    'draft': 'secondary',
+    'retired': 'destructive',
+  }
+  return variants[status] || 'outline'
+}
+
+const getStatusBadgeClass = (status) => {
+  // For custom badge styling with dark mode
+  const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium'
+  
+  if (!status) {
+    return `${baseClasses} ${isDarkMode.value 
+      ? 'bg-gray-700 text-gray-300 border border-gray-600' 
+      : 'bg-gray-100 text-gray-700 border border-gray-300'}`
+  }
+  
+  const variants = {
+    'published': isDarkMode.value 
+      ? 'bg-green-900/50 text-green-300 border border-green-700' 
+      : 'bg-green-100 text-green-700 border border-green-300',
+    'draft': isDarkMode.value 
+      ? 'bg-gray-700 text-gray-300 border border-gray-600' 
+      : 'bg-gray-100 text-gray-700 border border-gray-300',
+    'retired': isDarkMode.value 
+      ? 'bg-red-900/50 text-red-300 border border-red-700' 
+      : 'bg-red-100 text-red-700 border border-red-300',
+  }
+  
+  return `${baseClasses} ${variants[status] || (isDarkMode.value 
+    ? 'bg-gray-700 text-gray-300 border border-gray-600' 
+    : 'bg-gray-100 text-gray-700 border border-gray-300')}`
+}
+
+const navigateTo = (url) => {
+  router.visit(url)
+}
+
+const viewItem = (item) => {
+  router.visit(route('admin.diagnostics.items.show', item.id))
+}
+
+const changePage = (page) => {
+  router.get(route('admin.diagnostics.items.index', { page: page }))
+}
+
+const deleteItem = (id) => {
+  if (confirm('Are you sure you want to delete this diagnostic item?')) {
+    router.delete(route('admin.diagnostics.items.destroy', id))
+  }
+}
+</script> 

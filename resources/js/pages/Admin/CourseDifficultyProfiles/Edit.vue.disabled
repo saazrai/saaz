@@ -1,0 +1,470 @@
+<template>
+    <AdminLayout pageTitle="Edit Course Difficulty Profile">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 :class="[
+                    'text-2xl font-bold',
+                    isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                ]">Edit Course Difficulty Profile</h1>
+                <p :class="[
+                    'mt-1',
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                ]">Update adaptive learning parameters for {{ profile.course_name }}</p>
+            </div>
+
+            <form @submit.prevent="submit" class="space-y-8">
+                <!-- Course Information (Read-only) -->
+                <div :class="[
+                    'shadow rounded-lg p-6',
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                ]">
+                    <h2 :class="[
+                        'text-lg font-medium mb-4',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">Course Information</h2>
+                    <div>
+                        <label :class="[
+                            'block text-sm font-medium mb-2',
+                            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                        ]">Course</label>
+                        <p :class="[
+                            isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                        ]">{{ profile.course_name }} (ID: {{ profile.course_id }})</p>
+                    </div>
+                </div>
+
+                <!-- Basic Settings -->
+                <div :class="[
+                    'shadow rounded-lg p-6',
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                ]">
+                    <h2 :class="[
+                        'text-lg font-medium mb-4',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">Basic Settings</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Base Difficulty (1-5)</label>
+                            <input
+                                v-model.number="form.base_difficulty"
+                                type="number"
+                                min="1"
+                                max="5"
+                                :class="[
+                                    'mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                    isDarkMode 
+                                        ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                                        : 'bg-white border-gray-300 text-gray-900'
+                                ]"
+                                required
+                            />
+                            <p :class="[
+                                'mt-1 text-xs',
+                                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                            ]">1 = Beginner, 5 = Expert</p>
+                        </div>
+
+                        <div>
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Scenario Complexity</label>
+                            <select
+                                v-model="form.scenario_complexity"
+                                :class="[
+                                    'mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                    isDarkMode 
+                                        ? 'bg-gray-700 border-gray-600 text-gray-100' 
+                                        : 'bg-white border-gray-300 text-gray-900'
+                                ]"
+                                required
+                            >
+                                <option value="low">Low - Simple scenarios</option>
+                                <option value="medium">Medium - Multi-step scenarios</option>
+                                <option value="high">High - Complex scenarios</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Time Pressure Factor</label>
+                            <input
+                                v-model.number="form.time_pressure_factor"
+                                type="number"
+                                min="0.5"
+                                max="2"
+                                step="0.1"
+                                :class="[
+                                    'mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                    isDarkMode 
+                                        ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                                        : 'bg-white border-gray-300 text-gray-900'
+                                ]"
+                                required
+                            />
+                            <p :class="[
+                                'mt-1 text-xs',
+                                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                            ]">1.0 = Normal, >1 = More pressure</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloom's Taxonomy Distribution -->
+                <div :class="[
+                    'shadow rounded-lg p-6',
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                ]">
+                    <h2 :class="[
+                        'text-lg font-medium mb-4',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">Bloom's Taxonomy Distribution</h2>
+                    <p :class="[
+                        'text-sm mb-4',
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    ]">Set the percentage distribution for each cognitive level. Total must equal 100%.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div v-for="level in bloomLevels" :key="level.key">
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">{{ level.label }}</label>
+                            <div class="flex items-center">
+                                <input
+                                    v-model.number="form[level.key]"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    @input="updateBloomPercentage(level.key)"
+                                    :class="[
+                                        'block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                        isDarkMode 
+                                            ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                                            : 'bg-white border-gray-300 text-gray-900'
+                                    ]"
+                                    required
+                                />
+                                <span :class="[
+                                    'ml-2',
+                                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                                ]">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between">
+                            <span :class="[
+                                'text-sm font-medium',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Total:</span>
+                            <span :class="[
+                                'text-sm font-bold', 
+                                bloomTotal === 100 
+                                    ? (isDarkMode ? 'text-green-400' : 'text-green-600')
+                                    : (isDarkMode ? 'text-red-400' : 'text-red-600')
+                            ]">
+                                {{ bloomTotal }}%
+                            </span>
+                        </div>
+                        <p v-if="errors.bloom_distribution" :class="[
+                            'mt-1 text-sm',
+                            isDarkMode ? 'text-red-400' : 'text-red-600'
+                        ]">{{ errors.bloom_distribution }}</p>
+                    </div>
+                </div>
+
+                <!-- Mastery Weights -->
+                <div :class="[
+                    'shadow rounded-lg p-6',
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                ]">
+                    <h2 :class="[
+                        'text-lg font-medium mb-4',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">Mastery Dimension Weights</h2>
+                    <p :class="[
+                        'text-sm mb-4',
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    ]">Set the weight for each mastery dimension. Total must equal 100%.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div v-for="weight in masteryWeights" :key="weight.key">
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">{{ weight.label }}</label>
+                            <div class="flex items-center">
+                                <input
+                                    v-model.number="form[weight.key]"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    @input="updateWeightPercentage(weight.key)"
+                                    :class="[
+                                        'block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                        isDarkMode 
+                                            ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                                            : 'bg-white border-gray-300 text-gray-900'
+                                    ]"
+                                    required
+                                />
+                                <span :class="[
+                                    'ml-2',
+                                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                                ]">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between">
+                            <span :class="[
+                                'text-sm font-medium',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Total:</span>
+                            <span :class="[
+                                'text-sm font-bold', 
+                                weightTotal === 100 
+                                    ? (isDarkMode ? 'text-green-400' : 'text-green-600')
+                                    : (isDarkMode ? 'text-red-400' : 'text-red-600')
+                            ]">
+                                {{ weightTotal }}%
+                            </span>
+                        </div>
+                        <p v-if="errors.mastery_weights" :class="[
+                            'mt-1 text-sm',
+                            isDarkMode ? 'text-red-400' : 'text-red-600'
+                        ]">{{ errors.mastery_weights }}</p>
+                    </div>
+                </div>
+
+                <!-- Thresholds and Requirements -->
+                <div :class="[
+                    'shadow rounded-lg p-6',
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                ]">
+                    <h2 :class="[
+                        'text-lg font-medium mb-4',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">Thresholds and Requirements</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Minimum Accuracy (%)</label>
+                            <input
+                                v-model.number="form.minimum_accuracy"
+                                type="number"
+                                min="0"
+                                max="100"
+                                step="1"
+                                :class="[
+                                    'mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                    isDarkMode 
+                                        ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                                        : 'bg-white border-gray-300 text-gray-900'
+                                ]"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label :class="[
+                                'block text-sm font-medium mb-2',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                            ]">Consecutive Successes Required</label>
+                            <input
+                                v-model.number="form.consecutive_success_required"
+                                type="number"
+                                min="1"
+                                max="10"
+                                :class="[
+                                    'mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-colors',
+                                    isDarkMode 
+                                        ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                                        : 'bg-white border-gray-300 text-gray-900'
+                                ]"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-end space-x-3">
+                    <Link
+                        :href="route('admin.settings.learning.course-difficulty-profiles.index')"
+                        :class="[
+                            'px-4 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors',
+                            isDarkMode 
+                                ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600' 
+                                : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+                        ]"
+                    >
+                        Cancel
+                    </Link>
+                    <button
+                        type="submit"
+                        :disabled="processing"
+                        :class="[
+                            'px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors',
+                            isDarkMode 
+                                ? 'bg-blue-600 hover:bg-blue-700' 
+                                : 'bg-blue-600 hover:bg-blue-700'
+                        ]"
+                    >
+                        {{ processing ? 'Saving...' : 'Save Changes' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, reactive, onMounted } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+
+const props = defineProps({
+    profile: Object,
+    courses: Array,
+    errors: Object,
+});
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+const bloomLevels = [
+    { key: 'bloom_remember', label: 'Remember' },
+    { key: 'bloom_understand', label: 'Understand' },
+    { key: 'bloom_apply', label: 'Apply' },
+    { key: 'bloom_analyze', label: 'Analyze' },
+    { key: 'bloom_evaluate', label: 'Evaluate' },
+    { key: 'bloom_create', label: 'Create' },
+];
+
+const masteryWeights = [
+    { key: 'weight_accuracy', label: 'Accuracy' },
+    { key: 'weight_consistency', label: 'Consistency' },
+    { key: 'weight_depth', label: 'Depth' },
+    { key: 'weight_transfer', label: 'Transfer' },
+    { key: 'weight_retention', label: 'Retention' },
+    { key: 'weight_speed', label: 'Speed' },
+];
+
+const form = reactive({
+    base_difficulty: props.profile.base_difficulty || 3,
+    scenario_complexity: props.profile.scenario_complexity || 'medium',
+    time_pressure_factor: props.profile.time_pressure_factor || 1.0,
+    
+    // Bloom levels (convert to percentages)
+    bloom_remember: (props.profile.bloom_remember || 0) * 100,
+    bloom_understand: (props.profile.bloom_understand || 0) * 100,
+    bloom_apply: (props.profile.bloom_apply || 0) * 100,
+    bloom_analyze: (props.profile.bloom_analyze || 0) * 100,
+    bloom_evaluate: (props.profile.bloom_evaluate || 0) * 100,
+    bloom_create: (props.profile.bloom_create || 0) * 100,
+    
+    // Mastery weights (convert to percentages)
+    weight_accuracy: (props.profile.weight_accuracy || 0) * 100,
+    weight_consistency: (props.profile.weight_consistency || 0) * 100,
+    weight_depth: (props.profile.weight_depth || 0) * 100,
+    weight_transfer: (props.profile.weight_transfer || 0) * 100,
+    weight_retention: (props.profile.weight_retention || 0) * 100,
+    weight_speed: (props.profile.weight_speed || 0) * 100,
+    
+    // Thresholds
+    minimum_accuracy: (props.profile.minimum_accuracy || 0) * 100,
+    consecutive_success_required: props.profile.consecutive_success_required || 3,
+});
+
+const processing = ref(false);
+
+const bloomTotal = computed(() => {
+    const total = (form.bloom_remember || 0) + (form.bloom_understand || 0) + (form.bloom_apply || 0) +
+        (form.bloom_analyze || 0) + (form.bloom_evaluate || 0) + (form.bloom_create || 0);
+    return Math.round(total);
+});
+
+const weightTotal = computed(() => {
+    const total = (form.weight_accuracy || 0) + (form.weight_consistency || 0) + (form.weight_depth || 0) +
+        (form.weight_transfer || 0) + (form.weight_retention || 0) + (form.weight_speed || 0);
+    return Math.round(total);
+});
+
+const updateBloomPercentage = (key) => {
+    form[key] = Math.max(0, Math.min(100, form[key]));
+};
+
+const updateWeightPercentage = (key) => {
+    form[key] = Math.max(0, Math.min(100, form[key]));
+};
+
+const submit = () => {
+    processing.value = true;
+    
+    // Convert percentages back to decimals
+    const data = {
+        ...form,
+        bloom_remember: form.bloom_remember / 100,
+        bloom_understand: form.bloom_understand / 100,
+        bloom_apply: form.bloom_apply / 100,
+        bloom_analyze: form.bloom_analyze / 100,
+        bloom_evaluate: form.bloom_evaluate / 100,
+        bloom_create: form.bloom_create / 100,
+        weight_accuracy: form.weight_accuracy / 100,
+        weight_consistency: form.weight_consistency / 100,
+        weight_depth: form.weight_depth / 100,
+        weight_transfer: form.weight_transfer / 100,
+        weight_retention: form.weight_retention / 100,
+        weight_speed: form.weight_speed / 100,
+        minimum_accuracy: form.minimum_accuracy / 100,
+    };
+    
+    // Use the URL directly to avoid Ziggy parameter issues
+    router.patch(`/admin/settings/learning/course-difficulty-profiles/${props.profile.id}`, data, {
+        onFinish: () => {
+            processing.value = false;
+        },
+        onError: (errors) => {
+            console.error('Update errors:', errors);
+        }
+    });
+};
+</script>

@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, \OwenIt\Auditing\Auditable;
+    use HasFactory, Notifiable, \OwenIt\Auditing\Auditable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +27,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'avatar',
         'email_verified_at',
         'ui_preferences',
+        'is_active',
+        'last_login_at',
+        'login_count',
     ];
 
     /**
@@ -49,6 +53,9 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'ui_preferences' => 'array',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
+            'login_count' => 'integer',
         ];
     }
 
@@ -151,5 +158,13 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         }
 
         return false;
+    }
+
+    /**
+     * Diagnostic responses relationship
+     */
+    public function diagnosticResponses()
+    {
+        return $this->hasMany(DiagnosticResponse::class);
     }
 }

@@ -1,0 +1,170 @@
+<template>
+  <AdminLayout>
+    <div class="p-6">
+      <div class="mb-6">
+        <nav class="flex" aria-label="Breadcrumb">
+          <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li>
+              <Link :href="route('admin.content.lessons.index')" :class="isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'">
+                Lessons
+              </Link>
+            </li>
+            <li>
+              <div class="flex items-center">
+                <svg :class="isDarkMode ? 'text-gray-500' : 'text-gray-400'" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span :class="isDarkMode ? 'text-gray-400' : 'text-gray-500'" class="ml-1 text-sm font-medium">Edit Lesson</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <h1 :class="isDarkMode ? 'text-white' : 'text-gray-900'" class="mt-4 text-2xl font-bold">Edit Lesson</h1>
+        <p :class="isDarkMode ? 'text-gray-400' : 'text-gray-600'" class="mt-1 text-sm">Update lesson information</p>
+      </div>
+
+      <div :class="isDarkMode ? 'bg-gray-800' : 'bg-white'" class="shadow-sm rounded-lg">
+        <form @submit.prevent="submit" class="p-6 space-y-6">
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" for="name" class="block text-sm font-medium">Lesson Name</label>
+            <input 
+              id="name"
+              v-model="form.name" 
+              type="text"
+              :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500' : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'"
+              class="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+              placeholder="Enter lesson name"
+              required 
+            />
+            <div v-if="form.errors.name" class="mt-2 text-sm text-red-600">{{ form.errors.name }}</div>
+          </div>
+
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" for="domain_id" class="block text-sm font-medium">Domain</label>
+            <select 
+              id="domain_id"
+              v-model="form.domain_id" 
+              :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500' : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'"
+              class="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+              required
+            >
+              <option value="">Select a domain</option>
+              <option 
+                v-for="domain in domains" 
+                :key="domain.id" 
+                :value="domain.id"
+              >
+                {{ domain.name }} ({{ domain.course?.name || 'No Course' }})
+              </option>
+            </select>
+            <div v-if="form.errors.domain_id" class="mt-2 text-sm text-red-600">{{ form.errors.domain_id }}</div>
+          </div>
+          
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" for="code" class="block text-sm font-medium">Lesson Code</label>
+            <input 
+              id="code"
+              v-model="form.code" 
+              type="text"
+              :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500' : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'"
+              class="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+              placeholder="Enter lesson code (optional)"
+            />
+            <div v-if="form.errors.code" class="mt-2 text-sm text-red-600">{{ form.errors.code }}</div>
+          </div>
+
+          <div>
+            <label :class="isDarkMode ? 'text-gray-300' : 'text-gray-700'" for="number" class="block text-sm font-medium">Lesson Number</label>
+            <input 
+              id="number"
+              v-model="form.number" 
+              type="number"
+              :class="isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500' : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'"
+              class="mt-1 block w-full rounded-md shadow-sm sm:text-sm"
+              placeholder="Enter lesson number (optional)"
+              min="1"
+            />
+            <div v-if="form.errors.number" class="mt-2 text-sm text-red-600">{{ form.errors.number }}</div>
+          </div>
+
+          <div class="flex justify-end space-x-3">
+            <Link 
+              :href="route('admin.content.lessons.index')" 
+              :class="isDarkMode ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600 focus:ring-blue-500' : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-indigo-500'"
+              class="inline-flex items-center px-4 py-2 border shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+            >
+              Cancel
+            </Link>
+            <button 
+              type="submit" 
+              :disabled="form.processing"
+              :class="isDarkMode ? 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500' : 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500'"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50"
+            >
+              <svg v-if="form.processing" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              {{ form.processing ? 'Updating...' : 'Update Lesson' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { useForm, Link } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const props = defineProps({
+  lesson: Object,
+  domains: Array
+})
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+const handleStorageChange = () => {
+  initializeDarkMode()
+}
+
+const handleAdminDarkModeChange = () => {
+  initializeDarkMode()
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleAdminDarkModeChange)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('adminDarkModeChanged', handleAdminDarkModeChange)
+})
+
+const form = useForm({
+  name: props.lesson.name || '',
+  domain_id: props.lesson.domain_id || '',
+  code: props.lesson.code || '',
+  number: props.lesson.number || null,
+})
+
+function submit() {
+  form.put(route('admin.content.lessons.update', props.lesson.id), {
+    onSuccess: () => {
+      // Form will redirect on success
+    }
+  })
+}
+</script>

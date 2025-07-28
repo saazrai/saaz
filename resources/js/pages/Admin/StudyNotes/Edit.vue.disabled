@@ -1,0 +1,589 @@
+<template>
+  <AdminLayout page-title="Edit Study Note">
+    <div :class="['p-6', isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900']">
+      <!-- Breadcrumb -->
+      <div class="mb-6">
+        <nav class="flex" aria-label="Breadcrumb">
+          <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li>
+              <Link :href="route('admin.content.study-notes.index')" :class="[
+                'transition-colors',
+                isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
+              ]">
+                Study Notes
+              </Link>
+            </li>
+            <li>
+              <div class="flex items-center">
+                <svg :class="['w-6 h-6', isDarkMode ? 'text-gray-500' : 'text-gray-400']" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span :class="[
+                  'ml-1 text-sm font-medium',
+                  isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                ]">Edit Study Note</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 :class="[
+              'mt-4 text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Edit Study Note</h1>
+            <p :class="[
+              'mt-1 text-sm',
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              Topic: {{ studyNote.topic?.name }} | Version: {{ studyNote.version || 1 }}
+            </p>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex gap-2">
+            <button
+              @click="togglePreview"
+              :class="[
+                'inline-flex items-center px-4 py-2 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2',
+                isDarkMode 
+                  ? 'border-gray-600 text-gray-300 bg-gray-800 hover:bg-gray-700 focus:ring-gray-500' 
+                  : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-gray-500'
+              ]"
+            >
+              <Eye v-if="!showPreview" class="h-4 w-4 mr-2" />
+              <EyeOff v-else class="h-4 w-4 mr-2" />
+              {{ showPreview ? 'Edit Mode' : 'Preview' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div :class="[
+        'shadow-sm rounded-lg',
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      ]">
+        <!-- Preview Mode -->
+        <div v-if="showPreview" :class="[
+          'p-6',
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        ]">
+          <div :class="[
+            'prose prose-md max-w-none',
+            isDarkMode ? 'prose-invert' : ''
+          ]" v-html="markdownToHtml(form.content)"></div>
+        </div>
+        
+        <!-- Edit Mode -->
+        <form v-else @submit.prevent="submit" :class="[
+          'p-6 space-y-6',
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        ]">
+          <!-- Basic Info -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="title" :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-200' : 'text-gray-700'
+              ]">Title *</label>
+              <input 
+                id="title"
+                v-model="form.title" 
+                type="text"
+                :class="[
+                  'mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                  isDarkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                ]"
+                required
+              />
+              <div v-if="form.errors.title" class="mt-2 text-sm text-red-600">{{ form.errors.title }}</div>
+            </div>
+            
+            <div>
+              <label for="level" :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-200' : 'text-gray-700'
+              ]">Level *</label>
+              <select 
+                id="level"
+                v-model="form.level" 
+                :class="[
+                  'mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                  isDarkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                ]"
+                required
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+              <div v-if="form.errors.level" class="mt-2 text-sm text-red-600">{{ form.errors.level }}</div>
+            </div>
+          </div>
+          
+          <!-- Status and Reading Time -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="flex items-center">
+                <input
+                  v-model="form.is_active"
+                  type="checkbox"
+                  :class="[
+                    'h-4 w-4 text-indigo-600 focus:ring-indigo-500 rounded',
+                    isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'
+                  ]"
+                />
+                <span :class="[
+                  'ml-2 text-sm font-medium',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-700'
+                ]">Active</span>
+              </label>
+              <p :class="[
+                'mt-1 text-xs',
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+              ]">
+                Inactive study notes won't be shown to students
+              </p>
+            </div>
+            
+            <div>
+              <label for="estimated_read_time" :class="[
+                'block text-sm font-medium',
+                isDarkMode ? 'text-gray-200' : 'text-gray-700'
+              ]">
+                Estimated Read Time (seconds)
+              </label>
+              <input 
+                id="estimated_read_time"
+                v-model.number="form.estimated_read_time" 
+                type="number"
+                min="60"
+                step="60"
+                :class="[
+                  'mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                  isDarkMode 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    : 'bg-white border-gray-300 text-gray-900'
+                ]"
+              />
+              <p :class="[
+                'mt-1 text-xs',
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+              ]">
+                {{ Math.round(form.estimated_read_time / 60) }} minutes
+              </p>
+            </div>
+          </div>
+          
+          <!-- AI Prompt -->
+          <div>
+            <label for="ai_prompt" :class="[
+              'block text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">
+              AI Prompt (for regeneration)
+            </label>
+            <textarea 
+              id="ai_prompt"
+              v-model="form.ai_prompt" 
+              rows="3"
+              :class="[
+                'mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+              placeholder="Custom prompt used when refreshing content with AI"
+            ></textarea>
+            <div v-if="form.errors.ai_prompt" class="mt-2 text-sm text-red-600">{{ form.errors.ai_prompt }}</div>
+          </div>
+          
+          <!-- Learning Objectives -->
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">
+              Learning Objectives
+            </label>
+            <div class="space-y-2">
+              <div v-for="(objective, index) in form.learning_objectives" :key="index" class="flex gap-2">
+                <input
+                  v-model="form.learning_objectives[index]"
+                  type="text"
+                  :class="[
+                    'flex-1 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                      : 'bg-white border-gray-300 text-gray-900'
+                  ]"
+                  placeholder="Enter learning objective"
+                />
+                <button
+                  @click="removeObjective(index)"
+                  type="button"
+                  :class="[
+                    'hover:text-red-800',
+                    isDarkMode ? 'text-red-400' : 'text-red-600'
+                  ]"
+                >
+                  <X class="h-5 w-5" />
+                </button>
+              </div>
+              <button
+                @click="addObjective"
+                type="button"
+                :class="[
+                  'inline-flex items-center px-3 py-1 border shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+                  isDarkMode 
+                    ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600' 
+                    : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+                ]"
+              >
+                <Plus class="h-4 w-4 mr-1" />
+                Add Objective
+              </button>
+            </div>
+          </div>
+          
+          <!-- Content Editor -->
+          <div>
+            <label for="content" :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">
+              Content (Markdown) *
+            </label>
+            <div :class="[
+              'border rounded-md overflow-hidden',
+              isDarkMode ? 'border-gray-600' : 'border-gray-300'
+            ]">
+              <div :class="[
+                'px-4 py-2 border-b',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600' 
+                  : 'bg-gray-50 border-gray-300'
+              ]">
+                <div :class="[
+                  'flex items-center gap-4 text-sm',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                ]">
+                  <span>Markdown Editor</span>
+                  <div class="flex items-center gap-2 ml-auto">
+                    <button
+                      @click.prevent="insertMarkdown('**', '**')"
+                      type="button"
+                      :class="[
+                        'px-2 py-1 rounded',
+                        isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
+                      ]"
+                      title="Bold"
+                    >
+                      <strong>B</strong>
+                    </button>
+                    <button
+                      @click.prevent="insertMarkdown('*', '*')"
+                      type="button"
+                      :class="[
+                        'px-2 py-1 rounded',
+                        isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
+                      ]"
+                      title="Italic"
+                    >
+                      <em>I</em>
+                    </button>
+                    <button
+                      @click.prevent="insertMarkdown('## ', '')"
+                      type="button"
+                      :class="[
+                        'px-2 py-1 rounded',
+                        isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
+                      ]"
+                      title="Heading"
+                    >
+                      H2
+                    </button>
+                    <button
+                      @click.prevent="insertMarkdown('- ', '')"
+                      type="button"
+                      :class="[
+                        'px-2 py-1 rounded',
+                        isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
+                      ]"
+                      title="List"
+                    >
+                      •
+                    </button>
+                    <button
+                      @click.prevent="insertMarkdown('```\n', '\n```')"
+                      type="button"
+                      :class="[
+                        'px-2 py-1 rounded',
+                        isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
+                      ]"
+                      title="Code Block"
+                    >
+                      &lt;/&gt;
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <textarea 
+                id="content"
+                ref="contentEditor"
+                v-model="form.content" 
+                rows="20"
+                :class="[
+                  'w-full p-4 font-mono text-sm focus:outline-none',
+                  isDarkMode 
+                    ? 'bg-gray-800 text-white placeholder-gray-400' 
+                    : 'bg-white text-gray-900'
+                ]"
+                required
+              ></textarea>
+            </div>
+            <div v-if="form.errors.content" class="mt-2 text-sm text-red-600">{{ form.errors.content }}</div>
+          </div>
+
+          <!-- Form Actions -->
+          <div :class="[
+            'flex justify-end space-x-3 pt-6 border-t',
+            isDarkMode ? 'border-gray-600' : 'border-gray-200'
+          ]">
+            <Link 
+              :href="route('admin.content.study-notes.index')" 
+              :class="[
+                'inline-flex items-center px-4 py-2 border shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+                isDarkMode 
+                  ? 'border-gray-600 text-gray-300 bg-gray-700 hover:bg-gray-600' 
+                  : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+              ]"
+            >
+              Cancel
+            </Link>
+            <button 
+              type="submit" 
+              :disabled="form.processing"
+              :class="[
+                'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50',
+                isDarkMode 
+                  ? 'bg-indigo-600 hover:bg-indigo-700' 
+                  : 'bg-indigo-600 hover:bg-indigo-700'
+              ]"
+            >
+              <svg v-if="form.processing" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              {{ form.processing ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useForm, Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Eye, EyeOff, Plus, X } from 'lucide-vue-next'
+import { marked } from 'marked'
+
+const props = defineProps({
+  studyNote: Object,
+  levels: Array,
+  aiVendors: Array
+})
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+// Initialize dark mode from localStorage
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+// Listen for dark mode changes
+const handleDarkModeChange = (event) => {
+  if (event.key === 'adminDarkMode') {
+    isDarkMode.value = JSON.parse(event.newValue || 'false')
+  }
+}
+
+const handleCustomDarkModeChange = (event) => {
+  isDarkMode.value = event.detail.isDarkMode
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  
+  // Listen for dark mode changes
+  window.addEventListener('storage', handleDarkModeChange)
+  window.addEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+
+const form = useForm({
+  title: props.studyNote.title || '',
+  content: props.studyNote.content || '',
+  level: props.studyNote.level || 'beginner',
+  is_active: props.studyNote.is_active ?? true,
+  ai_prompt: props.studyNote.ai_prompt || '',
+  learning_objectives: props.studyNote.learning_objectives || [],
+  estimated_read_time: props.studyNote.estimated_read_time || 300
+})
+
+const showPreview = ref(false)
+const contentEditor = ref(null)
+
+const togglePreview = () => {
+  showPreview.value = !showPreview.value
+}
+
+const markdownToHtml = (markdown) => {
+  return marked(markdown)
+}
+
+const insertMarkdown = (before, after) => {
+  const textarea = contentEditor.value
+  const start = textarea.selectionStart
+  const end = textarea.selectionEnd
+  const selectedText = form.content.substring(start, end)
+  const replacement = before + selectedText + after
+  
+  form.content = form.content.substring(0, start) + replacement + form.content.substring(end)
+  
+  // Set cursor position
+  setTimeout(() => {
+    textarea.focus()
+    const newPosition = start + before.length + selectedText.length
+    textarea.setSelectionRange(newPosition, newPosition)
+  }, 0)
+}
+
+const addObjective = () => {
+  form.learning_objectives.push('')
+}
+
+const removeObjective = (index) => {
+  form.learning_objectives.splice(index, 1)
+}
+
+function submit() {
+  form.patch(route('admin.content.study-notes.update', props.studyNote.id), {
+    onSuccess: () => {
+      // Will show success message
+    }
+  })
+}
+
+// Cleanup on unmount
+onUnmounted(() => {
+  window.removeEventListener('storage', handleDarkModeChange)
+  window.removeEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+</script>
+
+<style scoped>
+.prose {
+  max-width: none;
+}
+
+.prose h1 { 
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2 { 
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h3 { 
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose p { 
+  margin-bottom: 1rem;
+}
+
+.prose ul { 
+  list-style-type: disc;
+  list-style-position: inside;
+  margin-bottom: 1rem;
+}
+
+.prose ol { 
+  list-style-type: decimal;
+  list-style-position: inside;
+  margin-bottom: 1rem;
+}
+
+.prose li { 
+  margin-bottom: 0.5rem;
+}
+
+.prose code { 
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.prose pre { 
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.prose pre code { 
+  background-color: transparent;
+  padding: 0;
+}
+
+.prose blockquote { 
+  border-left: 4px solid #d1d5db;
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+/* Dark mode prose styles */
+.prose-invert h1,
+.prose-invert h2,
+.prose-invert h3,
+.prose-invert p,
+.prose-invert ul,
+.prose-invert ol,
+.prose-invert li {
+  color: #f9fafb;
+}
+
+.prose-invert code {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.prose-invert blockquote {
+  border-left-color: #6b7280;
+  color: #d1d5db;
+}
+</style>

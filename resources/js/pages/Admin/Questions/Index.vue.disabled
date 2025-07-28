@@ -1,0 +1,694 @@
+<template>
+  <AdminLayout pageTitle="Questions">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Inline Flash Messages -->
+      <InlineFlashMessage />
+
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="[
+            'text-3xl font-bold',
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          ]">Questions</h1>
+          <p :class="[
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          ]">
+            Manage question bank with 
+            <Select v-model="perPage" @update:model-value="updatePerPage">
+              <SelectTrigger :class="[
+                'w-20 inline-flex ml-2',
+                isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+              ]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectContent>
+            </Select>
+            per page
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+          <Button @click="navigateTo('/admin/content/questions/import')">
+            <Upload class="mr-2 h-4 w-4" />
+            Import Questions
+          </Button>
+          <Button @click="navigateTo('/admin/content/questions/create')">
+            <Plus class="mr-2 h-4 w-4" />
+            Create Question
+          </Button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div :class="[
+        'flex flex-wrap gap-4 items-end mb-6 p-4 rounded-lg border',
+        isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'
+      ]">
+        <!-- Course Filter -->
+        <div class="min-w-[200px]">
+          <label :class="[
+            'block text-sm font-medium mb-2',
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          ]">Course</label>
+          <Select v-model="selectedCourse" @update:model-value="onCourseChange">
+            <SelectTrigger :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="ALL Courses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">ALL Courses</SelectItem>
+              <SelectItem v-for="course in courses" :key="course.id" :value="course.id.toString()">
+                {{ course.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Domain Filter -->
+        <div class="min-w-[200px]">
+          <label :class="[
+            'block text-sm font-medium mb-2',
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          ]">Domain</label>
+          <Select v-model="selectedDomain" @update:model-value="onDomainChange" :disabled="!selectedCourse || selectedCourse === 'all'">
+            <SelectTrigger :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="ALL Domains" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">ALL Domains</SelectItem>
+              <SelectItem v-for="domain in domains" :key="domain.id" :value="domain.id.toString()">
+                {{ domain.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Lesson Filter -->
+        <div class="min-w-[200px]">
+          <label :class="[
+            'block text-sm font-medium mb-2',
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          ]">Lesson</label>
+          <Select v-model="selectedLesson" @update:model-value="onLessonChange" :disabled="!selectedDomain || selectedDomain === 'all'">
+            <SelectTrigger :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="ALL Lessons" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">ALL Lessons</SelectItem>
+              <SelectItem v-for="lesson in lessons" :key="lesson.id" :value="lesson.id.toString()">
+                {{ lesson.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Topic Filter -->
+        <div class="min-w-[200px]">
+          <label :class="[
+            'block text-sm font-medium mb-2',
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          ]">Topic</label>
+          <Select v-model="selectedTopic" @update:model-value="onTopicChange" :disabled="!selectedLesson || selectedLesson === 'all'">
+            <SelectTrigger :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="ALL Topics" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">ALL Topics</SelectItem>
+              <SelectItem v-for="topic in topics" :key="topic.id" :value="topic.id.toString()">
+                {{ topic.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Type Filter -->
+        <div class="min-w-[200px]">
+          <label :class="[
+            'block text-sm font-medium mb-2',
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          ]">Type</label>
+          <Select v-model="selectedType" @update:model-value="onTypeChange">
+            <SelectTrigger :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="ALL Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">ALL Types</SelectItem>
+              <SelectItem v-for="type in questionTypes" :key="type.id" :value="type.id.toString()">
+                {{ type.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="min-w-[200px]">
+          <label :class="[
+            'block text-sm font-medium mb-2',
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          ]">Status</label>
+          <Select v-model="selectedStatus" @update:model-value="onStatusChange">
+            <SelectTrigger :class="[
+              isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            ]">
+              <SelectValue placeholder="ALL Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">ALL Status</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="published">Published</SelectItem>
+              <SelectItem value="retired">Retired</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <div class="flex items-end">
+          <Button variant="outline" @click="clearFilters" v-if="hasActiveFilters" :class="[
+            isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+          ]">
+            Clear Filters
+          </Button>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card :class="[
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Total Questions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ questions.total }}</div>
+          </CardContent>
+        </Card>
+        
+        <Card :class="[
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">With Explanations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ questions.data?.filter(q => q.explanation).length || 0 }}</div>
+          </CardContent>
+        </Card>
+        
+        <Card :class="[
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Topics Covered</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ uniqueTopicsCount }}</div>
+          </CardContent>
+        </Card>
+        
+        <Card :class="[
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Question Types</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">{{ uniqueTypesCount }}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Questions Table -->
+      <Card :class="[
+        isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      ]">
+        <CardHeader>
+          <CardTitle :class="[
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          ]">All Questions</CardTitle>
+          <CardDescription :class="[
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          ]">A list of all questions in your question bank</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow :class="[
+                isDarkMode ? 'border-gray-700' : 'border-gray-200'
+              ]">
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">#</TableHead>
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Content</TableHead>
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Type</TableHead>
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Status</TableHead>
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Difficulty</TableHead>
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Bloom's Level</TableHead>
+                <TableHead :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Topics</TableHead>
+                <TableHead :class="[
+                  'text-right',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="question in questions.data" :key="question.id" :class="[
+                'border-b transition-colors cursor-pointer',
+                isDarkMode 
+                  ? 'border-gray-700 hover:bg-gray-700/50' 
+                  : 'border-gray-200 hover:bg-gray-50'
+              ]" @click="navigateTo(`/admin/content/questions/${question.id}`)">
+                <TableCell :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-900'
+                ]">{{ question.id }}</TableCell>
+                <TableCell :class="[
+                  'max-w-xs truncate',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-900'
+                ]">{{ stripHtml(question.content) }}</TableCell>
+                <TableCell :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-900'
+                ]">{{ question.type?.name || 'N/A' }}</TableCell>
+                <TableCell>
+                  <Badge :class="getStatusBadgeClass(question.status)">
+                    {{ question.status ? question.status.charAt(0).toUpperCase() + question.status.slice(1) : 'N/A' }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge :class="getDifficultyBadgeClass(question.difficulty?.name)">
+                    {{ question.difficulty?.name || 'N/A' }}
+                  </Badge>
+                </TableCell>
+                <TableCell :class="[
+                  isDarkMode ? 'text-gray-300' : 'text-gray-900'
+                ]">{{ question.bloom?.level || 'N/A' }}</TableCell>
+                <TableCell>
+                  <div class="flex flex-wrap gap-1">
+                    <Badge v-for="topic in question.topics" :key="topic.id" :class="[
+                      'text-xs',
+                      isDarkMode 
+                        ? 'bg-gray-700 text-gray-300 border-gray-600' 
+                        : 'bg-gray-100 text-gray-700 border-gray-300'
+                    ]">
+                      {{ topic.name }}
+                    </Badge>
+                  </div>
+                </TableCell>
+                <TableCell class="text-right" @click.stop>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" :class="[
+                        isDarkMode ? 'hover:bg-gray-700 text-gray-400' : 'hover:bg-gray-100 text-gray-600'
+                      ]">
+                        <MoreHorizontal class="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" :class="[
+                      isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+                    ]">
+                      <DropdownMenuItem @click="navigateTo(`/admin/content/questions/${question.id}`)" :class="[
+                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                      ]">
+                        <Eye class="mr-2 h-4 w-4" />
+                        View
+                      </DropdownMenuItem>
+                      <DropdownMenuItem @click="navigateTo(`/admin/content/questions/${question.id}/edit`)" :class="[
+                        isDarkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'
+                      ]">
+                        <Edit class="mr-2 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator :class="[
+                        isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+                      ]" />
+                      <DropdownMenuItem @click="deleteQuestion(question.id)" :class="[
+                        'text-red-600',
+                        isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                      ]">
+                        <Trash2 class="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex items-center justify-between">
+            <p :class="[
+              'text-sm',
+              isDarkMode ? 'text-gray-400' : 'text-gray-700'
+            ]">
+              Showing {{ questions.from }} to {{ questions.to }} of {{ questions.total }} results
+            </p>
+            <div class="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="!questions.prev_page_url"
+                @click="changePage(questions.current_page - 1)"
+                :class="[
+                  isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ]"
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="!questions.next_page_url"
+                @click="changePage(questions.current_page + 1)"
+                :class="[
+                  isDarkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                ]"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { computed, ref, onMounted } from 'vue'
+import { router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { useTheme } from '@/Composables/useTheme'
+import InlineFlashMessage from '@/Components/InlineFlashMessage.vue'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
+import { Button } from '@/Components/shadcn/ui/button'
+import { Badge } from '@/Components/shadcn/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/shadcn/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/Components/shadcn/ui/table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/Components/shadcn/ui/dropdown-menu'
+import { Plus, MoreHorizontal, Eye, Edit, Trash2, Upload } from 'lucide-vue-next'
+
+const props = defineProps({
+  questions: Object,
+  courses: Array,
+  domains: Array,
+  lessons: Array,
+  topics: Array,
+  questionTypes: Array,
+  filters: Object,
+})
+
+// Reactive filter states
+const selectedCourse = ref(props.filters.course_id || 'all')
+const selectedDomain = ref(props.filters.domain_id || 'all')
+const selectedLesson = ref(props.filters.lesson_id || 'all')
+const selectedTopic = ref(props.filters.topic_id || 'all')
+const selectedType = ref(props.filters.type_id || 'all')
+const selectedStatus = ref(props.filters.status || 'all')
+const perPage = ref('20')
+
+// Use centralized theme system
+const { isDarkMode } = useTheme()
+
+// Reactive data for cascading dropdowns
+const domains = ref(props.domains || [])
+const lessons = ref(props.lessons || [])
+const topics = ref(props.topics || [])
+
+const hasActiveFilters = computed(() => {
+  return (selectedCourse.value && selectedCourse.value !== 'all') || 
+         (selectedDomain.value && selectedDomain.value !== 'all') || 
+         (selectedLesson.value && selectedLesson.value !== 'all') || 
+         (selectedTopic.value && selectedTopic.value !== 'all') || 
+         (selectedType.value && selectedType.value !== 'all') ||
+         (selectedStatus.value && selectedStatus.value !== 'all')
+})
+
+const stripHtml = (html) => {
+  const tmp = document.createElement('div')
+  tmp.innerHTML = html
+  return tmp.textContent || tmp.innerText || ''
+}
+
+const getDifficultyBadgeClass = (difficulty) => {
+  if (!difficulty) {
+    return isDarkMode.value 
+      ? 'bg-gray-600 text-gray-300 border-gray-500' 
+      : 'bg-gray-100 text-gray-600 border-gray-300'
+  }
+  
+  const variants = {
+    'Easy': isDarkMode.value 
+      ? 'bg-green-700 text-green-100 border-green-600' 
+      : 'bg-green-100 text-green-700 border-green-300',
+    'Medium': isDarkMode.value 
+      ? 'bg-yellow-700 text-yellow-100 border-yellow-600' 
+      : 'bg-yellow-100 text-yellow-700 border-yellow-300',
+    'Hard': isDarkMode.value 
+      ? 'bg-red-700 text-red-100 border-red-600' 
+      : 'bg-red-100 text-red-700 border-red-300',
+  }
+  return variants[difficulty] || (isDarkMode.value 
+    ? 'bg-gray-600 text-gray-300 border-gray-500' 
+    : 'bg-gray-100 text-gray-600 border-gray-300')
+}
+
+const getStatusBadgeClass = (status) => {
+  if (!status) {
+    return isDarkMode.value 
+      ? 'bg-gray-600 text-gray-300 border-gray-500' 
+      : 'bg-gray-100 text-gray-600 border-gray-300'
+  }
+  
+  const variants = {
+    'draft': isDarkMode.value 
+      ? 'bg-gray-600 text-gray-300 border-gray-500' 
+      : 'bg-gray-100 text-gray-600 border-gray-300',
+    'published': isDarkMode.value 
+      ? 'bg-green-700 text-green-100 border-green-600' 
+      : 'bg-green-100 text-green-700 border-green-300',
+    'retired': isDarkMode.value 
+      ? 'bg-orange-700 text-orange-100 border-orange-600' 
+      : 'bg-orange-100 text-orange-700 border-orange-300',
+  }
+  return variants[status] || (isDarkMode.value 
+    ? 'bg-gray-600 text-gray-300 border-gray-500' 
+    : 'bg-gray-100 text-gray-600 border-gray-300')
+}
+
+const navigateTo = (url) => {
+  router.visit(url)
+}
+
+const changePage = (page) => {
+  const params = new URLSearchParams()
+  if (selectedCourse.value && selectedCourse.value !== 'all') params.append('course_id', selectedCourse.value)
+  if (selectedDomain.value && selectedDomain.value !== 'all') params.append('domain_id', selectedDomain.value)
+  if (selectedLesson.value && selectedLesson.value !== 'all') params.append('lesson_id', selectedLesson.value)
+  if (selectedTopic.value && selectedTopic.value !== 'all') params.append('topic_id', selectedTopic.value)
+  if (selectedType.value && selectedType.value !== 'all') params.append('type_id', selectedType.value)
+  if (selectedStatus.value && selectedStatus.value !== 'all') params.append('status', selectedStatus.value)
+  params.append('page', page)
+  
+  router.get(`/admin/content/questions?${params.toString()}`)
+}
+
+const updatePerPage = (value) => {
+  perPage.value = value
+  applyFilters()
+}
+
+const applyFilters = () => {
+  const params = new URLSearchParams()
+  if (selectedCourse.value && selectedCourse.value !== 'all') params.append('course_id', selectedCourse.value)
+  if (selectedDomain.value && selectedDomain.value !== 'all') params.append('domain_id', selectedDomain.value)
+  if (selectedLesson.value && selectedLesson.value !== 'all') params.append('lesson_id', selectedLesson.value)
+  if (selectedTopic.value && selectedTopic.value !== 'all') params.append('topic_id', selectedTopic.value)
+  if (selectedType.value && selectedType.value !== 'all') params.append('type_id', selectedType.value)
+  if (selectedStatus.value && selectedStatus.value !== 'all') params.append('status', selectedStatus.value)
+  if (perPage.value !== '20') params.append('per_page', perPage.value)
+  
+  const url = params.toString() ? `/admin/content/questions?${params.toString()}` : '/admin/content/questions'
+  router.get(url)
+}
+
+const onCourseChange = async (courseId) => {
+  selectedCourse.value = courseId
+  selectedDomain.value = 'all'
+  selectedLesson.value = 'all'
+  selectedTopic.value = 'all'
+  
+  domains.value = []
+  lessons.value = []
+  topics.value = []
+  
+  if (courseId && courseId !== 'all') {
+    try {
+      const response = await fetch(`/admin/content/questions/domains-by-course?course_id=${courseId}`)
+      domains.value = await response.json()
+    } catch (error) {
+      console.error('Error fetching domains:', error)
+    }
+  }
+  
+  applyFilters()
+}
+
+const onDomainChange = async (domainId) => {
+  selectedDomain.value = domainId
+  selectedLesson.value = 'all'
+  selectedTopic.value = 'all'
+  
+  lessons.value = []
+  topics.value = []
+  
+  if (domainId && domainId !== 'all') {
+    try {
+      const response = await fetch(`/admin/content/questions/lessons-by-domain?domain_id=${domainId}`)
+      lessons.value = await response.json()
+    } catch (error) {
+      console.error('Error fetching lessons:', error)
+    }
+  }
+  
+  applyFilters()
+}
+
+const onLessonChange = async (lessonId) => {
+  selectedLesson.value = lessonId
+  selectedTopic.value = 'all'
+  
+  topics.value = []
+  
+  if (lessonId && lessonId !== 'all') {
+    try {
+      const response = await fetch(`/admin/content/questions/topics-by-lesson?lesson_id=${lessonId}`)
+      topics.value = await response.json()
+    } catch (error) {
+      console.error('Error fetching topics:', error)
+    }
+  }
+  
+  applyFilters()
+}
+
+const onTopicChange = (topicId) => {
+  selectedTopic.value = topicId
+  applyFilters()
+}
+
+const onTypeChange = (typeId) => {
+  selectedType.value = typeId
+  applyFilters()
+}
+
+const onStatusChange = (status) => {
+  selectedStatus.value = status
+  applyFilters()
+}
+
+const clearFilters = () => {
+  selectedCourse.value = 'all'
+  selectedDomain.value = 'all'
+  selectedLesson.value = 'all'
+  selectedTopic.value = 'all'
+  selectedType.value = 'all'
+  selectedStatus.value = 'all'
+  
+  domains.value = []
+  lessons.value = []
+  topics.value = []
+  
+  router.get('/admin/content/questions')
+}
+
+const deleteQuestion = (id) => {
+  if (confirm('Are you sure you want to delete this question?')) {
+    router.delete(`/admin/content/questions/${id}`)
+  }
+}
+
+const uniqueTopicsCount = computed(() => {
+  const topics = new Set()
+  props.questions.data?.forEach(q => {
+    q.topics?.forEach(t => topics.add(t.id))
+  })
+  return topics.size
+})
+
+const uniqueTypesCount = computed(() => {
+  const types = new Set()
+  props.questions.data?.forEach(q => {
+    if (q.type?.id) types.add(q.type.id)
+  })
+  return types.size
+})
+</script>

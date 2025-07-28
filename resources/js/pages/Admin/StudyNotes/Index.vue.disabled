@@ -1,0 +1,627 @@
+<template>
+  <AdminLayout page-title="Study Notes">
+    <div :class="['container mx-auto px-4 py-8', isDarkMode ? 'text-white bg-gray-900' : 'text-gray-900 bg-white']">
+      <!-- Header with Controls -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Study Notes</h1>
+          <p :class="isDarkMode ? 'text-gray-300' : 'text-gray-600'">AI-generated study materials for learners</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+          <Link
+            :href="route('admin.content.study-notes.create')"
+            :class="[
+              'inline-flex items-center px-4 py-2 text-white text-sm font-medium rounded-md transition-colors',
+              isDarkMode ? 'bg-blue-700 hover:bg-blue-800' : 'bg-blue-600 hover:bg-blue-700'
+            ]"
+          >
+            <Plus class="h-4 w-4 mr-2" />
+            Create Study Note
+          </Link>
+        </div>
+      </div>
+
+    <!-- Bulk Actions Bar (shown when items are selected) -->
+    <div v-if="selectedItems.length > 0" :class="[
+      'border rounded-lg mb-6 p-4',
+      isDarkMode 
+        ? 'bg-blue-900 border-blue-700 text-blue-100' 
+        : 'bg-blue-50 border-blue-200 text-blue-900'
+    ]">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <span :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-blue-200' : 'text-blue-900'
+          ]">
+            {{ selectedItems.length }} item{{ selectedItems.length > 1 ? 's' : '' }} selected
+          </span>
+          <button
+            @click="bulkToggleStatus('activate')"
+            class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md transition-colors"
+          >
+            Activate Selected
+          </button>
+          <button
+            @click="bulkToggleStatus('deactivate')"
+            class="text-sm bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md transition-colors"
+          >
+            Deactivate Selected
+          </button>
+          <button
+            @click="bulkDelete"
+            class="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md transition-colors"
+          >
+            Delete Selected
+          </button>
+        </div>
+        <button
+          @click="clearSelection"
+          :class="[
+            'text-sm',
+            isDarkMode 
+              ? 'text-blue-300 hover:text-blue-100' 
+              : 'text-blue-600 hover:text-blue-800'
+          ]"
+        >
+          Clear Selection
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div :class="[
+      'rounded-lg shadow-sm mb-6 p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+    ]">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label :class="[
+            'block text-sm font-medium mb-1',
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          ]">Search</label>
+          <input
+            v-model="filters.search"
+            type="text"
+            placeholder="Search by title or topic..."
+            :class="[
+              'w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                : 'border-gray-300'
+            ]"
+            @input="debouncedSearch"
+          />
+        </div>
+        
+        <div>
+          <label :class="[
+            'block text-sm font-medium mb-1',
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          ]">Course</label>
+          <Select v-model="filters.course_id" @update:model-value="applyFilters">
+            <SelectTrigger :class="['w-full', isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : 'bg-white border-gray-300 text-gray-900']">
+              <SelectValue :class="isDarkMode ? 'text-gray-100' : 'text-gray-900'" placeholder="All Courses" />
+            </SelectTrigger>
+            <SelectContent :class="isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-200 text-gray-900'">
+              <SelectItem value="all" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">All Courses</SelectItem>
+              <SelectItem v-for="course in courses" :key="course.id" :value="course.id.toString()" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">
+                {{ course.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label :class="[
+            'block text-sm font-medium mb-1',
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          ]">Status</label>
+          <Select v-model="filters.is_active" @update:model-value="applyFilters">
+            <SelectTrigger :class="['w-full', isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100' : 'bg-white border-gray-300 text-gray-900']">
+              <SelectValue :class="isDarkMode ? 'text-gray-100' : 'text-gray-900'" placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent :class="isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-200 text-gray-900'">
+              <SelectItem value="all" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">All Status</SelectItem>
+              <SelectItem value="1" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">Active</SelectItem>
+              <SelectItem value="0" :class="isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'">Inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div class="flex items-end">
+          <button
+            @click="clearFilters"
+            :class="[
+              'w-full px-4 py-2 rounded-md transition-colors',
+              isDarkMode 
+                ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            ]"
+          >
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Table -->
+    <div :class="[
+      'rounded-lg shadow-sm overflow-hidden',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+    ]">
+      <table class="min-w-full">
+        <thead>
+          <tr :class="[
+            'border-b',
+            isDarkMode 
+              ? 'border-gray-700 bg-gray-700 text-gray-200' 
+              : 'border-gray-200 bg-gray-50 text-gray-700'
+          ]">
+            <th class="px-6 py-3 text-left">
+              <input
+                type="checkbox"
+                :checked="selectAll"
+                :indeterminate="selectedItems.length > 0 && selectedItems.length < studyNotes.data.length"
+                @change="toggleSelectAll"
+                :class="[
+                  'h-4 w-4 text-indigo-600 focus:ring-indigo-500 rounded transition-colors',
+                  isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'
+                ]"
+              />
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Title
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Topic
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Course
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Level
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Status
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Created By
+            </th>
+            <th :class="[
+              'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-500'
+            ]">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody :class="isDarkMode ? 'divide-y divide-gray-700' : 'divide-y divide-gray-200'">
+          <tr 
+            v-for="studyNote in studyNotes.data" 
+            :key="studyNote.id"
+            :class="[
+              'transition-colors cursor-pointer',
+              isDarkMode 
+                ? 'hover:bg-gray-700' 
+                : 'hover:bg-gray-50'
+            ]"
+            @click="router.visit(route('admin.content.study-notes.show', studyNote.id))"
+          >
+            <td class="px-6 py-4" @click.stop>
+              <input
+                type="checkbox"
+                :checked="selectedItems.includes(studyNote.id)"
+                @change="toggleItemSelection(studyNote.id)"
+                :class="[
+                  'h-4 w-4 text-indigo-600 focus:ring-indigo-500 rounded transition-colors',
+                  isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'
+                ]"
+              />
+            </td>
+            <td class="px-6 py-4">
+              <div :class="['text-sm font-medium', isDarkMode ? 'text-white' : 'text-gray-900']">{{ studyNote.title }}</div>
+              <div v-if="studyNote.ai_prompt" :class="['text-xs mt-1', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
+                <span class="inline-flex items-center gap-1">
+                  <Sparkles class="h-3 w-3" />
+                  Has AI Prompt
+                </span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-900']">{{ studyNote.topic?.name || 'N/A' }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-900']">
+                {{ getCourseInfo(studyNote) }}
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span :class="[
+                'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                getLevelClass(studyNote.level)
+              ]">
+                {{ studyNote.level }}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <button
+                @click="toggleStatus(studyNote)"
+                :class="[
+                  'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors',
+                  studyNote.is_active
+                    ? (isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-800')
+                    : (isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-800')
+                ]"
+              >
+                {{ studyNote.is_active ? 'Active' : 'Inactive' }}
+              </button>
+            </td>
+            <td class="px-6 py-4">
+              <div :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-900']">{{ studyNote.created_by || 'System' }}</div>
+              <div :class="['text-xs', isDarkMode ? 'text-gray-400' : 'text-gray-500']">v{{ studyNote.version || 1 }}</div>
+            </td>
+            <td class="px-6 py-4" @click.stop>
+              <div class="flex items-center gap-2">
+                <Link
+                  :href="route('admin.content.study-notes.edit', studyNote.id)"
+                  :class="[
+                    'transition-colors',
+                    isDarkMode ? 'text-yellow-400 hover:text-yellow-300' : 'text-yellow-600 hover:text-yellow-900'
+                  ]"
+                  title="Edit Content"
+                >
+                  <Edit class="h-4 w-4" />
+                </Link>
+                
+                <button
+                  @click="refreshContent(studyNote)"
+                  :class="[
+                    'transition-colors',
+                    isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-900',
+                    { 'opacity-50 cursor-not-allowed': !studyNote.ai_prompt }
+                  ]"
+                  title="Refresh Content"
+                  :disabled="!studyNote.ai_prompt"
+                >
+                  <RefreshCw class="h-4 w-4" />
+                </button>
+                
+                <button
+                  @click="createVersion(studyNote)"
+                  :class="[
+                    'transition-colors',
+                    isDarkMode ? 'text-green-400 hover:text-green-300' : 'text-green-600 hover:text-green-900'
+                  ]"
+                  title="Create New Version"
+                >
+                  <Copy class="h-4 w-4" />
+                </button>
+                
+                <button
+                  @click="confirmDelete(studyNote)"
+                  :class="[
+                    'transition-colors',
+                    isDarkMode ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-900'
+                  ]"
+                  title="Delete"
+                >
+                  <Trash2 class="h-4 w-4" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Empty state -->
+      <tr v-if="studyNotes.data.length === 0">
+        <td colspan="8" class="text-center py-12">
+          <Plus :class="['mx-auto h-12 w-12', isDarkMode ? 'text-gray-600' : 'text-gray-400']" />
+          <h3 :class="['mt-2 text-sm font-medium', isDarkMode ? 'text-gray-300' : 'text-gray-900']">No study notes</h3>
+          <p :class="['mt-1 text-sm', isDarkMode ? 'text-gray-400' : 'text-gray-500']">Study notes are automatically generated when learners request them.</p>
+          <p :class="['mt-2 text-sm', isDarkMode ? 'text-gray-500' : 'text-gray-400']">AI-powered study materials will appear here once created by users.</p>
+        </td>
+      </tr>
+    </div>
+    
+    <!-- Pagination -->
+    <div v-if="studyNotes.links.length > 3" class="mt-6">
+      <nav class="flex items-center justify-between">
+        <div class="flex-1 flex justify-between sm:hidden">
+          <Link
+            v-if="studyNotes.prev_page_url"
+            :href="studyNotes.prev_page_url"
+            :class="[
+              'relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md transition-colors',
+              isDarkMode 
+                ? 'border-gray-600 text-gray-300 bg-gray-800 hover:bg-gray-700' 
+                : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+            ]"
+          >
+            Previous
+          </Link>
+          <Link
+            v-if="studyNotes.next_page_url"
+            :href="studyNotes.next_page_url"
+            :class="[
+              'ml-3 relative inline-flex items-center px-4 py-2 border text-sm font-medium rounded-md transition-colors',
+              isDarkMode 
+                ? 'border-gray-600 text-gray-300 bg-gray-800 hover:bg-gray-700' 
+                : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
+            ]"
+          >
+            Next
+          </Link>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+              Showing
+              <span class="font-medium">{{ studyNotes.from }}</span>
+              to
+              <span class="font-medium">{{ studyNotes.to }}</span>
+              of
+              <span class="font-medium">{{ studyNotes.total }}</span>
+              results
+            </p>
+          </div>
+          <div>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+              <template v-for="link in studyNotes.links" :key="link.label">
+                <Link
+                  v-if="link.url"
+                  :href="link.url"
+                  :class="[
+                    link.active
+                      ? (isDarkMode 
+                          ? 'z-10 bg-indigo-900/50 border-indigo-500 text-indigo-400' 
+                          : 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600')
+                      : (isDarkMode 
+                          ? 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700' 
+                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'),
+                    'relative inline-flex items-center px-4 py-2 border text-sm font-medium transition-colors'
+                  ]"
+                  v-html="link.label"
+                />
+                <span
+                  v-else
+                  :class="[
+                    'relative inline-flex items-center px-4 py-2 border text-sm font-medium cursor-not-allowed',
+                    isDarkMode 
+                      ? 'bg-gray-800 border-gray-600 text-gray-500' 
+                      : 'bg-white border-gray-300 text-gray-400'
+                  ]"
+                  v-html="link.label"
+                />
+              </template>
+            </nav>
+          </div>
+        </div>
+      </nav>
+    </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/shadcn/ui/select'
+import { Trash2, RefreshCw, Copy, Sparkles, Edit, Plus } from 'lucide-vue-next'
+import { debounce } from 'lodash'
+
+const props = defineProps({
+  studyNotes: Object,
+  courses: Array,
+  filters: Object,
+  aiVendors: {
+    type: [Array, Object],
+    default: () => ({})
+  }
+})
+
+const filters = ref({
+  search: props.filters.search || '',
+  course_id: props.filters.course_id || 'all',
+  is_active: props.filters.is_active || 'all'
+})
+
+// Checkbox selection state
+const selectedItems = ref([])
+const selectAll = computed(() => {
+  return props.studyNotes.data.length > 0 && selectedItems.value.length === props.studyNotes.data.length
+})
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+const getCourseInfo = (studyNote) => {
+  if (!studyNote.topic?.lessons || studyNote.topic.lessons.length === 0) {
+    return 'N/A'
+  }
+  const course = studyNote.topic.lessons[0]?.domain?.course
+  return course?.name || 'N/A'
+}
+
+const getLevelClass = (level) => {
+  const lightClasses = {
+    'beginner': 'bg-green-100 text-green-800',
+    'intermediate': 'bg-yellow-100 text-yellow-800',
+    'advanced': 'bg-red-100 text-red-800'
+  }
+  
+  const darkClasses = {
+    'beginner': 'bg-green-900/30 text-green-400',
+    'intermediate': 'bg-yellow-900/30 text-yellow-400',
+    'advanced': 'bg-red-900/30 text-red-400'
+  }
+  
+  const baseClass = isDarkMode.value 
+    ? (darkClasses[level] || 'bg-gray-700 text-gray-300')
+    : (lightClasses[level] || 'bg-gray-100 text-gray-800')
+  
+  return baseClass
+}
+
+const applyFilters = () => {
+  // Convert "all" values to empty strings for backend
+  const filterParams = {
+    search: filters.value.search,
+    course_id: filters.value.course_id === 'all' ? '' : filters.value.course_id,
+    is_active: filters.value.is_active === 'all' ? '' : filters.value.is_active
+  }
+  
+  router.get(route('admin.content.study-notes.index'), filterParams, {
+    preserveState: true,
+    preserveScroll: true
+  })
+}
+
+const debouncedSearch = debounce(() => {
+  applyFilters()
+}, 300)
+
+const clearFilters = () => {
+  filters.value = {
+    search: '',
+    course_id: 'all',
+    is_active: 'all'
+  }
+  applyFilters()
+}
+
+const toggleStatus = (studyNote) => {
+  router.patch(route('admin.content.study-notes.status.toggle', studyNote.id), {}, {
+    preserveScroll: true
+  })
+}
+
+const refreshContent = (studyNote) => {
+  if (confirm('Are you sure you want to refresh this study note? This will replace the existing content with newly generated content.')) {
+    router.post(route('admin.content.study-notes.refresh', studyNote.id), {}, {
+      preserveScroll: true
+    })
+  }
+}
+
+const createVersion = (studyNote) => {
+  if (confirm('Create a new version of this study note? The current version will be preserved.')) {
+    router.post(route('admin.content.study-notes.version.create', studyNote.id), {}, {
+      preserveScroll: true
+    })
+  }
+}
+
+const confirmDelete = (studyNote) => {
+  if (confirm('Are you sure you want to delete this study note?')) {
+    router.delete(route('admin.content.study-notes.destroy', studyNote.id))
+  }
+}
+
+// Checkbox selection methods
+const toggleSelectAll = () => {
+  if (selectAll.value) {
+    selectedItems.value = []
+  } else {
+    selectedItems.value = props.studyNotes.data.map(item => item.id)
+  }
+}
+
+const toggleItemSelection = (id) => {
+  const index = selectedItems.value.indexOf(id)
+  if (index > -1) {
+    selectedItems.value.splice(index, 1)
+  } else {
+    selectedItems.value.push(id)
+  }
+}
+
+const clearSelection = () => {
+  selectedItems.value = []
+}
+
+// Bulk operations
+const bulkToggleStatus = async (action) => {
+  if (selectedItems.value.length === 0) return
+  
+  const message = action === 'activate' 
+    ? `Are you sure you want to activate ${selectedItems.value.length} study notes?`
+    : `Are you sure you want to deactivate ${selectedItems.value.length} study notes?`
+    
+  if (!confirm(message)) return
+  
+  // Process each selected item
+  for (const id of selectedItems.value) {
+    await router.patch(route('admin.content.study-notes.status.toggle', id), {}, {
+      preserveScroll: true,
+      onSuccess: () => {
+        // Item processed successfully
+      }
+    })
+  }
+  
+  selectedItems.value = []
+}
+
+const bulkDelete = async () => {
+  if (selectedItems.value.length === 0) return
+  
+  if (!confirm(`Are you sure you want to delete ${selectedItems.value.length} study notes? This action cannot be undone.`)) {
+    return
+  }
+  
+  // Process each selected item
+  for (const id of selectedItems.value) {
+    await router.delete(route('admin.content.study-notes.destroy', id), {
+      preserveScroll: true,
+      onSuccess: () => {
+        // Item deleted successfully
+      }
+    })
+  }
+  
+  selectedItems.value = []
+}
+</script>

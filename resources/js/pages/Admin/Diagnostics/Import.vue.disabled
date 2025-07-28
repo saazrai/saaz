@@ -1,0 +1,227 @@
+<template>
+  <AdminLayout page-title="Import Diagnostic Items">
+    <!-- Back Navigation -->
+    <div class="mb-6">
+      <Link 
+        :href="route('admin.diagnostic-items.index')" 
+        class="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+      >
+        <ChevronLeft class="w-4 h-4 mr-1" />
+        Back to Diagnostic Items
+      </Link>
+    </div>
+
+    <!-- Import Form -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+      <div class="max-w-2xl">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Import Diagnostic Items</h2>
+        <p class="text-gray-600 mb-8">
+          Upload an Excel file (.xlsx, .xls) or CSV file containing diagnostic item data. The file should include columns for questions, options, correct answers, and more.
+        </p>
+
+        <!-- Upload Form -->
+        <form @submit.prevent="uploadFile" enctype="multipart/form-data" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Select File
+            </label>
+            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+              <div class="space-y-1 text-center">
+                <Upload class="mx-auto h-12 w-12 text-gray-400" />
+                <div class="flex text-sm text-gray-600">
+                  <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                    <span>Upload a file</span>
+                    <input 
+                      id="file-upload" 
+                      ref="fileInput" 
+                      type="file" 
+                      accept=".xlsx,.xls,.csv" 
+                      required 
+                      class="sr-only"
+                      @change="handleFileSelect"
+                    />
+                  </label>
+                  <p class="pl-1">or drag and drop</p>
+                </div>
+                <p class="text-xs text-gray-500">
+                  Excel files (.xlsx, .xls) or CSV files up to 10MB
+                </p>
+              </div>
+            </div>
+            <div v-if="selectedFile" class="mt-3 text-sm text-gray-600">
+              Selected: {{ selectedFile.name }}
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+              <strong>Note:</strong> This will import diagnostic items with their options, correct answers, and topic associations.
+            </div>
+            <Button 
+              type="submit" 
+              :disabled="!selectedFile || uploading"
+              class="bg-blue-600 hover:bg-blue-700"
+            >
+              <Loader2 v-if="uploading" class="w-4 h-4 mr-2 animate-spin" />
+              <Upload v-else class="w-4 h-4 mr-2" />
+              {{ uploading ? 'Importing...' : 'Import Items' }}
+            </Button>
+          </div>
+        </form>
+
+        <!-- Success/Error Messages -->
+        <div v-if="message" class="mt-6">
+          <div 
+            :class="[
+              'p-4 rounded-md',
+              status === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 
+              status === 'info' ? 'bg-blue-50 text-blue-800 border border-blue-200' :
+              'bg-red-50 text-red-800 border border-red-200'
+            ]"
+          >
+            <div class="flex">
+              <CheckCircle v-if="status === 'success'" class="h-5 w-5 mr-2 mt-0.5" />
+              <Info v-else-if="status === 'info'" class="h-5 w-5 mr-2 mt-0.5" />
+              <XCircle v-else class="h-5 w-5 mr-2 mt-0.5" />
+              <div v-html="message"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Format Information -->
+        <div class="mt-8 p-4 bg-blue-50 rounded-md">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="text-sm font-medium text-blue-900 mb-2">Expected File Format</h3>
+              <div class="text-sm text-blue-800 space-y-1">
+                <p><strong>Required columns:</strong> question, domain, topic, type_id, dimension, options, correct_options</p>
+                <p><strong>Optional columns:</strong> justifications_field, difficulty_id, bloom_id, irt_a, irt_b, irt_c, status</p>
+                <p><strong>Dimensions:</strong> Technical, Managerial</p>
+                <p><strong>Status values:</strong> draft, published, retired</p>
+                <p><strong>Options format:</strong> Separate options with line breaks in the cell</p>
+              </div>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              @click="downloadTemplate"
+              class="ml-4 text-blue-700 border-blue-300 hover:bg-blue-100"
+            >
+              <Download class="w-4 h-4 mr-2" />
+              Download Template
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { router, Link, usePage } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Button } from '@/Components/shadcn/ui/button'
+import {
+  ChevronLeft,
+  Upload,
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Info,
+  Download
+} from 'lucide-vue-next'
+
+const page = usePage()
+
+// Reactive state
+const fileInput = ref(null)
+const selectedFile = ref(null)
+const uploading = ref(false)
+const message = ref(page.props.flash?.message || '')
+const status = ref(page.props.flash?.status || '')
+
+// Handle file selection
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    selectedFile.value = file
+  }
+}
+
+// Upload file
+const uploadFile = async () => {
+  if (!selectedFile.value) return
+
+  uploading.value = true
+  message.value = ''
+
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+
+  try {
+    await router.post(route('admin.diagnostic-items.import.store'), formData, {
+      forceFormData: true,
+      onSuccess: (page) => {
+        message.value = page.props.flash?.message || 'Import completed successfully'
+        status.value = page.props.flash?.status || 'success'
+        selectedFile.value = null
+        if (fileInput.value) {
+          fileInput.value.value = ''
+        }
+      },
+      onError: (errors) => {
+        message.value = errors.file?.[0] || 'Failed to import file'
+        status.value = 'error'
+      }
+    })
+  } catch (error) {
+    message.value = 'An unexpected error occurred'
+    status.value = 'error'
+  } finally {
+    uploading.value = false
+  }
+}
+
+// Download template
+const downloadTemplate = () => {
+  const csvContent = `data:text/plain;charset=utf-8,Diagnostic Items Import Template
+
+Please create a file with the following columns:
+
+Required Columns:
+- question: The diagnostic question text
+- domain: Domain name (will be created if doesn't exist)
+- topic: Topic name (will be created if doesn't exist)
+- type_id: Question type ID (1=Multiple Choice, 2=Multiple Select, etc.)
+- dimension: Technical or Managerial
+- options: Answer options (separate with line breaks)
+- correct_options: Correct answer(s) (separate with line breaks)
+
+Optional Columns:
+- justifications_field: Explanations for answers (separate with line breaks)
+- difficulty_id: Difficulty level ID
+- bloom_id: Bloom taxonomy level ID
+- irt_a: IRT parameter A
+- irt_b: IRT parameter B
+- irt_c: IRT parameter C
+- status: draft, published, or retired (default: published)
+
+Format Notes:
+- Use line breaks within cells to separate multiple options/answers
+- Domains and topics will be automatically created if they don't exist
+- Default values will be used for missing optional fields
+
+Example row:
+"What is the primary purpose of risk management?","IT Security","Risk Assessment","1","Technical","A) To eliminate all risks\nB) To manage and mitigate risks\nC) To ignore risks","B) To manage and mitigate risks","Risk management focuses on identifying, assessing, and mitigating risks","1","1","1.0","0.5","0.2","published"`
+
+  const encodedUri = encodeURI(csvContent)
+  const link = document.createElement('a')
+  link.setAttribute('href', encodedUri)
+  link.setAttribute('download', 'diagnostic_items_import_template.txt')
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+</script>

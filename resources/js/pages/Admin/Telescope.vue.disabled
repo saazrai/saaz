@@ -1,0 +1,282 @@
+<template>
+    <AdminLayout :page-title="pageTitle">
+        <div class="space-y-6">
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Application Monitoring</h1>
+                        <p class="text-gray-600 mt-1">Real-time application monitoring and debugging with Laravel Telescope</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <Button @click="openTelescope" variant="outline" class="flex items-center space-x-2">
+                            <Activity class="w-4 h-4" />
+                            <span>Open Telescope</span>
+                        </Button>
+                        <Button @click="refreshStats" :disabled="loading" class="flex items-center space-x-2">
+                            <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': loading }" />
+                            <span>Refresh</span>
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <StatCard 
+                    title="Total Entries" 
+                    :value="stats.total_entries" 
+                    icon="Database"
+                    description="All-time entries"
+                />
+                <StatCard 
+                    title="Requests (24h)" 
+                    :value="stats.last_24h.requests" 
+                    icon="Globe"
+                    description="HTTP requests"
+                    :trend="getRequestTrend()"
+                />
+                <StatCard 
+                    title="Queries (24h)" 
+                    :value="stats.last_24h.queries" 
+                    icon="Search"
+                    description="Database queries"
+                />
+                <StatCard 
+                    title="Errors (24h)" 
+                    :value="stats.last_24h.errors" 
+                    icon="AlertTriangle"
+                    description="Exceptions & errors"
+                    :variant="stats.last_24h.errors > 0 ? 'danger' : 'success'"
+                />
+            </div>
+
+            <!-- Entry Types Breakdown -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Entry Types (Last 24h)</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div v-for="(count, type) in stats.by_type" :key="type" 
+                         class="bg-gray-50 rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-gray-900">{{ count }}</div>
+                        <div class="text-sm text-gray-600 capitalize">{{ formatType(type) }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Panels -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Recent Requests -->
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <Globe class="w-5 h-5 mr-2" />
+                            Recent Requests
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div v-if="recentRequests.length === 0" class="text-center text-gray-500 py-4">
+                            No recent requests available
+                        </div>
+                        <div v-else class="space-y-3">
+                            <div v-for="request in recentRequests" :key="request.uuid" 
+                                 class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <Badge :variant="getStatusVariant(request.content?.response_status)">
+                                            {{ request.content?.response_status || 'N/A' }}
+                                        </Badge>
+                                        <span class="text-sm font-medium text-gray-900">
+                                            {{ request.content?.method || 'GET' }}
+                                        </span>
+                                    </div>
+                                    <div class="text-sm text-gray-600 truncate">
+                                        {{ request.content?.uri || 'Unknown URI' }}
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ formatTime(request.created_at) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <Button @click="openTelescopeSection('requests')" variant="outline" size="sm">
+                                View All Requests
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Exceptions -->
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="p-6 border-b">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <AlertTriangle class="w-5 h-5 mr-2 text-red-500" />
+                            Recent Exceptions
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div v-if="recentExceptions.length === 0" class="text-center text-gray-500 py-4">
+                            No recent exceptions 🎉
+                        </div>
+                        <div v-else class="space-y-3">
+                            <div v-for="exception in recentExceptions" :key="exception.uuid" 
+                                 class="py-3 border-b border-gray-100 last:border-0">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium text-red-600 truncate">
+                                            {{ exception.content?.class || 'Exception' }}
+                                        </div>
+                                        <div class="text-sm text-gray-600 line-clamp-2">
+                                            {{ exception.content?.message || 'No message available' }}
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 whitespace-nowrap ml-2">
+                                        {{ formatTime(exception.created_at) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-center">
+                            <Button @click="openTelescopeSection('exceptions')" variant="outline" size="sm">
+                                View All Exceptions
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <Button @click="openTelescopeSection('requests')" variant="outline" class="h-auto p-4 flex flex-col items-center space-y-2">
+                        <Globe class="w-6 h-6" />
+                        <span>Requests</span>
+                    </Button>
+                    <Button @click="openTelescopeSection('queries')" variant="outline" class="h-auto p-4 flex flex-col items-center space-y-2">
+                        <Search class="w-6 h-6" />
+                        <span>Queries</span>
+                    </Button>
+                    <Button @click="openTelescopeSection('cache')" variant="outline" class="h-auto p-4 flex flex-col items-center space-y-2">
+                        <Zap class="w-6 h-6" />
+                        <span>Cache</span>
+                    </Button>
+                    <Button @click="openTelescopeSection('exceptions')" variant="outline" class="h-auto p-4 flex flex-col items-center space-y-2">
+                        <AlertTriangle class="w-6 h-6" />
+                        <span>Exceptions</span>
+                    </Button>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+import { router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Button } from '@/Components/shadcn/ui/button'
+import { Badge } from '@/Components/shadcn/ui/badge'
+import StatCard from '@/Components/Admin/StatCard.vue'
+import { 
+    Activity, 
+    RefreshCw, 
+    Database, 
+    Globe, 
+    Search, 
+    AlertTriangle,
+    Zap
+} from 'lucide-vue-next'
+
+// Props
+const props = defineProps({
+    pageTitle: String,
+    telescopeUrl: String,
+    stats: {
+        type: Object,
+        default: () => ({
+            total_entries: 0,
+            last_24h: { errors: 0, requests: 0, queries: 0 },
+            by_type: {}
+        })
+    }
+})
+
+// State
+const loading = ref(false)
+const recentRequests = ref([])
+const recentExceptions = ref([])
+
+// Methods
+const openTelescope = () => {
+    window.open(props.telescopeUrl, '_blank')
+}
+
+const openTelescopeSection = (section) => {
+    window.open(`${props.telescopeUrl}/${section}`, '_blank')
+}
+
+const refreshStats = async () => {
+    loading.value = true
+    try {
+        router.reload({ only: ['stats'] })
+        await loadRecentData()
+    } catch (error) {
+        console.error('Failed to refresh stats:', error)
+    } finally {
+        loading.value = false
+    }
+}
+
+const loadRecentData = async () => {
+    try {
+        // Load recent requests
+        const requestsResponse = await fetch('/admin/telescope-admin/api?type=request&limit=5')
+        const requestsData = await requestsResponse.json()
+        recentRequests.value = requestsData.data || []
+
+        // Load recent exceptions
+        const exceptionsResponse = await fetch('/admin/telescope-admin/api?type=exception&limit=5')
+        const exceptionsData = await exceptionsResponse.json()
+        recentExceptions.value = exceptionsData.data || []
+    } catch (error) {
+        console.error('Failed to load recent data:', error)
+    }
+}
+
+const formatType = (type) => {
+    return type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
+const formatTime = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString()
+}
+
+const getStatusVariant = (status) => {
+    if (!status) return 'secondary'
+    if (status >= 200 && status < 300) return 'success'
+    if (status >= 400 && status < 500) return 'warning'
+    if (status >= 500) return 'destructive'
+    return 'secondary'
+}
+
+const getRequestTrend = () => {
+    // This could be enhanced with actual trend calculation
+    return 'stable'
+}
+
+// Lifecycle
+onMounted(() => {
+    loadRecentData()
+})
+</script>
+
+<style scoped>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>

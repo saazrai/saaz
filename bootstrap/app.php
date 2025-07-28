@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Middleware\AdminAccess;
 use App\Http\Middleware\CheckCookieConsent;
+use App\Http\Middleware\CheckUserActive;
 use App\Http\Middleware\EnforceConsentForAnalyticsAndMarketing;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -25,12 +27,18 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
             CheckCookieConsent::class,
+            CheckUserActive::class,
         ]);
 
         $middleware->alias([
             'cookie.consent' => CheckCookieConsent::class,
             'consent.analytics' => EnforceConsentForAnalyticsAndMarketing::class.':analytics',
             'consent.marketing' => EnforceConsentForAnalyticsAndMarketing::class.':marketing',
+            'admin' => AdminAccess::class,
+            'active' => CheckUserActive::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
         // Exclude cookie consent routes from CSRF verification

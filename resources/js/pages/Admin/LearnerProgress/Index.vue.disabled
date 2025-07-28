@@ -1,0 +1,289 @@
+<template>
+  <AdminLayout pageTitle="Learner Progress">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Learner Progress</h1>
+          <p :class="isDarkMode ? 'text-gray-300' : 'text-gray-600'">Track and monitor student progress across all courses</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+          <Button variant="outline" @click="exportData">
+            <Download class="mr-2 h-4 w-4" />
+            Export Data
+          </Button>
+        </div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <Card :class="isDarkMode ? 'bg-gray-800 border-gray-700' : ''">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : ''
+            ]">Total Learners</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-gray-100' : ''
+            ]">{{ stats.total_learners }}</div>
+          </CardContent>
+        </Card>
+        
+        <Card :class="isDarkMode ? 'bg-gray-800 border-gray-700' : ''">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : ''
+            ]">Active Learners</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-gray-100' : ''
+            ]">{{ stats.active_learners }}</div>
+            <p :class="[
+              'text-xs',
+              isDarkMode ? 'text-gray-400' : 'text-muted-foreground'
+            ]">Last 7 days</p>
+          </CardContent>
+        </Card>
+        
+        <Card :class="isDarkMode ? 'bg-gray-800 border-gray-700' : ''">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : ''
+            ]">Completed Courses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-gray-100' : ''
+            ]">{{ stats.completed_courses }}</div>
+          </CardContent>
+        </Card>
+        
+        <Card :class="isDarkMode ? 'bg-gray-800 border-gray-700' : ''">
+          <CardHeader class="pb-2">
+            <CardTitle :class="[
+              'text-sm font-medium',
+              isDarkMode ? 'text-gray-200' : ''
+            ]">Average Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div :class="[
+              'text-2xl font-bold',
+              isDarkMode ? 'text-gray-100' : ''
+            ]">{{ Math.round(stats.average_progress) }}%</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Search and Filters -->
+      <Card :class="isDarkMode ? 'bg-gray-800 border-gray-700' : ''" class="mb-8">
+        <CardHeader>
+          <CardTitle :class="isDarkMode ? 'text-gray-200' : ''">Search Learners</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="flex gap-4">
+            <Input
+              v-model="searchQuery"
+              placeholder="Search by name or email..."
+              :class="[
+                'max-w-sm',
+                isDarkMode ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' : ''
+              ]"
+              @keyup.enter="search"
+            />
+            <Button @click="search">Search</Button>
+            <Button variant="outline" @click="clearSearch">Clear</Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Learners Table -->
+      <Card :class="isDarkMode ? 'bg-gray-800 border-gray-700' : ''">
+        <CardHeader>
+          <CardTitle :class="isDarkMode ? 'text-gray-200' : ''">All Learners</CardTitle>
+          <CardDescription :class="isDarkMode ? 'text-gray-400' : ''">Click on a learner to view detailed progress</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Courses Enrolled</TableHead>
+                <TableHead>Average Progress</TableHead>
+                <TableHead>Last Activity</TableHead>
+                <TableHead class="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow 
+                v-for="learner in learners.data" 
+                :key="learner.id"
+                :class="[
+                  'cursor-pointer',
+                  isDarkMode 
+                    ? 'hover:bg-gray-700 border-gray-700' 
+                    : 'hover:bg-gray-50'
+                ]"
+                @click="viewLearner(learner.id)"
+              >
+                <TableCell :class="[
+                  'font-medium',
+                  isDarkMode ? 'text-gray-200' : ''
+                ]">{{ learner.name }}</TableCell>
+                <TableCell :class="isDarkMode ? 'text-gray-300' : ''">{{ learner.email }}</TableCell>
+                <TableCell :class="isDarkMode ? 'text-gray-300' : ''">{{ learner.course_progress?.length || 0 }}</TableCell>
+                <TableCell>
+                  <div class="flex items-center gap-2">
+                    <Progress :value="getAverageProgress(learner)" class="w-20" />
+                    <span :class="[
+                      'text-sm',
+                      isDarkMode ? 'text-gray-300' : ''
+                    ]">{{ Math.round(getAverageProgress(learner)) }}%</span>
+                  </div>
+                </TableCell>
+                <TableCell :class="isDarkMode ? 'text-gray-300' : ''">{{ formatDate(getLastActivity(learner)) }}</TableCell>
+                <TableCell class="text-right">
+                  <Button variant="ghost" size="sm" @click.stop="viewLearner(learner.id)">
+                    <Eye class="h-4 w-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex items-center justify-between">
+            <p :class="[
+              'text-sm',
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            ]">
+              Showing {{ learners.from }} to {{ learners.to }} of {{ learners.total }} results
+            </p>
+            <div class="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="!learners.prev_page_url"
+                @click="changePage(learners.current_page - 1)"
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="!learners.next_page_url"
+                @click="changePage(learners.current_page + 1)"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
+import { Button } from '@/Components/shadcn/ui/button'
+import { Input } from '@/Components/shadcn/ui/input'
+import { Progress } from '@/Components/shadcn/ui/progress'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/Components/shadcn/ui/table'
+import { Download, Eye } from 'lucide-vue-next'
+
+const props = defineProps({
+  learners: Object,
+  stats: Object,
+  filters: Object,
+})
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+const searchQuery = ref(props.filters?.search || '')
+
+const getAverageProgress = (learner) => {
+  if (!learner.course_progress || learner.course_progress.length === 0) return 0
+  const total = learner.course_progress.reduce((sum, cp) => sum + (cp.progress_percentage || 0), 0)
+  return total / learner.course_progress.length
+}
+
+const getLastActivity = (learner) => {
+  if (!learner.course_progress || learner.course_progress.length === 0) return null
+  const dates = learner.course_progress.map(cp => new Date(cp.updated_at))
+  return new Date(Math.max(...dates))
+}
+
+const formatDate = (date) => {
+  if (!date) return 'Never'
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+}
+
+const viewLearner = (id) => {
+  router.visit(`/admin/learner-progress/${id}`)
+}
+
+const search = () => {
+  router.get('/admin/learner-progress', { search: searchQuery.value })
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  router.get('/admin/learner-progress')
+}
+
+const changePage = (page) => {
+  const params = { page }
+  if (searchQuery.value) params.search = searchQuery.value
+  router.get('/admin/learner-progress', params)
+}
+
+const exportData = () => {
+  router.post('/admin/learner-progress/export')
+}
+</script>

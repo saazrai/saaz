@@ -1,0 +1,778 @@
+<template>
+  <AdminLayout page-title="Import Courses">
+    <!-- Back Navigation -->
+    <div class="mb-6">
+      <Link 
+        :href="route('admin.content.courses.index')" 
+        :class="[
+          'inline-flex items-center text-sm font-medium transition-colors',
+          isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-500 hover:text-blue-400'
+        ]"
+      >
+        <ChevronLeft class="w-4 h-4 mr-1" />
+        Back to Courses
+      </Link>
+    </div>
+
+    <!-- Inline Flash Messages -->
+    <InlineFlashMessage />
+
+    <!-- Main Content Container -->
+    <div class="max-w-4xl mx-auto">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h1 :class="[
+          'text-3xl font-bold',
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        ]">Import Courses</h1>
+        <p :class="[
+          'text-lg',
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        ]">
+          Bulk import course structure from Excel files
+        </p>
+      </div>
+
+      <!-- Import Card -->
+      <div :class="[
+        'rounded-xl shadow-lg border overflow-hidden relative',
+        isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      ]">
+        <!-- Loading Overlay -->
+        <Transition
+          enter-active-class="transition ease-out duration-200"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition ease-in duration-150"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div v-if="uploading" :class="[
+            'absolute inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4',
+            isDarkMode ? 'bg-gray-900/70' : 'bg-gray-900/50'
+          ]">
+            <div :class="[
+              'rounded-lg p-8 shadow-xl text-center max-w-lg w-full',
+              isDarkMode ? 'bg-gray-800' : 'bg-white'
+            ]">
+              <Loader2 class="w-16 h-16 text-purple-500 animate-spin mx-auto mb-6" />
+              <h3 :class="[
+                'text-xl font-semibold mb-4',
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              ]">Processing Import</h3>
+              
+              <!-- Progress Messages Area -->
+              <div :class="[
+                'rounded-lg p-4 mb-6 text-left max-h-48 overflow-y-auto',
+                isDarkMode ? 'bg-gray-900/50' : 'bg-gray-50'
+              ]">
+                <div class="space-y-1.5">
+                  <div v-for="(msg, index) in progressMessages" :key="index" class="text-sm">
+                    <span class="text-gray-500 font-mono text-xs">{{ msg.time }}</span>
+                    <span :class="[
+                      'ml-2',
+                      msg.type === 'success' ? (isDarkMode ? 'text-green-400' : 'text-green-600') :
+                      msg.type === 'warning' ? (isDarkMode ? 'text-yellow-400' : 'text-yellow-600') :
+                      msg.type === 'error' ? (isDarkMode ? 'text-red-400' : 'text-red-600') :
+                      (isDarkMode ? 'text-gray-300' : 'text-gray-700')
+                    ]">{{ msg.message }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Current Status -->
+              <p :class="[
+                'text-sm mb-4 font-medium',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">
+                {{ uploadMessage || 'Initializing...' }}
+              </p>
+              
+              <!-- Progress Bar -->
+              <div :class="[
+                'w-full rounded-full h-3 overflow-hidden mb-2',
+                isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+              ]">
+                <div 
+                  class="bg-gradient-to-r from-purple-500 to-purple-600 h-full rounded-full transition-all duration-300 relative"
+                  :style="{ width: `${uploadProgress}%` }"
+                >
+                  <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                </div>
+              </div>
+              <p :class="[
+                'text-sm font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">{{ Math.round(uploadProgress) }}%</p>
+            </div>
+          </div>
+        </Transition>
+
+        <!-- Card Header -->
+        <div :class="[
+          'bg-gradient-to-r p-6',
+          isDarkMode ? 'from-purple-600 to-purple-700' : 'from-purple-500 to-purple-600'
+        ]">
+          <div class="flex items-center space-x-3">
+            <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+              <BookOpen class="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-white">Upload Course Structure</h2>
+              <p class="text-purple-100 text-sm mt-1">Import courses, domains, lessons, and topics in one file</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="p-8">
+          <!-- Upload Form -->
+          <form @submit.prevent="uploadFile" class="space-y-6">
+            <!-- File Drop Zone -->
+            <div 
+              @drop.prevent="handleDrop"
+              @dragover.prevent
+              @dragenter.prevent
+              class="relative"
+            >
+              <input 
+                id="file-upload" 
+                ref="fileInput" 
+                type="file" 
+                accept=".xlsx,.xls" 
+                required 
+                class="sr-only"
+                @change="handleFileSelect"
+                :disabled="uploading"
+              />
+              <label 
+                for="file-upload"
+                :class="[
+                  'flex justify-center px-6 py-10 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200',
+                  uploading ? 'opacity-50 cursor-not-allowed' : (isDarkMode ? 'hover:border-purple-500' : 'hover:border-purple-400'),
+                  isDarkMode ? 'border-gray-600 bg-gray-900/50' : 'border-gray-300 bg-gray-50'
+                ]"
+              >
+                <div class="space-y-2 text-center">
+                  <div class="flex justify-center">
+                    <div :class="[
+                      'p-4 rounded-full transition-colors',
+                      selectedFile ? (isDarkMode ? 'bg-green-900/30' : 'bg-green-100') : (isDarkMode ? 'bg-gray-800' : 'bg-gray-100')
+                    ]">
+                      <FileCheck v-if="selectedFile" :class="[
+                        'w-10 h-10',
+                        isDarkMode ? 'text-green-400' : 'text-green-600'
+                      ]" />
+                      <Upload v-else :class="[
+                        'w-10 h-10',
+                        isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                      ]" />
+                    </div>
+                  </div>
+                  <div :class="isDarkMode ? 'text-gray-400' : 'text-gray-600'">
+                    <span :class="[
+                      'font-medium',
+                      isDarkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-500'
+                    ]">
+                      Click to upload
+                    </span>
+                    <span class="ml-1">or drag and drop</span>
+                  </div>
+                  <p :class="[
+                    'text-xs',
+                    isDarkMode ? 'text-gray-500' : 'text-gray-500'
+                  ]">
+                    Excel files (.xlsx, .xls) up to 10MB
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <!-- Selected File Display -->
+            <Transition
+              enter-active-class="transition ease-out duration-200"
+              enter-from-class="opacity-0 translate-y-1"
+              enter-to-class="opacity-100 translate-y-0"
+              leave-active-class="transition ease-in duration-150"
+              leave-from-class="opacity-100 translate-y-0"
+              leave-to-class="opacity-0 translate-y-1"
+            >
+              <div v-if="selectedFile" :class="[
+                'flex items-center justify-between p-4 border rounded-lg',
+                isDarkMode ? 'bg-purple-900/20 border-purple-800' : 'bg-purple-50 border-purple-200'
+              ]">
+                <div class="flex items-center space-x-3">
+                  <FileSpreadsheet :class="[
+                    'w-8 h-8',
+                    isDarkMode ? 'text-purple-400' : 'text-purple-600'
+                  ]" />
+                  <div>
+                    <p :class="[
+                      'font-medium',
+                      isDarkMode ? 'text-white' : 'text-gray-900'
+                    ]">{{ selectedFile.name }}</p>
+                    <p :class="[
+                      'text-sm',
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    ]">{{ formatFileSize(selectedFile.size) }}</p>
+                  </div>
+                </div>
+                <button
+                  v-if="!uploading"
+                  type="button"
+                  @click="clearFile"
+                  class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                >
+                  <X class="w-5 h-5" />
+                </button>
+              </div>
+            </Transition>
+
+
+            <!-- Submit Button -->
+            <div class="flex items-center justify-between pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                @click="downloadTemplate"
+                class="dark:border-gray-600 dark:hover:bg-gray-700"
+              >
+                <Download class="w-4 h-4 mr-2" />
+                Download Template
+              </Button>
+              <Button 
+                type="submit" 
+                :disabled="!selectedFile || uploading"
+                class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white border-0"
+              >
+                <Loader2 v-if="uploading" class="w-4 h-4 mr-2 animate-spin" />
+                <Upload v-else class="w-4 h-4 mr-2" />
+                {{ uploading ? 'Importing...' : 'Import Courses' }}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- File Format Information -->
+      <div class="mt-8 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+          <FileText class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
+          Excel File Structure
+        </h3>
+        
+        <div class="grid gap-4">
+          <!-- Sheet 1: Courses -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <h4 class="font-medium text-gray-900 dark:text-white mb-2 flex items-center">
+              <Sheet class="w-4 h-4 mr-2 text-purple-500" />
+              Sheet 1: Courses
+            </h4>
+            <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <p class="font-mono text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded">
+                name | vendor_id | level_id | code | short_description | description | logo
+              </p>
+              <p class="text-xs mt-1">Define the main course information and metadata</p>
+            </div>
+          </div>
+
+          <!-- Sheet 2: Domains -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <h4 class="font-medium text-gray-900 dark:text-white mb-2 flex items-center">
+              <Sheet class="w-4 h-4 mr-2 text-blue-500" />
+              Sheet 2: Domains
+            </h4>
+            <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <p class="font-mono text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded">
+                name | course_code | number | description | weight
+              </p>
+              <p class="text-xs mt-1">Course domains/sections with their relative weights</p>
+            </div>
+          </div>
+
+          <!-- Sheet 3: Lessons -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <h4 class="font-medium text-gray-900 dark:text-white mb-2 flex items-center">
+              <Sheet class="w-4 h-4 mr-2 text-green-500" />
+              Sheet 3: Lessons
+            </h4>
+            <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <p class="font-mono text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded">
+                name | domain | number | code
+              </p>
+              <p class="text-xs mt-1">Individual lessons within each domain</p>
+            </div>
+          </div>
+
+          <!-- Sheet 4: Topics -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+            <h4 class="font-medium text-gray-900 dark:text-white mb-2 flex items-center">
+              <Sheet class="w-4 h-4 mr-2 text-orange-500" />
+              Sheet 4: Topics
+            </h4>
+            <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <p class="font-mono text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded">
+                name | lesson | code | number | description
+              </p>
+              <p class="text-xs mt-1">Specific topics covered in each lesson</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <p class="text-xs text-yellow-700 dark:text-yellow-300">
+            <strong>Important:</strong> Ensure all sheet names match exactly (Courses, Domains, Lessons, Topics) and foreign key references are valid.
+          </p>
+        </div>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { router, Link, usePage } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import InlineFlashMessage from '@/Components/InlineFlashMessage.vue'
+import { Button } from '@/Components/shadcn/ui/button'
+import {
+  ChevronLeft,
+  Upload,
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Info,
+  Download,
+  FileSpreadsheet,
+  FileCheck,
+  X,
+  AlertCircle,
+  FileText,
+  BookOpen,
+  Sheet
+} from 'lucide-vue-next'
+
+const page = usePage()
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+const handleStorageChange = (event) => {
+  if (event.key === 'adminDarkMode') {
+    isDarkMode.value = JSON.parse(event.newValue)
+  }
+}
+
+const handleDarkModeChange = (event) => {
+  isDarkMode.value = event.detail
+}
+
+// Session keep-alive interval
+let sessionInterval = null
+
+const keepSessionAlive = async () => {
+  try {
+    const response = await window.axios.post(route('admin.session.refresh'))
+    if (response.data.token) {
+      // Update CSRF token in meta tag
+      const metaToken = document.querySelector('meta[name="csrf-token"]')
+      if (metaToken) {
+        metaToken.setAttribute('content', response.data.token)
+      }
+      // Update axios defaults
+      window.axios.defaults.headers.common['X-CSRF-TOKEN'] = response.data.token
+    }
+  } catch (error) {
+    console.error('Failed to refresh session:', error)
+  }
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleDarkModeChange)
+  
+  // Keep session alive every 30 minutes
+  sessionInterval = setInterval(keepSessionAlive, 30 * 60 * 1000)
+  
+  // Also refresh session when page gains focus after being inactive
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      keepSessionAlive()
+    }
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('adminDarkModeChanged', handleDarkModeChange)
+  
+  // Clear session interval
+  if (sessionInterval) {
+    clearInterval(sessionInterval)
+  }
+})
+
+// Reactive state
+const fileInput = ref(null)
+const selectedFile = ref(null)
+const uploading = ref(false)
+const uploadProgress = ref(0)
+const uploadMessage = ref('')
+const progressMessages = ref([])
+
+// Add progress message
+const addProgressMessage = (message, type = 'info') => {
+  const time = new Date().toLocaleTimeString('en-US', { 
+    hour12: false, 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+  })
+  progressMessages.value.push({ time, message, type })
+  
+  // Auto-scroll to bottom
+  setTimeout(() => {
+    const container = document.querySelector('.max-h-48')
+    if (container) {
+      container.scrollTop = container.scrollHeight
+    }
+  }, 10)
+}
+
+// Format file size
+const formatFileSize = (bytes) => {
+  if (bytes < 1024) return bytes + ' B'
+  if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB'
+  return Math.round(bytes / 1048576 * 10) / 10 + ' MB'
+}
+
+// Handle file selection
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file && validateFile(file)) {
+    selectedFile.value = file
+  }
+}
+
+// Handle drag and drop
+const handleDrop = (event) => {
+  const file = event.dataTransfer.files[0]
+  if (file && validateFile(file)) {
+    selectedFile.value = file
+  }
+}
+
+// Validate file
+const validateFile = (file) => {
+  const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+  const validExtensions = ['.xlsx', '.xls']
+  const maxSize = 10 * 1024 * 1024 // 10MB
+
+  const extension = '.' + file.name.split('.').pop().toLowerCase()
+  
+  if (!validTypes.includes(file.type) && !validExtensions.includes(extension)) {
+    alert('Invalid file type. Please upload an Excel (.xlsx, .xls) file.')
+    return false
+  }
+
+  if (file.size > maxSize) {
+    alert('File size exceeds 10MB limit.')
+    return false
+  }
+
+  return true
+}
+
+// Clear selected file
+const clearFile = () => {
+  selectedFile.value = null
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
+// Upload file with progress simulation
+const uploadFile = async () => {
+  if (!selectedFile.value) return
+
+  // Check and refresh CSRF token before upload
+  const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+  if (!token) {
+    alert('Session expired. Please refresh the page and try again.')
+    return
+  }
+
+  // Update axios headers with current CSRF token
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token
+
+  uploading.value = true
+  uploadProgress.value = 0
+  uploadMessage.value = 'Initializing import process...'
+  progressMessages.value = []
+
+  // Add initial messages
+  addProgressMessage('Import process started', 'success')
+  addProgressMessage(`File: ${selectedFile.value.name} (${formatFileSize(selectedFile.value.size)})`, 'info')
+
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+  formData.append('_token', token) // Also add token to form data for extra safety
+
+  // Progress tracking with realistic messages for course import
+  let lastMessageStage = 0
+  const progressInterval = setInterval(() => {
+    if (uploadProgress.value < 95) {
+      // More realistic progress that slows down at certain points
+      if (uploadProgress.value < 10) {
+        uploadProgress.value += 2
+      } else if (uploadProgress.value < 30) {
+        uploadProgress.value += 1.5
+      } else if (uploadProgress.value < 50) {
+        uploadProgress.value += 0.8
+      } else if (uploadProgress.value < 70) {
+        uploadProgress.value += 0.5
+      } else if (uploadProgress.value < 90) {
+        uploadProgress.value += 0.3
+      } else {
+        uploadProgress.value += 0.1
+      }
+      
+      // Add stage-based messages for course import
+      if (uploadProgress.value >= 5 && lastMessageStage < 5) {
+        addProgressMessage('Uploading file to server...', 'info')
+        uploadMessage.value = 'Uploading file...'
+        lastMessageStage = 5
+      } else if (uploadProgress.value >= 10 && lastMessageStage < 10) {
+        addProgressMessage('File received by server', 'success')
+        lastMessageStage = 10
+      } else if (uploadProgress.value >= 15 && lastMessageStage < 15) {
+        addProgressMessage('Opening Excel file...', 'info')
+        uploadMessage.value = 'Reading Excel structure...'
+        lastMessageStage = 15
+      } else if (uploadProgress.value >= 20 && lastMessageStage < 20) {
+        addProgressMessage('Detecting worksheets...', 'info')
+        lastMessageStage = 20
+      } else if (uploadProgress.value >= 25 && lastMessageStage < 25) {
+        addProgressMessage('Found "Courses" worksheet', 'success')
+        uploadMessage.value = 'Processing Courses sheet...'
+        lastMessageStage = 25
+      } else if (uploadProgress.value >= 30 && lastMessageStage < 30) {
+        addProgressMessage('Creating course records...', 'info')
+        lastMessageStage = 30
+      } else if (uploadProgress.value >= 35 && lastMessageStage < 35) {
+        addProgressMessage('Found "Domains" worksheet', 'success')
+        uploadMessage.value = 'Processing Domains sheet...'
+        lastMessageStage = 35
+      } else if (uploadProgress.value >= 40 && lastMessageStage < 40) {
+        addProgressMessage('Linking domains to courses...', 'info')
+        lastMessageStage = 40
+      } else if (uploadProgress.value >= 45 && lastMessageStage < 45) {
+        addProgressMessage('Found "Lessons" worksheet', 'success')
+        uploadMessage.value = 'Processing Lessons sheet...'
+        lastMessageStage = 45
+      } else if (uploadProgress.value >= 50 && lastMessageStage < 50) {
+        addProgressMessage('Creating lesson records...', 'info')
+        lastMessageStage = 50
+      } else if (uploadProgress.value >= 55 && lastMessageStage < 55) {
+        addProgressMessage('Linking lessons to domains...', 'info')
+        lastMessageStage = 55
+      } else if (uploadProgress.value >= 60 && lastMessageStage < 60) {
+        addProgressMessage('Found "Topics" worksheet', 'success')
+        uploadMessage.value = 'Processing Topics sheet...'
+        lastMessageStage = 60
+      } else if (uploadProgress.value >= 65 && lastMessageStage < 65) {
+        addProgressMessage('Creating topic records...', 'info')
+        lastMessageStage = 65
+      } else if (uploadProgress.value >= 70 && lastMessageStage < 70) {
+        addProgressMessage('Linking topics to lessons...', 'info')
+        uploadMessage.value = 'Building relationships...'
+        lastMessageStage = 70
+      } else if (uploadProgress.value >= 75 && lastMessageStage < 75) {
+        addProgressMessage('Validating course structure...', 'info')
+        lastMessageStage = 75
+      } else if (uploadProgress.value >= 80 && lastMessageStage < 80) {
+        addProgressMessage('Setting up course hierarchies...', 'info')
+        uploadMessage.value = 'Saving to database...'
+        lastMessageStage = 80
+      } else if (uploadProgress.value >= 85 && lastMessageStage < 85) {
+        addProgressMessage('Updating course metadata...', 'info')
+        lastMessageStage = 85
+      } else if (uploadProgress.value >= 90 && lastMessageStage < 90) {
+        addProgressMessage('Calculating domain weights...', 'info')
+        uploadMessage.value = 'Finalizing import...'
+        lastMessageStage = 90
+      } else if (uploadProgress.value >= 93 && lastMessageStage < 93) {
+        addProgressMessage('Updating search indexes...', 'info')
+        lastMessageStage = 93
+      }
+    }
+  }, 200)
+
+  try {
+    // Use Inertia router for consistent navigation
+    await router.post(route('admin.content.courses.import.store'), formData, {
+      forceFormData: true,
+      preserveScroll: true,
+      preserveState: false, // Allow the page to refresh with new props
+      onProgress: (progress) => {
+        // Use actual upload progress for first 10% (file upload)
+        if (progress.percentage) {
+          const actualProgress = Math.min(progress.percentage * 0.1, 10)
+          if (actualProgress > uploadProgress.value && uploadProgress.value < 10) {
+            uploadProgress.value = actualProgress
+          }
+        }
+      },
+      onSuccess: (page) => {
+        clearInterval(progressInterval)
+        
+        // Add completion message
+        addProgressMessage('Import completed!', 'success')
+        
+        // Wait a moment then close modal
+        setTimeout(() => {
+          uploading.value = false
+          uploadProgress.value = 0
+          uploadMessage.value = ''
+          progressMessages.value = []
+          
+          // Reset form
+          selectedFile.value = null
+          if (fileInput.value) {
+            fileInput.value.value = ''
+          }
+        }, 1500)
+      },
+      onError: (errors) => {
+        clearInterval(progressInterval)
+        
+        // Check for 419 error specifically
+        if (errors === 419 || errors.status === 419) {
+          handleImportError('Session expired. Please refresh the page and try again.')
+          // Optionally refresh the page after a delay
+          setTimeout(() => {
+            window.location.reload()
+          }, 3000)
+          return
+        }
+        
+        // Check for different error types
+        if (errors.file) {
+          handleImportError(errors.file[0])
+        } else if (errors.message) {
+          handleImportError(errors.message)
+        } else {
+          // Check for server error response
+          const errorMessage = getErrorMessage(errors)
+          handleImportError(errorMessage)
+        }
+      },
+      onFinish: () => {
+        // Ensure interval is cleared
+        clearInterval(progressInterval)
+      }
+    })
+  } catch (error) {
+    clearInterval(progressInterval)
+    console.error('Upload error:', error)
+    
+    // Better error handling for different error types
+    const errorMessage = getErrorMessage(error)
+    handleImportError(errorMessage)
+  }
+}
+
+// Extract error message from various error formats
+const getErrorMessage = (error) => {
+  // Check for 419 error
+  if (error === 419 || error.status === 419 || error.response?.status === 419) {
+    return 'Session expired. Please refresh the page and try again.'
+  }
+  
+  // Check for axios error response
+  if (error.response) {
+    if (error.response.data?.message) {
+      return error.response.data.message
+    }
+    if (error.response.status === 500) {
+      return 'Server error occurred. This may be due to invalid course structure or references. Please check your file and try again.'
+    }
+    if (error.response.status === 413) {
+      return 'File is too large. Please reduce the file size and try again.'
+    }
+    if (error.response.status === 422) {
+      return 'Invalid file format. Please ensure you are uploading an Excel (.xlsx, .xls) file with the correct sheet structure.'
+    }
+  }
+  
+  // Check for network errors
+  if (error.code === 'ERR_NETWORK') {
+    return 'Network error. Please check your connection and try again.'
+  }
+  
+  // Default error message
+  return 'An unexpected error occurred. Please try again or contact support if the problem persists.'
+}
+
+// Handle import error
+const handleImportError = (errorMessage) => {
+  // Simply close the modal and let the error show via flash message
+  uploading.value = false
+  uploadProgress.value = 0
+  uploadMessage.value = ''
+  progressMessages.value = []
+  
+  // Reset file input
+  selectedFile.value = null
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
+// Download template
+const downloadTemplate = () => {
+  // Create an Excel template with example data
+  const csvContent = `Sheet 1: Courses
+name,vendor_id,level_id,code,short_description,description,logo
+"CISSP 2024",1,3,"CISSP-2024","Certified Information Systems Security Professional","Comprehensive cybersecurity certification covering 8 domains","/images/cissp-logo.png"
+"CompTIA Security+",2,2,"COMPTIA-SEC-PLUS","Entry-level cybersecurity certification","Foundation-level security certification for IT professionals","/images/comptia-logo.png"
+
+Sheet 2: Domains
+name,course_code,number,description,weight
+"Security and Risk Management","CISSP-2024",1,"Governance, compliance, and risk management concepts",15
+"Asset Security","CISSP-2024",2,"Protecting security of assets",10
+"Security Architecture and Engineering","CISSP-2024",3,"Engineering and management of security architectures",13
+
+Sheet 3: Lessons  
+name,domain,number,code
+"Information Security Governance","Security and Risk Management",1,"L1.1"
+"Risk Management Concepts","Security and Risk Management",2,"L1.2"
+"Data Classification","Asset Security",1,"L2.1"
+
+Sheet 4: Topics
+name,lesson,code,number,description
+"CIA Triad","L1.1","CISSP-D1-T1",1,"Understanding Confidentiality, Integrity, and Availability"
+"Security Policies","L1.1","CISSP-D1-T2",2,"Types and implementation of security policies"
+"Risk Assessment","L1.2","CISSP-D1-T3",1,"Identifying and evaluating risks"`
+
+  const blob = new Blob([csvContent], { type: 'text/plain;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  link.setAttribute('href', url)
+  link.setAttribute('download', 'course_import_template.txt')
+  link.style.visibility = 'hidden'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+</script>

@@ -1,0 +1,1064 @@
+<template>
+  <AdminLayout>
+    <Head title="Laravel Pulse Dashboard" />
+    
+    <div class="space-y-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900">Laravel Pulse Dashboard</h1>
+          <p class="text-gray-600 mt-1">Real-time application monitoring and performance insights</p>
+        </div>
+        
+        <!-- Period Selector -->
+        <div class="flex items-center space-x-4">
+          <Select v-model="selectedPeriod" @update:model-value="updatePeriod">
+            <SelectTrigger class="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5m">5 minutes</SelectItem>
+              <SelectItem value="15m">15 minutes</SelectItem>
+              <SelectItem value="30m">30 minutes</SelectItem>
+              <SelectItem value="1h">1 hour</SelectItem>
+              <SelectItem value="6h">6 hours</SelectItem>
+              <SelectItem value="12h">12 hours</SelectItem>
+              <SelectItem value="24h">24 hours</SelectItem>
+              <SelectItem value="7d">7 days</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Button @click="toggleAutoRefresh" :variant="autoRefresh ? 'default' : 'outline'" size="sm">
+            <RefreshCw :class="[autoRefresh && isLoading ? 'animate-spin' : '', 'w-4 h-4 mr-2']" />
+            {{ autoRefresh ? 'Auto' : 'Manual' }}
+          </Button>
+          
+          <div class="flex items-center text-sm text-gray-500">
+            <Clock class="w-4 h-4 mr-1" />
+            {{ lastUpdated }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Cards with Live Graphs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardContent class="p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600">Active Servers</p>
+                <p class="text-2xl font-bold text-gray-900">{{ Math.round(pulseData.servers?.length || 0) }}</p>
+              </div>
+              <Activity class="h-8 w-8 text-blue-600" />
+            </div>
+            <!-- Mini Live Graph -->
+            <div class="mt-4 h-12">
+              <LineChart
+                v-if="serverMetricsHistory.length > 0"
+                :data="serverMetricsHistory"
+                :categories="['count']"
+                index="time"
+                :colors="['#3b82f6']"
+                :show-legend="false"
+                :show-x-axis="false"
+                :show-y-axis="false"
+                :show-tooltip="false"
+                class="h-12"
+              />
+              <div v-else class="h-12 bg-blue-50 rounded flex items-center justify-center">
+                <div class="w-full h-1 bg-blue-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent class="p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600">Active Users</p>
+                <p class="text-2xl font-bold text-gray-900">{{ totalActiveUsers }}</p>
+              </div>
+              <Users class="h-8 w-8 text-green-600" />
+            </div>
+            <!-- Mini Live Graph -->
+            <div class="mt-4 h-12">
+              <LineChart
+                v-if="userMetricsHistory.length > 0"
+                :data="userMetricsHistory"
+                :categories="['count']"
+                index="time"
+                :colors="['#10b981']"
+                :show-legend="false"
+                :show-x-axis="false"
+                :show-y-axis="false"
+                :show-tooltip="false"
+                class="h-12"
+              />
+              <div v-else class="h-12 bg-green-50 rounded flex items-center justify-center">
+                <div class="w-full h-1 bg-green-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent class="p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600">Requests/min</p>
+                <p class="text-2xl font-bold text-gray-900">{{ requestsPerMinute }}</p>
+              </div>
+              <Zap class="h-8 w-8 text-yellow-600" />
+            </div>
+            <!-- Mini Live Graph -->
+            <div class="mt-4 h-12">
+              <LineChart
+                v-if="requestMetricsHistory.length > 0"
+                :data="requestMetricsHistory"
+                :categories="['count']"
+                index="time"
+                :colors="['#f59e0b']"
+                :show-legend="false"
+                :show-x-axis="false"
+                :show-y-axis="false"
+                :show-tooltip="false"
+                class="h-12"
+              />
+              <div v-else class="h-12 bg-yellow-50 rounded flex items-center justify-center">
+                <div class="w-full h-1 bg-yellow-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent class="p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-600">Exceptions</p>
+                <p class="text-2xl font-bold text-gray-900">{{ totalExceptions }}</p>
+              </div>
+              <AlertTriangle class="h-8 w-8 text-red-600" />
+            </div>
+            <!-- Mini Live Graph -->
+            <div class="mt-4 h-12">
+              <LineChart
+                v-if="exceptionMetricsHistory.length > 0"
+                :data="exceptionMetricsHistory"
+                :categories="['count']"
+                index="time"
+                :colors="['#ef4444']"
+                :show-legend="false"
+                :show-x-axis="false"
+                :show-y-axis="false"
+                :show-tooltip="false"
+                class="h-12"
+              />
+              <div v-else class="h-12 bg-red-50 rounded flex items-center justify-center">
+                <div class="w-full h-1 bg-red-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Main Dashboard Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Server Performance -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <Server class="w-5 h-5 mr-2" />
+                Servers
+              </div>
+              <Select v-model="sortOrders.servers" @update:model-value="sortServers">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Highest Load</SelectItem>
+                  <SelectItem value="asc">Lowest Load</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-4">
+              <div v-if="pulseData.servers && pulseData.servers.length > 0">
+                <div v-for="server in sortedServers.slice(0, 5)" :key="server.key" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p class="font-medium text-gray-900">{{ server.key }}</p>
+                    <p class="text-sm text-gray-600">Server</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="flex items-center space-x-4">
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">{{ Math.round(server.memory || 0) }}%</p>
+                        <p class="text-xs text-gray-500">Memory</p>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">{{ Math.round(server.cpu || 0) }}%</p>
+                        <p class="text-xs text-gray-500">CPU</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <Server class="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No server data available</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Application Usage with Enhanced User Avatars -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <Users class="w-5 h-5 mr-2" />
+                Application Usage
+              </div>
+              <Select v-model="sortOrders.usage" @update:model-value="sortUsage">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Most Requests</SelectItem>
+                  <SelectItem value="asc">Least Requests</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-4">
+              <div v-if="pulseData.usage?.users && pulseData.usage.users.length > 0">
+                <div v-for="user in sortedUsage.slice(0, 10)" :key="user.key" class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
+                  <div class="flex items-center">
+                    <div class="relative">
+                      <!-- User Avatar -->
+                      <img 
+                        v-if="user.user?.avatar" 
+                        :src="user.user.avatar" 
+                        :alt="user.user?.name || user.key"
+                        class="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div 
+                        v-else 
+                        class="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                        :class="getAvatarColor(user.user?.name || user.key)"
+                      >
+                        {{ getInitials(user.user?.name || user.key) }}
+                      </div>
+                    </div>
+                    <div class="ml-3">
+                      <p class="font-medium text-gray-900">{{ user.user?.name || user.key }}</p>
+                      <p class="text-sm text-gray-500">{{ user.user?.email || 'User' }}</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-lg font-semibold text-gray-900">{{ Math.round(user.count || 0) }}</p>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <Users class="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No user activity</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Queues with Live Graph -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <List class="w-5 h-5 mr-2" />
+                Queues
+              </div>
+              <Select v-model="sortOrders.queues" @update:model-value="sortQueues">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Slowest</SelectItem>
+                  <SelectItem value="count">Most Jobs</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <!-- Live Queue Graph -->
+            <div class="mb-4 h-32">
+              <LineChart
+                v-if="queueMetricsHistory.length > 0"
+                :data="queueMetricsHistory"
+                :categories="['jobs', 'avgTime']"
+                index="time"
+                :colors="['#3b82f6', '#f59e0b']"
+                :show-legend="true"
+                :show-x-axis="true"
+                :show-y-axis="true"
+                class="h-32"
+              />
+              <div v-else class="h-32 bg-blue-50 rounded flex items-center justify-center">
+                <div class="text-center">
+                  <List class="w-8 h-8 mx-auto mb-2 text-blue-400" />
+                  <p class="text-sm text-blue-600">Loading queue metrics...</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="space-y-3">
+              <div v-if="pulseData.queues && pulseData.queues.length > 0">
+                <div v-for="queue in sortedQueues.slice(0, 5)" :key="queue.key" class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div>
+                    <p class="font-medium text-blue-900 text-sm">{{ queue.key }}</p>
+                    <p class="text-xs text-blue-600 mt-1">
+                      Avg: {{ Math.round(queue.avg || 0) }}ms
+                    </p>
+                  </div>
+                  <Badge variant="outline" class="ml-2">{{ queue.count }} jobs</Badge>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <CheckCircle class="w-12 h-12 mx-auto mb-4 text-green-500" />
+                <p>No queue activity</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Cache Performance with Live Graph -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <HardDrive class="w-5 h-5 mr-2" />
+                Cache
+              </div>
+              <Select v-model="sortOrders.cache" @update:model-value="sortCache">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Highest Hit Rate</SelectItem>
+                  <SelectItem value="asc">Lowest Hit Rate</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <!-- Live Cache Hit Rate Graph -->
+            <div class="mb-4 h-32">
+              <LineChart
+                v-if="cacheMetricsHistory.length > 0"
+                :data="cacheMetricsHistory"
+                :categories="['hitRate']"
+                index="time"
+                :colors="['#8b5cf6']"
+                :show-legend="false"
+                :show-x-axis="true"
+                :show-y-axis="true"
+                :y-formatter="(value) => `${value}%`"
+                class="h-32"
+              />
+              <div v-else class="h-32 bg-purple-50 rounded flex items-center justify-center">
+                <div class="text-center">
+                  <HardDrive class="w-8 h-8 mx-auto mb-2 text-purple-400" />
+                  <p class="text-sm text-purple-600">Loading cache metrics...</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="space-y-3">
+              <div v-if="pulseData.cache && pulseData.cache.length > 0">
+                <div v-for="cache in sortedCache.slice(0, 5)" :key="cache.key" class="p-3 bg-purple-50 rounded-lg">
+                  <p class="font-medium text-purple-900 text-sm truncate">{{ cache.key }}</p>
+                  <div class="mt-2 flex items-center justify-between">
+                    <div>
+                      <p class="text-xs text-purple-600">Hits: {{ cache.hits || 0 }}</p>
+                      <p class="text-xs text-purple-600">Misses: {{ cache.misses || 0 }}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm font-medium text-purple-900">
+                        {{ calculateHitRate(cache.hits, cache.misses) }}%
+                      </p>
+                      <p class="text-xs text-purple-600">Hit Rate</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <HardDrive class="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>No cache data available</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Slow Queries -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <Database class="w-5 h-5 mr-2" />
+                Slow Queries
+              </div>
+              <Select v-model="sortOrders.slowQueries" @update:model-value="sortSlowQueries">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Slowest</SelectItem>
+                  <SelectItem value="count">Most Frequent</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-3">
+              <div v-if="pulseData.slowQueries && pulseData.slowQueries.length > 0">
+                <div v-for="query in sortedSlowQueries.slice(0, 5)" :key="query.key" class="flex items-start justify-between p-3 bg-yellow-50 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-yellow-900 text-sm truncate">{{ query.key }}</p>
+                    <p class="text-xs text-yellow-600 mt-1">
+                      Avg: {{ Math.round(query.avg || 0) }}ms | Max: {{ Math.round(query.max || 0) }}ms
+                    </p>
+                  </div>
+                  <Badge variant="secondary" class="ml-2">{{ query.count }}</Badge>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <Zap class="w-12 h-12 mx-auto mb-4 text-green-500" />
+                <p>No slow queries detected</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Exceptions -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <AlertTriangle class="w-5 h-5 mr-2" />
+                Exceptions
+              </div>
+              <Select v-model="sortOrders.exceptions" @update:model-value="sortExceptions">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Latest</SelectItem>
+                  <SelectItem value="count">Most Frequent</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-3">
+              <div v-if="pulseData.exceptions && pulseData.exceptions.length > 0">
+                <div v-for="exception in sortedExceptions.slice(0, 5)" :key="exception.key" class="flex items-start justify-between p-3 bg-red-50 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-red-900 text-sm">{{ exception.key }}</p>
+                    <p class="text-xs text-red-600 mt-1">{{ exception.count }} occurrences</p>
+                  </div>
+                  <Badge variant="destructive" class="ml-2">{{ exception.count }}</Badge>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <CheckCircle class="w-12 h-12 mx-auto mb-4 text-green-500" />
+                <p>No exceptions found</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Slow Requests -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <Clock class="w-5 h-5 mr-2" />
+                Slow Requests
+              </div>
+              <Select v-model="sortOrders.slowRequests" @update:model-value="sortSlowRequests">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Slowest</SelectItem>
+                  <SelectItem value="count">Most Frequent</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-3">
+              <div v-if="pulseData.slowRequests && pulseData.slowRequests.length > 0">
+                <div v-for="request in sortedSlowRequests.slice(0, 5)" :key="request.key" class="flex items-start justify-between p-3 bg-orange-50 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-orange-900 text-sm truncate">{{ request.key }}</p>
+                    <p class="text-xs text-orange-600 mt-1">
+                      Avg: {{ Math.round(request.avg || 0) }}ms | Max: {{ Math.round(request.max || 0) }}ms
+                    </p>
+                  </div>
+                  <Badge variant="secondary" class="ml-2">{{ request.count }}</Badge>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <Zap class="w-12 h-12 mx-auto mb-4 text-green-500" />
+                <p>No slow requests detected</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Slow Jobs -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <Briefcase class="w-5 h-5 mr-2" />
+                Slow Jobs
+              </div>
+              <Select v-model="sortOrders.slowJobs" @update:model-value="sortSlowJobs">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Slowest</SelectItem>
+                  <SelectItem value="count">Most Frequent</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-3">
+              <div v-if="pulseData.slowJobs && pulseData.slowJobs.length > 0">
+                <div v-for="job in sortedSlowJobs.slice(0, 5)" :key="job.key" class="flex items-start justify-between p-3 bg-indigo-50 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-indigo-900 text-sm truncate">{{ job.key }}</p>
+                    <p class="text-xs text-indigo-600 mt-1">
+                      Avg: {{ Math.round(job.avg || 0) }}ms | Max: {{ Math.round(job.max || 0) }}ms
+                    </p>
+                  </div>
+                  <Badge variant="secondary" class="ml-2">{{ job.count }}</Badge>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <CheckCircle class="w-12 h-12 mx-auto mb-4 text-green-500" />
+                <p>No slow jobs detected</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Slow Outgoing Requests -->
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center justify-between">
+              <div class="flex items-center">
+                <ExternalLink class="w-5 h-5 mr-2" />
+                Slow Outgoing Requests
+              </div>
+              <Select v-model="sortOrders.slowOutgoingRequests" @update:model-value="sortSlowOutgoingRequests">
+                <SelectTrigger class="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Slowest</SelectItem>
+                  <SelectItem value="count">Most Frequent</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="space-y-3">
+              <div v-if="pulseData.slowOutgoingRequests && pulseData.slowOutgoingRequests.length > 0">
+                <div v-for="request in sortedSlowOutgoingRequests.slice(0, 5)" :key="request.key" class="flex items-start justify-between p-3 bg-teal-50 rounded-lg">
+                  <div class="flex-1">
+                    <p class="font-medium text-teal-900 text-sm truncate">{{ request.key }}</p>
+                    <p class="text-xs text-teal-600 mt-1">
+                      Avg: {{ Math.round(request.avg || 0) }}ms | Max: {{ Math.round(request.max || 0) }}ms
+                    </p>
+                  </div>
+                  <Badge variant="secondary" class="ml-2">{{ request.count }}</Badge>
+                </div>
+              </div>
+              <div v-else class="text-center py-8 text-gray-500">
+                <CheckCircle class="w-12 h-12 mx-auto mb-4 text-green-500" />
+                <p>No slow outgoing requests detected</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+      </div>
+
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { Head, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
+import { Button } from '@/Components/shadcn/ui/button'
+import { Badge } from '@/Components/shadcn/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/shadcn/ui/select'
+import LineChart from '@/Components/shadcn/ui/chart-line/LineChart.vue'
+import {
+  Activity,
+  Users,
+  Zap,
+  AlertTriangle,
+  Server,
+  Database,
+  HardDrive,
+  RefreshCw,
+  Clock,
+  CheckCircle,
+  List,
+  ArrowUpDown,
+  Briefcase,
+  ExternalLink
+} from 'lucide-vue-next'
+
+const props = defineProps({
+  pulseData: {
+    type: Object,
+    default: () => ({})
+  },
+  periodicUpdates: {
+    type: Boolean,
+    default: true
+  }
+})
+
+// Reactive state
+const selectedPeriod = ref(props.pulseData.period || '1h')
+const autoRefresh = ref(props.periodicUpdates)
+const isLoading = ref(false)
+const lastUpdated = ref(new Date().toLocaleTimeString())
+const currentData = ref(props.pulseData)
+
+// Live graph data
+const serverMetricsHistory = ref([])
+const userMetricsHistory = ref([])
+const requestMetricsHistory = ref([])
+const exceptionMetricsHistory = ref([])
+const queueMetricsHistory = ref([])
+const cacheMetricsHistory = ref([])
+
+// Sorting state
+const sortOrders = ref({
+  servers: 'desc',
+  usage: 'desc',
+  queues: 'desc',
+  cache: 'desc',
+  slowQueries: 'desc',
+  exceptions: 'desc',
+  slowRequests: 'desc',
+  slowJobs: 'desc',
+  slowOutgoingRequests: 'desc',
+})
+
+let refreshInterval = null
+
+// Computed properties
+const totalActiveUsers = computed(() => {
+  if (!currentData.value.usage?.users) return 0
+  return Math.round(currentData.value.usage.users.reduce((sum, user) => sum + (user.count || 0), 0))
+})
+
+const requestsPerMinute = computed(() => {
+  if (!currentData.value.requests) return 0
+  return Math.round(currentData.value.requests.reduce((sum, req) => sum + (req.count || 0), 0))
+})
+
+const totalExceptions = computed(() => {
+  if (!currentData.value.exceptions) return 0
+  return Math.round(currentData.value.exceptions.reduce((sum, exc) => sum + (exc.count || 0), 0))
+})
+
+// Sorted data computed properties
+const sortedServers = computed(() => {
+  if (!currentData.value.servers) return []
+  const servers = [...currentData.value.servers]
+  return servers.sort((a, b) => {
+    const order = sortOrders.value.servers === 'desc' ? -1 : 1
+    return ((a.memory || 0) + (a.cpu || 0) - (b.memory || 0) - (b.cpu || 0)) * order
+  })
+})
+
+const sortedUsage = computed(() => {
+  if (!currentData.value.usage?.users) return []
+  const users = [...currentData.value.usage.users]
+  return users.sort((a, b) => {
+    const order = sortOrders.value.usage === 'desc' ? -1 : 1
+    return ((a.count || 0) - (b.count || 0)) * order
+  })
+})
+
+const sortedQueues = computed(() => {
+  if (!currentData.value.queues) return []
+  const queues = [...currentData.value.queues]
+  return queues.sort((a, b) => {
+    if (sortOrders.value.queues === 'count') {
+      return (b.count || 0) - (a.count || 0)
+    }
+    const order = sortOrders.value.queues === 'desc' ? -1 : 1
+    return ((a.avg || 0) - (b.avg || 0)) * order
+  })
+})
+
+const sortedCache = computed(() => {
+  if (!currentData.value.cache) return []
+  const cache = [...currentData.value.cache]
+  return cache.sort((a, b) => {
+    const order = sortOrders.value.cache === 'desc' ? -1 : 1
+    const aHitRate = calculateHitRate(a.hits, a.misses)
+    const bHitRate = calculateHitRate(b.hits, b.misses)
+    return (aHitRate - bHitRate) * order
+  })
+})
+
+const sortedSlowQueries = computed(() => {
+  if (!currentData.value.slowQueries) return []
+  const queries = [...currentData.value.slowQueries]
+  return queries.sort((a, b) => {
+    if (sortOrders.value.slowQueries === 'count') {
+      return (b.count || 0) - (a.count || 0)
+    }
+    const order = sortOrders.value.slowQueries === 'desc' ? -1 : 1
+    return ((a.avg || 0) - (b.avg || 0)) * order
+  })
+})
+
+const sortedExceptions = computed(() => {
+  if (!currentData.value.exceptions) return []
+  const exceptions = [...currentData.value.exceptions]
+  return exceptions.sort((a, b) => {
+    if (sortOrders.value.exceptions === 'count') {
+      return (b.count || 0) - (a.count || 0)
+    }
+    // For 'desc' (latest), we'd need timestamp data, fallback to count for now
+    return (b.count || 0) - (a.count || 0)
+  })
+})
+
+const sortedSlowRequests = computed(() => {
+  if (!currentData.value.slowRequests) return []
+  const requests = [...currentData.value.slowRequests]
+  return requests.sort((a, b) => {
+    if (sortOrders.value.slowRequests === 'count') {
+      return (b.count || 0) - (a.count || 0)
+    }
+    const order = sortOrders.value.slowRequests === 'desc' ? -1 : 1
+    return ((a.avg || 0) - (b.avg || 0)) * order
+  })
+})
+
+const sortedSlowJobs = computed(() => {
+  if (!currentData.value.slowJobs) return []
+  const jobs = [...currentData.value.slowJobs]
+  return jobs.sort((a, b) => {
+    if (sortOrders.value.slowJobs === 'count') {
+      return (b.count || 0) - (a.count || 0)
+    }
+    const order = sortOrders.value.slowJobs === 'desc' ? -1 : 1
+    return ((a.avg || 0) - (b.avg || 0)) * order
+  })
+})
+
+const sortedSlowOutgoingRequests = computed(() => {
+  if (!currentData.value.slowOutgoingRequests) return []
+  const requests = [...currentData.value.slowOutgoingRequests]
+  return requests.sort((a, b) => {
+    if (sortOrders.value.slowOutgoingRequests === 'count') {
+      return (b.count || 0) - (a.count || 0)
+    }
+    const order = sortOrders.value.slowOutgoingRequests === 'desc' ? -1 : 1
+    return ((a.avg || 0) - (b.avg || 0)) * order
+  })
+})
+
+// Methods
+const updatePeriod = (newPeriod) => {
+  selectedPeriod.value = newPeriod
+  router.get(route('admin.pulse.dashboard'), { period: newPeriod }, {
+    preserveState: true,
+    replace: true,
+  })
+}
+
+const toggleAutoRefresh = () => {
+  autoRefresh.value = !autoRefresh.value
+  if (autoRefresh.value) {
+    startAutoRefresh()
+  } else {
+    stopAutoRefresh()
+  }
+}
+
+const refreshData = async () => {
+  if (isLoading.value) return
+  
+  isLoading.value = true
+  try {
+    const response = await fetch(`/admin/pulse/api?period=${selectedPeriod.value}`)
+    const data = await response.json()
+    
+    // Update current data with new data structure
+    currentData.value = { 
+      ...currentData.value, 
+      servers: data.servers || [],
+      usage: data.usage || { users: [], jobs: [] },
+      queues: data.queues || [],
+      cache: data.cache || [],
+      exceptions: data.exceptions || [],
+      slowQueries: data.slow_queries || [],
+      slowRequests: data.slow_requests || [],
+      slowJobs: data.slowJobs || [],
+      slowOutgoingRequests: data.slowOutgoingRequests || [],
+    }
+    
+    // Update live graph data
+    updateLiveGraphs(data)
+    
+    lastUpdated.value = new Date().toLocaleTimeString()
+  } catch (error) {
+    console.error('Failed to refresh pulse data:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const startAutoRefresh = () => {
+  if (refreshInterval) clearInterval(refreshInterval)
+  refreshInterval = setInterval(refreshData, 10000) // 10 seconds
+}
+
+const stopAutoRefresh = () => {
+  if (refreshInterval) {
+    clearInterval(refreshInterval)
+    refreshInterval = null
+  }
+}
+
+const calculateHitRate = (hits, misses) => {
+  const total = (hits || 0) + (misses || 0)
+  if (total === 0) return 0
+  return Math.round(((hits || 0) / total) * 100)
+}
+
+// Helper function to get initials from a string
+const getInitials = (name) => {
+  if (!name) return '?'
+  const words = name.split(' ')
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase()
+  }
+  return name.substring(0, 2).toUpperCase()
+}
+
+// Helper function to get avatar color based on name
+const getAvatarColor = (name) => {
+  if (!name) return 'bg-gray-500'
+  
+  const colors = [
+    'bg-red-500',
+    'bg-blue-500', 
+    'bg-green-500',
+    'bg-yellow-500',
+    'bg-purple-500',
+    'bg-pink-500',
+    'bg-indigo-500',
+    'bg-orange-500'
+  ]
+  
+  // Simple hash function to get consistent color for same name
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  
+  return colors[Math.abs(hash) % colors.length]
+}
+
+// Update live graph data
+const updateLiveGraphs = (data) => {
+  const now = new Date()
+  const timeLabel = now.toLocaleTimeString()
+  
+  // Server metrics
+  const serverCount = data.servers?.length || 0
+  serverMetricsHistory.value.push({
+    time: timeLabel,
+    count: serverCount
+  })
+  if (serverMetricsHistory.value.length > 20) {
+    serverMetricsHistory.value.shift()
+  }
+  
+  // User metrics
+  const userCount = Math.round(data.usage?.users?.reduce((sum, user) => sum + (user.count || 0), 0) || 0)
+  userMetricsHistory.value.push({
+    time: timeLabel,
+    count: userCount
+  })
+  if (userMetricsHistory.value.length > 20) {
+    userMetricsHistory.value.shift()
+  }
+  
+  // Request metrics
+  const requestCount = Math.round(data.requests?.reduce((sum, req) => sum + (req.count || 0), 0) || 0)
+  requestMetricsHistory.value.push({
+    time: timeLabel,
+    count: requestCount
+  })
+  if (requestMetricsHistory.value.length > 20) {
+    requestMetricsHistory.value.shift()
+  }
+  
+  // Exception metrics
+  const exceptionCount = Math.round(data.exceptions?.reduce((sum, exc) => sum + (exc.count || 0), 0) || 0)
+  exceptionMetricsHistory.value.push({
+    time: timeLabel,
+    count: exceptionCount
+  })
+  if (exceptionMetricsHistory.value.length > 20) {
+    exceptionMetricsHistory.value.shift()
+  }
+  
+  // Queue metrics
+  const totalJobs = data.queues?.reduce((sum, queue) => sum + (queue.count || 0), 0) || 0
+  const avgTime = data.queues?.length > 0 
+    ? data.queues.reduce((sum, queue) => sum + (queue.avg || 0), 0) / data.queues.length 
+    : 0
+  queueMetricsHistory.value.push({
+    time: timeLabel,
+    jobs: totalJobs,
+    avgTime: Math.round(avgTime)
+  })
+  if (queueMetricsHistory.value.length > 20) {
+    queueMetricsHistory.value.shift()
+  }
+  
+  // Cache metrics
+  const avgHitRate = data.cache?.length > 0 
+    ? data.cache.reduce((sum, cache) => sum + calculateHitRate(cache.hits, cache.misses), 0) / data.cache.length 
+    : 0
+  cacheMetricsHistory.value.push({
+    time: timeLabel,
+    hitRate: Math.round(avgHitRate)
+  })
+  if (cacheMetricsHistory.value.length > 20) {
+    cacheMetricsHistory.value.shift()
+  }
+}
+
+// Sorting methods (now handled by dropdown selections)
+const sortServers = (value) => {
+  sortOrders.value.servers = value
+}
+
+const sortUsage = (value) => {
+  sortOrders.value.usage = value
+}
+
+const sortQueues = (value) => {
+  sortOrders.value.queues = value
+}
+
+const sortCache = (value) => {
+  sortOrders.value.cache = value
+}
+
+const sortSlowQueries = (value) => {
+  sortOrders.value.slowQueries = value
+}
+
+const sortExceptions = (value) => {
+  sortOrders.value.exceptions = value
+}
+
+const sortSlowRequests = (value) => {
+  sortOrders.value.slowRequests = value
+}
+
+const sortSlowJobs = (value) => {
+  sortOrders.value.slowJobs = value
+}
+
+const sortSlowOutgoingRequests = (value) => {
+  sortOrders.value.slowOutgoingRequests = value
+}
+
+// Lifecycle
+onMounted(() => {
+  // Initialize live graphs with current data
+  if (props.pulseData) {
+    updateLiveGraphs(props.pulseData)
+  }
+  
+  // Initialize with some sample data if no data exists
+  if (serverMetricsHistory.value.length === 0) {
+    const now = new Date()
+    for (let i = 4; i >= 0; i--) {
+      const time = new Date(now.getTime() - i * 10000)
+      serverMetricsHistory.value.push({
+        time: time.toLocaleTimeString(),
+        count: Math.floor(Math.random() * 5) + 1
+      })
+      userMetricsHistory.value.push({
+        time: time.toLocaleTimeString(),
+        count: Math.floor(Math.random() * 100) + 50
+      })
+      requestMetricsHistory.value.push({
+        time: time.toLocaleTimeString(),
+        count: Math.floor(Math.random() * 200) + 100
+      })
+      exceptionMetricsHistory.value.push({
+        time: time.toLocaleTimeString(),
+        count: Math.floor(Math.random() * 10)
+      })
+      queueMetricsHistory.value.push({
+        time: time.toLocaleTimeString(),
+        jobs: Math.floor(Math.random() * 50),
+        avgTime: Math.floor(Math.random() * 1000) + 100
+      })
+      cacheMetricsHistory.value.push({
+        time: time.toLocaleTimeString(),
+        hitRate: Math.floor(Math.random() * 40) + 60
+      })
+    }
+  }
+  
+  if (autoRefresh.value) {
+    startAutoRefresh()
+  }
+})
+
+onUnmounted(() => {
+  stopAutoRefresh()
+})
+
+// Update current data when props change
+const pulseData = computed(() => currentData.value)
+</script>
+

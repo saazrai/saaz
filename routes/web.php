@@ -62,6 +62,11 @@ Route::prefix('diagnostics')->name('assessments.diagnostics.')->group(function (
 });
 
 // Admin routes (require admin permissions)
+// Admin routes (protected with admin middleware)
+Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+    require __DIR__.'/admin.php';
+});
+
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Audit logs (for compliance and debugging)
     Route::get('audits', [AuditController::class, 'index'])->name('audits.index');

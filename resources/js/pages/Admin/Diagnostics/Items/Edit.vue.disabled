@@ -1,0 +1,404 @@
+<template>
+  <AdminLayout pageTitle="Edit Diagnostic Item">
+    <div class="space-y-6">
+      <!-- Back Navigation -->
+      <div class="mb-6">
+        <Link 
+          :href="route('admin.diagnostic-items.index')" 
+          class="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium transition-colors"
+        >
+          <ChevronLeft class="w-4 h-4 mr-1" />
+          Back to Diagnostic Items
+        </Link>
+      </div>
+
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Edit Diagnostic Item #{{ item.id }}</h1>
+          <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Update diagnostic item details</p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form @submit.prevent="submit" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Question Content -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Question Content</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div>
+                  <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Question Text *
+                  </label>
+                  <textarea
+                    id="content"
+                    v-model="form.content"
+                    rows="4"
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter the diagnostic question..."
+                    required
+                  ></textarea>
+                  <div v-if="errors.content" class="mt-1 text-sm text-red-600">{{ errors.content }}</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <!-- Options -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Answer Options</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div v-for="(option, index) in form.options" :key="index" class="flex gap-3">
+                  <div class="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium">
+                    {{ String.fromCharCode(65 + index) }}
+                  </div>
+                  <div class="flex-1">
+                    <input
+                      v-model="form.options[index]"
+                      type="text"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      :placeholder="`Option ${String.fromCharCode(65 + index)}`"
+                      required
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    @click="removeOption(index)"
+                    v-if="form.options.length > 2"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                <Button type="button" variant="outline" @click="addOption" class="w-full">
+                  <Plus class="w-4 h-4 mr-2" />
+                  Add Option
+                </Button>
+                
+                <div v-if="errors.options" class="text-sm text-red-600">{{ errors.options }}</div>
+              </CardContent>
+            </Card>
+
+            <!-- Correct Options -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Correct Answers</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div class="space-y-2">
+                  <div v-for="(option, index) in form.options" :key="index" class="flex items-center gap-3">
+                    <input
+                      :id="`correct-${index}`"
+                      type="checkbox"
+                      :value="option"
+                      v-model="form.correct_options"
+                      class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label :for="`correct-${index}`" class="text-sm text-gray-700">
+                      {{ String.fromCharCode(65 + index) }}: {{ option || `Option ${String.fromCharCode(65 + index)}` }}
+                    </label>
+                  </div>
+                </div>
+                <div v-if="errors.correct_options" class="text-sm text-red-600">{{ errors.correct_options }}</div>
+              </CardContent>
+            </Card>
+
+            <!-- Justifications -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Justifications (Optional)</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div v-for="(justification, index) in form.justification" :key="index" class="flex gap-3">
+                  <div class="flex-1">
+                    <textarea
+                      v-model="form.justification[index]"
+                      rows="2"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      :placeholder="`Justification ${index + 1}`"
+                    ></textarea>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    @click="removeJustification(index)"
+                    v-if="form.justification.length > 1"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                <Button type="button" variant="outline" @click="addJustification" class="w-full">
+                  <Plus class="w-4 h-4 mr-2" />
+                  Add Justification
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="space-y-6">
+            <!-- Basic Settings -->
+            <Card>
+              <CardHeader>
+                <CardTitle>Basic Settings</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div>
+                  <label for="type_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Question Type *
+                  </label>
+                  <select
+                    id="type_id"
+                    v-model="form.type_id"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select Type</option>
+                    <option v-for="type in questionTypes" :key="type.id" :value="type.id">
+                      {{ type.name }}
+                    </option>
+                  </select>
+                  <div v-if="errors.type_id" class="mt-1 text-sm text-red-600">{{ errors.type_id }}</div>
+                </div>
+
+                <div>
+                  <label for="dimension" class="block text-sm font-medium text-gray-700 mb-2">
+                    Dimension *
+                  </label>
+                  <select
+                    id="dimension"
+                    v-model="form.dimension"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select Dimension</option>
+                    <option value="Technical">Technical</option>
+                    <option value="Managerial">Managerial</option>
+                  </select>
+                  <div v-if="errors.dimension" class="mt-1 text-sm text-red-600">{{ errors.dimension }}</div>
+                </div>
+
+                <div>
+                  <label for="topic_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Topic *
+                  </label>
+                  <select
+                    id="topic_id"
+                    v-model="form.topic_id"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select Topic</option>
+                    <optgroup v-for="domain in domains" :key="domain.id" :label="domain.name">
+                      <option v-for="topic in getTopicsForDomain(domain.id)" :key="topic.id" :value="topic.id">
+                        {{ topic.name }}
+                      </option>
+                    </optgroup>
+                  </select>
+                  <div v-if="errors.topic_id" class="mt-1 text-sm text-red-600">{{ errors.topic_id }}</div>
+                </div>
+
+                <div>
+                  <label for="difficulty_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Difficulty Level *
+                  </label>
+                  <select
+                    id="difficulty_id"
+                    v-model="form.difficulty_id"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select Difficulty Level</option>
+                    <option v-for="level in difficultyLevels" :key="level.id" :value="level.id">
+                      {{ level.name }} (Score: {{ level.difficulty_score }})
+                    </option>
+                  </select>
+                  <div v-if="errors.difficulty_id" class="mt-1 text-sm text-red-600">{{ errors.difficulty_id }}</div>
+                </div>
+
+                <div>
+                  <label for="bloom_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Bloom's Level *
+                  </label>
+                  <select
+                    id="bloom_id"
+                    v-model="form.bloom_id"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select Bloom's Level</option>
+                    <option v-for="bloom in blooms" :key="bloom.id" :value="bloom.id">
+                      {{ bloom.name }}
+                    </option>
+                  </select>
+                  <div v-if="errors.bloom_id" class="mt-1 text-sm text-red-600">{{ errors.bloom_id }}</div>
+                </div>
+
+                <div>
+                  <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                    Status *
+                  </label>
+                  <select
+                    id="status"
+                    v-model="form.status"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="retired">Retired</option>
+                  </select>
+                  <div v-if="errors.status" class="mt-1 text-sm text-red-600">{{ errors.status }}</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <!-- IRT Parameters -->
+            <Card>
+              <CardHeader>
+                <CardTitle>IRT Parameters (Optional)</CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-4">
+                <div>
+                  <label for="irt_a" class="block text-sm font-medium text-gray-700 mb-2">
+                    IRT A (Discrimination)
+                  </label>
+                  <input
+                    id="irt_a"
+                    v-model.number="form.irt_a"
+                    type="number"
+                    step="0.1"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label for="irt_b" class="block text-sm font-medium text-gray-700 mb-2">
+                    IRT B (Difficulty)
+                  </label>
+                  <input
+                    id="irt_b"
+                    v-model.number="form.irt_b"
+                    type="number"
+                    step="0.1"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label for="irt_c" class="block text-sm font-medium text-gray-700 mb-2">
+                    IRT C (Guessing)
+                  </label>
+                  <input
+                    id="irt_c"
+                    v-model.number="form.irt_c"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="1"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <!-- Actions -->
+            <Card>
+              <CardContent class="pt-6">
+                <div class="flex gap-3">
+                  <Button type="submit" :disabled="processing" class="flex-1">
+                    <Loader2 v-if="processing" class="w-4 h-4 mr-2 animate-spin" />
+                    Update Item
+                  </Button>
+                  <Button type="button" variant="outline" @click="$inertia.visit('/admin/diagnostic-items')">
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </form>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { router, Link, useForm } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
+import { Button } from '@/Components/shadcn/ui/button'
+import { ChevronLeft, Plus, Trash2, Loader2 } from 'lucide-vue-next'
+
+const props = defineProps({
+  item: Object,
+  topics: Array,
+  domains: Array,
+  questionTypes: Array,
+  difficultyLevels: Array,
+  blooms: Array,
+})
+
+const form = useForm({
+  content: props.item.content || '',
+  type_id: props.item.type_id || '',
+  topic_id: props.item.topic_id || '',
+  dimension: props.item.dimension || 'Technical',
+  options: props.item.options || ['', ''],
+  correct_options: props.item.correct_options || [],
+  justification: props.item.justification || [''],
+  difficulty_id: props.item.difficulty_id || '',
+  bloom_id: props.item.bloom_id || '',
+  irt_a: props.item.irt_a || null,
+  irt_b: props.item.irt_b || null,
+  irt_c: props.item.irt_c || null,
+  status: props.item.status || 'draft',
+})
+
+const errors = computed(() => form.errors)
+const processing = computed(() => form.processing)
+
+const getTopicsForDomain = (domainId) => {
+  return props.topics.filter(topic => topic.domain_id === domainId)
+}
+
+const addOption = () => {
+  form.options.push('')
+}
+
+const removeOption = (index) => {
+  const removedOption = form.options[index]
+  form.options.splice(index, 1)
+  // Remove from correct options if it was selected
+  const correctIndex = form.correct_options.indexOf(removedOption)
+  if (correctIndex > -1) {
+    form.correct_options.splice(correctIndex, 1)
+  }
+}
+
+const addJustification = () => {
+  form.justification.push('')
+}
+
+const removeJustification = (index) => {
+  form.justification.splice(index, 1)
+}
+
+const submit = () => {
+  // Filter out empty justifications
+  form.justification = form.justification.filter(j => j.trim() !== '')
+  
+  form.put(`/admin/diagnostic-items/${props.item.id}`)
+}
+</script> 
