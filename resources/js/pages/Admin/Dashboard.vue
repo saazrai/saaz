@@ -236,8 +236,9 @@
                     {{ assessment.user?.name || 'Guest User' }}
                   </p>
                   <p :class="['text-sm', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
-                    Score: {{ assessment.percentage_score }}% 
-                    <span v-if="assessment.is_completed" class="text-green-500">✓</span>
+                    Score: {{ assessment.score || 0 }}% 
+                    <span v-if="assessment.status === 'completed'" class="text-green-500">✓</span>
+                    <span v-else-if="assessment.status === 'paused'" class="text-yellow-500">Paused</span>
                     <span v-else class="text-yellow-500">In Progress</span>
                   </p>
                 </div>
