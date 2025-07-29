@@ -96,6 +96,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view analytics',
             'view settings',
             'manage diagnostic phases',
+            'manage permissions',
         ]);
 
         // Moderator - limited permissions
