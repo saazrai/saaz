@@ -17,11 +17,45 @@ class ContentSecurityPolicy
     {
         $response = $next($request);
 
+        // Build CSP directives based on environment
+        $isLocal = app()->environment('local');
+        
+        $scriptSrc = [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "https://www.google-analytics.com",
+            "https://www.googletagmanager.com", 
+            "https://app.posthog.com",
+            "https://us.i.posthog.com"
+        ];
+        
+        $styleSrc = [
+            "'self'",
+            "'unsafe-inline'",
+            "https://fonts.googleapis.com",
+            "https://fonts.bunny.net"
+        ];
+        
+        $fontSrc = [
+            "'self'",
+            "https://fonts.gstatic.com",
+            "https://fonts.bunny.net"
+        ];
+        
+        // Add local development URLs
+        if ($isLocal) {
+            $scriptSrc[] = "http://127.0.0.1:5173";
+            $scriptSrc[] = "http://localhost:5173";
+            $scriptSrc[] = "ws://127.0.0.1:5173";
+            $scriptSrc[] = "ws://localhost:5173";
+        }
+
         $cspDirectives = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://app.posthog.com https://us.i.posthog.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-            "font-src 'self' https://fonts.gstatic.com",
+            "script-src " . implode(' ', $scriptSrc),
+            "style-src " . implode(' ', $styleSrc),
+            "font-src " . implode(' ', $fontSrc),
             "img-src 'self' data: https: blob:",
             "object-src 'none'",
             "base-uri 'self'",
@@ -38,6 +72,16 @@ class ContentSecurityPolicy
             "https://us.i.posthog.com",
             "https://us-assets.i.posthog.com"
         ];
+        
+        // Add local development URLs to connect-src
+        if ($isLocal) {
+            $connectSrc[] = "http://127.0.0.1:5173";
+            $connectSrc[] = "http://localhost:5173";
+            $connectSrc[] = "ws://127.0.0.1:5173";
+            $connectSrc[] = "ws://localhost:5173";
+            $connectSrc[] = "ws://127.0.0.1:8080";
+            $connectSrc[] = "ws://localhost:8080";
+        }
 
         // Debug CSP condition
         $broadcastDefault = config('broadcasting.default');
