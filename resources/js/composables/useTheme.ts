@@ -54,7 +54,7 @@ export const useTheme = () => {
             document.documentElement.setAttribute('data-theme', 'dark')
             document.documentElement.style.setProperty('--theme-mode', 'dark')
         } else {
-            document.documentElement.classList.add('light') 
+            // For light theme, just don't add the dark class - Tailwind only recognizes 'dark' class
             document.documentElement.setAttribute('data-theme', 'light')
             document.documentElement.style.setProperty('--theme-mode', 'light')
         }

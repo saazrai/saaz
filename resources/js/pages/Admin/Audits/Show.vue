@@ -8,7 +8,7 @@
         <div class="mb-6 flex justify-between items-center">
           <div>
             <Link
-              :href="route('admin.monitoring.audit.index')"
+              :href="route('admin.audits.index')"
               :class="[
                 'text-sm mb-2 inline-block',
                 isDarkMode ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-900'
@@ -225,7 +225,7 @@
                 </Link>
                 
                 <Link
-                  :href="route('admin.monitoring.audit.index', { auditable_type: audit.auditable_type, auditable_id: audit.auditable_id })"
+                  :href="route('admin.audits.index', { auditable_type: audit.auditable_type, auditable_id: audit.auditable_id })"
                   :class="[
                     'w-full inline-flex justify-center items-center px-4 py-2 border shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
                     isDarkMode 
@@ -256,7 +256,7 @@
   </AdminLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
 import AdminLayout from '@/layouts/AdminLayout.vue'

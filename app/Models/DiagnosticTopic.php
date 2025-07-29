@@ -14,10 +14,6 @@ class DiagnosticTopic extends BaseModel
         return $this->belongsTo(DiagnosticDomain::class, 'domain_id');
     }
 
-    public function items(): HasMany
-    {
-        return $this->hasMany(DiagnosticItem::class, 'topic_id');
-    }
 
     public function subtopics(): HasMany
     {

@@ -4,7 +4,7 @@
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Users Management</h1>
+          <h1 :class="['text-2xl font-bold mb-2', isDarkMode ? 'text-white' : 'text-gray-900']">Users</h1>
           <p :class="[isDarkMode ? 'text-gray-300' : 'text-gray-600']">Manage users, assign roles, and control access permissions.</p>
         </div>
         <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
@@ -29,24 +29,19 @@
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Search -->
             <div class="md:col-span-2">
-              <label for="search" :class="['block text-sm font-medium', isDarkMode ? 'text-gray-300' : 'text-gray-700']">Search Users</label>
-              <div class="mt-1 relative rounded-md shadow-sm">
+              <Label for="search">Search Users</Label>
+              <div class="mt-1 relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg :class="['h-5 w-5', isDarkMode ? 'text-gray-500' : 'text-gray-400']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                   </svg>
                 </div>
-                <input
+                <Input
                   v-model="search"
                   type="text"
                   name="search"
                   id="search"
-                  :class="[
-                    'block w-full pl-10 sm:text-sm rounded-md',
-                    isDarkMode 
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-indigo-400 focus:border-indigo-400' 
-                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500'
-                  ]"
+                  class="pl-10"
                   placeholder="Search by name or email..."
                 />
               </div>
@@ -54,43 +49,37 @@
             
             <!-- Role Filter -->
             <div>
-              <label for="role-filter" :class="['block text-sm font-medium', isDarkMode ? 'text-gray-300' : 'text-gray-700']">Filter by Role</label>
-              <select
-                v-model="selectedRole"
-                id="role-filter"
-                name="role-filter"
-                :class="[
-                  'mt-1 block w-full pl-3 pr-10 py-2 text-base sm:text-sm rounded-md',
-                  isDarkMode 
-                    ? 'bg-gray-700 border-gray-600 text-white focus:ring-indigo-400 focus:border-indigo-400' 
-                    : 'bg-white border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500'
-                ]"
-              >
-                <option value="">All Roles</option>
-                <option v-for="role in availableRoles" :key="role.id" :value="role.name">
-                  {{ role.name }}
-                </option>
-              </select>
+              <Label for="role-filter">Filter by Role</Label>
+              <Select v-model="selectedRole" class="mt-1">
+                <SelectTrigger id="role-filter">
+                  <SelectValue placeholder="All Roles" />
+                </SelectTrigger>
+                <SelectContent class="bg-white dark:bg-gray-800 bg-opacity-95 dark:bg-opacity-95">
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem 
+                    v-for="role in availableRoles" 
+                    :key="role.id" 
+                    :value="role.name"
+                  >
+                    {{ role.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <!-- Status Filter -->
             <div>
-              <label for="status-filter" :class="['block text-sm font-medium', isDarkMode ? 'text-gray-300' : 'text-gray-700']">Status</label>
-              <select
-                v-model="selectedStatus"
-                id="status-filter"
-                name="status-filter"
-                :class="[
-                  'mt-1 block w-full pl-3 pr-10 py-2 text-base sm:text-sm rounded-md',
-                  isDarkMode 
-                    ? 'bg-gray-700 border-gray-600 text-white focus:ring-indigo-400 focus:border-indigo-400' 
-                    : 'bg-white border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500'
-                ]"
-              >
-                <option value="">All Status</option>
-                <option value="verified">Verified</option>
-                <option value="unverified">Unverified</option>
-              </select>
+              <Label for="status-filter">Status</Label>
+              <Select v-model="selectedStatus" class="mt-1">
+                <SelectTrigger id="status-filter">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent class="bg-white dark:bg-gray-800 bg-opacity-95 dark:bg-opacity-95">
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="verified">Verified</SelectItem>
+                  <SelectItem value="unverified">Unverified</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -343,83 +332,54 @@
                   ]">Create New User</h3>
                   <div class="mt-4 space-y-4">
                     <div>
-                      <label for="name" :class="[
-                        'block text-sm font-medium',
-                        isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                      ]">Name</label>
-                      <input
+                      <Label for="name">Name</Label>
+                      <Input
                         v-model="createForm.name"
                         type="text"
                         name="name"
                         id="name"
                         required
-                        :class="[
-                          'mt-1 block w-full shadow-sm sm:text-sm rounded-md',
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white focus:ring-indigo-400 focus:border-indigo-400' 
-                            : 'bg-white border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500'
-                        ]"
+                        class="mt-1"
                       />
                     </div>
                     <div>
-                      <label for="email" :class="[
-                        'block text-sm font-medium',
-                        isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                      ]">Email</label>
-                      <input
+                      <Label for="email">Email</Label>
+                      <Input
                         v-model="createForm.email"
                         type="email"
                         name="email"
                         id="email"
                         required
-                        :class="[
-                          'mt-1 block w-full shadow-sm sm:text-sm rounded-md',
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white focus:ring-indigo-400 focus:border-indigo-400' 
-                            : 'bg-white border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500'
-                        ]"
+                        class="mt-1"
                       />
                     </div>
                     <div>
-                      <label for="password" :class="[
-                        'block text-sm font-medium',
-                        isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                      ]">Password</label>
-                      <input
+                      <Label for="password">Password</Label>
+                      <Input
                         v-model="createForm.password"
                         type="password"
                         name="password"
                         id="password"
                         required
-                        :class="[
-                          'mt-1 block w-full shadow-sm sm:text-sm rounded-md',
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white focus:ring-indigo-400 focus:border-indigo-400' 
-                            : 'bg-white border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500'
-                        ]"
+                        class="mt-1"
                       />
                     </div>
                     <div>
-                      <label for="role" :class="[
-                        'block text-sm font-medium',
-                        isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                      ]">Role</label>
-                      <select
-                        v-model="createForm.role"
-                        id="role"
-                        name="role"
-                        :class="[
-                          'mt-1 block w-full pl-3 pr-10 py-2 text-base sm:text-sm rounded-md',
-                          isDarkMode 
-                            ? 'bg-gray-700 border-gray-600 text-white focus:ring-indigo-400 focus:border-indigo-400' 
-                            : 'bg-white border-gray-300 text-gray-900 focus:ring-indigo-500 focus:border-indigo-500'
-                        ]"
-                      >
-                        <option value="">Select a role</option>
-                        <option v-for="role in availableRoles" :key="role.id" :value="role.name">
-                          {{ role.name }}
-                        </option>
-                      </select>
+                      <Label for="role">Role</Label>
+                      <Select v-model="createForm.role" class="mt-1">
+                        <SelectTrigger id="role">
+                          <SelectValue placeholder="Select a role" />
+                        </SelectTrigger>
+                        <SelectContent class="bg-white dark:bg-gray-800 bg-opacity-95 dark:bg-opacity-95">
+                          <SelectItem 
+                            v-for="role in availableRoles" 
+                            :key="role.id" 
+                            :value="role.name"
+                          >
+                            {{ role.name }}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
@@ -455,10 +415,19 @@
   </AdminLayout>
 </template>
 
-<script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Link, useForm, router } from '@inertiajs/vue3'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { Input } from '@/components/shadcn/ui/input'
+import { Label } from '@/components/shadcn/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/shadcn/ui/select'
 
 const props = defineProps({
   users: {
@@ -496,8 +465,8 @@ onUnmounted(() => {
 // State
 const showCreateModal = ref(false)
 const search = ref(props.filters.search || '')
-const selectedRole = ref(props.filters.role || '')
-const selectedStatus = ref(props.filters.status || '')
+const selectedRole = ref(props.filters.role || 'all')
+const selectedStatus = ref(props.filters.status || 'all')
 
 // Form data
 const createForm = useForm({
@@ -508,7 +477,9 @@ const createForm = useForm({
 })
 
 // Computed
-const availableRoles = computed(() => props.roles || [])
+const availableRoles = computed(() => {
+  return (props.roles || []).filter(role => role && role.name)
+})
 
 const filteredUsers = computed(() => {
   let filtered = props.users.data || []
@@ -521,13 +492,13 @@ const filteredUsers = computed(() => {
     )
   }
   
-  if (selectedRole.value) {
+  if (selectedRole.value && selectedRole.value !== 'all') {
     filtered = filtered.filter(user => 
       user.roles && user.roles.some(role => role.name === selectedRole.value)
     )
   }
   
-  if (selectedStatus.value) {
+  if (selectedStatus.value && selectedStatus.value !== 'all') {
     filtered = filtered.filter(user => {
       if (selectedStatus.value === 'verified') {
         return user.email_verified_at
@@ -547,18 +518,16 @@ const getRoleColor = (roleName) => {
     const darkColors = {
       'super-admin': 'bg-red-900 text-red-200',
       'admin': 'bg-purple-900 text-purple-200',
-      'instructor': 'bg-blue-900 text-blue-200',
-      'content-manager': 'bg-green-900 text-green-200',
-      'student': 'bg-gray-700 text-gray-200'
+      'moderator': 'bg-blue-900 text-blue-200',
+      'user': 'bg-gray-700 text-gray-200'
     }
     return darkColors[roleName] || 'bg-gray-700 text-gray-200'
   } else {
     const lightColors = {
       'super-admin': 'bg-red-100 text-red-800',
       'admin': 'bg-purple-100 text-purple-800',
-      'instructor': 'bg-blue-100 text-blue-800',
-      'content-manager': 'bg-green-100 text-green-800',
-      'student': 'bg-gray-100 text-gray-800'
+      'moderator': 'bg-blue-100 text-blue-800',
+      'user': 'bg-gray-100 text-gray-800'
     }
     return lightColors[roleName] || 'bg-gray-100 text-gray-800'
   }
@@ -614,15 +583,6 @@ const deleteUser = (user) => {
   }
 }
 
-// Watch for filter changes and update URL
-watch([search, selectedRole, selectedStatus], () => {
-  router.get(route('admin.users.index'), {
-    search: search.value,
-    role: selectedRole.value,
-    status: selectedStatus.value
-  }, {
-    preserveState: true,
-    replace: true
-  })
-}, { debounce: 300 })
+// Remove URL updating - just use client-side filtering
+// The computed filteredUsers already handles the filtering
 </script>

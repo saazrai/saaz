@@ -52,7 +52,7 @@ class UserController extends Controller
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
             'filters' => $request->only(['search', 'role', 'status']),
-            'roles' => Role::pluck('name'),
+            'roles' => Role::all(['id', 'name']),
             'can' => [
                 'create' => auth()->user()->can('create users'),
                 'edit' => auth()->user()->can('edit users'),

@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminAccess
@@ -25,11 +27,44 @@ class AdminAccess
 
         // Check if user has access to admin panel
         if (!auth()->user()->hasPermissionTo('access admin panel')) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
+            $userId = auth()->id();
+            $ip = $request->ip();
+            $rateLimitKey = 'unauthorized-admin:' . $userId . ':' . $ip;
+            
+            // Rate limiting for unauthorized admin attempts: 5 attempts per 10 minutes per user+IP
+            if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
+                Log::channel('security')->error('Unauthorized admin access rate limit exceeded', [
+                    'user_id' => $userId,
+                    'email' => auth()->user()->email,
+                    'ip' => $ip,
+                    'attempts' => RateLimiter::attempts($rateLimitKey),
+                    'timestamp' => now()->toDateTimeString(),
+                ]);
+                
+                abort(429, 'Too Many Requests');
             }
             
-            abort(403, 'Unauthorized. Admin access required.');
+            // Increment rate limiter (10 minutes window)
+            RateLimiter::hit($rateLimitKey, 600); // 10 minutes = 600 seconds
+            
+            // Log unauthorized admin access attempt
+            Log::channel('security')->warning('Unauthorized admin access attempt', [
+                'user_id' => $userId,
+                'email' => auth()->user()->email,
+                'ip' => $ip,
+                'user_agent' => $request->userAgent(),
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'referer' => $request->header('referer'),
+                'attempts_count' => RateLimiter::attempts($rateLimitKey),
+                'timestamp' => now()->toDateTimeString(),
+            ]);
+            
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Not found.'], 404);
+            }
+            
+            abort(404);
         }
 
         // Check if user account is active

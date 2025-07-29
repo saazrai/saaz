@@ -61,12 +61,12 @@
     </AdminLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
-const props = defineProps({
+defineProps({
     activities: Array
 })
 

@@ -208,7 +208,7 @@
   </Dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/Components/shadcn/ui/dialog'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
@@ -235,7 +235,7 @@ const props = defineProps({
   user: Object
 })
 
-const emit = defineEmits(['update:open'])
+defineEmits(['update:open'])
 
 // Reactive state
 const userActivity = ref({})
@@ -500,15 +500,6 @@ const viewProfile = () => {
 }
 
 // Helper functions
-const formatDuration = (seconds) => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`
-  }
-  return `${minutes}m`
-}
 
 const formatDynamicDuration = (seconds) => {
   if (!seconds || seconds < 0) return '0m'

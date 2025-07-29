@@ -52,6 +52,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit settings',
             'manage system',
             
+            // Diagnostic Management
+            'manage diagnostic phases',
+            
             // Admin Access
             'access admin panel',
         ];
@@ -89,6 +92,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'export reports',
             'view analytics',
             'view settings',
+            'manage diagnostic phases',
         ]);
 
         // Moderator - limited permissions

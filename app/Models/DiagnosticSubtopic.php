@@ -14,7 +14,7 @@ class DiagnosticSubtopic extends BaseModel
         'topic_id',
         'name',
         'description',
-        'order_sequence',
+        'sort_order',
     ];
 
     public function topic(): BelongsTo
@@ -29,6 +29,6 @@ class DiagnosticSubtopic extends BaseModel
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order_sequence');
+        return $query->orderBy('sort_order');
     }
 }

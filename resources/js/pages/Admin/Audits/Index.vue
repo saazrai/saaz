@@ -6,23 +6,8 @@
       <!-- Header -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
-          <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Audit Logs</h1>
-          <p :class="[isDarkMode ? 'text-gray-300' : 'text-gray-600']">Track all changes and activities across the system</p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
-          <button
-            @click="exportLogs"
-            :disabled="exporting"
-            :class="[
-              'inline-flex items-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50',
-              isDarkMode 
-                ? 'border-gray-600 text-gray-300 bg-gray-800 hover:bg-gray-700'
-                : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
-            ]"
-          >
-            <DownloadIcon class="w-4 h-4 mr-2" />
-            {{ exporting ? 'Exporting...' : 'Export CSV' }}
-          </button>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Audit Logs</h1>
+          <p class="text-gray-700 dark:text-gray-300">Track all changes and activities across the system</p>
         </div>
       </div>
 
@@ -40,10 +25,10 @@
               </div>
               <div class="ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
                     Total Audits
                   </dt>
-                  <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                  <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ stats.total_audits?.toLocaleString() || '0' }}
                   </dd>
                 </dl>
@@ -64,10 +49,10 @@
               </div>
               <div class="ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
                     Creates
                   </dt>
-                  <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                  <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ stats.event_counts?.created || '0' }}
                   </dd>
                 </dl>
@@ -88,10 +73,10 @@
               </div>
               <div class="ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
                     Updates
                   </dt>
-                  <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                  <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ stats.event_counts?.updated || '0' }}
                   </dd>
                 </dl>
@@ -112,10 +97,10 @@
               </div>
               <div class="ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                  <dt class="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
                     Deletes
                   </dt>
-                  <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                  <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ stats.event_counts?.deleted || '0' }}
                   </dd>
                 </dl>
@@ -132,91 +117,102 @@
             Filters
           </h3>
           
-          <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <!-- Date From -->
+          <form @submit.prevent="applyFilters" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <!-- Date Range -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                From Date
-              </label>
-              <input
-                v-model="filters.date_from"
-                type="date"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            <!-- Date To -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                To Date
-              </label>
-              <input
-                v-model="filters.date_to"
-                type="date"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
+              <Label for="date_preset">Date Range</Label>
+              <div class="mt-1 space-y-2">
+                <!-- Preset Options -->
+                <Select v-model="filters.date_preset" @update:model-value="handleDatePresetChange">
+                  <SelectTrigger id="date_preset" class="text-gray-900 dark:text-gray-100">
+                    <SelectValue placeholder="Select date range" />
+                  </SelectTrigger>
+                  <SelectContent class="bg-white dark:bg-gray-800 bg-opacity-95 dark:bg-opacity-95">
+                    <SelectItem value="all">All Time</SelectItem>
+                    <SelectItem value="today">Today</SelectItem>
+                    <SelectItem value="yesterday">Yesterday</SelectItem>
+                    <SelectItem value="last_7_days">Last 7 Days</SelectItem>
+                    <SelectItem value="last_30_days">Last 30 Days</SelectItem>
+                    <SelectItem value="this_month">This Month</SelectItem>
+                    <SelectItem value="last_month">Last Month</SelectItem>
+                    <SelectItem value="custom">Custom Range</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <!-- Custom Date Inputs -->
+                <div v-if="filters.date_preset === 'custom'" class="grid grid-cols-2 gap-2">
+                  <Input
+                    type="date"
+                    id="date_from"
+                    v-model="filters.date_from"
+                    @change="applyFilters"
+                  />
+                  <Input
+                    type="date"
+                    id="date_to"
+                    v-model="filters.date_to"
+                    @change="applyFilters"
+                  />
+                </div>
+              </div>
             </div>
 
             <!-- Event Type -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Event Type
-              </label>
-              <select
-                v-model="filters.event"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              >
-                <option value="">All Events</option>
-                <option v-for="event in filterOptions.events" :key="event" :value="event">
-                  {{ event.charAt(0).toUpperCase() + event.slice(1) }}
-                </option>
-              </select>
+              <Label for="event">Event Type</Label>
+              <Select v-model="filters.event">
+                <SelectTrigger id="event" class="mt-1 text-gray-900 dark:text-gray-100">
+                  <SelectValue placeholder="All Events" />
+                </SelectTrigger>
+                <SelectContent class="bg-white dark:bg-gray-800 bg-opacity-95 dark:bg-opacity-95">
+                  <SelectItem value="all">All Events</SelectItem>
+                  <SelectItem v-for="event in filterOptions.events" :key="event" :value="event">
+                    {{ event.charAt(0).toUpperCase() + event.slice(1) }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <!-- Model Type -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Model Type
-              </label>
-              <select
-                v-model="filters.auditable_type"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              >
-                <option value="">All Models</option>
-                <option v-for="model in filterOptions.models" :key="model.value" :value="model.value">
-                  {{ model.label }}
-                </option>
-              </select>
+              <Label for="model_type">Model Type</Label>
+              <Select v-model="filters.auditable_type">
+                <SelectTrigger id="model_type" class="mt-1 text-gray-900 dark:text-gray-100">
+                  <SelectValue placeholder="All Models" />
+                </SelectTrigger>
+                <SelectContent class="bg-white dark:bg-gray-800 bg-opacity-95 dark:bg-opacity-95">
+                  <SelectItem value="all">All Models</SelectItem>
+                  <SelectItem v-for="model in filterOptions.models" :key="model.value" :value="model.value">
+                    {{ model.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <!-- Search -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Search
-              </label>
-              <input
+              <Label for="search">Search</Label>
+              <Input
+                id="search"
                 v-model="filters.search"
                 type="text"
                 placeholder="User, IP, URL..."
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                class="mt-1"
               />
             </div>
 
             <!-- Actions -->
             <div class="flex items-end space-x-2">
-              <button
-                type="submit"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
+              <Button type="submit" class="bg-indigo-600 hover:bg-indigo-700">
                 Apply
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="outline"
                 @click="clearFilters"
-                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
               >
                 Clear
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -228,7 +224,7 @@
           <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
             Audit Logs
           </h3>
-          <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+          <p class="mt-1 max-w-2xl text-sm text-gray-600 dark:text-gray-400">
             Showing {{ audits.from || 0 }} to {{ audits.to || 0 }} of {{ audits.total || 0 }} results
           </p>
         </div>
@@ -237,22 +233,22 @@
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   Event
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   Model
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   User
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   IP Address
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   Date
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -268,7 +264,7 @@
                   <div class="text-sm text-gray-900 dark:text-white">
                     {{ getModelName(audit.auditable_type) }}
                   </div>
-                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
                     ID: {{ audit.auditable_id }}
                   </div>
                 </td>
@@ -276,22 +272,22 @@
                   <div v-if="audit.user" class="text-sm text-gray-900 dark:text-white">
                     {{ audit.user.name }}
                   </div>
-                  <div v-if="audit.user" class="text-sm text-gray-500 dark:text-gray-400">
+                  <div v-if="audit.user" class="text-sm text-gray-600 dark:text-gray-400">
                     {{ audit.user.email }}
                   </div>
-                  <div v-else class="text-sm text-gray-500 dark:text-gray-400">
+                  <div v-else class="text-sm text-gray-600 dark:text-gray-400">
                     System
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-400">
                   {{ audit.ip_address || 'N/A' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-400">
                   {{ formatDate(audit.created_at) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <Link
-                    :href="route('admin.monitoring.audit.show', audit.id)"
+                    :href="route('admin.audits.show', audit.id)"
                     class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                   >
                     View Details
@@ -341,8 +337,9 @@
                         index === 0 ? 'rounded-l-md' : '',
                         index === audits.links.length - 1 ? 'rounded-r-md' : ''
                       ]"
-                      v-html="link.label"
-                    />
+                    >
+                      {{ link.label }}
+                    </Link>
                     <span
                       v-else
                       :class="[
@@ -350,8 +347,9 @@
                         index === 0 ? 'rounded-l-md' : '',
                         index === audits.links.length - 1 ? 'rounded-r-md' : ''
                       ]"
-                      v-html="link.label"
-                    />
+                    >
+                      {{ link.label }}
+                    </span>
                   </template>
                 </nav>
               </div>
@@ -363,10 +361,14 @@
   </AdminLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { Head, Link, router } from '@inertiajs/vue3'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import { Input } from '@/components/shadcn/ui/input'
+import { Label } from '@/components/shadcn/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/ui/select'
+import { Button } from '@/components/shadcn/ui/button'
 
 const props = defineProps({
   audits: Object,
@@ -401,19 +403,29 @@ onMounted(() => {
     }
 })
 
-const exporting = ref(false)
 
 const filters = reactive({
   date_from: props.filters.date_from || '',
   date_to: props.filters.date_to || '',
-  event: props.filters.event || '',
-  auditable_type: props.filters.auditable_type || '',
+  date_preset: props.filters.date_preset || 'all',
+  event: props.filters.event || 'all',
+  auditable_type: props.filters.auditable_type || 'all',
   user_id: props.filters.user_id || '',
   search: props.filters.search || ''
 })
 
 const applyFilters = () => {
-  router.get(route('admin.monitoring.audit.index'), filters, {
+  // Convert 'all' values to empty strings for backend
+  const processedFilters = Object.keys(filters).reduce((acc, key) => {
+    if (filters[key] === 'all' && (key === 'event' || key === 'auditable_type')) {
+      acc[key] = ''
+    } else {
+      acc[key] = filters[key]
+    }
+    return acc
+  }, {})
+  
+  router.get(route('admin.audits.index'), processedFilters, {
     preserveState: true,
     replace: true
   })
@@ -421,20 +433,65 @@ const applyFilters = () => {
 
 const clearFilters = () => {
   Object.keys(filters).forEach(key => {
-    filters[key] = ''
+    if (key === 'date_preset' || key === 'event' || key === 'auditable_type') {
+      filters[key] = 'all'
+    } else {
+      filters[key] = ''
+    }
   })
   applyFilters()
 }
 
-const exportLogs = async () => {
-  exporting.value = true
-  try {
-    const url = route('admin.monitoring.audit.export', filters)
-    window.open(url, '_blank')
-  } catch (error) {
-    console.error('Export failed:', error)
-  } finally {
-    exporting.value = false
+const handleDatePresetChange = (preset) => {
+  const today = new Date();
+  const formatDate = (date) => date.toISOString().split('T')[0];
+  
+  switch (preset) {
+    case 'today':
+      filters.date_from = formatDate(today);
+      filters.date_to = formatDate(today);
+      break;
+    case 'yesterday':
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      filters.date_from = formatDate(yesterday);
+      filters.date_to = formatDate(yesterday);
+      break;
+    case 'last_7_days':
+      const last7Days = new Date(today);
+      last7Days.setDate(last7Days.getDate() - 7);
+      filters.date_from = formatDate(last7Days);
+      filters.date_to = formatDate(today);
+      break;
+    case 'last_30_days':
+      const last30Days = new Date(today);
+      last30Days.setDate(last30Days.getDate() - 30);
+      filters.date_from = formatDate(last30Days);
+      filters.date_to = formatDate(today);
+      break;
+    case 'this_month':
+      const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+      filters.date_from = formatDate(thisMonthStart);
+      filters.date_to = formatDate(today);
+      break;
+    case 'last_month':
+      const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+      filters.date_from = formatDate(lastMonthStart);
+      filters.date_to = formatDate(lastMonthEnd);
+      break;
+    case 'custom':
+      // Keep existing dates for custom range
+      break;
+    case 'all':
+    default:
+      filters.date_from = '';
+      filters.date_to = '';
+      break;
+  }
+  
+  if (preset !== 'custom') {
+    applyFilters();
   }
 }
 

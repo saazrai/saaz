@@ -41,7 +41,7 @@ class DiagnosticPhase extends Model
      */
     public function diagnostics(): HasMany
     {
-        return $this->hasMany(Diagnostic::class, 'current_phase_id');
+        return $this->hasMany(Diagnostic::class, 'phase_id');
     }
 
     /**

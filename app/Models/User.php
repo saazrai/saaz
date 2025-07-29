@@ -30,6 +30,7 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         'is_active',
         'last_login_at',
         'login_count',
+        'remember_token',
     ];
 
     /**
@@ -166,5 +167,13 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
     public function diagnosticResponses()
     {
         return $this->hasMany(DiagnosticResponse::class);
+    }
+
+    /**
+     * Diagnostics relationship
+     */
+    public function diagnostics()
+    {
+        return $this->hasMany(Diagnostic::class);
     }
 }

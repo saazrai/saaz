@@ -153,11 +153,12 @@ class DataAnonymizationService
 
     protected function anonymizeDiagnostics(User $user): void
     {
-        // V1: Preserve diagnostic results for educational analytics but remove personal metadata
+        // V1: Preserve diagnostic results for educational analytics but mark as anonymized
         $user->diagnostics()->update([
-            'metadata' => json_encode([
+            'adaptive_state' => json_encode([
                 'anonymized' => true,
                 'anonymization_date' => now(),
+                'original_state' => 'anonymized',
             ]),
         ]);
     }
