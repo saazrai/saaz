@@ -152,6 +152,7 @@ const menuItems = computed(() => [
         key: 'users',
         items: [
             { title: 'Users', href: safeRoute('admin.users.index'), icon: Users },
+            { title: 'Permissions', href: safeRoute('admin.permissions.index'), icon: Shield },
             // { title: 'User Roles', href: safeRoute('admin.user-roles.index'), icon: UserCheck },
         ]
     },

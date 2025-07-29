@@ -51,12 +51,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'view settings',
             'edit settings',
             'manage system',
+            'view system logs',
             
             // Diagnostic Management
             'manage diagnostic phases',
             
             // Admin Access
             'access admin panel',
+            'manage permissions',
         ];
 
         foreach ($permissions as $permission) {
