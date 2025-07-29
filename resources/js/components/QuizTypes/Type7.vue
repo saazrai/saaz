@@ -56,17 +56,22 @@
                 </div>
 
                 <!-- Command Input -->
-                <div class="flex items-center">
-                    <span class="text-green-400 mr-2">$</span>
-                    <input
-                        type="text"
-                        v-model="currentCommand"
-                        @keyup.enter="executeCommand"
-                        @keydown.up.prevent="navigateHistory('up')"
-                        @keydown.down.prevent="navigateHistory('down')"
-                        placeholder="Enter your command..."
-                        class="flex-1 bg-transparent text-white focus:outline-none"
-                    />
+                <div class="flex items-start border-t border-gray-700 pt-3 mt-2">
+                    <span class="text-green-400 mr-2 mt-1">$</span>
+                    <div class="flex-1">
+                        <input
+                            type="text"
+                            v-model="currentCommand"
+                            @keyup.enter="executeCommand"
+                            @keydown.up.prevent="navigateHistory('up')"
+                            @keydown.down.prevent="navigateHistory('down')"
+                            placeholder="Enter your command..."
+                            class="w-full bg-transparent text-white focus:outline-none text-base py-2 px-2 rounded border border-gray-600 focus:border-green-400 transition-colors"
+                        />
+                        <div class="text-xs text-gray-400 mt-1 px-2">
+                            Press Enter to execute • Use ↑/↓ for command history
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -479,8 +484,8 @@ export default {
 }
 
 .terminal-body {
-    min-height: 200px; /* Minimum height for terminal */
-    max-height: 400px; /* Maximum height before scrolling */
+    min-height: 300px; /* Increased minimum height for terminal */
+    max-height: 500px; /* Increased maximum height before scrolling */
     display: flex;
     flex-direction: column;
 }
@@ -491,8 +496,8 @@ export default {
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: #4a4a4a #1a1a1a;
-    padding-bottom: 8px;
-    min-height: 150px; /* Ensure minimum height even when empty */
+    padding-bottom: 12px;
+    min-height: 200px; /* Increased minimum height even when empty */
 }
 
 .terminal-history::-webkit-scrollbar {
