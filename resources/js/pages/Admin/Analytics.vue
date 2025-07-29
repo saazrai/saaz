@@ -2,10 +2,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import { Card, CardContent, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/shadcn/ui/tabs'
-import { Button } from '@/Components/shadcn/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/shadcn/ui/select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shadcn/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shadcn/ui/tabs'
+import { Button } from '@/components/shadcn/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shadcn/ui/select'
 
 // Dark mode state
 const isDarkMode = ref(false)

@@ -210,11 +210,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/Components/shadcn/ui/dialog'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
-import { Button } from '@/Components/shadcn/ui/button'
-import { Badge } from '@/Components/shadcn/ui/badge'
-import { Separator } from '@/Components/shadcn/ui/separator'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/shadcn/ui/dialog'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/shadcn/ui/card'
+import { Button } from '@/components/shadcn/ui/button'
+import { Badge } from '@/components/shadcn/ui/badge'
+import { Separator } from '@/components/shadcn/ui/separator'
 import { 
   Clock, 
   Activity, 

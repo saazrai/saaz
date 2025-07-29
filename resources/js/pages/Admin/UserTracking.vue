@@ -306,10 +306,10 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
-import { Button } from '@/Components/shadcn/ui/button'
-import { Badge } from '@/Components/shadcn/ui/badge'
-import { Separator } from '@/Components/shadcn/ui/separator'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/shadcn/ui/card'
+import { Button } from '@/components/shadcn/ui/button'
+import { Badge } from '@/components/shadcn/ui/badge'
+import { Separator } from '@/components/shadcn/ui/separator'
 import { 
   Clock, 
   Activity, 
