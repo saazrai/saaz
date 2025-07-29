@@ -272,7 +272,7 @@ class DiagnosticItemController extends Controller
 
         $item->update($validated);
 
-        return redirect()->route('admin.diagnostics.items.index')
+        return redirect()->route('admin.diagnostics.items.show', $item)
             ->with('success', 'Diagnostic item updated successfully.');
     }
 

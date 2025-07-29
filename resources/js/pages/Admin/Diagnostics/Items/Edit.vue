@@ -5,11 +5,11 @@
             <div class="sm:flex sm:items-center mb-8">
                 <div class="sm:flex-auto">
                     <Link 
-                        :href="route('admin.diagnostics.items.index')" 
+                        :href="route('admin.diagnostics.items.show', item.id)" 
                         class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center gap-2 mb-4"
                     >
                         <ArrowLeftIcon class="h-4 w-4" />
-                        Back to Diagnostic Items
+                        Back to Diagnostic Item
                     </Link>
                     <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
                         Edit Diagnostic Item #{{ item.id }}
@@ -500,7 +500,7 @@
                     <!-- Form Actions -->
                     <div class="flex items-center justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <Link
-                            :href="route('admin.diagnostics.items.index')"
+                            :href="route('admin.diagnostics.items.show', item.id)"
                             class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             Cancel
