@@ -143,7 +143,7 @@
                                 <div class="flex items-center pt-6">
                                     <input
                                         v-model="form.correct_options"
-                                        :value="index"
+                                        :value="form.options[index]"
                                         type="checkbox"
                                         :id="`correct-${index}`"
                                         class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
@@ -620,8 +620,9 @@ const addOption = () => {
 }
 
 const removeOption = (index: number) => {
+    const removedOption = form.value.options[index]
     form.value.options.splice(index, 1)
-    form.value.correct_options = form.value.correct_options.filter(option => option !== index)
+    form.value.correct_options = form.value.correct_options.filter(option => option !== removedOption)
 }
 
 const addJustification = () => {
