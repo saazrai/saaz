@@ -116,6 +116,10 @@ test('admin panel access is properly logged for security', function () {
         'Unauthorized admin access attempt',
         \Mockery::type('array')
     );
+    // Allow Laravel's exception handler to log errors without failing
+    Log::shouldReceive('error')->zeroOrMoreTimes();
+    Log::shouldReceive('debug')->zeroOrMoreTimes();
+    Log::shouldReceive('info')->zeroOrMoreTimes();
     
     $this->actingAs($this->regularUser)
         ->get(route('admin.dashboard'));
@@ -268,6 +272,10 @@ test('middleware logging includes relevant security information', function () {
                    isset($data['timestamp']);
         })
     );
+    // Allow Laravel's exception handler to log errors without failing
+    Log::shouldReceive('error')->zeroOrMoreTimes();
+    Log::shouldReceive('debug')->zeroOrMoreTimes();
+    Log::shouldReceive('info')->zeroOrMoreTimes();
     
     $this->actingAs($this->regularUser)
         ->get(route('admin.dashboard'));

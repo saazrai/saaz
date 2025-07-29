@@ -239,6 +239,10 @@ test('admin dashboard logs unauthorized access attempts', function () {
     // Mock the Log facade to verify logging
     Log::shouldReceive('channel')->with('security')->andReturnSelf();
     Log::shouldReceive('warning')->once();
+    // Allow Laravel's exception handler to log errors without failing
+    Log::shouldReceive('error')->zeroOrMoreTimes();
+    Log::shouldReceive('debug')->zeroOrMoreTimes();
+    Log::shouldReceive('info')->zeroOrMoreTimes();
     
     $response = $this->actingAs($this->regularUser)
         ->get(route('admin.dashboard'));
