@@ -7,7 +7,9 @@
         "dev": "vite",
         "format": "prettier --write resources/",
         "format:check": "prettier --check resources/",
-        "lint": "eslint . --fix"
+        "lint": "eslint . --fix",
+        "validate": "./scripts/validate-build.sh",
+        "pre-commit": "npm run lint && npm run validate"
     },
     "devDependencies": {
         "@eslint/js": "^9.19.0",
@@ -18,7 +20,10 @@
         "autoprefixer": "^10.4.21",
         "eslint": "^9.17.0",
         "eslint-config-prettier": "^10.0.1",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-vue": "^9.32.0",
+        "husky": "^9.1.7",
         "postcss": "^8.5.6",
         "prettier": "^3.4.2",
         "prettier-plugin-organize-imports": "^4.1.0",
