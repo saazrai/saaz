@@ -58,6 +58,7 @@ class RolesAndPermissionsSeeder extends Seeder
             
             // Admin Access
             'access admin panel',
+            'manage permissions',
         ];
 
         foreach ($permissions as $permission) {

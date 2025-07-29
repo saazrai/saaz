@@ -29,6 +29,11 @@ Route::resource('users', UserController::class);
 Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 Route::post('users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
 
+// Permission Management
+Route::resource('permissions', \App\Http\Controllers\Admin\PermissionController::class);
+Route::post('permissions/{permission}/assign-role', [\App\Http\Controllers\Admin\PermissionController::class, 'assignRole'])->name('permissions.assign-role');
+Route::post('permissions/{permission}/revoke-role', [\App\Http\Controllers\Admin\PermissionController::class, 'revokeRole'])->name('permissions.revoke-role');
+
 // Diagnostics Management (grouped under /admin/diagnostics prefix)
 Route::prefix('diagnostics')->name('diagnostics.')->group(function () {
     // Diagnostic Phase Management
