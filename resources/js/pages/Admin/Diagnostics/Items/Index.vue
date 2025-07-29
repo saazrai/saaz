@@ -4,7 +4,7 @@
             <!-- Header -->
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                    <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">Diagnostic Questions</h1>
+                    <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">Diagnostic Items</h1>
                     <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
                         Manage diagnostic assessment questions and items
                     </p>
