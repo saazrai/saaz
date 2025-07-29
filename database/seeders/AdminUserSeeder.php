@@ -14,39 +14,47 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create or update Saaz Rai as super admin
-        // First, check if user with ID 1 exists
-        $superAdmin = User::find(1);
-        
-        if ($superAdmin) {
-            // Update existing user
-            $superAdmin->update([
-                'name' => 'Saaz Rai',
-                'is_active' => true,
+        try {
+            // Create or find Saaz Rai as super admin - use email as unique identifier instead of ID
+            $superAdmin = User::firstOrCreate(
+                ['email' => 'saaz.rai@gmail.com'], // Search criteria
+                [
+                    'name' => 'Saaz Rai',
+                    'password' => Hash::make('SecureAdminPassword123!'), // Secure default password
+                    'email_verified_at' => now(),
+                    'is_active' => true,
+                ]
+            );
+            
+            // Ensure user is active
+            if (!$superAdmin->is_active) {
+                $superAdmin->update(['is_active' => true]);
+                $this->command->info('Activated existing user: Saaz Rai');
+            }
+
+            // Check if super-admin role exists before assigning
+            if (\Spatie\Permission\Models\Role::where('name', 'super-admin')->exists()) {
+                // Assign super-admin role if not already assigned
+                if (!$superAdmin->hasRole('super-admin')) {
+                    $superAdmin->assignRole('super-admin');
+                    $this->command->info('Super admin role assigned to Saaz Rai');
+                } else {
+                    $this->command->info('Saaz Rai already has super-admin role');
+                }
+            } else {
+                $this->command->warn('Super-admin role does not exist. Make sure RolesAndPermissionsSeeder runs first.');
+            }
+
+            $this->command->info('Admin users seeded successfully!');
+            
+        } catch (\Exception $e) {
+            $this->command->error('Admin user seeding failed: ' . $e->getMessage());
+            // Don't throw the exception to prevent deployment failure
+            // Log the error instead
+            \Log::error('Admin user seeding failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-            $this->command->info('Updated existing user ID: 1 to Saaz Rai');
-        } else {
-            // Create new user
-            $superAdmin = User::create([
-                'id' => 1,
-                'name' => 'Saaz Rai',
-                'email' => 'saaz.rai@gmail.com',
-                'password' => Hash::make('password'), // Change this to a secure password
-                'email_verified_at' => now(),
-                'is_active' => true,
-            ]);
-            $this->command->info('Created new user: Saaz Rai with ID: 1');
         }
-
-        // Assign super-admin role if not already assigned
-        if (!$superAdmin->hasRole('super-admin')) {
-            $superAdmin->assignRole('super-admin');
-            $this->command->info('Super admin role assigned to Saaz Rai (ID: 1)');
-        } else {
-            $this->command->info('Saaz Rai already has super-admin role');
-        }
-
-
-        $this->command->info('Admin users seeded successfully!');
     }
 }

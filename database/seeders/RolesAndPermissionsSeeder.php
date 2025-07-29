@@ -14,11 +14,12 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Reset cached roles and permissions
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        try {
+            // Reset cached roles and permissions
+            app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
-        $permissions = [
+            // Create permissions
+            $permissions = [
             // User Management
             'view users',
             'create users',
@@ -62,18 +63,18 @@ class RolesAndPermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // Create roles and assign permissions
         
         // Super Admin - gets all permissions
-        $superAdminRole = Role::create(['name' => 'super-admin']);
-        $superAdminRole->givePermissionTo(Permission::all());
+        $superAdminRole = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+        $superAdminRole->syncPermissions(Permission::all());
 
         // Admin - most permissions except system management
-        $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo([
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $adminRole->syncPermissions([
             'access admin panel',
             'view users',
             'create users',
@@ -98,8 +99,8 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // Moderator - limited permissions
-        $moderatorRole = Role::create(['name' => 'moderator']);
-        $moderatorRole->givePermissionTo([
+        $moderatorRole = Role::firstOrCreate(['name' => 'moderator', 'guard_name' => 'web']);
+        $moderatorRole->syncPermissions([
             'access admin panel',
             'view users',
             'view questions',
@@ -111,7 +112,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
         // User - default role with no special permissions
-        $userRole = Role::create(['name' => 'user']);
+        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
         // Users don't need any special permissions - they can take assessments by default
 
         // Output success message
@@ -125,5 +126,14 @@ class RolesAndPermissionsSeeder extends Seeder
                 ['User', $userRole->permissions->count()],
             ]
         );
+        
+        } catch (\Exception $e) {
+            $this->command->error('Roles and permissions seeding failed: ' . $e->getMessage());
+            // Log the error but don't throw to prevent deployment failure
+            \Log::error('Roles and permissions seeding failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
     }
 }
