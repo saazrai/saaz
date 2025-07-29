@@ -16,23 +16,53 @@ console.log('🔧 WebSocket Config:', {
     isProduction
 });
 
-window.Echo = new Echo({
-    broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: wsHost,
-    wsPort: isProduction ? (wsScheme === 'https' ? 443 : 80) : (wsPort ?? 8080),
-    wssPort: isProduction ? (wsScheme === 'https' ? 443 : 80) : (wsPort ?? 8080),
-    forceTLS: wsScheme === 'https',
-    enabledTransports: ['ws', 'wss'],
-    disableStats: true, // Disable stats for production
-    cluster: null, // Use default cluster
-    auth: {
-        headers: {
-            'X-CSRF-TOKEN': window.axios.defaults.headers.common['X-CSRF-TOKEN'],
-            'X-Requested-With': 'XMLHttpRequest',
+// Try Reverb first, fallback to Pusher if Reverb fails
+const useReverb = import.meta.env.VITE_USE_REVERB !== 'false';
+
+if (useReverb) {
+    try {
+        window.Echo = new Echo({
+            broadcaster: 'reverb',
+            key: import.meta.env.VITE_REVERB_APP_KEY,
+            wsHost: wsHost,
+            wsPort: isProduction ? (wsScheme === 'https' ? 443 : 80) : (wsPort ?? 8080),
+            wssPort: isProduction ? (wsScheme === 'https' ? 443 : 80) : (wsPort ?? 8080),
+            forceTLS: wsScheme === 'https',
+            enabledTransports: ['ws', 'wss'],
+            disableStats: true,
+            cluster: null,
+            auth: {
+                headers: {
+                    'X-CSRF-TOKEN': window.axios.defaults.headers.common['X-CSRF-TOKEN'],
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            },
+        });
+        console.log('🔧 Using Laravel Reverb WebSocket');
+    } catch (error) {
+        console.warn('⚠️ Reverb failed, falling back to Pusher:', error);
+        initializePusher();
+    }
+} else {
+    console.log('🔧 Using Pusher WebSocket (Reverb disabled)');
+    initializePusher();
+}
+
+function initializePusher() {
+    // Fallback to Pusher configuration
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: import.meta.env.VITE_PUSHER_APP_KEY || 'your-pusher-key',
+        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER || 'mt1',
+        forceTLS: true,
+        auth: {
+            headers: {
+                'X-CSRF-TOKEN': window.axios.defaults.headers.common['X-CSRF-TOKEN'],
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         },
-    },
-});
+    });
+}
 
 // Enhanced connection handling
 let connectionTimeout;

@@ -18,8 +18,11 @@ if (token) {
  * allows your team to easily build robust real-time web applications.
  */
 
-// Only initialize WebSockets when explicitly enabled
-if (import.meta.env.VITE_ENABLE_WEBSOCKETS === 'true') {
+// Only initialize WebSockets when explicitly enabled and Reverb is available
+const enableWebSockets = import.meta.env.VITE_ENABLE_WEBSOCKETS === 'true';
+const hasReverbSupport = import.meta.env.VITE_REVERB_AVAILABLE === 'true';
+
+if (enableWebSockets && (hasReverbSupport || !import.meta.env.PROD)) {
     import('./websockets.js').then(() => {
         console.log('✅ WebSocket connection initialized');
     }).catch((error) => {
