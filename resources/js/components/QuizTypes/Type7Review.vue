@@ -1,6 +1,11 @@
 <template>
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
+            'transition-all duration-300 w-full',
+            // Small screens: card styling
+            'backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
+            // Large screens: match Question Details styling
+            'xl:bg-white/90 xl:dark:bg-gray-800/90 xl:backdrop-blur-xl xl:rounded-2xl xl:shadow-xl xl:border xl:border-gray-200/30 xl:dark:border-gray-700/30 xl:p-6',
+            // Colors for small screens
             isThemeDark 
                 ? 'bg-gray-700 border-gray-500' 
                 : 'bg-white border-gray-200'
@@ -41,16 +46,9 @@
                  ]">
                 <!-- Command History for Review -->
                 <div ref="terminalHistory" class="text-gray-300 mb-4 terminal-history font-mono text-sm">
-                    <!-- Show command history or example command -->
-                    <div v-if="commandHistory.length === 0">
-                        <!-- Show example correct command -->
-                        <div class="mb-2">
-                            <div class="flex items-start">
-                                <span class="text-green-400 mr-2">$</span>
-                                <span class="text-white">dig AAAA saazacademy.com +short</span>
-                            </div>
-                            <div class="whitespace-pre-wrap text-gray-300 mt-1">{{ exampleResponse }}</div>
-                        </div>
+                    <!-- Show command history or blank if none -->
+                    <div v-if="commandHistory.length === 0" class="text-gray-500 italic text-sm">
+                        No commands executed
                     </div>
                     <div v-else>
                         <div v-for="(entry, index) in commandHistory" :key="`review-${index}`" class="mb-2">
@@ -212,20 +210,6 @@ export default {
                    this.$el?.classList?.contains('dark-mode') ||
                    this.$parent?.$el?.classList?.contains('dark-mode') ||
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-        },
-        exampleResponse() {
-            // Return the response for the example command
-            if (this.question && this.question.settings && this.question.settings.commands) {
-                // Look for the dig +short command
-                const shortDigCmd = this.question.settings.commands.find(cmd => 
-                    cmd.pattern.includes('\\+short')
-                );
-                if (shortDigCmd) {
-                    return shortDigCmd.response;
-                }
-            }
-            // Default response
-            return '2606:4700:3037::6815:4c99\n2606:4700:3037::ac43:b4e3';
         },
         hasAnyJustifications() {
             return this.question?.justifications && 

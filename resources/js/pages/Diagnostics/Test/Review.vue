@@ -826,7 +826,7 @@ onUnmounted(() => {
 }
 
 .large-screen-review-enhanced {
-    padding: 0 !important;
+    padding: 1.5rem !important;
 }
 
 .large-screen-review :deep(.question-option),

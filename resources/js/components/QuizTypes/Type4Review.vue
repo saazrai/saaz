@@ -1,12 +1,17 @@
 <template>
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl border shadow-xl overflow-hidden',
+            'transition-all duration-300 w-full overflow-hidden',
+            // Small screens: original card styling
+            'backdrop-blur-md rounded-2xl border shadow-xl',
+            // Large screens: match Question Details styling
+            'xl:bg-white/90 xl:dark:bg-gray-800/90 xl:backdrop-blur-xl xl:rounded-2xl xl:shadow-xl xl:border xl:border-gray-200/30 xl:dark:border-gray-700/30',
+            // Colors for small screens
             isThemeDark 
                 ? 'bg-gray-700 border-gray-500' 
                 : 'bg-white border-gray-200'
          ]">
         <!-- Question Section -->
-        <div class="p-8">
+        <div class="p-8 xl:p-0">
             <div
                 class="text-lg font-medium mb-8"
                 :class="isThemeDark 

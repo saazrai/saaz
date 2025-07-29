@@ -520,6 +520,7 @@ class DiagnosticController extends Controller
             'selected_options' => 'required|array',
             'response_time' => 'required|integer|min:0',
             'diagnostic_item_id' => 'required|integer',
+            'metadata' => 'nullable|array',
         ]);
 
         // Step 5: Get the current question from diagnostic_responses
@@ -584,6 +585,7 @@ class DiagnosticController extends Controller
         // Step 7: Update the diagnostic_responses table
         $currentResponse->update([
             'user_answer' => $userAnswer,
+            'metadata' => $validated['metadata'] ?? null,
             'is_correct' => $isCorrect,
             'response_time_seconds' => $validated['response_time'],
         ]);
@@ -1027,6 +1029,7 @@ class DiagnosticController extends Controller
                 'user_answer' => $response->user_answer,
                 'is_correct' => $response->is_correct,
                 'response_time_seconds' => $response->response_time_seconds,
+                'metadata' => $response->metadata,
                 'item' => [
                     'id' => $response->diagnosticItem->id,
                     'content' => $response->diagnosticItem->content,

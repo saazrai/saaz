@@ -58,8 +58,8 @@
                 <!-- Command Input -->
                 <div class="border-t border-gray-700 pt-3 mt-2">
                     <div class="relative">
-                        <div class="w-full rounded border border-gray-600 focus-within:border-green-400 transition-colors bg-gray-800/50 overflow-hidden">
-                            <div class="flex items-center w-full">
+                        <div class="w-full rounded border border-gray-500 focus-within:border-green-400 transition-colors bg-gray-800/50 overflow-hidden">
+                            <div class="flex items-center w-full bg-white dark:bg-gray-700">
                                 <span class="text-green-400 px-3 py-2 font-mono">$</span>
                                 <input
                                     type="text"
@@ -249,6 +249,12 @@ export default {
                             }
                         }
                         
+                        // Ensure response is always defined
+                        if (response === undefined || response === null) {
+                            response = 'Error: No response defined for this command';
+                            isError = true;
+                        }
+                        
                         isError = cmd.isError || false;
                         matched = true;
                         break;
@@ -292,8 +298,17 @@ export default {
         },
         
         typeResponse(index, fullResponse) {
+            // Safety check for undefined/null response
+            if (fullResponse === undefined || fullResponse === null) {
+                console.warn('typeResponse called with undefined/null response, using empty string');
+                fullResponse = '';
+            }
+            
+            // Ensure response is a string
+            const responseString = String(fullResponse);
+            
             // Split response into lines
-            const lines = fullResponse.split('\n');
+            const lines = responseString.split('\n');
             let currentLineIndex = 0;
             let displayedText = '';
             

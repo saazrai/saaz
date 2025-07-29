@@ -419,15 +419,15 @@ import Type7Review from '@/components/QuizTypes/Type7Review.vue';
 
 const props = defineProps({
     item: Object,
+    navigation: Object,
 });
 
 // Theme management
 const { isAdminDark } = useTheme();
 
-// Navigation state (simple implementation for demo)
-const totalItems = ref(100); // This should come from backend
-const hasPrevious = computed(() => props.item.id > 1);
-const hasNext = computed(() => props.item.id < totalItems.value);
+// Navigation state
+const hasPrevious = computed(() => props.navigation?.previous_id !== null);
+const hasNext = computed(() => props.navigation?.next_id !== null);
 
 // State management
 const showingReview = ref(false);
@@ -588,14 +588,14 @@ const resetTest = () => {
 
 // Navigation functions
 const navigateToPrevious = () => {
-    if (hasPrevious.value) {
-        router.visit(route('admin.diagnostics.items.show', props.item.id - 1));
+    if (hasPrevious.value && props.navigation?.previous_id) {
+        router.visit(route('admin.diagnostics.items.show', props.navigation.previous_id));
     }
 };
 
 const navigateToNext = () => {
-    if (hasNext.value) {
-        router.visit(route('admin.diagnostics.items.show', props.item.id + 1));
+    if (hasNext.value && props.navigation?.next_id) {
+        router.visit(route('admin.diagnostics.items.show', props.navigation.next_id));
     }
 };
 </script>

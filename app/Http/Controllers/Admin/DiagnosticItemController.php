@@ -162,8 +162,21 @@ class DiagnosticItemController extends Controller
             'type'
         ]);
 
+        // Get navigation info
+        $previousItem = DiagnosticItem::where('id', '<', $item->id)
+            ->orderBy('id', 'desc')
+            ->first();
+        $nextItem = DiagnosticItem::where('id', '>', $item->id)
+            ->orderBy('id', 'asc')
+            ->first();
+
         return Inertia::render('Admin/Diagnostics/Items/Show', [
             'item' => $item,
+            'navigation' => [
+                'previous_id' => $previousItem?->id,
+                'next_id' => $nextItem?->id,
+                'total_count' => DiagnosticItem::count(),
+            ],
         ]);
     }
 

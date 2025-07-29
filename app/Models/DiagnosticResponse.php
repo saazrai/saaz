@@ -14,6 +14,7 @@ class DiagnosticResponse extends BaseModel implements Auditable
         'diagnostic_id',
         'diagnostic_item_id',
         'user_answer',
+        'metadata',
         'is_correct',
         'response_time_seconds',
     ];
@@ -21,6 +22,7 @@ class DiagnosticResponse extends BaseModel implements Auditable
     protected $casts = [
         'is_correct' => 'boolean',
         'user_answer' => 'array',
+        'metadata' => 'array',
     ];
 
     public function diagnostic(): BelongsTo
@@ -45,6 +47,7 @@ class DiagnosticResponse extends BaseModel implements Auditable
         'diagnostic_id',
         'diagnostic_item_id',
         'user_answer',
+        'metadata',
         'is_correct',
         'response_time_seconds',
     ];

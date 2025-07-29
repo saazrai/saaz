@@ -292,6 +292,7 @@ export default {
         // Reactive data
         const selectedOptions = ref([])
         const selectedAnswer = ref(null) // For single choice (radio)
+        const currentQuestionMetadata = ref(null) // For storing Type 7 command history
         const currentQuestionData = ref(props.question)
         const showPauseModal = ref(false)
         const showBloomHelp = ref(false)
@@ -509,7 +510,7 @@ export default {
             resetInactivityTimer()
         }
         
-        const handleSelection = (selection) => {
+        const handleSelection = (selection, commandHistory = null) => {
             // QuizTypes component always emits arrays, so we handle both types the same way
             if (currentQuestionData.value?.type_id === 2) {
                 // Multiple choice - selection is an array
@@ -517,6 +518,15 @@ export default {
             } else {
                 // Single choice - selection is still an array from QuizTypes normalization
                 selectedAnswer.value = Array.isArray(selection) ? selection[0] : selection
+            }
+            
+            // Store command history for Type 7 questions
+            if (currentQuestionData.value?.type_id === 7 && commandHistory) {
+                // Store command history in a reactive variable for later use
+                currentQuestionMetadata.value = {
+                    commands: commandHistory,
+                    timestamp: new Date().toISOString()
+                }
             }
         }
         
@@ -566,7 +576,8 @@ export default {
                 const responseData = {
                     selected_options: userAnswer,
                     response_time: currentQuestionTime,
-                    diagnostic_item_id: currentQuestionData.value?.id
+                    diagnostic_item_id: currentQuestionData.value?.id,
+                    metadata: currentQuestionMetadata.value
                 }
                 
                 // Submit answer to backend using route helper

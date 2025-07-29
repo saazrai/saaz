@@ -1,18 +1,23 @@
 <template>
     <div :class="[
-            'transition-all duration-300 w-full backdrop-blur-md rounded-2xl pt-8 font-medium shadow-xl',
+            'transition-all duration-300 w-full font-medium',
+            // Small screens: original card styling
+            'backdrop-blur-md rounded-2xl pt-8 shadow-xl',
+            // Large screens: match Question Details styling
+            'xl:bg-white/90 xl:dark:bg-gray-800/90 xl:backdrop-blur-xl xl:rounded-2xl xl:shadow-xl xl:border xl:border-gray-200/30 xl:dark:border-gray-700/30 xl:pt-0 xl:p-6',
+            // Colors for small screens
             isThemeDark ? 'bg-slate-800' : 'bg-white'
          ]">
         <div :class="[
-                'border rounded-2xl',
+                'border rounded-2xl xl:border-0',
                 isThemeDark ? 'border-slate-700' : 'border-gray-200'
              ]">
-            <div class="px-2 py-8 lg:p-8">
-                <h4 class="text-lg font-bold mb-10 px-6"
+            <div class="px-2 py-8 lg:p-8 xl:p-0">
+                <h4 class="text-lg font-bold mb-10 px-6 xl:px-0"
                     :class="isThemeDark ? 'text-white' : 'text-gray-800'">
                     <div v-html="renderedQuestion"></div>
                 </h4>
-                <div class="question-options grid grid-cols-1 sm:grid-cols-2 gap-4 px-6">
+                <div class="question-options grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 xl:px-0">
                     <div class="mb-8">
                         <h3 class="text-md font-semibold mb-2"
                             :class="isThemeDark ? 'text-white' : 'text-gray-800'">ITEMS</h3>
