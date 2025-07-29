@@ -51,6 +51,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view settings',
             'edit settings',
             'manage system',
+            'view system logs',
             
             // Diagnostic Management
             'manage diagnostic phases',
