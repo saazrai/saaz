@@ -323,6 +323,130 @@
                         </div>
                     </div>
 
+                    <!-- Shell Simulation Settings (Type 7 only) -->
+                    <div v-if="form.type_id == 7">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                            Shell Simulation Settings
+                        </h3>
+                        <div class="space-y-6">
+                            <!-- Shell Type -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <Label for="shell_type">Shell Type</Label>
+                                    <select
+                                        v-model="form.settings.shell"
+                                        id="shell_type"
+                                        class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="bash">Bash</option>
+                                        <option value="zsh">Zsh</option>
+                                        <option value="sh">Sh</option>
+                                        <option value="cmd">CMD (Windows)</option>
+                                        <option value="powershell">PowerShell</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <Label for="clear_command">Clear Command</Label>
+                                    <Input
+                                        v-model="form.settings.clearCommand"
+                                        type="text"
+                                        id="clear_command"
+                                        placeholder="clear"
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Error Messages -->
+                            <div>
+                                <Label>Error Message Templates</Label>
+                                <div class="mt-2 space-y-3">
+                                    <div>
+                                        <Label for="error_command_not_found" class="text-sm">Command Not Found</Label>
+                                        <Input
+                                            v-model="form.settings.errorMessages.commandNotFound"
+                                            type="text"
+                                            id="error_command_not_found"
+                                            placeholder="$COMMAND: command not found"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label for="error_missing_argument" class="text-sm">Missing Argument</Label>
+                                        <Input
+                                            v-model="form.settings.errorMessages.missingArgument"
+                                            type="text"
+                                            id="error_missing_argument"
+                                            placeholder="$COMMAND: missing required argument"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label for="error_unknown_host" class="text-sm">Unknown Host</Label>
+                                        <Input
+                                            v-model="form.settings.errorMessages.unknownHost"
+                                            type="text"
+                                            id="error_unknown_host"
+                                            placeholder="$COMMAND: cannot resolve $1: Unknown host"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Commands -->
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <Label>Shell Commands</Label>
+                                    <button
+                                        type="button"
+                                        @click="addShellCommand"
+                                        class="flex items-center px-3 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/30"
+                                    >
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Add Command
+                                    </button>
+                                </div>
+                                <div class="space-y-4">
+                                    <div v-for="(command, index) in form.settings.commands" :key="index" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                        <div class="flex items-start justify-between mb-3">
+                                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Command {{ index + 1 }}</h4>
+                                            <button
+                                                type="button"
+                                                @click="removeShellCommand(index)"
+                                                class="p-1 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                            >
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <div>
+                                                <Label :for="`command_pattern_${index}`" class="text-sm">Pattern (Regex)</Label>
+                                                <Input
+                                                    v-model="form.settings.commands[index].pattern"
+                                                    type="text"
+                                                    :id="`command_pattern_${index}`"
+                                                    placeholder="nmap -O example\.com$"
+                                                    class="font-mono"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label :for="`command_response_${index}`" class="text-sm">Response</Label>
+                                                <textarea
+                                                    v-model="form.settings.commands[index].response"
+                                                    :id="`command_response_${index}`"
+                                                    rows="6"
+                                                    class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm"
+                                                    placeholder="Command output here..."
+                                                ></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- IRT Parameters -->
                     <div>
                         <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
@@ -464,7 +588,18 @@ const form = ref({
     options: props.item.options || [],
     correct_options: props.item.correct_options || [],
     justifications: props.item.justifications || [],
-    settings: {
+    settings: props.item.type_id == 7 ? {
+        shell: props.item.settings?.shell || 'bash',
+        clearCommand: props.item.settings?.clearCommand || 'clear',
+        errorMessages: {
+            commandNotFound: props.item.settings?.errorMessages?.commandNotFound || '$COMMAND: command not found',
+            missingArgument: props.item.settings?.errorMessages?.missingArgument || '$COMMAND: missing required argument',
+            unknownHost: props.item.settings?.errorMessages?.unknownHost || '$COMMAND: cannot resolve $1: Unknown host',
+            ...props.item.settings?.errorMessages
+        },
+        commands: props.item.settings?.commands || [],
+        ...props.item.settings
+    } : {
         time_limit: props.item.settings?.time_limit || null,
         points: props.item.settings?.points || 1,
         randomize_options: props.item.settings?.randomize_options || false,
@@ -495,6 +630,20 @@ const addJustification = () => {
 
 const removeJustification = (index: number) => {
     form.value.justifications.splice(index, 1)
+}
+
+const addShellCommand = () => {
+    if (!form.value.settings.commands) {
+        form.value.settings.commands = []
+    }
+    form.value.settings.commands.push({
+        pattern: '',
+        response: ''
+    })
+}
+
+const removeShellCommand = (index: number) => {
+    form.value.settings.commands.splice(index, 1)
 }
 
 const updateItem = () => {
