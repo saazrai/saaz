@@ -3,6 +3,7 @@
 use App\Http\Middleware\AdminAccess;
 use App\Http\Middleware\CheckCookieConsent;
 use App\Http\Middleware\CheckUserActive;
+use App\Http\Middleware\ContentSecurityPolicy;
 use App\Http\Middleware\EnforceConsentForAnalyticsAndMarketing;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state', 'cookie_consent']);
 
         $middleware->web(append: [
+            ContentSecurityPolicy::class,
             HandleAppearance::class,
             LogAdminAttempts::class,
             HandleInertiaRequests::class,
