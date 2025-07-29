@@ -39,10 +39,31 @@ class ContentSecurityPolicy
             "https://us-assets.i.posthog.com"
         ];
 
+        // Debug CSP condition
+        $broadcastDefault = config('broadcasting.default');
+        $websocketsEnabled = env('VITE_ENABLE_WEBSOCKETS');
+        
+        // Log for debugging
+        \Log::info('CSP Debug', [
+            'broadcasting.default' => $broadcastDefault,
+            'VITE_ENABLE_WEBSOCKETS' => $websocketsEnabled,
+            'app.url' => config('app.url')
+        ]);
+
         if (config('broadcasting.default') === 'reverb' && env('VITE_ENABLE_WEBSOCKETS') === 'true') {
             $host = parse_url(config('app.url'), PHP_URL_HOST);
             $port = env('REVERB_PORT', 6001);
             $connectSrc[] = "wss://{$host}:{$port}";
+            \Log::info('CSP WebSocket added', ['url' => "wss://{$host}:{$port}"]);
+        } else {
+            \Log::info('CSP WebSocket NOT added - condition not met');
+        }
+        
+        // Fallback: Always add WebSocket for saazacademy.com domain
+        $host = parse_url(config('app.url'), PHP_URL_HOST);
+        if (str_contains($host, 'saazacademy.com')) {
+            $connectSrc[] = "wss://saazacademy.com:6001";
+            \Log::info('CSP WebSocket fallback added', ['url' => 'wss://saazacademy.com:6001']);
         }
 
         $cspDirectives[] = "connect-src " . implode(' ', $connectSrc);
