@@ -47,17 +47,33 @@ class ContentSecurityPolicy
             $reverbPort = env('REVERB_PORT', '8080');
             $reverbScheme = env('REVERB_SCHEME', 'https');
             
-            // Add WebSocket URLs
-            $connectSrc[] = "{$reverbScheme}://{$reverbHost}";
-            $connectSrc[] = "{$reverbScheme}://{$reverbHost}:{$reverbPort}";
+            // Detect production host from APP_URL if REVERB_HOST is not set correctly
+            $appUrl = parse_url(env('APP_URL', 'http://localhost'));
+            $productionHost = $appUrl['host'] ?? $reverbHost;
             
-            // Add WebSocket protocols
-            if ($reverbScheme === 'https') {
-                $connectSrc[] = "wss://{$reverbHost}";
-                $connectSrc[] = "wss://{$reverbHost}:{$reverbPort}";
+            // Use production host detection for Laravel Cloud
+            if (app()->isProduction() || str_contains($productionHost, 'saazacademy.com')) {
+                $finalHost = 'saazacademy.com';
+                $finalScheme = 'https';
+                $wsProtocol = 'wss';
+                
+                // Add production WebSocket URLs
+                $connectSrc[] = "{$finalScheme}://{$finalHost}";
+                $connectSrc[] = "{$wsProtocol}://{$finalHost}";
+                $connectSrc[] = "{$wsProtocol}://{$finalHost}:6001";
+                $connectSrc[] = "{$wsProtocol}://{$finalHost}:6002";
+                $connectSrc[] = "{$finalScheme}://{$finalHost}:6001";
+                $connectSrc[] = "{$finalScheme}://{$finalHost}:6002";
             } else {
-                $connectSrc[] = "ws://{$reverbHost}";
-                $connectSrc[] = "ws://{$reverbHost}:{$reverbPort}";
+                // Local development URLs
+                $wsProtocol = $reverbScheme === 'https' ? 'wss' : 'ws';
+                $connectSrc[] = "{$reverbScheme}://{$reverbHost}";
+                $connectSrc[] = "{$wsProtocol}://{$reverbHost}";
+                
+                if ($reverbPort && $reverbPort !== '80' && $reverbPort !== '443') {
+                    $connectSrc[] = "{$reverbScheme}://{$reverbHost}:{$reverbPort}";
+                    $connectSrc[] = "{$wsProtocol}://{$reverbHost}:{$reverbPort}";
+                }
             }
         }
         
