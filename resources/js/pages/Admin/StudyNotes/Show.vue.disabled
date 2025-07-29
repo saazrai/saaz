@@ -1,0 +1,661 @@
+<template>
+  <AdminLayout :page-title="`Study Note: ${studyNote.title}`">
+    <!-- Header -->
+    <div :class="[
+      'px-8 py-4 rounded-lg mb-6',
+      isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-800 text-white'
+    ]">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-semibold">{{ studyNote.title }}</h1>
+          <div :class="[
+            'flex items-center gap-4 mt-2 text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-300'
+          ]">
+            <span>Topic: {{ studyNote.topic?.name }}</span>
+            <span>•</span>
+            <span>Level: {{ studyNote.level }}</span>
+            <span>•</span>
+            <span>Version: {{ studyNote.version }}</span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <Link
+            :href="route('admin.content.study-notes.edit', studyNote.id)"
+            :class="[
+              'px-4 py-2 rounded-md transition-colors flex items-center gap-2',
+              isDarkMode 
+                ? 'bg-green-600 hover:bg-green-700 text-white' 
+                : 'bg-green-600 hover:bg-green-700 text-white'
+            ]"
+          >
+            <Edit class="h-4 w-4" />
+            Edit Content
+          </Link>
+          <button
+            @click="refreshContent"
+            :disabled="isRefreshing"
+            :class="[
+              'px-4 py-2 rounded-md transition-colors flex items-center gap-2 disabled:opacity-50',
+              isDarkMode 
+                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            ]"
+          >
+            <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': isRefreshing }" />
+            Refresh Content
+          </button>
+          <Link
+            href="/admin/content/study-notes"
+            :class="[
+              'px-4 py-2 rounded-md transition-colors',
+              isDarkMode 
+                ? 'bg-gray-600 hover:bg-gray-700 text-white' 
+                : 'bg-gray-600 hover:bg-gray-700 text-white'
+            ]"
+          >
+            Back to List
+          </Link>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metadata Card -->
+    <div :class="[
+      'rounded-lg shadow-sm mb-6 p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+    ]">
+      <h2 :class="[
+        'text-lg font-semibold mb-4',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">Details</h2>
+      <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <dt :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">Course</dt>
+          <dd :class="[
+            'mt-1 text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-900'
+          ]">
+            {{ getCourseInfo(studyNote) }}
+          </dd>
+        </div>
+        <div>
+          <dt :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">Status</dt>
+          <dd class="mt-1">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              :class="studyNote.is_active 
+                ? (isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-800')
+                : (isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800')"
+            >
+              {{ studyNote.is_active ? 'Active' : 'Inactive' }}
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">Created By</dt>
+          <dd :class="[
+            'mt-1 text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-900'
+          ]">{{ studyNote.created_by }}</dd>
+        </div>
+        <div>
+          <dt :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">Estimated Read Time</dt>
+          <dd :class="[
+            'mt-1 text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-900'
+          ]">
+            {{ Math.ceil(studyNote.estimated_read_time / 60) }} minutes
+          </dd>
+        </div>
+        <div>
+          <dt :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">Created At</dt>
+          <dd :class="[
+            'mt-1 text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-900'
+          ]">
+            {{ new Date(studyNote.created_at).toLocaleDateString() }}
+          </dd>
+        </div>
+        <div>
+          <dt :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-400' : 'text-gray-500'
+          ]">Last Updated</dt>
+          <dd :class="[
+            'mt-1 text-sm',
+            isDarkMode ? 'text-gray-300' : 'text-gray-900'
+          ]">
+            {{ new Date(studyNote.updated_at).toLocaleDateString() }}
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Learning Objectives -->
+    <div v-if="studyNote.learning_objectives?.length > 0" :class="[
+      'rounded-lg shadow-sm mb-6 p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+    ]">
+      <h2 :class="[
+        'text-lg font-semibold mb-4 flex items-center gap-2',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">
+        <Target :class="[
+          'h-5 w-5',
+          isDarkMode ? 'text-blue-400' : 'text-blue-600'
+        ]" />
+        Learning Objectives
+      </h2>
+      <ul class="list-disc list-inside space-y-2">
+        <li v-for="(objective, index) in studyNote.learning_objectives" :key="index" :class="[
+          isDarkMode ? 'text-gray-300' : 'text-gray-700'
+        ]">
+          {{ objective }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Content Preview -->
+    <div :class="[
+      'rounded-lg shadow-sm mb-6 p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+    ]">
+      <h2 :class="[
+        'text-lg font-semibold mb-4 flex items-center gap-2',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">
+        <FileText :class="[
+          'h-5 w-5',
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        ]" />
+        Content Preview
+      </h2>
+      <div class="prose prose-md max-w-none">
+        <div v-html="renderMarkdown(studyNote.content)" :class="[
+          'max-h-96 overflow-y-auto border rounded-lg p-4 text-base leading-relaxed',
+          isDarkMode 
+            ? 'border-gray-600 bg-gray-900 text-gray-300' 
+            : 'border-gray-300 bg-white text-gray-900'
+        ]"></div>
+      </div>
+    </div>
+
+    <!-- Study Note Blocks -->
+    <div v-if="studyNote.blocks?.length > 0" :class="[
+      'rounded-lg shadow-sm mb-6 p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+    ]">
+      <h2 :class="[
+        'text-lg font-semibold mb-4 flex items-center gap-2',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">
+        <BookOpen :class="[
+          'h-5 w-5',
+          isDarkMode ? 'text-green-400' : 'text-green-600'
+        ]" />
+        Study Note Blocks ({{ studyNote.blocks.length }})
+      </h2>
+      <div class="space-y-4">
+        <div v-for="(block, index) in studyNote.blocks" :key="block.id" :class="[
+          'border rounded-lg p-4 transition-colors',
+          isDarkMode ? 'border-gray-600 hover:border-gray-500' : 'border-gray-300 hover:border-gray-400'
+        ]">
+          <!-- Block Header -->
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span :class="[
+                'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                getBlockTypeColor(block.type)
+              ]">
+                {{ getBlockTypeLabel(block.type) }}
+              </span>
+              <span :class="[
+                'text-xs px-2 py-1 rounded',
+                isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'
+              ]">
+                Order: {{ block.sort_order }}
+              </span>
+              <span v-if="block.bloom_level" :class="[
+                'text-xs px-2 py-1 rounded',
+                isDarkMode ? 'bg-blue-900 text-blue-200' : 'bg-blue-100 text-blue-800'
+              ]">
+                Bloom: {{ block.bloom_level }}
+              </span>
+              <div v-if="block.difficulty_levels && block.difficulty_levels.length > 0" class="flex flex-wrap gap-1">
+                <span 
+                  v-for="level in block.difficulty_levels" 
+                  :key="level"
+                  :class="[
+                    'text-xs px-2 py-1 rounded',
+                    getDifficultyColor(level)
+                  ]"
+                >
+                  {{ formatDifficulty(level) }}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span v-if="!block.is_active" :class="[
+                'text-xs px-2 py-1 rounded',
+                isDarkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800'
+              ]">
+                Inactive
+              </span>
+              <span v-if="!block.is_visible" :class="[
+                'text-xs px-2 py-1 rounded',
+                isDarkMode ? 'bg-yellow-900 text-yellow-200' : 'bg-yellow-100 text-yellow-800'
+              ]">
+                Hidden
+              </span>
+            </div>
+          </div>
+
+          <!-- Block Content -->
+          <div class="mt-3">
+            <!-- Text/Case Study Content -->
+            <div v-if="block.type === 'text' || block.type === 'case_study'">
+              <div v-if="block.content?.markdown" :class="[
+                'prose prose-sm max-w-none p-3 rounded border',
+                isDarkMode 
+                  ? 'prose-invert border-gray-600 bg-gray-900' 
+                  : 'border-gray-200 bg-gray-50'
+              ]">
+                <MarkdownRenderer 
+                  :content="block.content.markdown"
+                  :class="[isDarkMode ? 'text-gray-300' : 'text-gray-900']"
+                />
+              </div>
+              <div v-else-if="block.content?.html" :class="[
+                'prose prose-sm max-w-none p-3 rounded border',
+                isDarkMode 
+                  ? 'prose-invert border-gray-600 bg-gray-900' 
+                  : 'border-gray-200 bg-gray-50'
+              ]">
+                <div v-html="block.content.html"></div>
+                <div :class="[
+                  'mt-2 text-xs px-2 py-1 rounded',
+                  isDarkMode ? 'bg-yellow-900/30 text-yellow-400' : 'bg-yellow-100 text-yellow-800'
+                ]">
+                  ⚠️ Legacy HTML content - regenerate to convert to markdown
+                </div>
+              </div>
+              <div v-else :class="[
+                'text-sm italic p-3 rounded border',
+                isDarkMode 
+                  ? 'border-gray-600 bg-gray-900 text-gray-400' 
+                  : 'border-gray-200 bg-gray-50 text-gray-500'
+              ]">
+                No content available
+              </div>
+            </div>
+
+            <!-- Quiz Content -->
+            <div v-else-if="block.type === 'quiz'" :class="[
+              'p-3 rounded border',
+              isDarkMode 
+                ? 'border-gray-600 bg-gray-900' 
+                : 'border-gray-200 bg-gray-50'
+            ]">
+              <h4 :class="[
+                'font-medium mb-2',
+                isDarkMode ? 'text-gray-200' : 'text-gray-900'
+              ]">
+                {{ block.content?.content || 'Quiz Question' }}
+              </h4>
+              
+              <!-- Question Type Info -->
+              <div v-if="block.content?.question_type" class="mb-2">
+                <span :class="[
+                  'text-xs px-2 py-1 rounded',
+                  isDarkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-800'
+                ]">
+                  {{ block.content.question_type.name || 'Unknown Type' }}
+                </span>
+              </div>
+
+              <!-- Options -->
+              <div v-if="block.content?.options?.length > 0" class="mt-2">
+                <p :class="[
+                  'text-sm font-medium mb-1',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Options:</p>
+                <ul class="space-y-1">
+                  <li v-for="(option, idx) in block.content.options" :key="idx" :class="[
+                    'text-sm flex items-center gap-2',
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  ]">
+                    <span :class="[
+                      'w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium',
+                      isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700'
+                    ]">
+                      {{ String.fromCharCode(65 + idx) }}
+                    </span>
+                    {{ typeof option === 'string' ? option : option.value || option.text }}
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Correct Answer -->
+              <div v-if="block.content?.correct_options?.length > 0" class="mt-2">
+                <p :class="[
+                  'text-sm font-medium',
+                  isDarkMode ? 'text-green-400' : 'text-green-600'
+                ]">
+                  Correct Answer: {{ Array.isArray(block.content.correct_options) ? block.content.correct_options.join(', ') : block.content.correct_options }}
+                </p>
+              </div>
+
+              <!-- Justification -->
+              <div v-if="block.content?.justifications || block.content?.justification" class="mt-2">
+                <p :class="[
+                  'text-sm font-medium mb-1',
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                ]">Explanation:</p>
+                <p :class="[
+                  'text-sm',
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                ]">
+                  {{ block.content.justifications || block.content.justification }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Other Block Types -->
+            <div v-else :class="[
+              'p-3 rounded border',
+              isDarkMode 
+                ? 'border-gray-600 bg-gray-900' 
+                : 'border-gray-200 bg-gray-50'
+            ]">
+              <p :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">
+                {{ block.type.charAt(0).toUpperCase() + block.type.slice(1) }} block
+              </p>
+              <pre v-if="block.content" :class="[
+                'text-xs mt-2 overflow-x-auto',
+                isDarkMode ? 'text-gray-500' : 'text-gray-500'
+              ]">{{ JSON.stringify(block.content, null, 2) }}</pre>
+            </div>
+          </div>
+
+          <!-- Block Metadata -->
+          <div v-if="block.view_count || block.success_rate || block.average_completion_time" :class="[
+            'mt-3 pt-3 border-t grid grid-cols-3 gap-4 text-sm',
+            isDarkMode ? 'border-gray-600' : 'border-gray-200'
+          ]">
+            <div v-if="block.view_count" :class="[
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              <span class="font-medium">Views:</span> {{ block.view_count }}
+            </div>
+            <div v-if="block.success_rate" :class="[
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              <span class="font-medium">Success Rate:</span> {{ Math.round(block.success_rate) }}%
+            </div>
+            <div v-if="block.average_completion_time" :class="[
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            ]">
+              <span class="font-medium">Avg Time:</span> {{ Math.round(block.average_completion_time) }}s
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knowledge Check Questions -->
+    <div v-if="studyNote.knowledge_check_questions?.length > 0" :class="[
+      'rounded-lg shadow-sm mb-6 p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+    ]">
+      <h2 :class="[
+        'text-lg font-semibold mb-4 flex items-center gap-2',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">
+        <HelpCircle :class="[
+          'h-5 w-5',
+          isDarkMode ? 'text-purple-400' : 'text-purple-600'
+        ]" />
+        Knowledge Check Questions
+      </h2>
+      <div class="space-y-3">
+        <div v-for="(question, index) in studyNote.knowledge_check_questions" :key="index" :class="[
+          'border rounded-lg p-3',
+          isDarkMode ? 'border-gray-600' : 'border-gray-300'
+        ]">
+          <p :class="[
+            'text-sm font-medium',
+            isDarkMode ? 'text-gray-200' : 'text-gray-900'
+          ]">{{ index + 1 }}. {{ question.question }}</p>
+          <p :class="[
+            'text-sm mt-1',
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          ]">Answer: {{ question.answer }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div :class="[
+      'rounded-lg shadow-sm p-6',
+      isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'
+    ]">
+      <h2 :class="[
+        'text-lg font-semibold mb-4',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">Actions</h2>
+      <div class="flex gap-3">
+        <button
+          @click="toggleStatus"
+          class="px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+          :class="studyNote.is_active 
+            ? 'bg-red-600 hover:bg-red-700 text-white' 
+            : 'bg-green-600 hover:bg-green-700 text-white'"
+        >
+          <Power class="h-4 w-4" />
+          {{ studyNote.is_active ? 'Deactivate' : 'Activate' }}
+        </button>
+        <button
+          @click="createVersion"
+          class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+        >
+          <Copy class="h-4 w-4" />
+          Create New Version
+        </button>
+        <button
+          @click="confirmDelete"
+          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+        >
+          <Trash2 class="h-4 w-4" />
+          Delete
+        </button>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import MarkdownRenderer from '@/Components/MarkdownRenderer.vue'
+import { RefreshCw, FileText, Target, HelpCircle, Power, Copy, Trash2, Edit, BookOpen } from 'lucide-vue-next'
+import { marked } from 'marked'
+import { showError, showSuccess, showConfirm, showLoading } from '@/Utils/dialog-service'
+
+const props = defineProps({
+  studyNote: Object,
+  aiVendors: Array
+})
+
+const isRefreshing = ref(false)
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+const getCourseInfo = (studyNote) => {
+  if (!studyNote.topic?.lessons || studyNote.topic.lessons.length === 0) {
+    return 'N/A'
+  }
+  const course = studyNote.topic.lessons[0]?.domain?.course
+  return course?.name || 'N/A'
+}
+
+const renderMarkdown = (content) => {
+  if (!content) return ''
+  return marked(content)
+}
+
+const refreshContent = async () => {
+  try {
+    // Note: This multi-button dialog requires custom implementation
+    // For now, using a simple confirm dialog for refresh
+    const result = await showConfirm(
+      'Refresh Content?',
+      'This will replace existing content with new AI-generated content. Choose "Cancel" to keep current content unchanged.',
+      'Refresh Content',
+      'Cancel'
+    )
+
+    if (result.isConfirmed) {
+      // Refresh existing content
+      isRefreshing.value = true
+      router.post(route('admin.content.study-notes.refresh', props.studyNote.id), {}, {
+        preserveScroll: true,
+        onSuccess: () => {
+          showSuccess(
+            'Success!',
+            'Content has been refreshed successfully.'
+          )
+        },
+        onError: () => {
+          showError(
+            'Error!',
+            'Failed to refresh content. Please try again.'
+          )
+        },
+        onFinish: () => {
+          isRefreshing.value = false
+        }
+      })
+    } else if (result.isDenied) {
+      // Create new version
+      router.post(route('admin.content.study-notes.version.create', props.studyNote.id), {}, {
+        preserveScroll: true,
+        onSuccess: () => {
+          showSuccess(
+            'Success!',
+            'New version created successfully.'
+          )
+        },
+        onError: () => {
+          showError(
+            'Error!',
+            'Failed to create new version. Please try again.'
+          )
+        }
+      })
+    }
+    // If cancelled, do nothing
+  } catch (error) {
+    console.error('Error showing SweetAlert:', error)
+  }
+}
+
+const toggleStatus = () => {
+  router.patch(route('admin.content.study-notes.status.toggle', props.studyNote.id), {}, {
+    preserveScroll: true
+  })
+}
+
+const createVersion = () => {
+  if (confirm('Create a new version of this study note?')) {
+    router.post(route('admin.content.study-notes.version.create', props.studyNote.id))
+  }
+}
+
+const confirmDelete = () => {
+  if (confirm('Are you sure you want to delete this study note? This action cannot be undone.')) {
+    router.delete(route('admin.content.study-notes.destroy', props.studyNote.id))
+  }
+}
+
+// Helper functions for block display
+const getBlockTypeColor = (type) => {
+  const colors = {
+    'text': isDarkMode.value ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-800',
+    'quiz': isDarkMode.value ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-100 text-purple-800',
+    'case_study': isDarkMode.value ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-800',
+    'image': isDarkMode.value ? 'bg-yellow-900/30 text-yellow-400' : 'bg-yellow-100 text-yellow-800',
+    'code': isDarkMode.value ? 'bg-gray-900/30 text-gray-400' : 'bg-gray-100 text-gray-800',
+    'video': isDarkMode.value ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800',
+    'assignment': isDarkMode.value ? 'bg-indigo-900/30 text-indigo-400' : 'bg-indigo-100 text-indigo-800'
+  }
+  return colors[type] || (isDarkMode.value ? 'bg-gray-900/30 text-gray-400' : 'bg-gray-100 text-gray-800')
+}
+
+const getBlockTypeLabel = (type) => {
+  const labels = {
+    'text': 'Text Content',
+    'quiz': 'Quiz',
+    'case_study': 'Case Study',
+    'image': 'Image',
+    'code': 'Code Sample',
+    'video': 'Video',
+    'assignment': 'Assignment'
+  }
+  return labels[type] || type.charAt(0).toUpperCase() + type.slice(1)
+}
+
+const getDifficultyColor = (difficulty) => {
+  const colors = {
+    'beginner': isDarkMode.value ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-800',
+    'intermediate': isDarkMode.value ? 'bg-yellow-900/30 text-yellow-400' : 'bg-yellow-100 text-yellow-800',
+    'advanced': isDarkMode.value ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-800',
+    'expert': isDarkMode.value ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-100 text-purple-800'
+  }
+  return colors[difficulty] || (isDarkMode.value ? 'bg-gray-900/30 text-gray-400' : 'bg-gray-100 text-gray-800')
+}
+
+const formatDifficulty = (difficulty) => {
+  return difficulty ? difficulty.charAt(0).toUpperCase() + difficulty.slice(1) : 'Unknown'
+}
+</script>

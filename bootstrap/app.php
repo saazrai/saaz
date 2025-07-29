@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Middleware\AdminAccess;
 use App\Http\Middleware\CheckCookieConsent;
+use App\Http\Middleware\CheckUserActive;
 use App\Http\Middleware\EnforceConsentForAnalyticsAndMarketing;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\LogAdminAttempts;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -22,15 +25,22 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             HandleAppearance::class,
+            LogAdminAttempts::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
             CheckCookieConsent::class,
+            CheckUserActive::class,
         ]);
 
         $middleware->alias([
             'cookie.consent' => CheckCookieConsent::class,
             'consent.analytics' => EnforceConsentForAnalyticsAndMarketing::class.':analytics',
             'consent.marketing' => EnforceConsentForAnalyticsAndMarketing::class.':marketing',
+            'admin' => AdminAccess::class,
+            'active' => CheckUserActive::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
         // Exclude cookie consent routes from CSRF verification

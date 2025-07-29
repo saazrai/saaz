@@ -2,10 +2,29 @@
 
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Assessments\DiagnosticController;
+use App\Http\Controllers\BroadcastAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Legal\PrivacyController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+// Override default broadcast authentication route - must be defined early
+Route::match(['get', 'post'], '/broadcasting/auth', [BroadcastAuthController::class, 'authenticate'])
+    ->middleware(['web', 'auth']);
+
+// Debug route to test auth
+Route::get('/debug/auth', function () {
+    $user = auth()->user();
+    return response()->json([
+        'authenticated' => auth()->check(),
+        'user' => $user ? [
+            'id' => $user->id,
+            'name' => $user->name,
+            'roles' => $user->roles->pluck('name'),
+        ] : null,
+        'session_id' => session()->getId(),
+    ]);
+})->middleware(['web', 'auth']);
 
 Route::get('/', function () {
     return Inertia::render('Index', [
@@ -62,11 +81,15 @@ Route::prefix('diagnostics')->name('assessments.diagnostics.')->group(function (
 });
 
 // Admin routes (require admin permissions)
+// Admin routes (protected with admin middleware)
+Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+    require __DIR__.'/admin.php';
+});
+
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Audit logs (for compliance and debugging)
     Route::get('audits', [AuditController::class, 'index'])->name('audits.index');
     Route::get('audits/{audit}', [AuditController::class, 'show'])->name('audits.show');
-    Route::post('audits/export', [AuditController::class, 'export'])->name('audits.export');
 });
 
 require __DIR__.'/settings.php';

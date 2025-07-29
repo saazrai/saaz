@@ -1,0 +1,175 @@
+<template>
+  <AdminLayout>
+    <!-- Header bar with title and action buttons -->
+    <div :class="['px-8 py-4 rounded-lg mb-6 transition-colors', isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-800 text-white']">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-semibold">{{ instructor.name }}</h1>
+        <div class="flex gap-2">
+          <Link 
+            :href="route('admin.instructors.index')" 
+            :class="['px-4 py-2 rounded-md transition-colors', isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-600 hover:bg-gray-700 text-white']"
+          >
+            Back to Instructors
+          </Link>
+          <Link 
+            :href="route('admin.instructors.edit', instructor.id)" 
+            :class="['px-4 py-2 rounded-md transition-colors', isDarkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white']"
+          >
+            Edit Instructor
+          </Link>
+          <button
+            @click="deleteInstructor"
+            :disabled="instructor.courses_count > 0"
+            :class="['px-4 py-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed', isDarkMode ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white']"
+            :title="instructor.courses_count > 0 ? 'Cannot delete instructor with assigned courses' : 'Delete instructor'"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Instructor Details -->
+      <div class="lg:col-span-1">
+        <div :class="['rounded-lg shadow-sm p-6 transition-colors', isDarkMode ? 'bg-gray-800' : 'bg-white']">
+          <div class="text-center">
+            <!-- Avatar -->
+            <div class="mx-auto h-32 w-32 mb-4">
+              <img 
+                v-if="instructor.avatar_url" 
+                class="h-32 w-32 rounded-full object-cover mx-auto" 
+                :src="instructor.avatar_url" 
+                :alt="instructor.name"
+              />
+              <div 
+                v-else 
+                :class="['h-32 w-32 rounded-full flex items-center justify-center text-4xl font-medium mx-auto transition-colors', isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-300 text-gray-700']"
+              >
+                {{ instructor.name.charAt(0).toUpperCase() }}
+              </div>
+            </div>
+
+            <!-- Name and Title -->
+            <h2 :class="['text-xl font-bold transition-colors', isDarkMode ? 'text-white' : 'text-gray-900']">{{ instructor.name }}</h2>
+            <p v-if="instructor.title" :class="['mt-1 transition-colors', isDarkMode ? 'text-gray-400' : 'text-gray-600']">{{ instructor.title }}</p>
+            
+            <!-- Stats -->
+            <div class="mt-4 grid grid-cols-1 gap-3">
+              <div :class="['p-3 rounded-lg transition-colors', isDarkMode ? 'bg-blue-900/30' : 'bg-blue-50']">
+                <div :class="['text-2xl font-bold transition-colors', isDarkMode ? 'text-blue-400' : 'text-blue-600']">{{ instructor.courses_count }}</div>
+                <div :class="['text-sm transition-colors', isDarkMode ? 'text-blue-400' : 'text-blue-600']">{{ instructor.courses_count === 1 ? 'Course' : 'Courses' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="lg:col-span-2">
+        <!-- Profile/Bio -->
+        <div :class="['rounded-lg shadow-sm p-6 mb-6 transition-colors', isDarkMode ? 'bg-gray-800' : 'bg-white']">
+          <h3 :class="['text-lg font-semibold mb-4 transition-colors', isDarkMode ? 'text-white' : 'text-gray-900']">Profile</h3>
+          <div v-if="instructor.profile" class="prose max-w-none">
+            <p :class="['whitespace-pre-line transition-colors', isDarkMode ? 'text-gray-300' : 'text-gray-700']">{{ instructor.profile }}</p>
+          </div>
+          <p v-else :class="['italic transition-colors', isDarkMode ? 'text-gray-500' : 'text-gray-500']">No profile information available.</p>
+        </div>
+
+        <!-- Assigned Courses -->
+        <div :class="['rounded-lg shadow-sm p-6 transition-colors', isDarkMode ? 'bg-gray-800' : 'bg-white']">
+          <h3 :class="['text-lg font-semibold mb-4 transition-colors', isDarkMode ? 'text-white' : 'text-gray-900']">Assigned Courses</h3>
+          <div v-if="instructor.courses && instructor.courses.length > 0" class="space-y-4">
+            <div 
+              v-for="course in instructor.courses" 
+              :key="course.id"
+              :class="['border rounded-lg p-4 transition-colors', isDarkMode ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50']"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 :class="['font-medium transition-colors', isDarkMode ? 'text-white' : 'text-gray-900']">{{ course.name }}</h4>
+                  <p :class="['text-sm transition-colors', isDarkMode ? 'text-gray-400' : 'text-gray-600']">Code: {{ course.code }}</p>
+                  <div v-if="course.domains && course.domains.length > 0" class="mt-2">
+                    <span :class="['text-xs transition-colors', isDarkMode ? 'text-gray-500' : 'text-gray-500']">Domains: </span>
+                    <span :class="['text-xs transition-colors', isDarkMode ? 'text-gray-400' : 'text-gray-700']">
+                      {{ course.domains.map(d => d.name).join(', ') }}
+                    </span>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  <span 
+                    :class="[
+                      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                      course.is_active 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    ]"
+                  >
+                    {{ course.is_active ? 'Active' : 'Inactive' }}
+                  </span>
+                  <Link 
+                    :href="route('admin.content.courses.show', course.id)"
+                    :class="['ml-3 transition-colors', isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800']"
+                  >
+                    View →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p v-else :class="['italic transition-colors', isDarkMode ? 'text-gray-500' : 'text-gray-500']">No courses assigned to this instructor.</p>
+        </div>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { router } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import { ref, onMounted, onUnmounted } from 'vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+
+const isDarkMode = ref(false)
+
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+const handleStorageChange = (e) => {
+  if (e.key === 'adminDarkMode') {
+    isDarkMode.value = JSON.parse(e.newValue || 'false')
+  }
+}
+
+const handleDarkModeChange = (e) => {
+  isDarkMode.value = e.detail
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('adminDarkModeChanged', handleDarkModeChange)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('adminDarkModeChanged', handleDarkModeChange)
+})
+
+const props = defineProps({ 
+  instructor: Object 
+})
+
+function deleteInstructor() {
+  if (props.instructor.courses_count > 0) {
+    alert('Cannot delete instructor with assigned courses')
+    return
+  }
+
+  if (confirm(`Are you sure you want to delete ${props.instructor.name}? This action cannot be undone.`)) {
+    router.delete(route('admin.instructors.destroy', props.instructor.id))
+  }
+}
+</script>

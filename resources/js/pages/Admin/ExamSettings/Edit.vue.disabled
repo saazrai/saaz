@@ -1,0 +1,304 @@
+<template>
+    <div class="p-6">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Edit Exam Settings</h1>
+            <p class="mt-2 text-gray-600 dark:text-gray-400">Update exam settings for {{ examSetting.course?.name }}</p>
+        </div>
+
+        <form @submit.prevent="submit" class="max-w-4xl">
+            <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6 space-y-6">
+                <!-- Course (Read-only) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Course
+                    </label>
+                    <input
+                        :value="courses.find(c => c.id === examSetting.course_id)?.name"
+                        type="text"
+                        class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white bg-gray-50"
+                        disabled
+                    />
+                </div>
+
+                <!-- Exam Type -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Exam Type <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        v-model="form.exam_type_id"
+                        class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        required
+                    >
+                        <option value="">Select exam type</option>
+                        <option v-for="type in examTypes" :key="type.id" :value="type.id">
+                            {{ type.name }}
+                        </option>
+                    </select>
+                    <div v-if="form.errors.exam_type_id" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {{ form.errors.exam_type_id }}
+                    </div>
+                </div>
+
+                <!-- Basic Settings -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Question Count <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            v-model.number="form.question_count"
+                            type="number"
+                            min="1"
+                            max="500"
+                            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            required
+                        />
+                        <div v-if="form.errors.question_count" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            {{ form.errors.question_count }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Duration (minutes) <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            v-model.number="form.duration_minutes"
+                            type="number"
+                            min="1"
+                            max="600"
+                            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            required
+                        />
+                        <div v-if="form.errors.duration_minutes" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            {{ form.errors.duration_minutes }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Passing Percentage <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            v-model.number="form.passing_percentage"
+                            type="number"
+                            min="0"
+                            max="100"
+                            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            required
+                        />
+                        <div v-if="form.errors.passing_percentage" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            {{ form.errors.passing_percentage }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attempt Settings -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Max Attempts <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            v-model.number="form.max_attempts"
+                            type="number"
+                            min="0"
+                            max="100"
+                            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            required
+                        />
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Set to 0 for unlimited attempts
+                        </p>
+                        <div v-if="form.errors.max_attempts" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            {{ form.errors.max_attempts }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Cooldown (minutes) <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            v-model.number="form.cooldown_minutes"
+                            type="number"
+                            min="0"
+                            max="10080"
+                            class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            required
+                        />
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Time to wait between attempts (0 = no cooldown)
+                        </p>
+                        <div v-if="form.errors.cooldown_minutes" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            {{ form.errors.cooldown_minutes }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display Options -->
+                <div class="border-t dark:border-gray-700 pt-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Display Options</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input
+                                v-model="form.randomize_questions"
+                                type="checkbox"
+                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Randomize question order
+                            </span>
+                        </label>
+
+                        <label class="flex items-center">
+                            <input
+                                v-model="form.randomize_answers"
+                                type="checkbox"
+                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Randomize answer order
+                            </span>
+                        </label>
+
+                        <label class="flex items-center">
+                            <input
+                                v-model="form.show_results"
+                                type="checkbox"
+                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Show results immediately after completion
+                            </span>
+                        </label>
+
+                        <label class="flex items-center">
+                            <input
+                                v-model="form.show_correct_answers"
+                                type="checkbox"
+                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Show correct answers in results
+                            </span>
+                        </label>
+
+                        <label class="flex items-center">
+                            <input
+                                v-model="form.allow_review"
+                                type="checkbox"
+                                class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+                            />
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Allow users to review their answers after submission
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Scheduling -->
+                <div class="border-t dark:border-gray-700 pt-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Scheduling (Optional)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Available From
+                            </label>
+                            <input
+                                v-model="form.available_from"
+                                type="datetime-local"
+                                class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            />
+                            <div v-if="form.errors.available_from" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ form.errors.available_from }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Available Until
+                            </label>
+                            <input
+                                v-model="form.available_until"
+                                type="datetime-local"
+                                class="w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            />
+                            <div v-if="form.errors.available_until" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                {{ form.errors.available_until }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="border-t dark:border-gray-700 pt-6">
+                    <label class="flex items-center">
+                        <input
+                            v-model="form.is_active"
+                            type="checkbox"
+                            class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 focus:ring-indigo-500"
+                        />
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                            Active
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-3 pt-6 border-t dark:border-gray-700">
+                    <Link
+                        :href="route('admin.settings.learning.exam-settings.index')"
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                        Cancel
+                    </Link>
+                    <button
+                        type="submit"
+                        :disabled="form.processing"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md disabled:opacity-50"
+                    >
+                        {{ form.processing ? 'Updating...' : 'Update Exam Settings' }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</template>
+
+<script setup>
+import { Link, useForm } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+
+defineOptions({
+    layout: AdminLayout
+});
+
+const props = defineProps({
+    examSetting: Object,
+    courses: Array,
+    examTypes: Array,
+});
+
+const form = useForm({
+    exam_type_id: props.examSetting.exam_type_id,
+    question_count: props.examSetting.question_count,
+    duration_minutes: props.examSetting.duration_minutes,
+    passing_percentage: props.examSetting.passing_percentage,
+    max_attempts: props.examSetting.max_attempts,
+    cooldown_minutes: props.examSetting.cooldown_minutes,
+    randomize_questions: props.examSetting.randomize_questions,
+    randomize_answers: props.examSetting.randomize_answers,
+    show_results: props.examSetting.show_results,
+    show_correct_answers: props.examSetting.show_correct_answers,
+    allow_review: props.examSetting.allow_review,
+    available_from: props.examSetting.available_from || '',
+    available_until: props.examSetting.available_until || '',
+    is_active: props.examSetting.is_active,
+});
+
+const submit = () => {
+    form.put(route('admin.settings.learning.exam-settings.update', props.examSetting.id));
+};
+</script>

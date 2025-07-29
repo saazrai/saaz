@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run linting
+npm run lint
+
+# Run build validation to catch case-sensitive imports
+echo "🔍 Validating build for case-sensitive imports..."
+if ! npm run build > /dev/null 2>&1; then
+    echo "❌ Build failed - likely due to case-sensitive import issues"
+    echo "💡 Check import paths match actual folder structure:"
+    echo "   - Use @/components (lowercase)"
+    echo "   - Use @/layouts (lowercase)"
+    echo "   - Use @/pages (lowercase)"
+    exit 1
+fi
+
+# Clean up build files
+rm -rf public/build
+
+echo "✅ All validations passed!"

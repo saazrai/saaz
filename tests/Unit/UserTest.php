@@ -94,6 +94,10 @@ test('user fillable fields are correct', function () {
         'avatar',
         'email_verified_at',
         'ui_preferences',
+        'is_active',
+        'last_login_at',
+        'login_count',
+        'remember_token',
     ]);
 });
 

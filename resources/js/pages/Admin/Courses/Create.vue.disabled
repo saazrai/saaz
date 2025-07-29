@@ -1,0 +1,271 @@
+<template>
+  <AdminLayout>
+    <!-- Header -->
+    <div :class="['mb-8', isDarkMode ? 'text-white' : 'text-gray-900']">
+      <Link 
+        :href="route('admin.content.courses.index')" 
+        :class="[
+          'text-sm mb-4 inline-block transition-colors',
+          isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'
+        ]"
+      >
+        ← Back to Courses
+      </Link>
+      <h1 :class="[
+        'text-3xl font-bold',
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      ]">
+        Create New Course
+      </h1>
+    </div>
+
+    <!-- Create Form -->
+    <form @submit.prevent="createCourse" :class="[
+      'rounded-lg shadow-sm p-8',
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    ]">
+      <div class="space-y-8">
+        <!-- Row 1: Vendor and Level -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Vendor</label>
+            <select 
+              v-model="form.vendor_id" 
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+            >
+              <option value="">Select Vendor</option>
+              <option v-for="vendor in vendors" :key="vendor.id" :value="vendor.id">
+                {{ vendor.name }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Level</label>
+            <select 
+              v-model="form.level_id" 
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+            >
+              <option value="">Select Level</option>
+              <option v-for="level in levels" :key="level.id" :value="level.id">
+                {{ level.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 2: Name and Code -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Name</label>
+            <input 
+              v-model="form.name" 
+              type="text"
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+              required 
+            />
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Code</label>
+            <input 
+              v-model="form.code" 
+              type="text"
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+              required 
+            />
+          </div>
+        </div>
+
+        <!-- Row 3: Description and Short Description -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Description</label>
+            <textarea 
+              v-model="form.description" 
+              rows="4"
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+            ></textarea>
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Short Description</label>
+            <textarea 
+              v-model="form.short_description" 
+              rows="4"
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Row 4: Logo and Slug -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Logo</label>
+            <input 
+              v-model="form.logo" 
+              type="text"
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+              placeholder="https://example.com/logo.png"
+            />
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Slug</label>
+            <input 
+              v-model="form.slug" 
+              type="text"
+              :class="[
+                'w-full border rounded-md px-4 py-3 focus:ring-blue-500 focus:border-blue-500',
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              ]"
+              placeholder="course-slug"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div :class="[
+        'mt-8 flex justify-end items-center pt-6 border-t',
+        isDarkMode ? 'border-gray-600' : 'border-gray-200'
+      ]">
+        <button 
+          type="submit" 
+          :class="[
+            'px-6 py-2.5 rounded-md transition-colors font-medium',
+            isDarkMode 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          ]"
+        >
+          Create Course
+        </button>
+      </div>
+    </form>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useForm, Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+
+const props = defineProps({
+  vendors: Array,
+  levels: Array,
+})
+
+const form = useForm({
+  name: '',
+  code: '',
+  description: '',
+  short_description: '',
+  logo: '',
+  slug: '',
+  vendor_id: '',
+  level_id: '',
+  is_active: true,
+})
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+// Initialize dark mode from localStorage
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+// Listen for dark mode changes
+const handleDarkModeChange = (event) => {
+  if (event.key === 'adminDarkMode') {
+    isDarkMode.value = JSON.parse(event.newValue || 'false')
+  }
+}
+
+const handleCustomDarkModeChange = (event) => {
+  isDarkMode.value = event.detail.isDarkMode
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  
+  // Listen for dark mode changes
+  window.addEventListener('storage', handleDarkModeChange)
+  window.addEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  window.removeEventListener('storage', handleDarkModeChange)
+  window.removeEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+
+function createCourse() {
+  form.post(route('admin.content.courses.store'), {
+    onSuccess: () => {
+      router.visit(route('admin.content.courses.index'))
+    }
+  })
+}
+</script>

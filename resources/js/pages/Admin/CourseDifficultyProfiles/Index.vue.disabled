@@ -1,0 +1,332 @@
+<template>
+    <AdminLayout pageTitle="Course Difficulty Profiles">
+        <div class="p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 :class="[
+                        'text-2xl font-bold',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">Course Difficulty Profiles</h1>
+                    <p :class="[
+                        'mt-1',
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    ]">Configure adaptive learning parameters for each course</p>
+                </div>
+                <Link
+                    :href="route('admin.settings.learning.course-difficulty-profiles.create')"
+                    :class="[
+                        'inline-flex items-center px-4 py-2 font-medium rounded-lg transition-colors',
+                        isDarkMode 
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    ]"
+                >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Create Profile
+                </Link>
+            </div>
+
+            <!-- Courses without profiles alert -->
+            <div v-if="coursesWithoutProfiles.length > 0" :class="[
+                'border rounded-lg p-4 mb-6',
+                isDarkMode 
+                    ? 'bg-yellow-900 border-yellow-700' 
+                    : 'bg-yellow-50 border-yellow-200'
+            ]">
+                <div class="flex">
+                    <svg :class="[
+                        'w-5 h-5 mr-3 flex-shrink-0 mt-0.5',
+                        isDarkMode ? 'text-yellow-400' : 'text-yellow-600'
+                    ]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div>
+                        <h3 :class="[
+                            'text-sm font-medium',
+                            isDarkMode ? 'text-yellow-200' : 'text-yellow-800'
+                        ]">Courses without difficulty profiles</h3>
+                        <div :class="[
+                            'mt-2 text-sm',
+                            isDarkMode ? 'text-yellow-300' : 'text-yellow-700'
+                        ]">
+                            <p>The following courses are using default settings:</p>
+                            <ul class="list-disc list-inside mt-1">
+                                <li v-for="course in coursesWithoutProfiles" :key="course.id">
+                                    {{ course.name }} ({{ course.code }})
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profiles table -->
+            <div :class="[
+                'rounded-lg shadow overflow-hidden',
+                isDarkMode ? 'bg-gray-800' : 'bg-white'
+            ]">
+                <table :class="[
+                    'min-w-full divide-y',
+                    isDarkMode ? 'divide-gray-700' : 'divide-gray-200'
+                ]">
+                    <thead :class="[
+                        isDarkMode ? 'bg-gray-700' : 'bg-gray-50'
+                    ]">
+                        <tr>
+                            <th :class="[
+                                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+                            ]">
+                                Course
+                            </th>
+                            <th :class="[
+                                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+                            ]">
+                                Difficulty
+                            </th>
+                            <th :class="[
+                                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+                            ]">
+                                Scenario Complexity
+                            </th>
+                            <th :class="[
+                                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+                            ]">
+                                Bloom Distribution
+                            </th>
+                            <th :class="[
+                                'px-6 py-3 text-left text-xs font-medium uppercase tracking-wider',
+                                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+                            ]">
+                                Status
+                            </th>
+                            <th class="relative px-6 py-3">
+                                <span class="sr-only">Actions</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody :class="[
+                        'divide-y',
+                        isDarkMode 
+                            ? 'bg-gray-800 divide-gray-700' 
+                            : 'bg-white divide-gray-200'
+                    ]">
+                        <tr v-for="profile in profiles" :key="profile.id" :class="[
+                            'transition-colors cursor-pointer',
+                            isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+                        ]" @click="showProfile(profile)">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div>
+                                    <div :class="[
+                                        'text-sm font-medium',
+                                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                                    ]">{{ profile.course_name }}</div>
+                                    <div :class="[
+                                        'text-sm',
+                                        isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                                    ]">ID: {{ profile.course_id }}</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span :class="[
+                                        'text-sm',
+                                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                                    ]">Level {{ profile.base_difficulty }}</span>
+                                    <div class="ml-2 flex">
+                                        <svg v-for="i in 5" :key="i" 
+                                             :class="[
+                                                'w-4 h-4', 
+                                                i <= profile.base_difficulty 
+                                                    ? 'text-yellow-400' 
+                                                    : (isDarkMode ? 'text-gray-600' : 'text-gray-300')
+                                             ]"
+                                             fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span :class="[
+                                    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full capitalize',
+                                    profile.scenario_complexity === 'high' 
+                                        ? (isDarkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800')
+                                        : profile.scenario_complexity === 'medium' 
+                                            ? (isDarkMode ? 'bg-yellow-900 text-yellow-200' : 'bg-yellow-100 text-yellow-800')
+                                            : (isDarkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800')
+                                ]">
+                                    {{ profile.scenario_complexity }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="w-48">
+                                    <div :class="[
+                                        'text-xs mb-1',
+                                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                                    ]">Bloom's Taxonomy</div>
+                                    <div class="flex space-x-1">
+                                        <div v-for="(value, key) in profile.bloom_distribution" :key="key"
+                                             :style="`width: ${value * 100}%`"
+                                             :class="[
+                                                 'h-6 rounded-sm relative group cursor-pointer',
+                                                 key === 'remember' ? 'bg-blue-400' :
+                                                 key === 'understand' ? 'bg-green-400' :
+                                                 key === 'apply' ? 'bg-yellow-400' :
+                                                 key === 'analyze' ? 'bg-orange-400' :
+                                                 key === 'evaluate' ? 'bg-red-400' :
+                                                 'bg-purple-400'
+                                             ]"
+                                             :title="`${key}: ${(value * 100).toFixed(0)}%`">
+                                            <div :class="[
+                                                'absolute hidden group-hover:block text-xs rounded px-2 py-1 -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10',
+                                                isDarkMode 
+                                                    ? 'bg-gray-900 text-white border border-gray-700' 
+                                                    : 'bg-gray-800 text-white'
+                                            ]">
+                                                {{ key }}: {{ (value * 100).toFixed(0) }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span v-if="profile.has_valid_distribution" :class="[
+                                    'flex items-center',
+                                    isDarkMode ? 'text-green-400' : 'text-green-600'
+                                ]">
+                                    <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Valid
+                                </span>
+                                <span v-else :class="[
+                                    'flex items-center',
+                                    isDarkMode ? 'text-red-400' : 'text-red-600'
+                                ]">
+                                    <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Invalid
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium" @click.stop>
+                                <Link
+                                    :href="route('admin.settings.learning.course-difficulty-profiles.edit', { course_difficulty_profile: profile.id })"
+                                    :class="[
+                                        'mr-3 transition-colors',
+                                        isDarkMode 
+                                            ? 'text-blue-400 hover:text-blue-300' 
+                                            : 'text-blue-600 hover:text-blue-900'
+                                    ]"
+                                >
+                                    Edit
+                                </Link>
+                                <button
+                                    @click="deleteProfile(profile)"
+                                    :class="[
+                                        'transition-colors',
+                                        isDarkMode 
+                                            ? 'text-red-400 hover:text-red-300' 
+                                            : 'text-red-600 hover:text-red-900'
+                                    ]"
+                                >
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Empty state -->
+                <div v-if="profiles.length === 0" :class="[
+                    'text-center py-12',
+                    isDarkMode ? 'bg-gray-800' : 'bg-white'
+                ]">
+                    <svg :class="[
+                        'mx-auto h-12 w-12',
+                        isDarkMode ? 'text-gray-600' : 'text-gray-400'
+                    ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <h3 :class="[
+                        'mt-2 text-sm font-medium',
+                        isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    ]">No difficulty profiles</h3>
+                    <p :class="[
+                        'mt-1 text-sm',
+                        isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                    ]">Get started by creating a new course difficulty profile.</p>
+                    <div class="mt-6">
+                        <Link
+                            :href="route('admin.settings.learning.course-difficulty-profiles.create')"
+                            :class="[
+                                'inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md transition-colors',
+                                isDarkMode 
+                                    ? 'text-white bg-blue-600 hover:bg-blue-700'
+                                    : 'text-white bg-blue-600 hover:bg-blue-700'
+                            ]"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Create Profile
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+
+const props = defineProps({
+    profiles: Array,
+    coursesWithoutProfiles: Array,
+});
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+const showProfile = (profile) => {
+    router.visit(route('admin.settings.learning.course-difficulty-profiles.show', { course_difficulty_profile: profile.id }));
+};
+
+const deleteProfile = (profile) => {
+    if (confirm(`Are you sure you want to delete the difficulty profile for ${profile.course_name}?`)) {
+        router.delete(route('admin.settings.learning.course-difficulty-profiles.destroy', { course_difficulty_profile: profile.id }));
+    }
+};
+</script>

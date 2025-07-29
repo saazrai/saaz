@@ -1,0 +1,196 @@
+<template>
+  <AdminLayout>
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="[
+            'text-3xl font-bold',
+            isDarkMode ? 'text-gray-100' : 'text-gray-900'
+          ]">Courses</h1>
+          <p :class="[
+            'text-gray-600',
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          ]">Manage course content and structure</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+          <Link 
+            :href="route('admin.content.courses.import.show')" 
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Import Course
+          </Link>
+          <Link 
+            :href="route('admin.content.courses.create')" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Create Course
+          </Link>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div :class="[
+        'rounded-lg shadow-sm',
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      ]">
+        <table class="min-w-full">
+          <thead>
+            <tr :class="[
+              'border-b',
+              isDarkMode ? 'border-gray-700' : 'border-gray-200'
+            ]">
+              <th :class="[
+                'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">#</th>
+              <th :class="[
+                'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Name</th>
+              <th :class="[
+                'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Code</th>
+              <th :class="[
+                'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Status</th>
+              <th class="w-10"></th>
+            </tr>
+          </thead>
+          <tbody :class="[
+            'divide-y',
+            isDarkMode ? 'divide-gray-700' : 'divide-gray-200'
+          ]">
+            <template v-if="courses?.data && courses.data.length > 0">
+              <template v-for="(course, index) in courses.data" :key="course?.id || `course-${index}`">
+                <tr 
+                  v-if="course && course.id"
+                  :class="[
+                    'transition-colors',
+                    isDarkMode 
+                      ? 'hover:bg-gray-700' 
+                      : 'hover:bg-gray-50'
+                  ]"
+                >
+                <td :class="[
+                  'py-4 px-6 text-sm cursor-pointer',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]" @click="showCourse(course)">{{ course.id }}</td>
+                <td :class="[
+                  'py-4 px-6 text-sm cursor-pointer',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]" @click="showCourse(course)">{{ course.name || 'N/A' }}</td>
+                <td :class="[
+                  'py-4 px-6 text-sm cursor-pointer',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]" @click="showCourse(course)">{{ course.code || 'N/A' }}</td>
+                <td class="py-4 px-6">
+                  <Switch 
+                    :checked="course.is_active" 
+                    @update:checked="(checked) => toggleStatus(course, checked)"
+                    :disabled="togglingStatus === course.id"
+                  />
+                </td>
+                <td class="py-4 px-6 text-right cursor-pointer" @click="showCourse(course)">
+                  <span :class="[
+                    'text-xl',
+                    isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                  ]">›</span>
+                </td>
+              </tr>
+              </template>
+            </template>
+            <tr v-else>
+              <td :class="[
+                'py-8 text-center',
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
+              ]" colspan="5">
+                No courses found
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Switch } from '@/Components/shadcn/ui/switch'
+
+const props = defineProps({ 
+  courses: Object,  // Paginated data object
+  vendors: Array,
+  levels: Array,
+  filters: Object
+})
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+const togglingStatus = ref(null)
+
+function showCourse(course) {
+  if (!course || (!course.slug && !course.id)) {
+    console.error('Invalid course data:', course)
+    return
+  }
+  router.visit(route('admin.content.courses.show', course.slug || course.id))
+}
+
+// Toggle course status
+const toggleStatus = async (course, checked) => {
+  if (!course || !course.id) {
+    console.error('Invalid course data for toggle:', course)
+    return
+  }
+  
+  togglingStatus.value = course.id
+  
+  try {
+    await router.patch(route('admin.content.courses.status.toggle', course.id), {}, {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+      onSuccess: () => {
+        // Update the course status in the local data
+        course.is_active = !course.is_active
+      },
+      onError: (errors) => {
+        console.error('Failed to toggle status:', errors)
+      }
+    })
+  } catch (error) {
+    console.error('Error toggling status:', error)
+  } finally {
+    togglingStatus.value = null
+  }
+}
+</script>

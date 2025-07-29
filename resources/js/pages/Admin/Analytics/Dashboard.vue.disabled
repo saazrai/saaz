@@ -1,0 +1,124 @@
+<template>
+    <AdminLayout>
+        <Head title="Analytics Dashboard" />
+        
+        <div class="container mx-auto px-4 py-8">
+            <!-- Analytics Dashboard Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                <div>
+                    <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Analytics Dashboard</h1>
+                    <p :class="isDarkMode ? 'text-gray-300' : 'text-gray-600'">Overview of key metrics and trends</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+                    <!-- Date Range Selector -->
+                    <select v-model="selectedRange" @change="loadData" 
+                            :class="[
+                                'form-select rounded-md shadow-sm border px-3 py-2',
+                                isDarkMode 
+                                    ? 'bg-gray-800 border-gray-600 text-white focus:border-blue-500 focus:ring-blue-500' 
+                                    : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500'
+                            ]">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                        <option value="365">Last year</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <StatCard 
+                    title="Total Users" 
+                    :value="data.overview?.totalUsers || 0" 
+                    icon="Database"
+                    trend="up"
+                    :isDarkMode="isDarkMode"
+                />
+                <StatCard 
+                    title="Active Courses" 
+                    :value="data.overview?.activeCourses || 0" 
+                    icon="Globe"
+                    trend="up"
+                    :isDarkMode="isDarkMode"
+                />
+                <StatCard 
+                    title="Revenue" 
+                    :value="formatCurrency(data.overview?.totalRevenue || 0)" 
+                    icon="Search"
+                    trend="up"
+                    :isDarkMode="isDarkMode"
+                />
+                <StatCard 
+                    title="Completion Rate" 
+                    :value="(data.overview?.avgCompletionRate || 0) + '%'" 
+                    icon="Database"
+                    trend="up"
+                    :isDarkMode="isDarkMode"
+                />
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Trends Chart -->
+                <div :class="[
+                    'rounded-lg shadow p-6 border',
+                    isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+                ]">
+                    <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">User Activity Trends</h3>
+                    <div :class="[
+                        'h-64 rounded flex items-center justify-center',
+                        isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                    ]">
+                        <span :class="isDarkMode ? 'text-gray-400' : 'text-gray-500'">Chart placeholder - integrate Chart.js or similar</span>
+                    </div>
+                </div>
+
+                <!-- Top Metrics -->
+                <div :class="[
+                    'rounded-lg shadow p-6 border',
+                    isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+                ]">
+                    <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">Top Performing Courses</h3>
+                    <div class="space-y-3">
+                        <div v-for="course in data.topMetrics?.topPerformingCourses || []" :key="course.id" 
+                             class="flex justify-between items-center">
+                            <span :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-700']">{{ course.name }}</span>
+                            <span :class="['text-sm font-medium', isDarkMode ? 'text-white' : 'text-gray-900']">{{ course.avg_completion }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { Head } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import StatCard from '@/Components/Admin/StatCard.vue'
+import { useTheme } from '@/Composables/useTheme'
+
+const props = defineProps({
+    data: Object,
+    dateRange: String
+})
+
+// Use centralized theme system
+const { isDarkMode } = useTheme()
+
+const selectedRange = ref(props.dateRange || '30')
+
+const loadData = () => {
+    // Reload page with new date range
+    window.location.href = `/admin/analytics/dashboard?date_range=${selectedRange.value}`
+}
+
+const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(amount)
+}
+</script>

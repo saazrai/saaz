@@ -1,0 +1,305 @@
+<template>
+  <AdminLayout>
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Lessons</h1>
+          <p :class="['', isDarkMode ? 'text-gray-300' : 'text-gray-600']">Manage individual lesson content and structure</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+          <Link
+            :href="route('admin.content.lessons.create')"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Create Lesson
+          </Link>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div :class="[
+        'rounded-lg shadow-sm p-6 mb-6',
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      ]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Course Filter -->
+          <div>
+            <Select v-model="selectedCourse" @update:model-value="onCourseChange">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select a course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Courses</SelectItem>
+                <SelectItem 
+                  v-for="course in courses" 
+                  :key="course.id" 
+                  :value="course.id.toString()"
+                >
+                  {{ course.vendor?.code }} - {{ course.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <!-- Domain Filter -->
+          <div>
+            <Select 
+              v-model="selectedDomain" 
+              @update:model-value="onDomainChange"
+              :disabled="!selectedCourse || selectedCourse === 'all' || availableDomains.length === 0"
+            >
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select a domain" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Domains</SelectItem>
+                <SelectItem 
+                  v-for="domain in availableDomains" 
+                  :key="domain.id" 
+                  :value="domain.id.toString()"
+                >
+                  {{ domain.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Table -->
+      <div :class="[
+        'rounded-lg shadow-sm',
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      ]">
+        <table class="min-w-full">
+          <thead>
+            <tr :class="[
+              'border-b',
+              isDarkMode ? 'border-gray-700' : 'border-gray-200'
+            ]">
+              <th :class="[
+                'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                #
+              </th>
+              <th :class="[
+                'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Name
+              </th>
+              <th :class="[
+                'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Code
+              </th>
+              <th :class="[
+                'px-8 py-4 text-left text-sm font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                Status
+              </th>
+              <th :class="[
+                'px-8 py-4 text-right text-sm font-medium uppercase tracking-wider',
+                isDarkMode ? 'text-gray-300' : 'text-gray-500'
+              ]">
+                
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr 
+              v-for="(lesson, index) in lessons.data" 
+              :key="lesson.id" 
+              :class="[
+                'border-b transition-colors',
+                isDarkMode 
+                  ? 'border-gray-700 hover:bg-gray-700' 
+                  : 'border-gray-100 hover:bg-gray-50'
+              ]"
+            >
+              <td class="px-8 py-6">
+                <div :class="[
+                  'font-medium',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]">{{ lesson.number || '-' }}</div>
+              </td>
+              <td class="px-8 py-6 cursor-pointer" @click="showLesson(lesson)">
+                <div :class="[
+                  'font-medium',
+                  isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                ]">{{ lesson.name }}</div>
+              </td>
+              <td class="px-8 py-6 cursor-pointer" @click="showLesson(lesson)">
+                <div :class="[
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                ]">{{ lesson.code || '-' }}</div>
+              </td>
+              <td class="px-8 py-6">
+                <Switch 
+                  :checked="lesson.is_active" 
+                  @update:checked="(checked) => toggleStatus(lesson, checked)"
+                  :disabled="togglingStatus === lesson.id"
+                />
+              </td>
+              <td class="px-8 py-6 text-right cursor-pointer" @click="showLesson(lesson)">
+                <span :class="[
+                  'text-xl',
+                  isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                ]">›</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/shadcn/ui/select'
+import { Switch } from '@/Components/shadcn/ui/switch'
+
+const props = defineProps({
+  lessons: {
+    type: Object,
+    required: true
+  },
+  courses: {
+    type: Array,
+    default: () => []
+  },
+  domains: {
+    type: Array,
+    default: () => []
+  },
+  filters: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
+// Filter state
+const selectedCourse = ref(props.filters.course_id || 'all')
+const selectedDomain = ref(props.filters.domain_id || 'all')
+const availableDomains = ref(props.domains || [])
+const togglingStatus = ref(null)
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+    
+    // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+    const handleStorageChange = () => {
+        const saved = localStorage.getItem('adminDarkMode')
+        isDarkMode.value = saved === 'true'
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    // Also watch for custom events from AdminLayout
+    window.addEventListener('adminDarkModeChanged', handleStorageChange)
+    
+    // Cleanup on unmount
+    return () => {
+        window.removeEventListener('storage', handleStorageChange)
+        window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+    }
+})
+
+// Handle course change
+const onCourseChange = async (courseId) => {
+  selectedCourse.value = courseId
+  selectedDomain.value = 'all' // Reset domain selection
+  
+  if (courseId && courseId !== 'all') {
+    // Fetch domains for the selected course
+    try {
+      const response = await fetch(`/admin/lessons/domains-by-course?course_id=${courseId}`)
+      const domains = await response.json()
+      availableDomains.value = domains
+    } catch (error) {
+      console.error('Error fetching domains:', error)
+      availableDomains.value = []
+    }
+  } else {
+    availableDomains.value = []
+  }
+  
+  // Apply filters
+  applyFilters()
+}
+
+// Handle domain change
+const onDomainChange = (domainId) => {
+  selectedDomain.value = domainId
+  applyFilters()
+}
+
+// Apply filters by navigating with query parameters
+const applyFilters = () => {
+  const params = {}
+  
+  if (selectedCourse.value && selectedCourse.value !== 'all') {
+    params.course_id = selectedCourse.value
+  }
+  
+  if (selectedDomain.value && selectedDomain.value !== 'all') {
+    params.domain_id = selectedDomain.value
+  }
+  
+  router.get(route('admin.content.lessons.index'), params, {
+    preserveState: true,
+    preserveScroll: true,
+  })
+}
+
+// Toggle lesson status
+const toggleStatus = async (lesson, checked) => {
+  togglingStatus.value = lesson.id
+  
+  try {
+    await router.patch(`/admin/lessons/${lesson.slug}/toggle-status`, {}, {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true, // Replace current history entry to avoid navigation issues
+      onSuccess: () => {
+        // Update the lesson status in the local data
+        lesson.is_active = !lesson.is_active
+      },
+      onError: (errors) => {
+        console.error('Failed to toggle status:', errors)
+      }
+    })
+  } catch (error) {
+    console.error('Error toggling status:', error)
+  } finally {
+    togglingStatus.value = null
+  }
+}
+
+function showLesson(lesson) {
+  router.visit(route('admin.content.lessons.show', lesson.slug))
+}
+
+function destroy(id) {
+  if (confirm('Are you sure you want to delete this lesson?')) {
+    router.delete(route('admin.content.lessons.destroy', id))
+  }
+}
+</script>

@@ -1,0 +1,231 @@
+<template>
+  <AdminLayout>
+    <!-- Header with vendor/course info -->
+    <div :class="['mb-8', isDarkMode ? 'text-white' : 'text-gray-900']">
+      <Link 
+        :href="route('admin.content.courses.index')" 
+        :class="[
+          'text-sm mb-4 inline-block transition-colors',
+          isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'
+        ]"
+      >
+        ← Back to Courses
+      </Link>
+      <div class="flex items-start justify-between">
+        <div>
+          <div :class="[
+            'text-sm mb-1',
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          ]">
+            {{ vendors.find(v => v.id === course.vendor_id)?.name || 'VENDOR' }} / {{ course.code }}
+          </div>
+          <h1 :class="[
+            'text-3xl font-bold',
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          ]">
+            {{ course.name }}
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Details Card -->
+    <div :class="[
+      'rounded-lg shadow-sm p-8',
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    ]">
+      <div class="space-y-8">
+        <!-- Row 1: Vendor and Level -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Vendor</label>
+            <div :class="[
+              'border rounded-md px-4 py-3',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ vendors.find(v => v.id === course.vendor_id)?.name || 'Not set' }}
+            </div>
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Level</label>
+            <div :class="[
+              'border rounded-md px-4 py-3',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ levels.find(l => l.id === course.level_id)?.name || 'Not set' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Name and Code -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Name</label>
+            <div :class="[
+              'border rounded-md px-4 py-3',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ course.name }}
+            </div>
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Code</label>
+            <div :class="[
+              'border rounded-md px-4 py-3',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ course.code }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Description and Short Description -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Description</label>
+            <div :class="[
+              'border rounded-md px-4 py-3 min-h-[100px]',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ course.description || 'No description provided' }}
+            </div>
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Short Description</label>
+            <div :class="[
+              'border rounded-md px-4 py-3 min-h-[100px]',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ course.short_description || 'No short description provided' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Logo and Slug -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Logo</label>
+            <div :class="[
+              'border rounded-md px-4 py-3',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ course.logo || 'No logo URL' }}
+            </div>
+          </div>
+          <div>
+            <label :class="[
+              'block text-sm font-medium mb-2',
+              isDarkMode ? 'text-gray-200' : 'text-gray-700'
+            ]">Slug</label>
+            <div :class="[
+              'border rounded-md px-4 py-3',
+              isDarkMode 
+                ? 'bg-gray-700 border-gray-600 text-white' 
+                : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]">
+              {{ course.slug || 'No slug' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="mt-8 flex justify-end">
+        <Link 
+          :href="route('admin.content.courses.edit', course.id)"
+          :class="[
+            'px-6 py-2.5 rounded-md transition-colors font-medium',
+            isDarkMode 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
+          ]"
+        >
+          Edit Course
+        </Link>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { Link } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+
+const props = defineProps({
+  course: Object,
+  vendors: Array,
+  levels: Array,
+})
+
+// Dark mode state management
+const isDarkMode = ref(false)
+
+// Initialize dark mode from localStorage
+const initializeDarkMode = () => {
+  const saved = localStorage.getItem('adminDarkMode')
+  if (saved !== null) {
+    isDarkMode.value = JSON.parse(saved)
+  }
+}
+
+// Listen for dark mode changes
+const handleDarkModeChange = (event) => {
+  if (event.key === 'adminDarkMode') {
+    isDarkMode.value = JSON.parse(event.newValue || 'false')
+  }
+}
+
+const handleCustomDarkModeChange = (event) => {
+  isDarkMode.value = event.detail.isDarkMode
+}
+
+onMounted(() => {
+  initializeDarkMode()
+  
+  // Listen for dark mode changes
+  window.addEventListener('storage', handleDarkModeChange)
+  window.addEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  window.removeEventListener('storage', handleDarkModeChange)
+  window.removeEventListener('adminDarkModeChanged', handleCustomDarkModeChange)
+})
+</script>

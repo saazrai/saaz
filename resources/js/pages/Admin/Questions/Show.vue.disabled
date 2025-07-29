@@ -1,0 +1,352 @@
+<template>
+  <AdminLayout pageTitle="Question Details">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Inline Flash Messages -->
+      <InlineFlashMessage />
+
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+          <h1 :class="[
+            'text-3xl font-bold',
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          ]">Question Details</h1>
+          <p :class="[
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          ]">Question ID: #{{ question.id }}</p>
+        </div>
+        <div class="flex gap-4 mt-4 md:mt-0">
+          <Button @click="navigateTo('/admin/content/questions')" variant="outline">
+            <ArrowLeft class="mr-2 h-4 w-4" />
+            Back to Questions
+          </Button>
+          <Button @click="navigateTo(`/admin/content/questions/${question.id}/edit`)">
+            <Edit class="mr-2 h-4 w-4" />
+            Edit Question
+          </Button>
+        </div>
+      </div>
+
+      <!-- Question Overview Card -->
+      <Card :class="[
+        'mb-6',
+        isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      ]">
+        <CardHeader>
+          <div class="flex items-center justify-between">
+            <CardTitle :class="[
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Question Overview</CardTitle>
+            <Badge :class="getStatusBadgeClass(question.status)">
+              {{ question.status ? question.status.charAt(0).toUpperCase() + question.status.slice(1) : 'N/A' }}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent class="space-y-6">
+          <!-- Question Content -->
+          <div>
+            <h3 :class="[
+              'text-lg font-semibold mb-3',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Question Content</h3>
+            <div :class="[
+              'p-4 rounded-lg border prose max-w-none',
+              isDarkMode ? 'bg-gray-900 border-gray-600 text-gray-300 prose-invert' : 'bg-gray-50 border-gray-200 text-gray-900'
+            ]" v-html="question.content"></div>
+          </div>
+
+          <!-- Answer Options -->
+          <div v-if="question.options && question.options.length > 0">
+            <h3 :class="[
+              'text-lg font-semibold mb-3',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Answer Options</h3>
+            <div class="space-y-2">
+              <div 
+                v-for="(option, index) in question.options" 
+                :key="index" 
+                :class="[
+                  'p-3 rounded-lg border flex items-center gap-3',
+                  isCorrectOption(index) 
+                    ? (isDarkMode ? 'bg-green-900/20 border-green-700 text-green-300' : 'bg-green-50 border-green-200 text-green-800')
+                    : (isDarkMode ? 'bg-gray-900 border-gray-600 text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-900')
+                ]"
+              >
+                <div :class="[
+                  'w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-bold',
+                  isCorrectOption(index) 
+                    ? (isDarkMode ? 'border-green-500 bg-green-500 text-white' : 'border-green-600 bg-green-600 text-white')
+                    : (isDarkMode ? 'border-gray-500 text-gray-400' : 'border-gray-400 text-gray-600')
+                ]">
+                  {{ String.fromCharCode(65 + index) }}
+                </div>
+                <div class="flex-1" v-html="typeof option === 'string' ? option : option.content || option"></div>
+                <CheckCircle v-if="isCorrectOption(index)" :class="[
+                  'h-5 w-5',
+                  isDarkMode ? 'text-green-400' : 'text-green-600'
+                ]" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Justifications -->
+          <div v-if="question.justifications && question.justifications.length > 0">
+            <h3 :class="[
+              'text-lg font-semibold mb-3',
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Justifications</h3>
+            <div class="space-y-2">
+              <div 
+                v-for="(justification, index) in question.justifications" 
+                :key="index" 
+                :class="[
+                  'p-3 rounded-lg border',
+                  isDarkMode ? 'bg-gray-900 border-gray-600 text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-900'
+                ]"
+              >
+                <div class="flex items-start gap-3">
+                  <div :class="[
+                    'w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5',
+                    isDarkMode ? 'border-gray-500 text-gray-400' : 'border-gray-400 text-gray-600'
+                  ]">
+                    {{ String.fromCharCode(65 + index) }}
+                  </div>
+                  <div class="flex-1" v-html="typeof justification === 'string' ? justification : justification.content || justification"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Question Metadata -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Classification Info -->
+        <Card :class="[
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <CardHeader>
+            <CardTitle :class="[
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Classification</CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span :class="[
+                'font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Type:</span>
+              <Badge :class="[
+                isDarkMode ? 'bg-blue-900 text-blue-100 border-blue-700' : 'bg-blue-100 text-blue-800 border-blue-300'
+              ]">
+                {{ question.type?.name || 'N/A' }}
+              </Badge>
+            </div>
+            <div class="flex justify-between items-center">
+              <span :class="[
+                'font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Difficulty:</span>
+              <Badge :class="getDifficultyBadgeClass(question.difficulty?.name)">
+                {{ question.difficulty?.name || 'N/A' }}
+              </Badge>
+            </div>
+            <div class="flex justify-between items-center">
+              <span :class="[
+                'font-medium',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Bloom's Level:</span>
+              <Badge :class="[
+                question.bloom?.level 
+                  ? (isDarkMode ? 'bg-purple-900 text-purple-100 border-purple-700' : 'bg-purple-100 text-purple-800 border-purple-300')
+                  : (isDarkMode ? 'bg-gray-600 text-gray-300 border-gray-500' : 'bg-gray-100 text-gray-600 border-gray-300')
+              ]">
+                {{ question.bloom?.level || 'Not Set' }}
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Topics Coverage -->
+        <Card :class="[
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+        ]">
+          <CardHeader>
+            <CardTitle :class="[
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            ]">Topics Coverage</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div v-if="question.topics && question.topics.length > 0" class="flex flex-wrap gap-2">
+              <Badge 
+                v-for="topic in question.topics" 
+                :key="topic.id" 
+                :class="[
+                  isDarkMode 
+                    ? 'bg-gray-700 text-gray-300 border-gray-600' 
+                    : 'bg-gray-100 text-gray-700 border-gray-300'
+                ]"
+              >
+                {{ topic.name }}
+              </Badge>
+            </div>
+            <p v-else :class="[
+              'text-sm',
+              isDarkMode ? 'text-gray-400' : 'text-gray-500'
+            ]">No topics assigned</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Additional Information -->
+      <Card :class="[
+        isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      ]">
+        <CardHeader>
+          <CardTitle :class="[
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          ]">Additional Information</CardTitle>
+        </CardHeader>
+        <CardContent class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <span :class="[
+                'block text-sm font-medium mb-1',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Created</span>
+              <span :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">{{ formatDate(question.created_at) }}</span>
+            </div>
+            <div>
+              <span :class="[
+                'block text-sm font-medium mb-1',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Last Updated</span>
+              <span :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">{{ formatDate(question.updated_at) }}</span>
+            </div>
+            <div>
+              <span :class="[
+                'block text-sm font-medium mb-1',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Answer Options</span>
+              <span :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">{{ question.options ? question.options.length : 0 }} options</span>
+            </div>
+            <div>
+              <span :class="[
+                'block text-sm font-medium mb-1',
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              ]">Justifications</span>
+              <span :class="[
+                'text-sm',
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              ]">{{ question.justifications ? question.justifications.length : 0 }} items</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { router } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import InlineFlashMessage from '@/Components/InlineFlashMessage.vue'
+import { Card, CardContent, CardHeader, CardTitle } from '@/Components/shadcn/ui/card'
+import { Button } from '@/Components/shadcn/ui/button'
+import { Badge } from '@/Components/shadcn/ui/badge'
+import { ArrowLeft, Edit, CheckCircle } from 'lucide-vue-next'
+
+const props = defineProps({
+  question: Object,
+})
+
+// Dark mode detection
+const isDarkMode = computed(() => {
+  return localStorage.getItem('adminDarkMode') === 'true' || 
+         (localStorage.getItem('adminDarkMode') === null && true)
+})
+
+const navigateTo = (url) => {
+  router.visit(url)
+}
+
+const isCorrectOption = (index) => {
+  if (!props.question.correct_options) return false
+  
+  // Handle different formats of correct_options
+  if (Array.isArray(props.question.correct_options)) {
+    return props.question.correct_options.includes(index) || 
+           props.question.correct_options.includes(index.toString())
+  }
+  
+  // Handle single correct option
+  return props.question.correct_options == index
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+const getDifficultyBadgeClass = (difficulty) => {
+  if (!difficulty) {
+    return isDarkMode.value 
+      ? 'bg-gray-600 text-gray-300 border-gray-500' 
+      : 'bg-gray-100 text-gray-600 border-gray-300'
+  }
+  
+  const variants = {
+    'Easy': isDarkMode.value 
+      ? 'bg-green-700 text-green-100 border-green-600' 
+      : 'bg-green-100 text-green-700 border-green-300',
+    'Medium': isDarkMode.value 
+      ? 'bg-yellow-700 text-yellow-100 border-yellow-600' 
+      : 'bg-yellow-100 text-yellow-700 border-yellow-300',
+    'Hard': isDarkMode.value 
+      ? 'bg-red-700 text-red-100 border-red-600' 
+      : 'bg-red-100 text-red-700 border-red-300',
+  }
+  return variants[difficulty] || (isDarkMode.value 
+    ? 'bg-gray-600 text-gray-300 border-gray-500' 
+    : 'bg-gray-100 text-gray-600 border-gray-300')
+}
+
+const getStatusBadgeClass = (status) => {
+  if (!status) {
+    return isDarkMode.value 
+      ? 'bg-gray-600 text-gray-300 border-gray-500' 
+      : 'bg-gray-100 text-gray-600 border-gray-300'
+  }
+  
+  const variants = {
+    'draft': isDarkMode.value 
+      ? 'bg-gray-600 text-gray-300 border-gray-500' 
+      : 'bg-gray-100 text-gray-600 border-gray-300',
+    'published': isDarkMode.value 
+      ? 'bg-green-700 text-green-100 border-green-600' 
+      : 'bg-green-100 text-green-700 border-green-300',
+    'retired': isDarkMode.value 
+      ? 'bg-orange-700 text-orange-100 border-orange-600' 
+      : 'bg-orange-100 text-orange-700 border-orange-300',
+  }
+  return variants[status] || (isDarkMode.value 
+    ? 'bg-gray-600 text-gray-300 border-gray-500' 
+    : 'bg-gray-100 text-gray-600 border-gray-300')
+}
+</script>

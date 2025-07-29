@@ -1,0 +1,160 @@
+<template>
+  <AdminLayout>
+    <!-- Dark header bar with title and action buttons -->
+    <div :class="[
+      'px-8 py-4 rounded-lg mb-6',
+      isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-800 text-white'
+    ]">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-semibold">Instructors</h1>
+        <div class="flex gap-2">
+          <Link 
+            :href="route('admin.instructors.create')" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          >
+            Create Instructor
+          </Link>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div :class="[
+      'rounded-lg shadow-sm',
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    ]">
+      <table class="min-w-full">
+        <thead>
+          <tr :class="[
+            'border-b',
+            isDarkMode ? 'border-gray-700' : 'border-gray-200'
+          ]">
+            <th :class="[
+              'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            ]">#</th>
+            <th :class="[
+              'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            ]">Name</th>
+            <th :class="[
+              'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            ]">Title</th>
+            <th :class="[
+              'text-left py-4 px-6 text-sm font-semibold uppercase tracking-wider',
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            ]">Courses</th>
+            <th class="w-10"></th>
+          </tr>
+        </thead>
+        <tbody :class="[
+          'divide-y',
+          isDarkMode ? 'divide-gray-700' : 'divide-gray-200'
+        ]">
+          <tr 
+            v-for="instructor in instructors.data" 
+            :key="instructor.id" 
+            :class="[
+              'transition-colors',
+              isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+            ]"
+          >
+            <td :class="[
+              'py-4 px-6 text-sm cursor-pointer',
+              isDarkMode ? 'text-gray-300' : 'text-gray-900'
+            ]" @click="showInstructor(instructor)">
+              {{ instructor.id }}
+            </td>
+            <td class="py-4 px-6 cursor-pointer" @click="showInstructor(instructor)">
+              <div class="flex items-center">
+                <div class="h-10 w-10 flex-shrink-0">
+                  <img 
+                    v-if="instructor.avatar_url" 
+                    class="h-10 w-10 rounded-full object-cover" 
+                    :src="instructor.avatar_url" 
+                    :alt="instructor.name"
+                  />
+                  <div 
+                    v-else 
+                    :class="[
+                      'h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium',
+                      isDarkMode ? 'bg-gray-600 text-gray-300' : 'bg-gray-300 text-gray-700'
+                    ]"
+                  >
+                    {{ instructor.name.charAt(0).toUpperCase() }}
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <div :class="[
+                    'text-sm font-medium',
+                    isDarkMode ? 'text-gray-200' : 'text-gray-900'
+                  ]">{{ instructor.name }}</div>
+                </div>
+              </div>
+            </td>
+            <td :class="[
+              'py-4 px-6 text-sm cursor-pointer',
+              isDarkMode ? 'text-gray-300' : 'text-gray-900'
+            ]" @click="showInstructor(instructor)">
+              {{ instructor.title || '-' }}
+            </td>
+            <td class="py-4 px-6 text-sm cursor-pointer" @click="showInstructor(instructor)">
+              <span :class="[
+                'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-800'
+              ]">
+                {{ instructor.courses_count }} {{ instructor.courses_count === 1 ? 'course' : 'courses' }}
+              </span>
+            </td>
+            <td class="py-4 px-6 text-right cursor-pointer" @click="showInstructor(instructor)">
+              <span :class="[
+                'text-xl',
+                isDarkMode ? 'text-gray-500' : 'text-gray-400'
+              ]">›</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div v-if="instructors.links" class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-gray-700">
+            Showing {{ instructors.from }} to {{ instructors.to }} of {{ instructors.total }} results
+          </div>
+          <div class="flex gap-2">
+            <Link 
+              v-for="link in instructors.links" 
+              :key="link.label"
+              :href="link.url"
+              v-html="link.label"
+              :class="[
+                'px-3 py-2 text-sm border rounded',
+                link.active 
+                  ? 'bg-blue-500 text-white border-blue-500' 
+                  : link.url 
+                    ? 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50' 
+                    : 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'
+              ]"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { router } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+
+const props = defineProps({ 
+  instructors: Object 
+})
+
+function showInstructor(instructor) {
+  router.visit(route('admin.instructors.show', instructor.id))
+}
+</script>

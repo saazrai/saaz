@@ -1,0 +1,420 @@
+<template>
+  <AdminLayout pageTitle="Create Proficiency Level">
+    <div class="p-6">
+      <!-- Header -->
+      <div class="mb-6">
+        <div class="flex items-center gap-4 mb-4">
+          <Link 
+            :href="route('admin.settings.learning.proficiency-levels.index')"
+            :class="['p-2 rounded-lg transition-colors', isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600']"
+          >
+            <ArrowLeftIcon class="h-5 w-5" />
+          </Link>
+          <div>
+            <h1 :class="['text-3xl font-bold', isDarkMode ? 'text-white' : 'text-gray-900']">Create Proficiency Level</h1>
+            <p :class="['mt-1', isDarkMode ? 'text-gray-400' : 'text-gray-600']">Define a new score-based proficiency level</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form @submit.prevent="submit" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Main Form -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Basic Information -->
+            <div :class="['rounded-lg shadow-sm border p-6', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200']">
+              <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">Basic Information</h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                    Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    v-model="form.name"
+                    type="text"
+                    required
+                    placeholder="e.g., novice"
+                    :class="[
+                      'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border-gray-300',
+                      form.errors.name ? 'border-red-500' : ''
+                    ]"
+                  />
+                  <div v-if="form.errors.name" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.name }}
+                  </div>
+                </div>
+                
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                    Display Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    v-model="form.display_name"
+                    type="text"
+                    required
+                    placeholder="e.g., Novice"
+                    :class="[
+                      'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border-gray-300',
+                      form.errors.display_name ? 'border-red-500' : ''
+                    ]"
+                  />
+                  <div v-if="form.errors.display_name" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.display_name }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                  Description
+                </label>
+                <textarea
+                  v-model="form.description"
+                  rows="3"
+                  placeholder="Describe this proficiency level..."
+                  :class="[
+                    'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                    isDarkMode 
+                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                      : 'border-gray-300',
+                    form.errors.description ? 'border-red-500' : ''
+                  ]"
+                ></textarea>
+                <div v-if="form.errors.description" class="mt-1 text-sm text-red-600">
+                  {{ form.errors.description }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Score Range -->
+            <div :class="['rounded-lg shadow-sm border p-6', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200']">
+              <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">Score Range</h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                    Minimum Score <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    v-model.number="form.min_score"
+                    type="number"
+                    min="0"
+                    max="100"
+                    required
+                    placeholder="0"
+                    :class="[
+                      'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border-gray-300',
+                      form.errors.min_score ? 'border-red-500' : ''
+                    ]"
+                  />
+                  <div v-if="form.errors.min_score" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.min_score }}
+                  </div>
+                </div>
+                
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                    Maximum Score <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    v-model.number="form.max_score"
+                    type="number"
+                    min="0"
+                    max="100"
+                    required
+                    placeholder="100"
+                    :class="[
+                      'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border-gray-300',
+                      form.errors.max_score ? 'border-red-500' : ''
+                    ]"
+                  />
+                  <div v-if="form.errors.max_score" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.max_score }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Score Range Preview -->
+              <div v-if="form.min_score !== null && form.max_score !== null" class="mt-4">
+                <div :class="['p-3 rounded-md', isDarkMode ? 'bg-gray-700' : 'bg-gray-50']">
+                  <p :class="['text-sm', isDarkMode ? 'text-gray-300' : 'text-gray-600']">
+                    Score Range: <span class="font-medium">{{ form.min_score }} - {{ form.max_score }}</span>
+                    <span v-if="form.max_score - form.min_score + 1 > 0" class="ml-2">
+                      ({{ form.max_score - form.min_score + 1 }} points)
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Settings -->
+            <div :class="['rounded-lg shadow-sm border p-6', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200']">
+              <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">Visual Settings</h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                    Color Code <span class="text-red-500">*</span>
+                  </label>
+                  <div class="flex gap-2">
+                    <input
+                      v-model="form.color_code"
+                      type="color"
+                      :class="[
+                        'w-12 h-10 border rounded-md cursor-pointer',
+                        isDarkMode 
+                          ? 'bg-gray-700 border-gray-600' 
+                          : 'border-gray-300'
+                      ]"
+                    />
+                    <input
+                      v-model="form.color_code"
+                      type="text"
+                      required
+                      placeholder="#FF0000"
+                      pattern="^#[0-9A-Fa-f]{6}$"
+                      :class="[
+                        'flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                        isDarkMode 
+                          ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                          : 'border-gray-300',
+                        form.errors.color_code ? 'border-red-500' : ''
+                      ]"
+                    />
+                  </div>
+                  <div v-if="form.errors.color_code" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.color_code }}
+                  </div>
+                </div>
+                
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-200' : 'text-gray-700']">
+                    Sort Order <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    v-model.number="form.sort_order"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="1"
+                    :class="[
+                      'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                      isDarkMode 
+                        ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                        : 'border-gray-300',
+                      form.errors.sort_order ? 'border-red-500' : ''
+                    ]"
+                  />
+                  <div v-if="form.errors.sort_order" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.sort_order }}
+                  </div>
+                  <p :class="['mt-1 text-xs', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
+                    Lower numbers appear first
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div :class="['rounded-lg shadow-sm border p-6', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200']">
+              <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">Status</h3>
+              
+              <div class="flex items-center">
+                <Switch 
+                  :checked="form.is_active" 
+                  @update:checked="(checked) => form.is_active = checked"
+                />
+                <label :class="['ml-3 text-sm font-medium', isDarkMode ? 'text-gray-300' : 'text-gray-700']">
+                  Active
+                </label>
+              </div>
+              <p :class="['mt-2 text-sm', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
+                Only active proficiency levels will be used for scoring
+              </p>
+            </div>
+          </div>
+
+          <!-- Preview Panel -->
+          <div class="lg:col-span-1">
+            <div :class="['rounded-lg shadow-sm border p-6 sticky top-6', isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200']">
+              <h3 :class="['text-lg font-medium mb-4', isDarkMode ? 'text-white' : 'text-gray-900']">Preview</h3>
+              
+              <div class="space-y-4">
+                <!-- Level Badge Preview -->
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-300' : 'text-gray-600']">
+                    Level Badge
+                  </label>
+                  <div class="flex items-center p-3 rounded-md border" :style="{ borderColor: form.color_code || '#e5e7eb' }">
+                    <div 
+                      class="w-4 h-4 rounded-full mr-3"
+                      :style="{ backgroundColor: form.color_code || '#6b7280' }"
+                    ></div>
+                    <div>
+                      <div :class="['text-sm font-medium', isDarkMode ? 'text-white' : 'text-gray-900']">
+                        {{ form.display_name || 'Display Name' }}
+                      </div>
+                      <div :class="['text-xs', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
+                        {{ form.name || 'name' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Score Range Preview -->
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-300' : 'text-gray-600']">
+                    Score Range
+                  </label>
+                  <div :class="['p-3 rounded-md text-center', isDarkMode ? 'bg-gray-700' : 'bg-gray-50']">
+                    <div class="text-2xl font-bold" :style="{ color: form.color_code || '#6b7280' }">
+                      {{ form.min_score || 0 }} - {{ form.max_score || 100 }}
+                    </div>
+                    <div :class="['text-xs mt-1', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
+                      Score Range
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Color Preview -->
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-300' : 'text-gray-600']">
+                    Color
+                  </label>
+                  <div class="flex items-center gap-3">
+                    <div 
+                      class="w-12 h-12 rounded-lg border-2"
+                      :style="{ 
+                        backgroundColor: form.color_code || '#6b7280',
+                        borderColor: isDarkMode ? '#374151' : '#e5e7eb'
+                      }"
+                    ></div>
+                    <div>
+                      <div :class="['text-sm font-medium', isDarkMode ? 'text-white' : 'text-gray-900']">
+                        {{ form.color_code || '#6b7280' }}
+                      </div>
+                      <div :class="['text-xs', isDarkMode ? 'text-gray-400' : 'text-gray-500']">
+                        Hex Color Code
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Status Preview -->
+                <div>
+                  <label :class="['block text-sm font-medium mb-2', isDarkMode ? 'text-gray-300' : 'text-gray-600']">
+                    Status
+                  </label>
+                  <span :class="[
+                    'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                    form.is_active 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-gray-100 text-gray-800'
+                  ]">
+                    {{ form.is_active ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div :class="['border-t pt-6', isDarkMode ? 'border-gray-700' : 'border-gray-200']">
+          <div class="flex justify-end gap-3">
+            <Link 
+              :href="route('admin.settings.learning.proficiency-levels.index')"
+              :class="[
+                'px-4 py-2 border rounded-md text-sm font-medium transition-colors',
+                isDarkMode 
+                  ? 'border-gray-600 text-gray-300 hover:bg-gray-700' 
+                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+              ]"
+            >
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              :disabled="form.processing"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+            >
+              <svg v-if="form.processing" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              {{ form.processing ? 'Creating...' : 'Create Proficiency Level' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </AdminLayout>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useForm, Link } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { Switch } from '@/Components/shadcn/ui/switch'
+import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
+
+// Dark mode state
+const isDarkMode = ref(false)
+
+// Load dark mode preference and watch for changes
+onMounted(() => {
+  const saved = localStorage.getItem('adminDarkMode')
+  isDarkMode.value = saved === 'true'
+  
+  // Watch for localStorage changes (when dark mode is toggled from AdminLayout)
+  const handleStorageChange = () => {
+    const saved = localStorage.getItem('adminDarkMode')
+    isDarkMode.value = saved === 'true'
+  }
+  
+  window.addEventListener('storage', handleStorageChange)
+  // Also watch for custom events from AdminLayout
+  window.addEventListener('adminDarkModeChanged', handleStorageChange)
+  
+  // Cleanup on unmount
+  return () => {
+    window.removeEventListener('storage', handleStorageChange)
+    window.removeEventListener('adminDarkModeChanged', handleStorageChange)
+  }
+})
+
+// Form setup
+const form = useForm({
+  name: '',
+  display_name: '',
+  min_score: null,
+  max_score: null,
+  description: '',
+  color_code: '#6b7280',
+  sort_order: 1,
+  is_active: true
+})
+
+// Form submission
+const submit = () => {
+  form.post(route('admin.settings.learning.proficiency-levels.store'), {
+    onSuccess: () => {
+      // Redirect will be handled by the controller
+    }
+  })
+}
+</script>
