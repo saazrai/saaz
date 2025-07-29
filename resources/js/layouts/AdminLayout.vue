@@ -162,7 +162,7 @@ const menuItems = computed(() => [
         items: [
             { title: 'Domains', href: safeRoute('admin.diagnostics.domains.index'), icon: GitBranch },
             { title: 'Assessments', href: safeRoute('admin.diagnostics.assessments.index'), icon: FileCheck },
-            { title: 'Diagnostic Items', href: safeRoute('admin.diagnostics.items.index'), icon: FileQuestion },
+            { title: 'Items', href: safeRoute('admin.diagnostics.items.index'), icon: FileQuestion },
             { title: 'Phases', href: safeRoute('admin.diagnostics.phases.index'), icon: Layers },
         ]
     },
