@@ -124,6 +124,169 @@
                         </div>
                     </div>
 
+                    <!-- Answer Options -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                            Answer Options
+                        </h3>
+                        <div class="space-y-4">
+                            <div v-for="(option, index) in form.options" :key="index" class="flex items-start space-x-3">
+                                <div class="flex-1">
+                                    <Label :for="`option-${index}`">Option {{ index + 1 }}</Label>
+                                    <Input
+                                        v-model="form.options[index]"
+                                        type="text"
+                                        :id="`option-${index}`"
+                                        placeholder="Enter answer option..."
+                                    />
+                                </div>
+                                <div class="flex items-center pt-6">
+                                    <input
+                                        v-model="form.correct_options"
+                                        :value="index"
+                                        type="checkbox"
+                                        :id="`correct-${index}`"
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                    />
+                                    <Label :for="`correct-${index}`" class="ml-2 text-sm">Correct</Label>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="removeOption(index)"
+                                    class="mt-6 p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <button
+                                type="button"
+                                @click="addOption"
+                                class="flex items-center px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/30"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Add Option
+                            </button>
+                            <InputError v-if="errors.options" :message="errors.options" />
+                            <InputError v-if="errors.correct_options" :message="errors.correct_options" />
+                        </div>
+                    </div>
+
+                    <!-- Justifications -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                            Answer Justifications
+                        </h3>
+                        <div class="space-y-4">
+                            <div v-for="(justification, index) in form.justifications" :key="index" class="flex items-start space-x-3">
+                                <div class="flex-1">
+                                    <Label :for="`justification-${index}`">Justification {{ index + 1 }}</Label>
+                                    <textarea
+                                        v-model="form.justifications[index]"
+                                        :id="`justification-${index}`"
+                                        rows="3"
+                                        class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        placeholder="Enter justification for this option..."
+                                    ></textarea>
+                                </div>
+                                <button
+                                    type="button"
+                                    @click="removeJustification(index)"
+                                    class="mt-6 p-2 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <button
+                                type="button"
+                                @click="addJustification"
+                                class="flex items-center px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900/30"
+                            >
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Add Justification
+                            </button>
+                            <InputError v-if="errors.justifications" :message="errors.justifications" />
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                            Question Settings
+                        </h3>
+                        <div class="space-y-4">
+                            <!-- Time Limit -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <Label for="time_limit">Time Limit (seconds)</Label>
+                                    <Input
+                                        v-model="form.settings.time_limit"
+                                        type="number"
+                                        id="time_limit"
+                                        min="0"
+                                        placeholder="No time limit"
+                                    />
+                                </div>
+                                <div>
+                                    <Label for="points">Points</Label>
+                                    <Input
+                                        v-model="form.settings.points"
+                                        type="number"
+                                        id="points"
+                                        min="1"
+                                        placeholder="1"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <!-- Boolean Settings -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="flex items-center">
+                                    <input
+                                        v-model="form.settings.randomize_options"
+                                        type="checkbox"
+                                        id="randomize_options"
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                    />
+                                    <Label for="randomize_options" class="ml-2">Randomize Options</Label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input
+                                        v-model="form.settings.allow_partial_credit"
+                                        type="checkbox"
+                                        id="allow_partial_credit"
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                    />
+                                    <Label for="allow_partial_credit" class="ml-2">Allow Partial Credit</Label>
+                                </div>
+                            </div>
+
+                            <!-- Additional Settings -->
+                            <div>
+                                <Label for="feedback_mode">Feedback Mode</Label>
+                                <select
+                                    v-model="form.settings.feedback_mode"
+                                    id="feedback_mode"
+                                    class="block w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                                    <option value="immediate">Immediate</option>
+                                    <option value="after_question">After Question</option>
+                                    <option value="after_assessment">After Assessment</option>
+                                    <option value="none">No Feedback</option>
+                                </select>
+                            </div>
+                            
+                            <InputError v-if="errors.settings" :message="errors.settings" />
+                        </div>
+                    </div>
+
                     <!-- Difficulty & Bloom Levels -->
                     <div>
                         <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
@@ -301,7 +464,14 @@ const form = ref({
     options: props.item.options || [],
     correct_options: props.item.correct_options || [],
     justifications: props.item.justifications || [],
-    settings: props.item.settings || {},
+    settings: {
+        time_limit: props.item.settings?.time_limit || null,
+        points: props.item.settings?.points || 1,
+        randomize_options: props.item.settings?.randomize_options || false,
+        allow_partial_credit: props.item.settings?.allow_partial_credit || false,
+        feedback_mode: props.item.settings?.feedback_mode || 'immediate',
+        ...props.item.settings
+    },
     difficulty_level: props.item.difficulty_level,
     bloom_level: props.item.bloom_level,
     irt_a: props.item.irt_a,
@@ -309,6 +479,23 @@ const form = ref({
     irt_c: props.item.irt_c,
     status: props.item.status,
 })
+
+const addOption = () => {
+    form.value.options.push('')
+}
+
+const removeOption = (index: number) => {
+    form.value.options.splice(index, 1)
+    form.value.correct_options = form.value.correct_options.filter(option => option !== index)
+}
+
+const addJustification = () => {
+    form.value.justifications.push('')
+}
+
+const removeJustification = (index: number) => {
+    form.value.justifications.splice(index, 1)
+}
 
 const updateItem = () => {
     processing.value = true
