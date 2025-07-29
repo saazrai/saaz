@@ -59,7 +59,7 @@
                 <div class="border-t border-gray-700 pt-3 mt-2">
                     <div class="relative">
                         <div class="flex items-center w-full rounded border border-gray-600 focus-within:border-green-400 transition-colors bg-gray-800/50">
-                            <span class="text-green-400 px-3 py-2 font-mono">$</span>
+                            <span class="text-green-400 px-3 py-2 font-mono bg-transparent">$</span>
                             <input
                                 type="text"
                                 v-model="currentCommand"
