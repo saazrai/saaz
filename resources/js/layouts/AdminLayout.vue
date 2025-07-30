@@ -40,7 +40,8 @@ import {
     Moon,
     Sun,
     GitBranch,
-    ClipboardList
+    ClipboardList,
+    BarChart3
 } from 'lucide-vue-next'
 
 // No props needed for the layout
@@ -172,6 +173,7 @@ const menuItems = computed(() => [
         key: 'sample-quiz',
         items: [
             { title: 'Questions', href: safeRoute('admin.sample-quiz.index'), icon: ClipboardList },
+            { title: 'Assessments', href: safeRoute('admin.sample-quiz.assessments.index'), icon: BarChart3 },
         ]
     },
     {

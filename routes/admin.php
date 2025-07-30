@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DiagnosticDomainController;
 use App\Http\Controllers\Admin\SampleQuizController;
+use App\Http\Controllers\Admin\SampleQuizAssessmentController;
 use App\Http\Controllers\Admin\System\LogController;
 use Illuminate\Support\Facades\Route;
 
@@ -92,6 +93,11 @@ Route::prefix('sample-quiz')->name('sample-quiz.')->group(function () {
     Route::delete('/{sampleQuestion}', [SampleQuizController::class, 'destroy'])->name('destroy');
     Route::post('/reorder', [SampleQuizController::class, 'reorder'])->name('reorder');
     Route::get('/search-items', [SampleQuizController::class, 'searchItems'])->name('search-items');
+    
+    // Sample Quiz Assessments
+    Route::get('/assessments', [SampleQuizAssessmentController::class, 'index'])->name('assessments.index');
+    Route::get('/assessments/{assessment}', [SampleQuizAssessmentController::class, 'show'])->name('assessments.show');
+    Route::delete('/assessments/{assessment}', [SampleQuizAssessmentController::class, 'destroy'])->name('assessments.destroy');
 });
 
 // Master Data Management

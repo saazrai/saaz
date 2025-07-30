@@ -33,7 +33,7 @@
                         <div class="text-gray-600 dark:text-gray-400">Sample Questions</div>
                     </div>
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
-                        <div class="text-2xl font-bold text-green-600">{{ totalDiagnosticItems }}</div>
+                        <div class="text-2xl font-bold text-green-600">{{ total_diagnostic_items }}</div>
                         <div class="text-gray-600 dark:text-gray-400">Total Diagnostic Items</div>
                     </div>
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
@@ -224,6 +224,9 @@ import { Head, router } from '@inertiajs/vue3'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import Modal from '@/components/Modal.vue'
 import Sortable from 'sortablejs'
+
+// @ts-expect-error - route is available globally via Ziggy
+const route = window.route
 
 const props = defineProps({
     sample_questions: Array,

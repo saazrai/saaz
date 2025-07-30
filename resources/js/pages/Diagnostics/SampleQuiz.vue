@@ -193,7 +193,7 @@
                             isDark 
                                 ? 'dark-mode bg-gray-800/70 border-gray-700/50' 
                                 : 'light-mode bg-white/90 border-gray-200/50',
-                            isReviewMode ? 'large-screen-review-enhanced' : ''
+                            isReviewMode ? 'review-mode large-screen-review-enhanced' : ''
                         ]" 
                         :style="isReviewMode && getCurrentAnswer() ? {
                             borderTop: getCurrentAnswer().isCorrect 
@@ -1910,9 +1910,16 @@ export default {
     transition: all 0.3s ease;
 }
 
-/* Large screen review enhanced styling */
-.large-screen-review-enhanced {
-    padding: 1.5rem !important;
+/* Review mode base styling for mobile */
+.review-mode {
+    padding: 1rem;
+}
+
+/* Large screen review enhanced styling - Only for large screens */
+@media (min-width: 1024px) {
+    .large-screen-review-enhanced {
+        padding: 1.5rem !important;
+    }
 }
 
 /* Enhanced animations for navigation grid */
