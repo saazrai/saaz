@@ -170,7 +170,7 @@
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                        Session ID
+                                        IP Address
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Status
@@ -187,20 +187,20 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Date
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                        IP Address
-                                    </th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Actions
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                <tr v-for="assessment in assessments.data" :key="assessment.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                                            {{ assessment.session_id.substring(0, 20) }}...
-                                        </code>
+                                <tr 
+                                    v-for="assessment in assessments.data" 
+                                    :key="assessment.id" 
+                                    @click="viewAssessment(assessment)"
+                                    class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                                >
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                        {{ assessment.ip_address }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
@@ -232,19 +232,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         {{ assessment.created_at_formatted }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {{ assessment.ip_address }}
-                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <Link
-                                            :href="route('admin.sample-quiz.assessments.show', assessment.id)"
-                                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
-                                        >
-                                            View
-                                        </Link>
                                         <button
-                                            @click="deleteAssessment(assessment)"
-                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                            @click.stop="deleteAssessment(assessment)"
+                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 px-2 py-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
                                         >
                                             Delete
                                         </button>
@@ -483,5 +474,9 @@ const confirmDelete = () => {
             }
         })
     }
+}
+
+const viewAssessment = (assessment) => {
+    router.visit(route('admin.sample-quiz.assessments.show', assessment.id))
 }
 </script>

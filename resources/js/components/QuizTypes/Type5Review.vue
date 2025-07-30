@@ -11,7 +11,7 @@
                 ? 'bg-slate-800 dark:bg-slate-900 border-slate-700 dark:border-slate-800' 
                 : 'bg-white border-gray-200'
          ]">
-        <div class="p-8 xl:p-0">
+        <div class="xl:p-0">
             <h4 class="text-lg font-bold mb-8"
                 :class="isThemeDark 
                     ? 'text-white dark:text-white' 

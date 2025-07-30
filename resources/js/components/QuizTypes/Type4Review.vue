@@ -11,7 +11,7 @@
                 : 'bg-white border-gray-200'
          ]">
         <!-- Question Section -->
-        <div class="p-8 xl:p-0">
+        <div class="xl:p-0">
             <div
                 class="text-lg font-medium mb-8"
                 :class="isThemeDark 

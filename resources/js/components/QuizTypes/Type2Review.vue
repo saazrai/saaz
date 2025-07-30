@@ -13,14 +13,14 @@
          ]">
         <div class="xl:p-0">
             <div
-                class="px-6 pt-8 pb-4 xl:px-0 xl:pt-0 xl:pb-4 rounded text-lg font-medium"
+                class="xl:px-0 xl:pt-0 xl:pb-4 rounded text-lg font-medium mb-4"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'"
                 v-html="renderedQuestion"
             ></div>
 
-            <div class="flex gap-4 justify-center px-6 pb-4 xl:px-0 xl:pb-0 mt-6">
+            <div class="flex gap-4 justify-center xl:px-0 xl:pb-0">
                 <div
                     v-for="option in ['True', 'False']"
                     :key="option"
@@ -58,7 +58,7 @@
 
             <!-- Explanation Section -->
             <div v-if="shouldShowExplanations" 
-                 class="mx-6 mb-6 xl:mx-0 xl:mb-0 xl:mt-6 p-4 rounded-lg"
+                 class="xl:mx-0 xl:mb-0 xl:mt-6 rounded-lg mt-6 p-4"
                  :class="isThemeDark 
                      ? 'bg-blue-900/20 border border-blue-600/50' 
                      : 'bg-blue-50 border border-blue-200'">

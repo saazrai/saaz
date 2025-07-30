@@ -825,12 +825,148 @@ onUnmounted(() => {
     padding: 2.5rem !important;
 }
 
-.large-screen-review-enhanced {
-    padding: 1.5rem !important;
+/* Large screen review enhanced - Only for large screens */
+@media (min-width: 1024px) {
+    .large-screen-review-enhanced {
+        padding: 1.5rem !important;
+    }
+
+    .large-screen-review-enhanced :deep(.question-option) {
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        margin-bottom: 1.25rem;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        border-width: 2px;
+        font-size: 1.0625rem;
+        line-height: 1.6;
+    }
+
+    .large-screen-review-enhanced :deep(.question-option:hover) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .dark .large-screen-review-enhanced :deep(.question-option:hover) {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        border-color: rgba(96, 165, 250, 0.3);
+    }
+
+    /* Enhanced question text styling */
+    .large-screen-review-enhanced :deep(.question-text) {
+        font-size: 1.375rem !important;
+        line-height: 1.7 !important;
+        color: rgb(31, 41, 55) !important;
+        font-weight: 600 !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(.question-text) {
+        color: rgb(243, 244, 246) !important;
+    }
+
+    /* Enhanced answer option text styling */
+    .large-screen-review-enhanced :deep(.option-text) {
+        font-size: 1.0625rem !important;
+        line-height: 1.6 !important;
+        font-weight: 500 !important;
+        color: rgb(55, 65, 81) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(.option-text) {
+        color: rgb(229, 231, 235) !important;
+    }
+
+    /* Enhanced explanation text styling */
+    .large-screen-review-enhanced :deep(.explanation-text) {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+        font-weight: 500 !important;
+        color: rgb(55, 65, 81) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(.explanation-text) {
+        color: rgb(209, 213, 219) !important;
+    }
+
+    /* Fix blue explanation text contrast */
+    .large-screen-review-enhanced :deep(.explanation-text.text-blue-600) {
+        color: rgb(37, 99, 235) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(.explanation-text.text-blue-400) {
+        color: rgb(96, 165, 250) !important;
+    }
+
+    /* Improved spacing for answer options */
+    .large-screen-review-enhanced :deep(.answer-options) {
+        gap: 1.25rem !important;
+        margin-top: 1.5rem !important;
+    }
+
+    /* Enhanced typography for all text elements */
+    .large-screen-review-enhanced :deep(p) {
+        font-size: 1.0625rem !important;
+        line-height: 1.6 !important;
+        color: rgb(55, 65, 81) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(p) {
+        color: rgb(209, 213, 219) !important;
+    }
+
+    /* Better spacing between sections */
+    .large-screen-review-enhanced :deep(.question-section) {
+        margin-bottom: 2rem !important;
+    }
+
+    /* Enhanced correct answer display */
+    .large-screen-review-enhanced :deep(.correct-answer-section) {
+        margin-top: 2rem !important;
+        padding: 1.5rem !important;
+        border-radius: 1rem !important;
+    }
+
+    /* Improve visual hierarchy */
+    .large-screen-review-enhanced :deep(h3),
+    .large-screen-review-enhanced :deep(.section-title) {
+        font-size: 1.125rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 1rem !important;
+        color: rgb(31, 41, 55) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(h3),
+    .dark .large-screen-review-enhanced :deep(.section-title) {
+        color: rgb(243, 244, 246) !important;
+    }
+
+    /* Enhanced correct/incorrect styling */
+    .large-screen-review-enhanced :deep(.question-option.correct) {
+        background: linear-gradient(135deg, rgb(220, 252, 231) 0%, rgb(187, 247, 208) 100%) !important;
+        border-color: rgb(34, 197, 94) !important;
+        box-shadow: 0 4px 14px rgba(34, 197, 94, 0.2) !important;
+    }
+
+    .large-screen-review-enhanced :deep(.question-option.incorrect) {
+        background: linear-gradient(135deg, rgb(254, 226, 226) 0%, rgb(252, 165, 165) 100%) !important;
+        border-color: rgb(239, 68, 68) !important;
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(.question-option.correct) {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%) !important;
+        border-color: rgb(34, 197, 94) !important;
+    }
+
+    .dark .large-screen-review-enhanced :deep(.question-option.incorrect) {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%) !important;
+        border-color: rgb(239, 68, 68) !important;
+    }
 }
 
-.large-screen-review :deep(.question-option),
-.large-screen-review-enhanced :deep(.question-option) {
+/* Keep .large-screen-review styles as they are for larger screens */
+.large-screen-review :deep(.question-option) {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     margin-bottom: 1.25rem;
     border-radius: 1rem;
@@ -840,129 +976,15 @@ onUnmounted(() => {
     line-height: 1.6;
 }
 
-.large-screen-review :deep(.question-option:hover),
-.large-screen-review-enhanced :deep(.question-option:hover) {
+.large-screen-review :deep(.question-option:hover) {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     border-color: rgba(59, 130, 246, 0.3);
 }
 
-.dark .large-screen-review :deep(.question-option:hover),
-.dark .large-screen-review-enhanced :deep(.question-option:hover) {
+.dark .large-screen-review :deep(.question-option:hover) {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     border-color: rgba(96, 165, 250, 0.3);
-}
-
-/* Enhanced question text styling */
-.large-screen-review-enhanced :deep(.question-text) {
-    font-size: 1.375rem !important;
-    line-height: 1.7 !important;
-    color: rgb(31, 41, 55) !important;
-    font-weight: 600 !important;
-    margin-bottom: 2rem !important;
-}
-
-.dark .large-screen-review-enhanced :deep(.question-text) {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Enhanced answer option text styling */
-.large-screen-review-enhanced :deep(.option-text) {
-    font-size: 1.0625rem !important;
-    line-height: 1.6 !important;
-    font-weight: 500 !important;
-    color: rgb(55, 65, 81) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(.option-text) {
-    color: rgb(229, 231, 235) !important;
-}
-
-/* Enhanced explanation text styling */
-.large-screen-review-enhanced :deep(.explanation-text) {
-    font-size: 0.95rem !important;
-    line-height: 1.6 !important;
-    font-weight: 500 !important;
-    color: rgb(55, 65, 81) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(.explanation-text) {
-    color: rgb(209, 213, 219) !important;
-}
-
-/* Fix blue explanation text contrast */
-.large-screen-review-enhanced :deep(.explanation-text.text-blue-600) {
-    color: rgb(37, 99, 235) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(.explanation-text.text-blue-400) {
-    color: rgb(96, 165, 250) !important;
-}
-
-/* Improved spacing for answer options */
-.large-screen-review-enhanced :deep(.answer-options) {
-    gap: 1.25rem !important;
-    margin-top: 1.5rem !important;
-}
-
-/* Enhanced typography for all text elements */
-.large-screen-review-enhanced :deep(p) {
-    font-size: 1.0625rem !important;
-    line-height: 1.6 !important;
-    color: rgb(55, 65, 81) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(p) {
-    color: rgb(209, 213, 219) !important;
-}
-
-/* Better spacing between sections */
-.large-screen-review-enhanced :deep(.question-section) {
-    margin-bottom: 2rem !important;
-}
-
-/* Enhanced correct answer display */
-.large-screen-review-enhanced :deep(.correct-answer-section) {
-    margin-top: 2rem !important;
-    padding: 1.5rem !important;
-    border-radius: 1rem !important;
-}
-
-/* Improve visual hierarchy */
-.large-screen-review-enhanced :deep(h3),
-.large-screen-review-enhanced :deep(.section-title) {
-    font-size: 1.125rem !important;
-    font-weight: 600 !important;
-    margin-bottom: 1rem !important;
-    color: rgb(31, 41, 55) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(h3),
-.dark .large-screen-review-enhanced :deep(.section-title) {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Enhanced correct/incorrect styling */
-.large-screen-review-enhanced :deep(.question-option.correct) {
-    background: linear-gradient(135deg, rgb(220, 252, 231) 0%, rgb(187, 247, 208) 100%) !important;
-    border-color: rgb(34, 197, 94) !important;
-    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.2) !important;
-}
-
-.large-screen-review-enhanced :deep(.question-option.incorrect) {
-    background: linear-gradient(135deg, rgb(254, 226, 226) 0%, rgb(252, 165, 165) 100%) !important;
-    border-color: rgb(239, 68, 68) !important;
-    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(.question-option.correct) {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%) !important;
-    border-color: rgb(34, 197, 94) !important;
-}
-
-.dark .large-screen-review-enhanced :deep(.question-option.incorrect) {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%) !important;
-    border-color: rgb(239, 68, 68) !important;
 }
 
 /* Add extra spacing for question text on large screens */

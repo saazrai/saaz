@@ -2,7 +2,7 @@
     <div :class="[
             'transition-all duration-300 w-full',
             // Small screens: original card styling
-            'backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
+            'backdrop-blur-md rounded-2xl border shadow-xl',
             // Large screens: match Question Details styling
             'xl:bg-white/90 xl:dark:bg-gray-800/90 xl:backdrop-blur-xl xl:rounded-2xl xl:shadow-xl xl:border xl:border-gray-200/30 xl:dark:border-gray-700/30 xl:p-6',
             // Colors for small screens
@@ -69,7 +69,7 @@
         <!-- Answer Review Section -->
         <div v-if="answer"
             :class="[
-                'border-t -mx-3 lg:-mx-6 -mb-3 lg:-mb-6 mt-6 rounded-b-2xl',
+                'border-t mt-6 rounded-b-2xl',
                 answer.is_correct
                     ? (isThemeDark ? 'bg-green-500/5 border-green-500/30' : 'bg-green-100 border-green-300')
                     : (isThemeDark ? 'bg-red-500/5 border-red-500/30' : 'bg-red-100 border-red-300')

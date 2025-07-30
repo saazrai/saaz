@@ -2,7 +2,7 @@
     <div :class="[
             'transition-all duration-300 w-full',
             // Small screens: card styling
-            'backdrop-blur-md rounded-2xl p-3 lg:p-6 border shadow-xl',
+            'backdrop-blur-md rounded-2xl border shadow-xl',
             // Large screens: match Question Details styling
             'xl:bg-white/90 xl:dark:bg-gray-800/90 xl:backdrop-blur-xl xl:rounded-2xl xl:shadow-xl xl:border xl:border-gray-200/30 xl:dark:border-gray-700/30 xl:p-6',
             // Colors for small screens
@@ -10,8 +10,9 @@
                 ? 'bg-gray-700 border-gray-500' 
                 : 'bg-white border-gray-200'
          ]">
-        <!-- Question Display -->
-        <div class="text-lg font-medium mb-6"
+        <div>
+            <!-- Question Display -->
+            <div class="text-lg font-medium mb-6"
              :class="isThemeDark 
                  ? 'text-white' 
                  : 'text-gray-800'"
@@ -139,6 +140,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </template>
