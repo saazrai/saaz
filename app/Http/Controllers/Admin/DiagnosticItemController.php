@@ -7,9 +7,11 @@ use App\Models\DiagnosticItem;
 use App\Models\DiagnosticSubtopic;
 use App\Models\DiagnosticDomain;
 use App\Models\QuestionType;
+use App\Models\SampleQuizQuestion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 
 class DiagnosticItemController extends Controller
@@ -159,7 +161,8 @@ class DiagnosticItemController extends Controller
     {
         $item->load([
             'subtopic.topic.domain',
-            'type'
+            'type',
+            'sampleQuizQuestion'
         ]);
 
         // Get navigation info
@@ -170,6 +173,24 @@ class DiagnosticItemController extends Controller
             ->orderBy('id', 'asc')
             ->first();
 
+        // Get sample quiz context
+        $sampleQuizInfo = [
+            'is_in_sample' => $item->isInSampleQuiz(),
+            'display_order' => $item->sampleQuizQuestion?->display_order,
+            'total_sample_questions' => SampleQuizQuestion::count(),
+            'sample_questions' => SampleQuizQuestion::with('diagnosticItem')
+                ->orderBy('display_order')
+                ->get()
+                ->map(function ($sq) {
+                    return [
+                        'id' => $sq->id,
+                        'diagnostic_item_id' => $sq->diagnostic_item_id,
+                        'display_order' => $sq->display_order,
+                        'question_preview' => substr($sq->diagnosticItem->content, 0, 80) . '...',
+                    ];
+                }),
+        ];
+
         return Inertia::render('Admin/Diagnostics/Items/Show', [
             'item' => $item,
             'navigation' => [
@@ -177,6 +198,7 @@ class DiagnosticItemController extends Controller
                 'next_id' => $nextItem?->id,
                 'total_count' => DiagnosticItem::count(),
             ],
+            'sample_quiz' => $sampleQuizInfo,
         ]);
     }
 
@@ -333,5 +355,107 @@ class DiagnosticItemController extends Controller
         }
 
         return back()->with('success', $message);
+    }
+
+    /**
+     * Add diagnostic item to sample quiz
+     */
+    public function addToSampleQuiz(DiagnosticItem $item): JsonResponse
+    {
+        try {
+            // Check if already in sample quiz
+            if ($item->isInSampleQuiz()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This question is already in the sample quiz.',
+                ], 400);
+            }
+
+            // Add to sample quiz at next available position
+            $nextOrder = SampleQuizQuestion::getNextDisplayOrder();
+            
+            SampleQuizQuestion::create([
+                'diagnostic_item_id' => $item->id,
+                'display_order' => $nextOrder,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Question added to sample quiz successfully.',
+                'display_order' => $nextOrder,
+                'total_questions' => SampleQuizQuestion::count(),
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add question to sample quiz.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove diagnostic item from sample quiz
+     */
+    public function removeFromSampleQuiz(DiagnosticItem $item): JsonResponse
+    {
+        try {
+            $sampleQuestion = $item->sampleQuizQuestion;
+            
+            if (!$sampleQuestion) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This question is not in the sample quiz.',
+                ], 400);
+            }
+
+            $deletedOrder = $sampleQuestion->display_order;
+            $sampleQuestion->delete();
+
+            // Reorder remaining questions
+            SampleQuizQuestion::reorderAfterDeletion($deletedOrder);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Question removed from sample quiz successfully.',
+                'total_questions' => SampleQuizQuestion::count(),
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove question from sample quiz.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Reorder sample quiz questions
+     */
+    public function reorderSampleQuiz(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'questions' => 'required|array',
+                'questions.*.id' => 'required|exists:sample_quiz_questions,id',
+                'questions.*.display_order' => 'required|integer|min:1',
+            ]);
+
+            foreach ($validated['questions'] as $questionData) {
+                SampleQuizQuestion::where('id', $questionData['id'])
+                    ->update(['display_order' => $questionData['display_order']]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sample quiz questions reordered successfully.',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reorder sample quiz questions.',
+            ], 500);
+        }
     }
 }

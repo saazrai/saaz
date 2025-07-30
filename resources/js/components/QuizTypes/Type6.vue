@@ -33,6 +33,8 @@
                             maxHeight: 'none',
                             display: 'block'
                         }"
+                        @error="onImageError"
+                        @load="onImageLoad"
                     />
                 </div>
                 <div v-else :class="[
@@ -102,7 +104,11 @@ export default {
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
         },
         imageUrl() {
-            // Check if image is provided as a path
+            // Check if image is in settings
+            if (this.question.settings?.image) {
+                return this.question.settings.image;
+            }
+            // Check if image is provided as a path (legacy)
             if (this.question.image) {
                 if (typeof this.question.image === 'string') {
                     return this.question.image;
@@ -153,12 +159,23 @@ export default {
             } else {
                 return `${baseClasses} ${this.isThemeDark ? 'hover:bg-blue-500/30 hover:border-blue-400 border-transparent' : 'hover:bg-blue-500/30 hover:border-blue-600 border-transparent'}`;
             }
+        },
+        onImageError(event) {
+            console.error('Image failed to load:', event.target.src);
+            console.error('Error event:', event);
+        },
+        onImageLoad(event) {
+            console.log('Image loaded successfully:', event.target.src);
         }
     },
     watch: {
         question: {
             immediate: true,
             handler() {
+                // Debug when question changes
+                console.log('Question changed:', this.question);
+                console.log('Image URL computed:', this.imageUrl);
+                
                 // Check if there's a saved answer to restore
                 if (this.answer?.selected_options && this.answer.selected_options) {
                     // For Type6 (hotspot), selected_options should be an object with x and y coordinates
@@ -179,5 +196,11 @@ export default {
             this.$emit("selected", this.selectedOptions);
         },
     },
+    mounted() {
+        // Debug image URL
+        console.log('Type6 Question:', this.question);
+        console.log('Settings:', this.question.settings);
+        console.log('Image URL:', this.imageUrl);
+    }
 };
 </script>

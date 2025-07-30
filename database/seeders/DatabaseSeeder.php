@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             DiagnosticSubtopicsSeeder::class,   // Creates subtopics for topics
             DiagnosticPhasesSeeder::class,      // Creates phases and links domains
             DiagnosticItemsSeeder::class,       // Creates questions for all domains
+            SampleQuizSeeder::class,            // Creates sample quiz questions and mappings
         ]);
     }
 }

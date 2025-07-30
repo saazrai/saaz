@@ -193,6 +193,7 @@ export default {
                 : null,
             windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1024,
             windowHeight: typeof window !== 'undefined' ? window.innerHeight : 768,
+            isStopped: false, // Flag to prevent timer from restarting after being stopped
         };
     },
     computed: {
@@ -250,8 +251,19 @@ export default {
     },
     methods: {
         startTimers() {
+            // Don't start if timer has been stopped
+            if (this.isStopped) {
+                return;
+            }
+            
             clearInterval(this.interval); // Just in case
             this.interval = setInterval(() => {
+                // Double-check if timer was stopped during execution
+                if (this.isStopped) {
+                    clearInterval(this.interval);
+                    return;
+                }
+                
                 this.totalTimer++;
                 this.questionTimer++;
 
@@ -277,6 +289,11 @@ export default {
         },
         resume() {
             this.startTimers();
+        },
+        stop() {
+            // Permanently stop the timer - cannot be restarted
+            this.isStopped = true;
+            clearInterval(this.interval);
         },
         resetQuestionTimer() {
             this.questionTimer = 0;

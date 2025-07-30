@@ -173,7 +173,11 @@ export default {
                    window.matchMedia?.('(prefers-color-scheme: dark)').matches;
         },
         imageUrl() {
-            // Check if image is provided as a path
+            // Check if image is in settings
+            if (this.question.settings?.image) {
+                return this.question.settings.image;
+            }
+            // Check if image is provided as a path (legacy)
             if (this.question.image) {
                 if (typeof this.question.image === 'string') {
                     return this.question.image;

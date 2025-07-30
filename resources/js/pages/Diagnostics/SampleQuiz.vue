@@ -3,8 +3,51 @@
         'flex flex-col',
         isDark ? 'bg-gray-900' : 'bg-gray-300'
     ]">
-        <!-- Unified Header for All Screens -->
-        <div :class="[
+        <!-- Loading State -->
+        <div v-if="!questionsLoaded && !loadingError" class="flex items-center justify-center min-h-screen">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <p :class="[
+                    'text-lg font-medium',
+                    isDark ? 'text-white' : 'text-gray-900'
+                ]">
+                    Loading sample quiz questions...
+                </p>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="loadingError" class="flex items-center justify-center min-h-screen">
+            <div class="text-center max-w-md mx-auto p-6">
+                <div class="text-red-500 mb-4">
+                    <svg class="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.962-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                </div>
+                <h2 :class="[
+                    'text-2xl font-bold mb-2',
+                    isDark ? 'text-white' : 'text-gray-900'
+                ]">
+                    Failed to Load Questions
+                </h2>
+                <p :class="[
+                    'text-gray-600 dark:text-gray-400 mb-4'
+                ]">
+                    {{ loadingError }}
+                </p>
+                <button 
+                    @click="loadQuestions" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                >
+                    Try Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content (Only show when questions are loaded) -->
+        <div v-else>
+            <!-- Unified Header for All Screens -->
+            <div :class="[
             'backdrop-blur-xl border-b flex items-center justify-between',
             'px-3 py-1.5 lg:px-6 lg:py-4',
             isDark 
@@ -86,14 +129,14 @@
                 <!-- Review Mode Status Badge -->
                 <div v-if="isReviewMode && getCurrentAnswer()" :class="[
                     'flex items-center space-x-1 px-2 py-1 lg:px-3 lg:py-1 rounded-full text-xs font-bold uppercase tracking-wide',
-                    getCurrentAnswer().is_correct 
+                    getCurrentAnswer().isCorrect 
                         ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                         : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                 ]">
-                    <span :class="getCurrentAnswer().is_correct ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
-                        {{ getCurrentAnswer().is_correct ? '✓' : '✗' }}
+                    <span :class="getCurrentAnswer().isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                        {{ getCurrentAnswer().isCorrect ? '✓' : '✗' }}
                     </span>
-                    <span>{{ getCurrentAnswer().is_correct ? 'CORRECT' : 'INCORRECT' }}</span>
+                    <span>{{ getCurrentAnswer().isCorrect ? 'CORRECT' : 'INCORRECT' }}</span>
                 </div>
                 
                 <!-- Theme Toggle -->
@@ -137,7 +180,7 @@
                 'min-h-full gap-4',
                 isReviewMode 
                     ? 'grid grid-cols-1 xl:grid-cols-12 max-w-7xl mx-auto' 
-                    : 'flex flex-col md:flex-row max-w-4xl mx-auto'
+                    : 'flex flex-col md:flex-row max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto'
             ]">
                 <div :class="isReviewMode ? 'xl:col-span-8' : 'flex-1'">
                     <!-- Direct Question Component without Double Card -->
@@ -149,10 +192,11 @@
                             'diagnostic-question rounded-3xl backdrop-blur-xl border',
                             isDark 
                                 ? 'dark-mode bg-gray-800/70 border-gray-700/50' 
-                                : 'light-mode bg-white/90 border-gray-200/50'
+                                : 'light-mode bg-white/90 border-gray-200/50',
+                            isReviewMode ? 'large-screen-review-enhanced' : ''
                         ]" 
                         :style="isReviewMode && getCurrentAnswer() ? {
-                            borderTop: getCurrentAnswer().is_correct 
+                            borderTop: getCurrentAnswer().isCorrect 
                                 ? '3px solid rgb(34, 197, 94)' 
                                 : '3px solid rgb(239, 68, 68)'
                         } : {}"
@@ -285,7 +329,7 @@
                                 ]">Your Answer</label>
                                 <div :class="[
                                     'mt-1 space-y-1',
-                                    getCurrentAnswer().is_correct
+                                    getCurrentAnswer().isCorrect
                                         ? (isDark ? 'text-green-400' : 'text-green-600')
                                         : (isDark ? 'text-red-400' : 'text-red-600')
                                 ]">
@@ -681,6 +725,7 @@
                 </div>
             </div>
         </Modal>
+        </div>
     </div>
 </template>
 
@@ -707,7 +752,8 @@ import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 import { SunIcon, MoonIcon } from 'lucide-vue-next';
 import { XMarkIcon, QuestionMarkCircleIcon } from '@heroicons/vue/24/outline';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
-import { sampleQuestions } from '@/data/sampleQuestions.js';
+// Remove hardcoded import - questions now come from database
+// import { sampleQuestions } from '@/data/sampleQuestions.js';
 
 export default {
     layout: null, // No layout for sample quiz
@@ -768,8 +814,16 @@ export default {
             touchEndX: 0,
             touchEndY: 0,
             swipeThreshold: 50,
-            // Sample questions data (imported from separate file)
-            sampleQuestions
+            // Sample questions data (loaded from database)
+            sampleQuestions: [],
+            questionsLoaded: false,
+            loadingError: null,
+            // Analytics tracking
+            sessionId: null,
+            assessmentId: null,
+            quizStartTime: null,
+            analyticsEnabled: true, // Can be disabled for privacy
+            backendScore: null, // Score from backend when available
         };
     },
     computed: {
@@ -880,6 +934,11 @@ export default {
             return Math.round(((this.currentQuestionIndex + 1) / this.sampleQuestions.length) * 100);
         },
         score() {
+            // Use backend score if available (more accurate)
+            if (this.backendScore !== null) {
+                return this.backendScore;
+            }
+            // Otherwise calculate locally
             const correct = this.userAnswers.filter(a => a && a.isCorrect).length;
             return Math.round((correct / this.sampleQuestions.length) * 100);
         },
@@ -888,6 +947,28 @@ export default {
         }
     },
     methods: {
+        async loadQuestions() {
+            try {
+                const response = await fetch('/api/sample-quiz/questions');
+                const data = await response.json();
+                
+                if (data.success && data.questions.length > 0) {
+                    this.sampleQuestions = data.questions;
+                    this.questionsLoaded = true;
+                    console.log(`Loaded ${data.questions.length} sample questions from database`);
+                } else {
+                    throw new Error(data.message || 'No sample questions found');
+                }
+            } catch (error) {
+                console.error('Failed to load sample questions:', error);
+                this.loadingError = error.message;
+                this.questionsLoaded = false;
+                
+                // Show user-friendly error
+                alert('Failed to load sample quiz questions. Please try refreshing the page.');
+            }
+        },
+        
         initialAnswer() {
             return {
                 question_id: null,
@@ -965,6 +1046,8 @@ export default {
 
                 // Reset scroll position to top of page
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Progress is automatically tracked server-side through individual responses
             } finally {
                 // Reset submitting flag after a short delay to ensure UI updates
                 setTimeout(() => {
@@ -972,7 +1055,7 @@ export default {
                 }, 300);
             }
         },
-        finishQuiz() {
+        async finishQuiz() {
             if (!this.hasSelection || this.isSubmitting) return;
 
             // Set submitting flag to prevent double submission
@@ -985,8 +1068,17 @@ export default {
                     questionId: this.currentQuestion.id,
                     selectedOptions: Array.isArray(this.selectedOptions) ? [...this.selectedOptions] : this.selectedOptions,
                     isCorrect: isCorrect,
-                commands: this.currentQuestion?.type_id === 7 ? [...this.commandHistory] : undefined
-            };
+                    commands: this.currentQuestion?.type_id === 7 ? [...this.commandHistory] : undefined
+                };
+
+                // Submit analytics data (async, don't wait for completion)
+                this.submitAnalytics().catch(error => {
+                    console.warn('Failed to submit analytics:', error);
+                });
+
+                // Stop all timers on quiz completion
+                this.stopAllTimers();
+                console.log('Quiz completed successfully - timers stopped');
 
                 // Show results
                 this.showResults = true;
@@ -1026,17 +1118,16 @@ export default {
                 return JSON.stringify(correctOrder) === JSON.stringify(userAnswer);
             }
 
-            // Type 5: Matching
+            // Type 5: Matching (array of responses in correct order)
             if (type === 5) {
-                const correctMatches = question.correct_matches || question.correct_answers || {};
-                if (!userAnswer || typeof userAnswer !== 'object') return false;
-
-                for (const key in correctMatches) {
-                    if (userAnswer[key] !== correctMatches[key]) {
-                        return false;
-                    }
-                }
-                return true;
+                const correctOptions = question.correct_options || [];
+                if (!Array.isArray(userAnswer) || !Array.isArray(correctOptions)) return false;
+                
+                // Check if both arrays have the same length
+                if (userAnswer.length !== correctOptions.length) return false;
+                
+                // Check if each element matches in order
+                return userAnswer.every((answer, index) => answer === correctOptions[index]);
             }
 
             // Type 6: Hotspot
@@ -1062,14 +1153,64 @@ export default {
 
             return false;
         },
-        reviewAnswers() {
+        async reviewAnswers() {
             this.showResults = false;
             this.isReviewMode = true;
             this.currentQuestionIndex = 0;
 
+            // Fetch responses from backend for accurate review
+            await this.fetchResponsesForReview();
+
             // Load the first question's answer for review
             if (this.userAnswers[0]) {
                 this.selectedOptions = this.userAnswers[0].selectedOptions;
+            }
+        },
+        
+        async fetchResponsesForReview() {
+            if (!this.sessionId) {
+                console.warn('No session ID available for fetching responses');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/sample-quiz/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        session_id: this.sessionId,
+                    }),
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.progress && data.progress.length > 0) {
+                        // Update userAnswers with backend data
+                        this.userAnswers = data.progress.map((resp) => ({
+                            questionId: resp.question_id || resp.diagnostic_item_id,
+                            selectedOptions: resp.selected_options || resp.user_answer,
+                            isCorrect: resp.is_correct,
+                            responseTime: resp.response_time_seconds,
+                            metadata: resp.metadata || {}
+                        }));
+                        
+                        // Update score from backend
+                        if (data.assessment && data.assessment.score !== undefined) {
+                            this.backendScore = data.assessment.score;
+                        }
+                        
+                        console.log('Fetched responses from backend:', this.userAnswers.length);
+                    }
+                } else {
+                    console.error('Failed to fetch responses:', response.status);
+                }
+            } catch (error) {
+                console.error('Error fetching responses for review:', error);
+                // Fallback to local data if fetch fails
             }
         },
         previousQuestion() {
@@ -1081,6 +1222,8 @@ export default {
                 }
                 // Reset scroll position to top of page
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Navigation state preserved server-side
             }
         },
         goToPreviousQuestion() {
@@ -1120,6 +1263,8 @@ export default {
                 }
                 // Reset scroll position to top of page
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Navigation state preserved server-side
             }
         },
         restartQuiz() {
@@ -1150,6 +1295,18 @@ export default {
             // Resume the unified timer instance
             if (this.$refs.quizTimer) {
                 this.$refs.quizTimer.resume();
+            }
+        },
+        stopAllTimers() {
+            // Stop the unified timer instance completely and permanently
+            if (this.$refs.quizTimer) {
+                this.$refs.quizTimer.stop(); // Use stop() for permanent timer termination
+            }
+            
+            // Clear inactivity timer
+            if (this.inactivityTimer) {
+                clearTimeout(this.inactivityTimer);
+                this.inactivityTimer = null;
             }
         },
         resetInactivityTimer() {
@@ -1325,6 +1482,267 @@ export default {
             };
             return bloomMap[bloom] || 0;
         },
+        
+        // Analytics Methods
+
+        async initializeSession() {
+            // Server-side session tracking - always call assessment creation
+            // Server will return existing assessment if user already has one in progress
+            console.log('Initializing assessment session...');
+            const assessmentData = await this.createAssessment();
+            
+            if (assessmentData) {
+                this.sessionId = assessmentData.sessionId;
+                this.assessmentId = assessmentData.assessmentId;
+                this.quizStartTime = Date.now();
+                
+                if (assessmentData.isResumed) {
+                    console.log('Resuming existing session:', assessmentData.sessionId);
+                    // Get progress from server
+                    await this.loadProgress();
+                } else {
+                    console.log('New assessment created:', assessmentData.assessment);
+                }
+                
+                return assessmentData;
+            }
+            
+            return null;
+        },
+
+        async loadProgress() {
+            if (!this.sessionId) return;
+            
+            try {
+                const response = await fetch('/api/sample-quiz/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        session_id: this.sessionId,
+                    }),
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Restore progress from server
+                    if (data.progress && data.progress.length > 0) {
+                        console.log(`Restored ${data.progress.length} answers, continuing from question ${data.current_question}`);
+                        
+                        // Convert server responses back to userAnswers format
+                        this.userAnswers = [];
+                        data.progress.forEach((response) => {
+                            this.userAnswers[response.question_sequence - 1] = {
+                                questionId: response.question_id,
+                                selectedOptions: response.selected_options,
+                                isCorrect: response.is_correct,
+                                responseTime: response.response_time_seconds,
+                            };
+                        });
+                        
+                        // Set current question to first unanswered question
+                        this.currentQuestionIndex = Math.min(data.current_question - 1, this.sampleQuestions.length - 1);
+                        
+                        // Load current question's answer if it exists
+                        if (this.userAnswers[this.currentQuestionIndex]) {
+                            this.selectedOptions = this.userAnswers[this.currentQuestionIndex].selectedOptions;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to load progress:', error);
+            }
+        },
+
+        async createAssessment() {
+            if (!this.analyticsEnabled) return null;
+            
+            try {
+                const response = await fetch('/api/sample-quiz/assessments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        type: 'sample',
+                        total_questions: this.sampleQuestions.length
+                    }),
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        sessionId: data.assessment.session_id,
+                        assessmentId: data.assessment.id,
+                        assessment: data.assessment,
+                        isResumed: data.is_resumed || false
+                    };
+                }
+            } catch (error) {
+                console.warn('Failed to create assessment:', error);
+            }
+            
+            // Fallback: generate client-side session ID (for offline compatibility)
+            return {
+                sessionId: `sample_${Math.random().toString(36).substring(2)}_${Date.now()}`,
+                assessmentId: null,
+                assessment: null
+            };
+        },
+        
+        async submitAnalytics() {
+            if (!this.analyticsEnabled || !this.sessionId) return;
+            
+            try {
+                const completionTime = this.quizStartTime ? 
+                    Math.floor((Date.now() - this.quizStartTime) / 1000) : 0;
+
+                // Step 1: Store individual responses if using new normalized approach
+                if (this.assessmentId) {
+                    await this.storeAllResponses();
+                }
+
+                // Step 2: Complete the assessment
+                const response = await fetch('/api/sample-quiz/complete-assessment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        session_id: this.sessionId,
+                        completion_time_seconds: completionTime,
+                    }),
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Assessment completed successfully:', result);
+                    
+                    // Update score from backend if available
+                    if (result.score !== undefined) {
+                        this.backendScore = result.score;
+                        console.log('Score updated from backend:', this.backendScore);
+                    }
+                } else {
+                    console.warn('Failed to complete assessment:', response.status);
+                    // Fallback to legacy approach
+                    await this.submitAnalyticsLegacy();
+                }
+            } catch (error) {
+                console.warn('Assessment completion error:', error);
+                // Fallback to legacy approach
+                await this.submitAnalyticsLegacy();
+            }
+        },
+
+        async storeAllResponses() {
+            // Store all responses using the normalized endpoint
+            for (let index = 0; index < this.userAnswers.length; index++) {
+                const answer = this.userAnswers[index];
+                const question = this.sampleQuestions[index];
+                
+                if (answer && question) {
+                    try {
+                        await fetch('/api/sample-quiz/response', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                            },
+                            body: JSON.stringify({
+                                session_id: this.sessionId,
+                                question_id: question.id || index + 1,
+                                question_sequence: index + 1,
+                                selected_options: Array.isArray(answer.selectedOptions) ? 
+                                    answer.selectedOptions : [answer.selectedOptions],
+                                is_correct: answer.isCorrect || false,
+                                response_time_seconds: answer.responseTime || null,
+                                // Question metadata for analytics
+                                question_type: this.getQuestionTypeForQuestion(question),
+                                domain: question.domain,
+                                topic: question.topic,
+                                difficulty: question.difficulty,
+                                bloom_level: question.bloom,
+                                // Additional metadata (commands for type 7 simulation questions)
+                                metadata: question.type_id === 7 && answer.commands ? {
+                                    commands: answer.commands
+                                } : null,
+                            }),
+                        });
+                    } catch (error) {
+                        console.warn(`Failed to store response for question ${index + 1}:`, error);
+                    }
+                }
+            }
+        },
+
+        async submitAnalyticsLegacy() {
+            // Legacy bulk submission approach (fallback)
+            try {
+                const completionTime = this.quizStartTime ? 
+                    Math.floor((Date.now() - this.quizStartTime) / 1000) : 0;
+                
+                const formattedResponses = this.userAnswers.map((answer, index) => ({
+                    question_id: this.sampleQuestions[index]?.id || index + 1,
+                    selected_options: Array.isArray(answer.selectedOptions) ? 
+                        answer.selectedOptions : [answer.selectedOptions],
+                    is_correct: answer.isCorrect || false,
+                    response_time: answer.responseTime || null,
+                }));
+                
+                const analyticsData = {
+                    session_id: this.sessionId,
+                    responses: formattedResponses,
+                    score: this.score,
+                    completion_time_seconds: completionTime,
+                    questions_count: this.sampleQuestions.length,
+                    started_at: this.quizStartTime ? new Date(this.quizStartTime).toISOString() : null,
+                };
+                
+                const response = await fetch('/api/sample-quiz/complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify(analyticsData),
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Legacy analytics submitted successfully:', result);
+                } else {
+                    console.warn('Failed to submit legacy analytics:', response.status);
+                }
+            } catch (error) {
+                console.warn('Legacy analytics submission error:', error);
+            }
+        },
+
+        getQuestionTypeForQuestion(question) {
+            // Use the actual question type name from database if available
+            if (question?.question_type?.name) {
+                return question.question_type.name;
+            }
+            
+            // Fallback to mapping for backward compatibility
+            const typeMap = {
+                1: 'Multiple Choice Question',
+                2: 'Multiple Select Question', 
+                3: 'Drag & Drop – Select',
+                4: 'Drag & Drop – Order',
+                5: 'Matching Pairs',
+                6: 'Hot Spot',
+                7: 'Command Line'
+            };
+            return typeMap[question?.type_id] || 'Multiple Choice Question';
+        },
+        
         handleTouchStart(event) {
             if (!this.isReviewMode) return;
             
@@ -1352,6 +1770,58 @@ export default {
                     // Swipe left - go to next
                     this.nextQuestion();
                 }
+            }
+        },
+        
+        disableZoom() {
+            // Add meta viewport tag to prevent zoom
+            const metaViewport = document.querySelector('meta[name="viewport"]');
+            if (metaViewport) {
+                metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            } else {
+                const meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+                document.head.appendChild(meta);
+            }
+            
+            // CSS touch-action
+            document.body.style.touchAction = 'manipulation';
+            
+            // Prevent zoom with keyboard shortcuts
+            this.preventZoomKeyboard = (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
+                    e.preventDefault();
+                }
+            };
+            
+            // Prevent zoom with mouse wheel
+            this.preventZoomWheel = (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                }
+            };
+            
+            document.addEventListener('keydown', this.preventZoomKeyboard);
+            document.addEventListener('wheel', this.preventZoomWheel, { passive: false });
+        },
+        
+        enableZoom() {
+            // Restore original viewport
+            const metaViewport = document.querySelector('meta[name="viewport"]');
+            if (metaViewport) {
+                metaViewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+            }
+            
+            // Restore touch action
+            document.body.style.touchAction = '';
+            
+            // Remove event listeners
+            if (this.preventZoomKeyboard) {
+                document.removeEventListener('keydown', this.preventZoomKeyboard);
+            }
+            if (this.preventZoomWheel) {
+                document.removeEventListener('wheel', this.preventZoomWheel);
             }
         }
     },
@@ -1386,7 +1856,7 @@ export default {
             }
         }
     },
-    mounted() {
+    async mounted() {
         // Set dark theme as default
         if (typeof window !== 'undefined') {
             this.isDark = true;
@@ -1394,8 +1864,21 @@ export default {
             document.documentElement.classList.remove('light');
         }
         
-        // Start inactivity timer
-        this.resetInactivityTimer();
+        // Disable zoom for sample quiz
+        this.disableZoom();
+        
+        // Load questions from database first
+        await this.loadQuestions();
+        
+        // Initialize analytics tracking with session persistence
+        if (this.analyticsEnabled && this.questionsLoaded) {
+            await this.initializeSession();
+        }
+        
+        // Start inactivity timer only if questions loaded
+        if (this.questionsLoaded) {
+            this.resetInactivityTimer();
+        }
         
         // Add event listeners for user activity
         document.addEventListener('click', this.trackActivity);
@@ -1408,6 +1891,9 @@ export default {
         if (this.inactivityTimer) {
             clearTimeout(this.inactivityTimer);
         }
+        
+        // Re-enable zoom when leaving the page
+        this.enableZoom();
         
         document.removeEventListener('click', this.trackActivity);
         document.removeEventListener('keydown', this.trackActivity);
@@ -1422,6 +1908,11 @@ export default {
     /* Inherits styles from the quiz type components */
     transform: translateZ(0); /* Hardware acceleration */
     transition: all 0.3s ease;
+}
+
+/* Large screen review enhanced styling */
+.large-screen-review-enhanced {
+    padding: 1.5rem !important;
 }
 
 /* Enhanced animations for navigation grid */

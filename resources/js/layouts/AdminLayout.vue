@@ -39,7 +39,8 @@ import {
     FileCheck,
     Moon,
     Sun,
-    GitBranch
+    GitBranch,
+    ClipboardList
 } from 'lucide-vue-next'
 
 // No props needed for the layout
@@ -164,6 +165,13 @@ const menuItems = computed(() => [
             { title: 'Assessments', href: safeRoute('admin.diagnostics.assessments.index'), icon: FileCheck },
             { title: 'Items', href: safeRoute('admin.diagnostics.items.index'), icon: FileQuestion },
             { title: 'Phases', href: safeRoute('admin.diagnostics.phases.index'), icon: Layers },
+        ]
+    },
+    {
+        title: 'Sample Quiz',
+        key: 'sample-quiz',
+        items: [
+            { title: 'Questions', href: safeRoute('admin.sample-quiz.index'), icon: ClipboardList },
         ]
     },
     {

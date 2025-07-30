@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DiagnosticDomainController;
+use App\Http\Controllers\Admin\SampleQuizController;
 use App\Http\Controllers\Admin\System\LogController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,11 @@ Route::prefix('diagnostics')->name('diagnostics.')->group(function () {
     Route::post('items/{item}/review', [\App\Http\Controllers\Admin\DiagnosticItemController::class, 'review'])->name('items.review');
     Route::post('items/bulk-action', [\App\Http\Controllers\Admin\DiagnosticItemController::class, 'bulkAction'])->name('items.bulk-action');
     
+    // Sample Quiz Management
+    Route::post('items/{item}/add-to-sample', [\App\Http\Controllers\Admin\DiagnosticItemController::class, 'addToSampleQuiz'])->name('items.add-to-sample');
+    Route::delete('items/{item}/remove-from-sample', [\App\Http\Controllers\Admin\DiagnosticItemController::class, 'removeFromSampleQuiz'])->name('items.remove-from-sample');
+    Route::post('items/reorder-sample', [\App\Http\Controllers\Admin\DiagnosticItemController::class, 'reorderSampleQuiz'])->name('items.reorder-sample');
+    
     // Diagnostic Domain Management (Domains -> Topics -> Subtopics)
     Route::prefix('domains')->name('domains.')->group(function () {
         Route::get('/', [DiagnosticDomainController::class, 'index'])->name('index');
@@ -77,6 +83,15 @@ Route::prefix('diagnostics')->name('diagnostics.')->group(function () {
         // Reordering
         Route::post('/reorder', [DiagnosticDomainController::class, 'reorder'])->name('reorder');
     });
+});
+
+// Sample Quiz Management - Dedicated draggable interface
+Route::prefix('sample-quiz')->name('sample-quiz.')->group(function () {
+    Route::get('/', [SampleQuizController::class, 'index'])->name('index');
+    Route::post('/', [SampleQuizController::class, 'store'])->name('store');
+    Route::delete('/{sampleQuestion}', [SampleQuizController::class, 'destroy'])->name('destroy');
+    Route::post('/reorder', [SampleQuizController::class, 'reorder'])->name('reorder');
+    Route::get('/search-items', [SampleQuizController::class, 'searchItems'])->name('search-items');
 });
 
 // Master Data Management

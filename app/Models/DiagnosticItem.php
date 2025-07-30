@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DiagnosticItem extends BaseModel
@@ -44,5 +45,21 @@ class DiagnosticItem extends BaseModel
     public function type(): BelongsTo
     {
         return $this->belongsTo(QuestionType::class, 'type_id');
+    }
+
+    /**
+     * Get the sample quiz question record if this item is used in sample quiz
+     */
+    public function sampleQuizQuestion(): HasOne
+    {
+        return $this->hasOne(SampleQuizQuestion::class);
+    }
+
+    /**
+     * Check if this diagnostic item is used in the sample quiz
+     */
+    public function isInSampleQuiz(): bool
+    {
+        return $this->sampleQuizQuestion()->exists();
     }
 }

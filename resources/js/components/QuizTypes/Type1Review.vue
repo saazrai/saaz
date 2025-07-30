@@ -13,7 +13,7 @@
         <!-- Question Section -->
         <div class="p-4 xl:p-0">
             <div
-                class="text-base font-medium mb-4"
+                class="text-base lg:text-lg font-medium mb-4 leading-tight lg:leading-normal"
                 :class="isThemeDark 
                     ? 'text-white' 
                     : 'text-gray-800'"
@@ -31,7 +31,7 @@
                     <div class="flex items-center justify-between p-3">
                         <!-- Option Content -->
                         <div class="flex-1 mr-3">
-                            <span class="text-base" 
+                            <span class="text-base lg:text-lg leading-relaxed" 
                                   :class="getOptionTextClasses(option, i)"
                                   v-html="renderMarkdown(option)">
                             </span>
@@ -74,7 +74,7 @@
                                 <div 
                                     v-if="getJustificationForOption(i)"
                                     :class="[
-                                        'text-sm leading-relaxed',
+                                        'text-sm lg:text-base leading-relaxed',
                                         isCorrectOption(i)
                                             ? (isThemeDark ? 'text-green-200' : 'text-green-700')
                                             : (isThemeDark ? 'text-blue-200' : 'text-blue-700')
